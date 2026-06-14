@@ -1,0 +1,21 @@
+{
+  "module_title": "المخزون",
+  "nav": {
+    "items":       "الأصناف",
+    "categories":  "التصنيفات",
+    "price_lists": "قوائم الأسعار",
+    "warehouses":  "المخازن",
+    "stocktakes":  "الجرد",
+    "transfers":   "التحويلات",
+    "adjustments": "التسويات",
+    "low_stock":   "قاربت النفاد"
+  },
+  "items":       { "title": "الأصناف" },
+  "categories":  { "title": "التصنيفات" },
+  "price_lists": { "title": "قوائم الأسعار" },
+  "warehouses":  { "title": "المخازن" },
+  "stocktakes":  { "title": "الجرد" },
+  "transfers":   { "title": "التحويلات" },
+  "adjustments": { "title": "التسويات" },
+  "low_stock":   { "title": "قاربت النفاد" }
+}

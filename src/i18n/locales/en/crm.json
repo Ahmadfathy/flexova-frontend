@@ -1,0 +1,13 @@
+{
+  "module_title": "Customers",
+  "nav": {
+    "list":           "Customers",
+    "follow_ups":     "Follow-ups",
+    "segments":       "Segments",
+    "communications": "Communications"
+  },
+  "list":           { "title": "Customers" },
+  "follow_ups":     { "title": "Follow-ups" },
+  "segments":       { "title": "Segments" },
+  "communications": { "title": "Communications" }
+}

@@ -1,0 +1,29 @@
+{
+  "module_title": "Accounting",
+  "nav": {
+    "dashboard":       "Dashboard",
+    "treasuries":      "Treasuries & Banks",
+    "expenses":        "Expenses",
+    "receipts":        "Receipt vouchers",
+    "payments":        "Payment vouchers",
+    "transfers":       "Transfers",
+    "journal":         "Journal",
+    "coa":             "Chart of accounts",
+    "trial_balance":   "Trial balance",
+    "statements":      "Statements",
+    "reconciliation":  "Bank reconciliation",
+    "closing":         "Period closing"
+  },
+  "dashboard":       { "title": "Finance dashboard" },
+  "treasuries":      { "title": "Treasuries & Banks" },
+  "expenses":        { "title": "Expenses" },
+  "receipts":        { "title": "Receipt vouchers" },
+  "payments":        { "title": "Payment vouchers" },
+  "transfers":       { "title": "Transfers" },
+  "journal":         { "title": "Journal" },
+  "coa":             { "title": "Chart of accounts" },
+  "trial_balance":   { "title": "Trial balance" },
+  "statements":      { "title": "Financial statements" },
+  "reconciliation":  { "title": "Bank reconciliation" },
+  "closing":         { "title": "Period closing" }
+}

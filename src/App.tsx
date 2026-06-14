@@ -1,23 +1,72 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AppShell } from "@/components/shell/AppShell";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { AppShell } from "@/components/shell/AppShell";
 import { Skeleton } from "@/components/patterns/Skeletons";
 
+// Dashboard
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
+
+// Inventory
+import { InventoryLayout } from "@/features/inventory/InventoryLayout";
+import {
+  ItemsPage, CategoriesPage, PriceListsPage, WarehousesPage,
+  StocktakesPage, TransfersPage, AdjustmentsPage, LowStockPage,
+} from "@/features/inventory/InventoryPages";
+
+// Sales
+import { SalesLayout } from "@/features/sales/SalesLayout";
+import {
+  InvoicesPage, QuotationsPage, CreditNotesPage,
+  DebitNotesPage, ReceiptsPage, EtaHubPage,
+} from "@/features/sales/SalesPages";
+
+// Purchasing
+import { PurchasingLayout } from "@/features/purchasing/PurchasingLayout";
+import {
+  SuppliersPage, PurchasesPage, OrdersPage,
+  ReturnsPage, VouchersPage, InboundEtaPage,
+} from "@/features/purchasing/PurchasingPages";
+
+// Finance
+import { FinanceLayout } from "@/features/finance/FinanceLayout";
+import {
+  FinanceDashboardPage, TreasuriesPage, ExpensesPage,
+  ReceiptVouchersPage, PaymentVouchersPage, FinanceTransfersPage,
+  JournalPage, CoaPage, TrialBalancePage,
+  StatementsPage, ReconciliationPage, ClosingPage,
+} from "@/features/finance/FinancePages";
+
+// CRM
+import { CrmLayout } from "@/features/crm/CrmLayout";
+import {
+  CustomersListPage, FollowUpsPage, SegmentsPage, CommunicationsPage,
+} from "@/features/crm/CrmPages";
+
+// HR
+import { HrLayout } from "@/features/hr/HrLayout";
+import {
+  HrDashboardPage, EmployeesPage, AttendancePage,
+  AdvancesPage, PayrollPage, CommissionsPage,
+} from "@/features/hr/HrPages";
+
+// Reports
+import { ReportsLayout } from "@/features/reports/ReportsLayout";
+import {
+  ReportsDashboardPage, ReportLibraryPage, SavedReportsPage,
+  EtaTaxPage, ZReportPage, SchedulingPage,
+} from "@/features/reports/ReportsPages";
+
+// Admin
+import { AdminLayout } from "@/features/admin/AdminLayout";
+import {
+  UsersPage, RolesPage, BranchesPage, SecurityPage, AuditPage,
+} from "@/features/admin/AdminPages";
 
 function PageFallback() {
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4">
       <Skeleton className="h-8 w-48" />
-      <Skeleton className="h-48 w-full" />
-    </div>
-  );
-}
-
-function ComingSoon({ label }: { label: string }) {
-  return (
-    <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
-      {label} — قريباً
+      <Skeleton className="h-64 w-full" />
     </div>
   );
 }
@@ -27,6 +76,8 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppShell />}>
+
+          {/* Dashboard */}
           <Route
             index
             element={
@@ -35,15 +86,107 @@ export default function App() {
               </Suspense>
             }
           />
-          <Route path="/inventory"   element={<ComingSoon label="المخزون" />} />
-          <Route path="/sales"       element={<ComingSoon label="المبيعات" />} />
-          <Route path="/purchasing"  element={<ComingSoon label="المشتريات" />} />
-          <Route path="/customers"   element={<ComingSoon label="العملاء" />} />
-          <Route path="/accounting"  element={<ComingSoon label="الحسابات" />} />
-          <Route path="/hr"          element={<ComingSoon label="الموارد البشرية" />} />
-          <Route path="/reports"     element={<ComingSoon label="التقارير" />} />
-          <Route path="/permissions" element={<ComingSoon label="الصلاحيات" />} />
-          <Route path="/settings"    element={<ComingSoon label="الإعدادات" />} />
+
+          {/* Inventory — FE_01 */}
+          <Route path="/inventory" element={<InventoryLayout />}>
+            <Route index element={<Navigate to="items" replace />} />
+            <Route path="items"       element={<ItemsPage />} />
+            <Route path="categories"  element={<CategoriesPage />} />
+            <Route path="price-lists" element={<PriceListsPage />} />
+            <Route path="warehouses"  element={<WarehousesPage />} />
+            <Route path="stocktakes"  element={<StocktakesPage />} />
+            <Route path="transfers"   element={<TransfersPage />} />
+            <Route path="adjustments" element={<AdjustmentsPage />} />
+            <Route path="low-stock"   element={<LowStockPage />} />
+          </Route>
+
+          {/* Sales — FE_02 */}
+          <Route path="/sales" element={<SalesLayout />}>
+            <Route index element={<Navigate to="invoices" replace />} />
+            <Route path="invoices"    element={<InvoicesPage />} />
+            <Route path="quotations"  element={<QuotationsPage />} />
+            <Route path="credit-notes" element={<CreditNotesPage />} />
+            <Route path="debit-notes"  element={<DebitNotesPage />} />
+            <Route path="receipts"    element={<ReceiptsPage />} />
+            <Route path="eta-hub"     element={<EtaHubPage />} />
+          </Route>
+
+          {/* Purchasing — FE_03 */}
+          <Route path="/purchasing" element={<PurchasingLayout />}>
+            <Route index element={<Navigate to="suppliers" replace />} />
+            <Route path="suppliers"   element={<SuppliersPage />} />
+            <Route path="invoices"    element={<PurchasesPage />} />
+            <Route path="orders"      element={<OrdersPage />} />
+            <Route path="returns"     element={<ReturnsPage />} />
+            <Route path="vouchers"    element={<VouchersPage />} />
+            <Route path="inbound-eta" element={<InboundEtaPage />} />
+          </Route>
+
+          {/* Finance — FE_04 */}
+          <Route path="/finance" element={<FinanceLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard"     element={<FinanceDashboardPage />} />
+            <Route path="treasuries"    element={<TreasuriesPage />} />
+            <Route path="expenses"      element={<ExpensesPage />} />
+            <Route path="receipts"      element={<ReceiptVouchersPage />} />
+            <Route path="payments"      element={<PaymentVouchersPage />} />
+            <Route path="transfers"     element={<FinanceTransfersPage />} />
+            <Route path="journal"       element={<JournalPage />} />
+            <Route path="coa"           element={<CoaPage />} />
+            <Route path="trial-balance" element={<TrialBalancePage />} />
+            <Route path="statements"    element={<StatementsPage />} />
+            <Route path="reconciliation" element={<ReconciliationPage />} />
+            <Route path="closing"       element={<ClosingPage />} />
+          </Route>
+
+          {/* CRM — FE_05 */}
+          <Route path="/customers" element={<CrmLayout />}>
+            <Route index element={<Navigate to="list" replace />} />
+            <Route path="list"           element={<CustomersListPage />} />
+            <Route path="follow-ups"     element={<FollowUpsPage />} />
+            <Route path="segments"       element={<SegmentsPage />} />
+            <Route path="communications" element={<CommunicationsPage />} />
+          </Route>
+
+          {/* HR — FE_06 */}
+          <Route path="/hr" element={<HrLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard"  element={<HrDashboardPage />} />
+            <Route path="employees"  element={<EmployeesPage />} />
+            <Route path="attendance" element={<AttendancePage />} />
+            <Route path="advances"   element={<AdvancesPage />} />
+            <Route path="payroll"    element={<PayrollPage />} />
+            <Route path="commissions" element={<CommissionsPage />} />
+          </Route>
+
+          {/* Reports — FE_07 */}
+          <Route path="/reports" element={<ReportsLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard"  element={<ReportsDashboardPage />} />
+            <Route path="library"    element={<ReportLibraryPage />} />
+            <Route path="saved"      element={<SavedReportsPage />} />
+            <Route path="eta-tax"    element={<EtaTaxPage />} />
+            <Route path="z-report"   element={<ZReportPage />} />
+            <Route path="scheduling" element={<SchedulingPage />} />
+          </Route>
+
+          {/* Admin — FE_08 */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="users" replace />} />
+            <Route path="users"    element={<UsersPage />} />
+            <Route path="roles"    element={<RolesPage />} />
+            <Route path="branches" element={<BranchesPage />} />
+            <Route path="security" element={<SecurityPage />} />
+            <Route path="audit"    element={<AuditPage />} />
+          </Route>
+
+          {/* Settings placeholder */}
+          <Route path="/settings" element={
+            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
+              الإعدادات — قريباً
+            </div>
+          } />
+
         </Route>
       </Routes>
     </BrowserRouter>

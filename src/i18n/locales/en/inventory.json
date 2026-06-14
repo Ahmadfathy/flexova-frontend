@@ -1,0 +1,21 @@
+{
+  "module_title": "Inventory",
+  "nav": {
+    "items":       "Items",
+    "categories":  "Categories",
+    "price_lists": "Price lists",
+    "warehouses":  "Warehouses",
+    "stocktakes":  "Stocktakes",
+    "transfers":   "Transfers",
+    "adjustments": "Adjustments",
+    "low_stock":   "Low stock"
+  },
+  "items":       { "title": "Items" },
+  "categories":  { "title": "Categories" },
+  "price_lists": { "title": "Price lists" },
+  "warehouses":  { "title": "Warehouses" },
+  "stocktakes":  { "title": "Stocktakes" },
+  "transfers":   { "title": "Transfers" },
+  "adjustments": { "title": "Adjustments" },
+  "low_stock":   { "title": "Low stock" }
+}

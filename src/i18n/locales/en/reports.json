@@ -1,0 +1,17 @@
+{
+  "module_title": "Reports",
+  "nav": {
+    "dashboard":  "Dashboard",
+    "library":    "Report library",
+    "saved":      "My saved reports",
+    "eta_tax":    "Tax & e-invoice",
+    "z_report":   "Shift report (Z)",
+    "scheduling": "Scheduling"
+  },
+  "dashboard":  { "title": "Reports dashboard" },
+  "library":    { "title": "Report library" },
+  "saved":      { "title": "My saved reports" },
+  "eta_tax":    { "title": "Tax & e-invoice dashboard" },
+  "z_report":   { "title": "Shift report (Z)" },
+  "scheduling": { "title": "Scheduling" }
+}

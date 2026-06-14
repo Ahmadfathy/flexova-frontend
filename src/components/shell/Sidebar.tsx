@@ -15,10 +15,10 @@ const NAV_ITEMS = [
   { key: "sales",       icon: ShoppingCart,    href: "/sales" },
   { key: "purchasing",  icon: Truck,           href: "/purchasing" },
   { key: "customers",   icon: Users,           href: "/customers" },
-  { key: "accounting",  icon: Calculator,      href: "/accounting" },
+  { key: "accounting",  icon: Calculator,      href: "/finance" },
   { key: "hr",          icon: UserCog,         href: "/hr" },
   { key: "reports",     icon: BarChart3,       href: "/reports" },
-  { key: "permissions", icon: Shield,          href: "/permissions" },
+  { key: "permissions", icon: Shield,          href: "/admin" },
   { key: "settings",    icon: Settings,        href: "/settings" },
 ] as const;
 

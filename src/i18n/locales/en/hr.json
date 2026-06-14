@@ -1,0 +1,17 @@
+{
+  "module_title": "HR & Payroll",
+  "nav": {
+    "dashboard":   "Dashboard",
+    "employees":   "Employees",
+    "attendance":  "Attendance",
+    "advances":    "Advances & loans",
+    "payroll":     "Payroll",
+    "commissions": "Commissions"
+  },
+  "dashboard":   { "title": "HR Dashboard" },
+  "employees":   { "title": "Employees" },
+  "attendance":  { "title": "Attendance" },
+  "advances":    { "title": "Advances & loans" },
+  "payroll":     { "title": "Payroll" },
+  "commissions": { "title": "Commissions" }
+}

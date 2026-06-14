@@ -1,0 +1,17 @@
+{
+  "module_title": "Purchasing",
+  "nav": {
+    "suppliers":    "Suppliers",
+    "invoices":     "Purchases",
+    "orders":       "Purchase orders",
+    "returns":      "Purchase returns",
+    "vouchers":     "Payment vouchers",
+    "inbound_eta":  "Inbound e-invoices"
+  },
+  "suppliers":    { "title": "Suppliers" },
+  "invoices":     { "title": "Purchases" },
+  "orders":       { "title": "Purchase orders" },
+  "returns":      { "title": "Purchase returns" },
+  "vouchers":     { "title": "Payment vouchers" },
+  "inbound_eta":  { "title": "Inbound e-invoices" }
+}

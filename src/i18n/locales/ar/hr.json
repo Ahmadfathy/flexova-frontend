@@ -1,0 +1,17 @@
+{
+  "module_title": "الموارد البشرية",
+  "nav": {
+    "dashboard":   "الرئيسية",
+    "employees":   "الموظفون",
+    "attendance":  "الحضور",
+    "advances":    "السلف والقروض",
+    "payroll":     "مسير الرواتب",
+    "commissions": "العمولات"
+  },
+  "dashboard":   { "title": "الموارد البشرية" },
+  "employees":   { "title": "الموظفون" },
+  "attendance":  { "title": "الحضور" },
+  "advances":    { "title": "السلف والقروض" },
+  "payroll":     { "title": "مسير الرواتب" },
+  "commissions": { "title": "العمولات" }
+}

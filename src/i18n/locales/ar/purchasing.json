@@ -1,0 +1,17 @@
+{
+  "module_title": "المشتريات",
+  "nav": {
+    "suppliers":    "الموردون",
+    "invoices":     "المشتريات",
+    "orders":       "أوامر الشراء",
+    "returns":      "مرتجعات الشراء",
+    "vouchers":     "سندات الدفع",
+    "inbound_eta":  "ETA الواردة"
+  },
+  "suppliers":    { "title": "الموردون" },
+  "invoices":     { "title": "المشتريات" },
+  "orders":       { "title": "أوامر الشراء" },
+  "returns":      { "title": "مرتجعات الشراء" },
+  "vouchers":     { "title": "سندات الدفع" },
+  "inbound_eta":  { "title": "فواتير ETA الواردة" }
+}

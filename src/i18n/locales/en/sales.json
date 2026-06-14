@@ -1,0 +1,17 @@
+{
+  "module_title": "Sales",
+  "nav": {
+    "invoices":     "Invoices",
+    "quotations":   "Quotations",
+    "credit_notes": "Credit notes",
+    "debit_notes":  "Debit notes",
+    "receipts":     "Payment receipts",
+    "eta_hub":      "E-invoice hub"
+  },
+  "invoices":     { "title": "Invoices" },
+  "quotations":   { "title": "Quotations" },
+  "credit_notes": { "title": "Returns & credit notes" },
+  "debit_notes":  { "title": "Debit notes" },
+  "receipts":     { "title": "Payment receipts" },
+  "eta_hub":      { "title": "E-invoice hub" }
+}

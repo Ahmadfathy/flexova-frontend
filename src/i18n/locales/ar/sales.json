@@ -1,0 +1,17 @@
+{
+  "module_title": "المبيعات",
+  "nav": {
+    "invoices":     "الفواتير",
+    "quotations":   "عروض الأسعار",
+    "credit_notes": "إشعارات الدائن",
+    "debit_notes":  "إشعارات المدين",
+    "receipts":     "سندات التحصيل",
+    "eta_hub":      "مركز الفاتورة الإلكترونية"
+  },
+  "invoices":     { "title": "الفواتير" },
+  "quotations":   { "title": "عروض الأسعار" },
+  "credit_notes": { "title": "المرتجعات وإشعارات الدائن" },
+  "debit_notes":  { "title": "إشعارات المدين" },
+  "receipts":     { "title": "سندات التحصيل" },
+  "eta_hub":      { "title": "مركز الفاتورة الإلكترونية" }
+}

@@ -1,0 +1,15 @@
+{
+  "module_title": "Users & Permissions",
+  "nav": {
+    "users":    "Users",
+    "roles":    "Roles",
+    "branches": "Branches & scope",
+    "security": "Security",
+    "audit":    "Audit log"
+  },
+  "users":    { "title": "Users" },
+  "roles":    { "title": "Roles" },
+  "branches": { "title": "Branches & scope" },
+  "security": { "title": "Security" },
+  "audit":    { "title": "Audit log" }
+}

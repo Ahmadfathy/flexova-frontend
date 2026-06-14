@@ -1,0 +1,29 @@
+{
+  "module_title": "الحسابات",
+  "nav": {
+    "dashboard":       "الرئيسية",
+    "treasuries":      "الخزائن والبنوك",
+    "expenses":        "المصروفات",
+    "receipts":        "سندات القبض",
+    "payments":        "سندات الصرف",
+    "transfers":       "التحويلات",
+    "journal":         "دفتر اليومية",
+    "coa":             "دليل الحسابات",
+    "trial_balance":   "ميزان المراجعة",
+    "statements":      "القوائم المالية",
+    "reconciliation":  "التسوية البنكية",
+    "closing":         "الإقفال المالي"
+  },
+  "dashboard":       { "title": "الرئيسية المالية" },
+  "treasuries":      { "title": "الخزائن والبنوك" },
+  "expenses":        { "title": "المصروفات" },
+  "receipts":        { "title": "سندات القبض" },
+  "payments":        { "title": "سندات الصرف" },
+  "transfers":       { "title": "التحويلات" },
+  "journal":         { "title": "دفتر اليومية" },
+  "coa":             { "title": "دليل الحسابات" },
+  "trial_balance":   { "title": "ميزان المراجعة" },
+  "statements":      { "title": "القوائم المالية" },
+  "reconciliation":  { "title": "التسوية البنكية" },
+  "closing":         { "title": "الإقفال المالي" }
+}

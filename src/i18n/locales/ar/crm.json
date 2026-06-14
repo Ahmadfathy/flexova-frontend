@@ -1,0 +1,13 @@
+{
+  "module_title": "العملاء",
+  "nav": {
+    "list":           "العملاء",
+    "follow_ups":     "المتابعات",
+    "segments":       "التصنيفات",
+    "communications": "التواصل"
+  },
+  "list":           { "title": "العملاء" },
+  "follow_ups":     { "title": "المتابعات" },
+  "segments":       { "title": "التصنيفات" },
+  "communications": { "title": "التواصل" }
+}
