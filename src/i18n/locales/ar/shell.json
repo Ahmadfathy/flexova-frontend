@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "dashboard": "لوحة المتابعة",
+    "inventory": "المخزون",
+    "sales": "المبيعات",
+    "purchasing": "المشتريات",
+    "customers": "العملاء",
+    "accounting": "الحسابات",
+    "hr": "الموارد البشرية",
+    "reports": "التقارير",
+    "permissions": "المستخدمون والصلاحيات",
+    "settings": "الإعدادات"
+  },
+  "topbar": {
+    "search": "ابحث عن فاتورة، عميل، صنف…",
+    "eta_connected": "ETA متصل",
+    "eta_syncing": "جاري المزامنة…",
+    "eta_offline": "غير متصل"
+  },
+  "appearance": {
+    "title": "المظهر",
+    "theme": "الثيم",
+    "mode": "الوضع",
+    "mode_system": "النظام",
+    "mode_light": "فاتح",
+    "mode_dark": "داكن",
+    "nav": "القائمة",
+    "nav_vertical": "عمودية",
+    "nav_horizontal": "أفقية",
+    "density": "الكثافة",
+    "density_comfortable": "مريحة",
+    "density_compact": "مكثّفة",
+    "language": "اللغة",
+    "lang_ar": "العربية",
+    "lang_en": "English"
+  },
+  "user": {
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج"
+  }
+}

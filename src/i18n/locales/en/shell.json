@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
+    "sales": "Sales",
+    "purchasing": "Purchasing",
+    "customers": "Customers",
+    "accounting": "Accounting",
+    "hr": "HR",
+    "reports": "Reports",
+    "permissions": "Users & Permissions",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "search": "Search invoice, customer, item…",
+    "eta_connected": "ETA connected",
+    "eta_syncing": "Syncing…",
+    "eta_offline": "Offline"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "theme": "Theme",
+    "mode": "Mode",
+    "mode_system": "System",
+    "mode_light": "Light",
+    "mode_dark": "Dark",
+    "nav": "Menu",
+    "nav_vertical": "Vertical",
+    "nav_horizontal": "Horizontal",
+    "density": "Density",
+    "density_comfortable": "Comfortable",
+    "density_compact": "Compact",
+    "language": "Language",
+    "lang_ar": "العربية",
+    "lang_en": "English"
+  },
+  "user": {
+    "profile": "Profile",
+    "logout": "Log out"
+  }
+}
