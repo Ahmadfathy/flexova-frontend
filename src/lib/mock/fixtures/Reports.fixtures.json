@@ -1,0 +1,77 @@
+{
+  "_meta": {
+    "module": "reports",
+    "version": "1.0",
+    "currency": "EGP",
+    "depends_on": "ALL core modules (read-only). Values mirror FE_01..06 fixtures and are NOT recomputed here.",
+    "notes": "Reports owns definitions, not transactions. Pre-computed aggregate snapshots. Every number drills down to source. Row/branch scope governs visibility."
+  },
+
+  "dashboards": [
+    {
+      "id": "dash_owner", "name_ar": "لوحة المالك", "name_en": "Owner dashboard", "role": "owner", "default": true,
+      "widgets": [
+        { "id": "w_liquidity", "type": "kpi", "title_ar": "السيولة المتاحة", "value": 842300.00, "unit": "ج.م", "delta_pct": 4.2, "source": "accounting", "drill": "/finance/treasuries" },
+        { "id": "w_sales_today", "type": "kpi", "title_ar": "مبيعات اليوم", "value": 63150.00, "unit": "ج.م", "delta_pct": 11, "source": "sales", "drill": "/sales/invoices?date=today" },
+        { "id": "w_ar", "type": "kpi", "title_ar": "مستحق ليّا", "value": 39073.68, "unit": "ج.م", "source": "accounting", "drill": "/customers/list?filter=overdue" },
+        { "id": "w_ap", "type": "kpi", "title_ar": "مستحق عليّا", "value": 48330.00, "unit": "ج.م", "source": "accounting", "drill": "/purchasing/suppliers?filter=balance" },
+        { "id": "w_cashflow", "type": "chart", "chart": "bar", "title_ar": "التدفق النقدي الأسبوعي", "source": "accounting",
+          "series": [ { "day": "سبت", "in": 12000, "out": 4000 }, { "day": "أحد", "in": 18000, "out": 6000 }, { "day": "اثنين", "in": 9000, "out": 22000 }, { "day": "ثلاثاء", "in": 15000, "out": 3000 } ] },
+        { "id": "w_top_expense", "type": "list", "title_ar": "أعلى المصروفات", "source": "accounting",
+          "items": [ { "label_ar": "إيجار", "value": 18000 }, { "label_ar": "كهرباء", "value": 3400 }, { "label_ar": "بنزين", "value": 650 } ] }
+      ]
+    },
+    {
+      "id": "dash_inventory", "name_ar": "لوحة مدير المخزون", "name_en": "Inventory manager", "role": "inventory_manager", "default": false,
+      "widgets": [
+        { "id": "w_stock_value", "type": "kpi", "title_ar": "قيمة المخزون", "value": 416510.00, "unit": "ج.م", "source": "inventory", "drill": "/reports/view/rep_inv_valuation" },
+        { "id": "w_low_stock", "type": "kpi", "title_ar": "أصناف قاربت النفاد", "value": 2, "source": "inventory", "drill": "/inventory/low-stock" }
+      ]
+    }
+  ],
+
+  "report_library": [
+    { "id": "rep_sales_period", "name_ar": "المبيعات بالفترة", "name_en": "Sales by period", "source": "sales", "columns": ["date","invoices","total","tax"], "default_filters": ["period","branch"] },
+    { "id": "rep_top_sellers", "name_ar": "الأكثر مبيعاً", "name_en": "Top sellers", "source": "sales", "columns": ["item","qty","revenue","margin"] },
+    { "id": "rep_inv_valuation", "name_ar": "تقييم المخزون (متوسط مرجّح)", "name_en": "Inventory valuation (weighted-avg)", "source": "inventory", "columns": ["item","qty","avg_cost","value"], "_note": "value READ from inventory, not recomputed" },
+    { "id": "rep_below_min", "name_ar": "تحت الحد الأدنى", "name_en": "Below minimum", "source": "inventory", "columns": ["item","balance","reorder_level","shortfall"] },
+    { "id": "rep_supplier_balances", "name_ar": "أرصدة الموردين", "name_en": "Supplier balances", "source": "purchasing", "columns": ["supplier","balance"] },
+    { "id": "rep_pnl", "name_ar": "قائمة الدخل", "name_en": "Income statement", "source": "accounting", "columns": ["account","amount"], "financial": true },
+    { "id": "rep_ar_aging", "name_ar": "أعمار الديون", "name_en": "AR aging", "source": "crm", "columns": ["customer","current","d1_30","d31_60","d60_plus"] },
+    { "id": "rep_labor_cost", "name_ar": "تكلفة العمالة", "name_en": "Labor cost", "source": "hr", "columns": ["employee","gross","net"], "financial": true },
+    { "id": "rep_commissions", "name_ar": "العمولات", "name_en": "Commissions", "source": "hr", "columns": ["employee","accrued","paid"] },
+    { "id": "rep_vat_return", "name_ar": "ملخّص الإقرار الضريبي", "name_en": "VAT return summary", "source": "eta", "columns": ["vat_payable","vat_deductible","net"] }
+  ],
+
+  "saved_reports": [
+    { "id": "sr_001", "name_ar": "مبيعات فرع مدينة نصر — يونيو", "owner": "usr_owner", "base": "rep_sales_period", "filters": { "branch": "br_nasr", "period": "2026-06" }, "group_by": "cashier", "sort": "total_desc" }
+  ],
+
+  "eta_tax_dashboard": {
+    "environment": "sandbox", "test_mode": true,
+    "b2b_queue": [
+      { "doc": "MN-INV-1039", "status": "clearing", "customer": "مؤسسة الأمل", "value": 19152.00 },
+      { "doc": "MN-INV-1040", "status": "rejected", "customer": "صيدلية الشفاء", "value": 1080.72, "reason_ar": "الرقم الضريبي للعميل غير صحيح" }
+    ],
+    "b2c_queue": [
+      { "doc": "NS-INV-1038", "status": "queued", "window_remaining_hours": 7, "value": 300.96 }
+    ],
+    "vat_return": { "vat_payable": 1492.40, "vat_deductible": 4814.60, "net": -3322.20, "_note": "مبالغ مستهلكة من المبيعات والمشتريات" }
+  },
+
+  "z_report_sample": {
+    "shift_id": "sh_0613_nasr", "cashier": "فاطمة محمود", "branch_id": "br_nasr", "opened": "2026-06-13T09:00:00", "closed": "2026-06-13T21:00:00",
+    "sales_total": 14820.00,
+    "payment_breakdown": [ { "method": "نقدي", "amount": 11200.00 }, { "method": "فوري", "amount": 2120.00 }, { "method": "محفظة", "amount": 1500.00 } ],
+    "expected_cash": 11200.00, "actual_cash": 11150.00, "variance": -50.00,
+    "sync_state": "synced"
+  },
+
+  "schedules": [
+    { "id": "sch_001", "name_ar": "ملخّص اليوم للمالك", "target": "dash_owner", "cadence": "daily", "time": "21:30", "recipients": ["01000000001"], "channel": "whatsapp", "last_sent": "2026-06-13T21:30:00", "status": "active" }
+  ],
+
+  "aggregate_meta": { "last_updated": "2026-06-14T08:00:00", "staleness_minutes": 12 },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}

@@ -1,0 +1,100 @@
+{
+  "_meta": {
+    "module": "purchasing",
+    "version": "1.0",
+    "currency": "EGP",
+    "mode": "direct",
+    "depends_on": "inventory.fixtures.json (items, warehouses, uoms), sales (treasuries)",
+    "inbound_eta_window_hours": 72,
+    "notes": "Receipt/payment/inbound-ETA statuses are independent. Covers direct + advanced purchases, partial receipt, return, inbound e-invoices with 72h countdown."
+  },
+
+  "suppliers": [
+    { "id": "sp_grain", "code": "SUP-001", "name_ar": "شركة الدلتا للحبوب", "name_en": "Delta Grains Co.", "trn": "445566778", "uin": "EG-445566778-01", "payment_terms": { "type": "credit", "days": 30 }, "category": "local", "contact": { "phone": "01001234567", "email": "sales@delta-grains.eg", "address": "العاشر من رمضان" }, "status": "active", "balance": 41250.00 },
+    { "id": "sp_oils", "code": "SUP-002", "name_ar": "موزّع زيوت عافية", "name_en": "Afia Oils Distributor", "trn": "778899001", "uin": "EG-778899001-02", "payment_terms": { "type": "credit", "days": 15 }, "category": "local", "contact": { "phone": "01112223334", "email": "orders@afia-dist.eg", "address": "مدينة نصر" }, "status": "active", "balance": 0 },
+    { "id": "sp_bev", "code": "SUP-003", "name_ar": "كوكاكولا مصر", "name_en": "Coca-Cola Egypt", "trn": "112233445", "uin": "EG-112233445-03", "payment_terms": { "type": "cash" }, "category": "local", "contact": { "phone": "16919", "email": "b2b@cocacola.eg", "address": "القاهرة" }, "status": "active", "balance": 5280.00 },
+    { "id": "sp_local", "code": "SUP-004", "name_ar": "تاجر جملة المنطقة", "name_en": "Local Wholesaler", "trn": "", "uin": "", "payment_terms": { "type": "cash" }, "category": "local", "contact": { "phone": "01233445566", "email": "", "address": "سوق العبور" }, "status": "active", "balance": 1800.00, "_flag": "trn_missing" }
+  ],
+
+  "purchase_invoices": [
+    {
+      "id": "pi_3120", "number": "PINV-3120", "date": "2026-06-05", "supplier_id": "sp_grain", "supplier_invoice_no": "DG-99821",
+      "warehouse_id": "wh_main", "payment_method": "pm_credit", "mode": "direct",
+      "receipt_status": "completed", "payment_status": "partial", "inbound_eta_status": "accepted", "inbound_eta_uuid": "IN-AAA111BBB222",
+      "lines": [
+        { "item_id": "it_rice", "qty": 100, "uom_id": "uom_box", "purchase_price": 150.50, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 15050.00 },
+        { "item_id": "it_sugar", "qty": 500, "uom_id": "uom_kg", "purchase_price": 31.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 15500.00 }
+      ],
+      "additional_costs": 800.00,
+      "totals": { "subtotal": 30550.00, "discount": 0, "tax": 4277.00, "additional_costs": 800.00, "grand_total": 35627.00 },
+      "paid": 20000.00, "balance": 15627.00
+    },
+    {
+      "id": "pi_3121", "number": "PINV-3121", "date": "2026-06-10", "supplier_id": "sp_bev", "supplier_invoice_no": "CC-55012",
+      "warehouse_id": "wh_main", "payment_method": "pm_cash", "mode": "direct",
+      "receipt_status": "completed", "payment_status": "paid", "inbound_eta_status": "accepted", "inbound_eta_uuid": "IN-CCC333DDD444",
+      "lines": [ { "item_id": "it_cola", "qty": 20, "uom_id": "uom_carton", "purchase_price": 192.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 3840.00 } ],
+      "additional_costs": 0,
+      "totals": { "subtotal": 3840.00, "discount": 0, "tax": 537.60, "additional_costs": 0, "grand_total": 4377.60 },
+      "paid": 4377.60, "balance": 0
+    },
+    {
+      "id": "pi_3122", "number": "PINV-3122", "date": "2026-06-13", "supplier_id": "sp_local", "supplier_invoice_no": "—",
+      "warehouse_id": "wh_nasr", "payment_method": "pm_cash", "mode": "direct",
+      "receipt_status": "completed", "payment_status": "credit", "inbound_eta_status": "unmatched", "inbound_eta_uuid": null,
+      "lines": [ { "item_id": "it_tea", "qty": 50, "uom_id": "uom_pack", "purchase_price": 46.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 2300.00 } ],
+      "additional_costs": 0,
+      "totals": { "subtotal": 2300.00, "discount": 0, "tax": 322.00, "additional_costs": 0, "grand_total": 2622.00 },
+      "paid": 0, "balance": 2622.00,
+      "_note": "supplier without TRN — no inbound e-invoice; input VAT not deductible"
+    }
+  ],
+
+  "purchase_orders": [
+    {
+      "id": "po_7005", "number": "PO-7005", "date": "2026-06-12", "supplier_id": "sp_oils", "expected_delivery": "2026-06-16",
+      "warehouse_id": "wh_main", "status": "partially_received",
+      "lines": [
+        { "item_id": "it_oil", "qty_ordered": 60, "qty_received": 36, "uom_id": "uom_bottle", "price": 144.00, "line_total": 8640.00 }
+      ],
+      "totals": { "subtotal": 8640.00, "tax": 1209.60, "grand_total": 9849.60 }
+    },
+    {
+      "id": "po_7006", "number": "PO-7006", "date": "2026-06-14", "supplier_id": "sp_grain", "expected_delivery": "2026-06-18",
+      "warehouse_id": "wh_main", "status": "draft", "from": "lowstock",
+      "lines": [
+        { "item_id": "it_tea", "qty_ordered": 100, "qty_received": 0, "uom_id": "uom_pack", "price": 46.00, "line_total": 4600.00 },
+        { "item_id": "it_soap", "qty_ordered": 60, "qty_received": 0, "uom_id": "uom_bottle", "price": 58.00, "line_total": 3480.00 }
+      ],
+      "totals": { "subtotal": 8080.00, "tax": 1131.20, "grand_total": 9211.20 }
+    }
+  ],
+
+  "goods_receipts": [
+    { "id": "gr_4401", "number": "GR-4401", "po_id": "po_7005", "date": "2026-06-15", "warehouse_id": "wh_main",
+      "lines": [ { "item_id": "it_oil", "qty_received": 36, "uom_id": "uom_bottle" } ] }
+  ],
+
+  "purchase_returns": [
+    { "id": "pr_0003", "number": "PRET-0003", "source_invoice": "pi_3120", "date": "2026-06-08", "supplier_id": "sp_grain",
+      "reason_ar": "أكياس أرز تالفة", "reason_en": "Damaged rice bags",
+      "lines": [ { "item_id": "it_rice", "qty": 4, "uom_id": "uom_box", "price": 150.50, "line_total": 602.00 } ],
+      "totals": { "value": 686.28 } }
+  ],
+
+  "payment_vouchers": [
+    { "id": "pv_0011", "number": "PV-0011", "date": "2026-06-09", "supplier_id": "sp_grain", "invoice_id": "pi_3120",
+      "amount": 20000.00, "method": "pm_transfer", "treasury_id": "tr_bank_cib" }
+  ],
+
+  "inbound_eta": [
+    { "id": "ie_001", "uuid": "IN-EEE555FFF666", "supplier_id": "sp_oils", "supplier_name_ar": "موزّع زيوت عافية", "value": 9849.60, "tax": 1209.60, "status": "pending", "received_at": "2026-06-15T09:00:00", "window_deadline": "2026-06-18T09:00:00", "window_remaining_hours": 65, "matched_pi": null },
+    { "id": "ie_002", "uuid": "IN-GGG777HHH888", "supplier_id": "sp_grain", "supplier_name_ar": "شركة الدلتا للحبوب", "value": 12100.00, "tax": 1694.00, "status": "pending", "received_at": "2026-06-13T14:00:00", "window_deadline": "2026-06-16T14:00:00", "window_remaining_hours": 6, "matched_pi": null, "_flag": "nearing_window" },
+    { "id": "ie_003", "uuid": "IN-AAA111BBB222", "supplier_id": "sp_grain", "supplier_name_ar": "شركة الدلتا للحبوب", "value": 35627.00, "tax": 4277.00, "status": "accepted", "received_at": "2026-06-05T10:00:00", "matched_pi": "pi_3120" },
+    { "id": "ie_004", "uuid": "IN-III999JJJ000", "supplier_id": "sp_bev", "supplier_name_ar": "كوكاكولا مصر", "value": 4377.60, "tax": 537.60, "status": "rejected", "received_at": "2026-06-11T11:00:00", "reason_ar": "قيمة الفاتورة لا تطابق الاستلام", "reason_en": "Invoice value doesn't match the receipt", "matched_pi": null }
+  ],
+
+  "inbound_eta_kpis": { "deductible_input_vat": 4814.60, "nearing_window": 1, "pending": 2, "rejected": 1 },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}

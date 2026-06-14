@@ -1,0 +1,144 @@
+{
+  "_meta": {
+    "module": "sales",
+    "version": "1.0",
+    "currency": "EGP",
+    "depends_on": "inventory.fixtures.json (items: it_rice, it_oil, it_tea, it_cola, ...)",
+    "eta": { "environment": "sandbox", "test_mode": true, "eseal_configured": true, "submission_window_hours_b2c": 48 },
+    "notes": "Payment status and ETA status are independent. Covers all payment×ETA combinations incl. rejected (plain-Arabic reason), clearing (B2B), queued-with-countdown (B2C)."
+  },
+
+  "customers": [
+    { "id": "cu_noor", "name_ar": "شركة النور للتجارة", "name_en": "Al-Noor Trading Co.", "type": "b2b", "trn": "512345678", "uin": "EG-512345678-001", "price_list_id": "pl_wholesale", "default_payment": "credit" },
+    { "id": "cu_amal", "name_ar": "مؤسسة الأمل", "name_en": "Al-Amal Est.", "type": "b2b", "trn": "598765432", "uin": "EG-598765432-002", "price_list_id": "pl_retail", "default_payment": "credit" },
+    { "id": "cu_shifa", "name_ar": "صيدلية الشفاء", "name_en": "Al-Shifa Pharmacy", "type": "b2b", "trn": "", "uin": "", "price_list_id": "pl_retail", "default_payment": "cash", "_flag": "trn_missing" },
+    { "id": "cu_cash", "name_ar": "عميل نقدي", "name_en": "Cash Customer", "type": "b2c", "trn": null, "uin": null, "price_list_id": "pl_retail", "default_payment": "cash" },
+    { "id": "cu_mohamed", "name_ar": "محمد عبد الله", "name_en": "Mohamed Abdullah", "type": "b2c", "trn": null, "uin": null, "price_list_id": "pl_retail", "default_payment": "cash" }
+  ],
+
+  "treasuries": [
+    { "id": "tr_cash_main", "name_ar": "خزينة الفرع الرئيسي", "name_en": "Main Branch Cash", "type": "cash" },
+    { "id": "tr_bank_cib", "name_ar": "حساب CIB", "name_en": "CIB Account", "type": "bank" }
+  ],
+
+  "payment_methods": [
+    { "id": "pm_cash", "name_ar": "نقدي", "name_en": "Cash" },
+    { "id": "pm_credit", "name_ar": "آجل", "name_en": "Credit" },
+    { "id": "pm_transfer", "name_ar": "تحويل بنكي", "name_en": "Bank transfer" },
+    { "id": "pm_wallet", "name_ar": "محفظة إلكترونية", "name_en": "E-wallet" },
+    { "id": "pm_fawry", "name_ar": "فوري", "name_en": "Fawry" }
+  ],
+
+  "invoices": [
+    {
+      "id": "inv_1042", "number": "MN-INV-1042", "branch_id": "br_main", "date": "2026-06-12",
+      "customer_id": "cu_noor", "channel": "e-invoice", "payment_method": "pm_credit", "warehouse_id": "wh_main",
+      "payment_status": "credit", "eta_status": "valid",
+      "eta": { "uuid": "9F3A7C2E1B8D4A60", "long_id": "20260612-9F3A7C2E1B8D4A60-512345678", "accepted_at": "2026-06-12T10:32:00", "qr": "https://invoicing.eta.gov.eg/print/9F3A7C2E1B8D4A60", "environment": "production" },
+      "lines": [
+        { "item_id": "it_rice", "description": "أرز مصري فاخر ٥ كجم", "qty": 40, "uom_id": "uom_box", "price": 168.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 6720.00 },
+        { "item_id": "it_oil", "description": "زيت عافية ذرة ٢.٢٥ لتر", "qty": 24, "uom_id": "uom_bottle", "price": 158.00, "line_discount": 100, "tax_type_id": "tax_t1", "line_total": 3692.00 }
+      ],
+      "totals": { "subtotal": 10412.00, "discount": 100.00, "taxable_base": 10312.00, "tax": 1443.68, "grand_total": 11755.68 },
+      "collected": 0, "balance": 11755.68
+    },
+    {
+      "id": "inv_1041", "number": "NS-INV-1041", "branch_id": "br_nasr", "date": "2026-06-12",
+      "customer_id": "cu_mohamed", "channel": "e-receipt", "payment_method": "pm_cash", "warehouse_id": "wh_nasr",
+      "payment_status": "paid", "eta_status": "valid",
+      "eta": { "uuid": "1A2B3C4D5E6F7081", "long_id": "20260612-1A2B3C4D5E6F7081-RCPT", "accepted_at": "2026-06-12T13:05:00", "qr": "https://invoicing.eta.gov.eg/print/1A2B3C4D5E6F7081", "environment": "production" },
+      "lines": [ { "item_id": "it_tea", "description": "شاي العروسة ٢٥٠ جم", "qty": 3, "uom_id": "uom_pack", "price": 58.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 174.00 } ],
+      "totals": { "subtotal": 174.00, "discount": 0, "taxable_base": 174.00, "tax": 24.36, "grand_total": 198.36 },
+      "collected": 198.36, "balance": 0
+    },
+    {
+      "id": "inv_1040", "number": "NS-INV-1040", "branch_id": "br_nasr", "date": "2026-06-12",
+      "customer_id": "cu_shifa", "channel": "e-invoice", "payment_method": "pm_cash", "warehouse_id": "wh_nasr",
+      "payment_status": "paid", "eta_status": "rejected",
+      "eta": { "uuid": null, "rejected_at": "2026-06-12T11:20:00", "reason_ar": "الرقم الضريبي للعميل غير صحيح", "reason_en": "Buyer tax registration number is invalid", "offending_field": "buyer.trn", "raw_code": "422" },
+      "lines": [ { "item_id": "it_oil", "description": "زيت عافية ذرة ٢.٢٥ لتر", "qty": 6, "uom_id": "uom_bottle", "price": 158.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 948.00 } ],
+      "totals": { "subtotal": 948.00, "discount": 0, "taxable_base": 948.00, "tax": 132.72, "grand_total": 1080.72 },
+      "collected": 1080.72, "balance": 0
+    },
+    {
+      "id": "inv_1039", "number": "MN-INV-1039", "branch_id": "br_main", "date": "2026-06-13",
+      "customer_id": "cu_amal", "channel": "e-invoice", "payment_method": "pm_credit", "warehouse_id": "wh_main",
+      "payment_status": "partial", "eta_status": "clearing",
+      "eta": { "uuid": null, "submitted_at": "2026-06-13T09:15:00", "environment": "sandbox", "note_ar": "بانتظار اعتماد المصلحة", "note_en": "Awaiting ETA acceptance" },
+      "lines": [ { "item_id": "it_rice", "description": "أرز مصري فاخر ٥ كجم", "qty": 100, "uom_id": "uom_box", "price": 168.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 16800.00 } ],
+      "totals": { "subtotal": 16800.00, "discount": 0, "taxable_base": 16800.00, "tax": 2352.00, "grand_total": 19152.00 },
+      "collected": 9152.00, "balance": 10000.00
+    },
+    {
+      "id": "inv_1038", "number": "NS-INV-1038", "branch_id": "br_nasr", "date": "2026-06-13",
+      "customer_id": "cu_cash", "channel": "e-receipt", "payment_method": "pm_cash", "warehouse_id": "wh_nasr",
+      "payment_status": "paid", "eta_status": "queued",
+      "eta": { "uuid": null, "queued_at": "2026-06-13T18:40:00", "window_deadline": "2026-06-15T18:40:00", "window_remaining_hours": 7, "environment": "sandbox" },
+      "lines": [ { "item_id": "it_cola", "description": "كوكاكولا ١ لتر", "qty": 12, "uom_id": "uom_bottle", "price": 22.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 264.00 } ],
+      "totals": { "subtotal": 264.00, "discount": 0, "taxable_base": 264.00, "tax": 36.96, "grand_total": 300.96 },
+      "collected": 300.96, "balance": 0,
+      "_flag": "nearing_window"
+    },
+    {
+      "id": "inv_1037", "number": "MN-INV-1037", "branch_id": "br_main", "date": "2026-06-13",
+      "customer_id": "cu_noor", "channel": "e-invoice", "payment_method": "pm_credit", "warehouse_id": "wh_main",
+      "payment_status": "returned", "eta_status": "valid",
+      "eta": { "uuid": "7C8D9E0F1A2B3C4D", "long_id": "20260613-7C8D9E0F1A2B3C4D-512345678", "accepted_at": "2026-06-13T08:00:00", "qr": "https://invoicing.eta.gov.eg/print/7C8D9E0F1A2B3C4D", "environment": "production" },
+      "lines": [ { "item_id": "it_soap", "description": "صابون رابسو سائل ٩٠٠ مل", "qty": 20, "uom_id": "uom_bottle", "price": 66.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 1320.00 } ],
+      "totals": { "subtotal": 1320.00, "discount": 0, "taxable_base": 1320.00, "tax": 184.80, "grand_total": 1504.80 },
+      "collected": 1504.80, "balance": 0,
+      "linked_credit_note": "cn_0009"
+    },
+    {
+      "id": "inv_1036", "number": "MN-INV-1036", "branch_id": "br_main", "date": "2026-06-14",
+      "customer_id": "cu_amal", "channel": "e-invoice", "payment_method": "pm_credit", "warehouse_id": "wh_main",
+      "payment_status": "credit", "eta_status": "draft",
+      "eta": { "uuid": null, "environment": "sandbox" },
+      "lines": [ { "item_id": "it_sugar", "description": "سكر أبيض", "qty": 50, "uom_id": "uom_kg", "price": 38.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 1900.00 } ],
+      "totals": { "subtotal": 1900.00, "discount": 0, "taxable_base": 1900.00, "tax": 266.00, "grand_total": 2166.00 },
+      "collected": 0, "balance": 2166.00,
+      "_submit_blockers": [ "item it_sugar has no eta_code (EGS/GS1)" ]
+    }
+  ],
+
+  "credit_notes": [
+    { "id": "cn_0009", "number": "MN-CN-0009", "source_invoice": "inv_1037", "date": "2026-06-14", "customer_id": "cu_noor",
+      "reason_ar": "بضاعة تالفة", "reason_en": "Damaged goods", "eta_status": "valid",
+      "eta": { "uuid": "AAB1C2D3E4F50617", "accepted_at": "2026-06-14T10:00:00", "environment": "production" },
+      "lines": [ { "item_id": "it_soap", "qty": 5, "uom_id": "uom_bottle", "price": 66.00, "line_total": 330.00 } ],
+      "totals": { "value": 376.20 }, "remaining_noteable": 1128.60 }
+  ],
+
+  "debit_notes": [],
+
+  "quotations": [
+    { "id": "qt_0021", "number": "QT-0021", "date": "2026-06-10", "customer_id": "cu_noor", "status": "sent", "valid_until": "2026-06-24",
+      "lines": [ { "item_id": "it_rice", "qty": 80, "uom_id": "uom_box", "price": 168.00, "line_total": 13440.00 } ],
+      "totals": { "subtotal": 13440.00, "tax": 1881.60, "grand_total": 15321.60 } }
+  ],
+
+  "receipts": [
+    { "id": "rcv_0055", "number": "RCV-0055", "date": "2026-06-13", "customer_id": "cu_amal", "invoice_id": "inv_1039",
+      "amount": 9152.00, "method": "pm_transfer", "treasury_id": "tr_bank_cib" }
+  ],
+
+  "eta_settings": {
+    "trn": "200111222", "activity_ar": "تجارة تجزئة مواد غذائية", "activity_en": "Food retail",
+    "eseal": { "type": "usb_token", "configured": true, "expires": "2027-03-01" },
+    "environment": "sandbox", "test_mode": true,
+    "numbering": { "mode": "per_branch", "branches": { "br_main": { "prefix": "MN", "next": 1043 }, "br_nasr": { "prefix": "NS", "next": 1042 } } },
+    "send_behavior": { "b2b": "near_real_time_clearance", "b2c": "window_queue" },
+    "enabled_tax_types": ["tax_t1", "tax_t2", "tax_t3"]
+  },
+
+  "eta_hub": {
+    "kpis": { "acceptance_rate": 92.5, "nearing_window": 1, "rejected": 1, "compliance_tier": 1 },
+    "alerts": [
+      { "level": "warning", "key": "nearing", "params": { "n": 1 }, "text_ar": "عندك مستند B2C قارب نافذة الإرسال", "text_en": "You have 1 B2C doc nearing the submission window" },
+      { "level": "danger", "key": "rejected", "params": { "n": 1 }, "text_ar": "مستند مرفوض يحتاج تصحيح", "text_en": "1 rejected doc needs attention" }
+    ],
+    "top_rejection_reasons": [ { "reason_ar": "الرقم الضريبي للعميل غير صحيح", "reason_en": "Invalid buyer TRN", "count": 1 } ]
+  },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}

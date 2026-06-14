@@ -1,0 +1,136 @@
+{
+  "_meta": {
+    "module": "accounting",
+    "version": "1.0",
+    "currency": "EGP",
+    "default_view_mode": "simple",
+    "depends_on": "sales (AR/revenue/VAT), purchasing (AP/input VAT), inventory (weighted-avg COGS)",
+    "notes": "Two faces: simple (owner) vs accounting. Auto-posting engine produces balanced entries. Σdr=Σcr enforced. Per-branch numbering. EGP only."
+  },
+
+  "fiscal_periods": [
+    { "id": "fp_2026_05", "month": 5, "year": 2026, "status": "closed", "close_type": "soft" },
+    { "id": "fp_2026_06", "month": 6, "year": 2026, "status": "open" }
+  ],
+
+  "treasuries": [
+    { "id": "tr_cash_main", "name_ar": "خزينة الفرع الرئيسي", "name_en": "Main Branch Cash", "type": "cash", "branch_id": "br_main", "balance": 312450.00 },
+    { "id": "tr_cash_nasr", "name_ar": "خزينة فرع مدينة نصر", "name_en": "Nasr City Cash", "type": "cash", "branch_id": "br_nasr", "balance": 48700.00 },
+    { "id": "tr_bank_cib", "name_ar": "حساب CIB", "name_en": "CIB Account", "type": "bank", "branch_id": "br_main", "balance": 480150.00, "account_no": "100023456789" },
+    { "id": "tr_fawry", "name_ar": "محفظة فوري", "name_en": "Fawry Wallet", "type": "wallet", "branch_id": "br_main", "balance": 1000.00 }
+  ],
+
+  "chart_of_accounts": [
+    { "code": "1", "name_ar": "الأصول", "name_en": "Assets", "parent": null, "type": "root" },
+    { "code": "1100", "name_ar": "النقدية وما في حكمها", "name_en": "Cash & equivalents", "parent": "1", "type": "group" },
+    { "code": "1101", "name_ar": "الخزائن النقدية", "name_en": "Cashboxes", "parent": "1100", "type": "account", "balance": 361150.00 },
+    { "code": "1102", "name_ar": "البنوك", "name_en": "Banks", "parent": "1100", "type": "account", "balance": 480150.00 },
+    { "code": "1103", "name_ar": "المحافظ الإلكترونية", "name_en": "E-wallets", "parent": "1100", "type": "account", "balance": 1000.00 },
+    { "code": "1200", "name_ar": "ذمم العملاء", "name_en": "Accounts receivable", "parent": "1", "type": "account", "balance": 39073.68 },
+    { "code": "1300", "name_ar": "المخزون", "name_en": "Inventory", "parent": "1", "type": "account", "balance": 416510.00 },
+    { "code": "2", "name_ar": "الخصوم", "name_en": "Liabilities", "parent": null, "type": "root" },
+    { "code": "2100", "name_ar": "ذمم الموردين", "name_en": "Accounts payable", "parent": "2", "type": "account", "balance": 48330.00 },
+    { "code": "2200", "name_ar": "ضريبة القيمة المضافة المستحقة", "name_en": "VAT payable", "parent": "2", "type": "account", "balance": 1492.40 },
+    { "code": "2210", "name_ar": "ضريبة مدخلات قابلة للخصم", "name_en": "Input VAT", "parent": "2", "type": "account", "balance": 4814.60 },
+    { "code": "3", "name_ar": "حقوق الملكية", "name_en": "Equity", "parent": null, "type": "root" },
+    { "code": "3100", "name_ar": "رأس المال", "name_en": "Capital", "parent": "3", "type": "account", "balance": 1000000.00 },
+    { "code": "4", "name_ar": "الإيرادات", "name_en": "Revenue", "parent": null, "type": "root" },
+    { "code": "4100", "name_ar": "إيرادات المبيعات", "name_en": "Sales revenue", "parent": "4", "type": "account", "balance": 13062.00 },
+    { "code": "5", "name_ar": "المصروفات", "name_en": "Expenses", "parent": null, "type": "root" },
+    { "code": "5100", "name_ar": "تكلفة البضاعة المباعة", "name_en": "COGS", "parent": "5", "type": "account", "balance": 8940.00 },
+    { "code": "5200", "name_ar": "إيجار", "name_en": "Rent", "parent": "5", "type": "account", "balance": 18000.00 },
+    { "code": "5300", "name_ar": "كهرباء ومرافق", "name_en": "Utilities", "parent": "5", "type": "account", "balance": 3400.00 }
+  ],
+
+  "expense_categories": [
+    { "id": "ec_rent", "name_ar": "إيجار", "name_en": "Rent", "icon": "home", "account": "5200" },
+    { "id": "ec_utils", "name_ar": "كهرباء ومرافق", "name_en": "Utilities", "icon": "bolt", "account": "5300" },
+    { "id": "ec_fuel", "name_ar": "بنزين ومواصلات", "name_en": "Fuel & transport", "icon": "truck", "account": "5400" },
+    { "id": "ec_petty", "name_ar": "مشتريات نثرية", "name_en": "Petty purchases", "icon": "cart", "account": "5500" },
+    { "id": "ec_marketing", "name_ar": "تسويق", "name_en": "Marketing", "icon": "megaphone", "account": "5600" }
+  ],
+
+  "expenses": [
+    { "id": "ex_0101", "date": "2026-06-01", "category_id": "ec_rent", "amount": 18000.00, "method": "tr_bank_cib", "memo": "إيجار شهر يونيو", "attachment": null },
+    { "id": "ex_0102", "date": "2026-06-08", "category_id": "ec_utils", "amount": 3400.00, "method": "tr_cash_main", "memo": "فاتورة كهرباء", "attachment": "receipt_0102.jpg" },
+    { "id": "ex_0103", "date": "2026-06-11", "category_id": "ec_fuel", "amount": 650.00, "method": "tr_cash_main", "memo": "سولار سيارة التوصيل", "attachment": null }
+  ],
+
+  "receipt_vouchers": [
+    { "id": "rv_0201", "number": "RV-0201", "date": "2026-06-13", "customer_id": "cu_amal", "amount": 9152.00, "treasury_id": "tr_bank_cib",
+      "allocations": [ { "invoice_id": "inv_1039", "amount": 9152.00 } ], "on_account": 0, "memo": "دفعة من حساب الأمل" },
+    { "id": "rv_0202", "number": "RV-0202", "date": "2026-06-14", "customer_id": "cu_noor", "amount": 12000.00, "treasury_id": "tr_cash_main",
+      "allocations": [ { "invoice_id": "inv_1042", "amount": 11755.68 } ], "on_account": 244.32, "memo": "تحصيل مع رصيد دائن" }
+  ],
+
+  "payment_vouchers": [
+    { "id": "pv_0301", "number": "PV-0301", "date": "2026-06-09", "supplier_id": "sp_grain", "amount": 20000.00, "treasury_id": "tr_bank_cib",
+      "allocations": [ { "invoice_id": "pi_3120", "amount": 20000.00 } ], "memo": "دفعة لشركة الدلتا" }
+  ],
+
+  "transfers": [
+    { "id": "tf_0401", "number": "TF-0401", "date": "2026-06-12", "from": "tr_cash_main", "to": "tr_bank_cib", "amount": 100000.00, "memo": "توريد كاش الفرع للبنك" }
+  ],
+
+  "journal_entries": [
+    { "id": "je_5001", "number": "MN-JE-5001", "date": "2026-06-12", "type": "auto", "memo": "فاتورة بيع آجلة MN-INV-1042", "source_ref": "inv_1042",
+      "lines": [
+        { "account": "1200", "dr": 11755.68, "cr": 0, "memo": "ذمم النور للتجارة" },
+        { "account": "4100", "dr": 0, "cr": 10312.00, "memo": "إيرادات" },
+        { "account": "2200", "dr": 0, "cr": 1443.68, "memo": "ضريبة مستحقة" }
+      ], "total_dr": 11755.68, "total_cr": 11755.68, "balanced": true },
+    { "id": "je_5002", "number": "MN-JE-5002", "date": "2026-06-12", "type": "auto", "memo": "تكلفة بضاعة مباعة MN-INV-1042", "source_ref": "inv_1042",
+      "lines": [
+        { "account": "5100", "dr": 8940.00, "cr": 0, "memo": "COGS" },
+        { "account": "1300", "dr": 0, "cr": 8940.00, "memo": "المخزون (متوسط مرجّح)" }
+      ], "total_dr": 8940.00, "total_cr": 8940.00, "balanced": true },
+    { "id": "je_5003", "number": "MN-JE-5003", "date": "2026-06-01", "type": "manual", "memo": "تسوية إهلاك يدوية", "source_ref": null,
+      "lines": [
+        { "account": "5700", "dr": 1250.00, "cr": 0, "memo": "إهلاك أصول", "cost_center": "br_main" },
+        { "account": "1500", "dr": 0, "cr": 1250.00, "memo": "مجمع الإهلاك" }
+      ], "total_dr": 1250.00, "total_cr": 1250.00, "balanced": true }
+  ],
+
+  "trial_balance": {
+    "period": "fp_2026_06",
+    "rows": [
+      { "account": "1101", "opening": 361150.00, "dr": 121000.00, "cr": 121000.00, "closing": 361150.00 },
+      { "account": "1102", "opening": 400000.00, "dr": 129152.00, "cr": 49002.00, "closing": 480150.00 },
+      { "account": "1200", "opening": 0, "dr": 50825.68, "cr": 11752.00, "closing": 39073.68 },
+      { "account": "1300", "opening": 425450.00, "dr": 0, "cr": 8940.00, "closing": 416510.00 },
+      { "account": "2100", "opening": 28330.00, "dr": 20000.00, "cr": 40000.00, "closing": 48330.00 },
+      { "account": "3100", "opening": 1000000.00, "dr": 0, "cr": 0, "closing": 1000000.00 },
+      { "account": "4100", "opening": 0, "dr": 0, "cr": 13062.00, "closing": 13062.00 },
+      { "account": "5100", "opening": 0, "dr": 8940.00, "cr": 0, "closing": 8940.00 },
+      { "account": "5200", "opening": 0, "dr": 18000.00, "cr": 0, "closing": 18000.00 }
+    ],
+    "totals": { "dr": 1106500.00, "cr": 1106500.00, "balanced": true }
+  },
+
+  "bank_reconciliation": {
+    "treasury_id": "tr_bank_cib", "statement_date": "2026-06-13", "statement_balance": 480150.00, "system_balance": 480150.00,
+    "matched": 15, "pending": 3,
+    "in_bank_not_system": [ { "date": "2026-06-13", "amount": 2500.00, "desc": "رسوم بنكية" } ],
+    "in_system_not_bank": [ { "date": "2026-06-12", "amount": 100000.00, "desc": "تحويل لم يُرحَّل بعد TF-0401" } ]
+  },
+
+  "opening_balance": {
+    "entry_id": "je_open_2026", "date": "2026-01-01", "balanced": true,
+    "lines": [
+      { "account": "1101", "dr": 250000.00, "cr": 0 },
+      { "account": "1102", "dr": 400000.00, "cr": 0 },
+      { "account": "1300", "dr": 425450.00, "cr": 0 },
+      { "account": "2100", "dr": 0, "cr": 75450.00 },
+      { "account": "3100", "dr": 0, "cr": 1000000.00 }
+    ]
+  },
+
+  "dashboard_kpis": {
+    "liquidity": 842300.00, "net_cashflow_today": 41700.00, "ar_total": 39073.68, "ap_total": 48330.00,
+    "monthly_expenses": 22050.00, "estimated_profit": 4122.00,
+    "top_expense_categories": [ { "category_id": "ec_rent", "amount": 18000.00 }, { "category_id": "ec_utils", "amount": 3400.00 }, { "category_id": "ec_fuel", "amount": 650.00 } ],
+    "overdue_receivables": [ { "customer_id": "cu_noor", "amount": 11755.68, "days_overdue": 5 } ]
+  },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}

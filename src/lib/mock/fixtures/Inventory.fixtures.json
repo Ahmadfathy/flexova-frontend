@@ -1,0 +1,206 @@
+{
+  "_meta": {
+    "module": "inventory",
+    "version": "1.0",
+    "currency": "EGP",
+    "tenant": { "id": "t_001", "name_ar": "سوبر ماركت الأمانة", "name_en": "Al-Amana Supermarket", "eta_enabled": true, "price_includes_tax": false },
+    "mock_states": ["loading", "empty", "error", "no_results", "offline"],
+    "notes": "Egyptian SME grocery/retail context. Balances are computed from ledger; do not edit directly."
+  },
+
+  "tax_types": [
+    { "id": "tax_t1", "code": "T1", "name_ar": "ضريبة القيمة المضافة 14%", "name_en": "VAT 14%", "rate": 14 },
+    { "id": "tax_t2", "code": "T2", "name_ar": "معفاة", "name_en": "Exempt", "rate": 0 },
+    { "id": "tax_t3", "code": "T1-5", "name_ar": "قيمة مضافة 5%", "name_en": "VAT 5%", "rate": 5 }
+  ],
+
+  "uoms": [
+    { "id": "uom_pc", "name_ar": "قطعة", "name_en": "Piece" },
+    { "id": "uom_box", "name_ar": "علبة", "name_en": "Box" },
+    { "id": "uom_carton", "name_ar": "كرتونة", "name_en": "Carton" },
+    { "id": "uom_kg", "name_ar": "كيلو", "name_en": "Kg" },
+    { "id": "uom_pack", "name_ar": "باكو", "name_en": "Pack" },
+    { "id": "uom_bottle", "name_ar": "زجاجة", "name_en": "Bottle" }
+  ],
+
+  "categories": [
+    { "id": "cat_food", "name_ar": "بقالة وأغذية", "name_en": "Groceries & Food", "parent_id": null, "item_count": 5 },
+    { "id": "cat_grains", "name_ar": "حبوب ومكرونة", "name_en": "Grains & Pasta", "parent_id": "cat_food", "item_count": 2 },
+    { "id": "cat_oils", "name_ar": "زيوت وسمن", "name_en": "Oils & Ghee", "parent_id": "cat_food", "item_count": 1 },
+    { "id": "cat_bev", "name_ar": "مشروبات", "name_en": "Beverages", "parent_id": null, "item_count": 2 },
+    { "id": "cat_clean", "name_ar": "منظفات", "name_en": "Cleaning", "parent_id": null, "item_count": 2 },
+    { "id": "cat_services", "name_ar": "خدمات", "name_en": "Services", "parent_id": null, "item_count": 1 }
+  ],
+
+  "warehouses": [
+    { "id": "wh_main", "name_ar": "المخزن الرئيسي", "name_en": "Main Warehouse", "code": "WH-01", "branch_id": "br_main", "type": "storage", "status": "active", "is_default": true, "stock_value": 318450.00 },
+    { "id": "wh_nasr", "name_ar": "فرع مدينة نصر", "name_en": "Nasr City Branch", "code": "WH-02", "branch_id": "br_nasr", "type": "sale", "status": "active", "is_default": false, "stock_value": 96820.00 },
+    { "id": "wh_damaged", "name_ar": "مخزن التالف", "name_en": "Damaged Stock", "code": "WH-09", "branch_id": "br_main", "type": "damaged", "status": "active", "is_default": false, "stock_value": 1240.00 }
+  ],
+
+  "branches": [
+    { "id": "br_main", "name_ar": "الفرع الرئيسي", "name_en": "Main Branch" },
+    { "id": "br_nasr", "name_ar": "فرع مدينة نصر", "name_en": "Nasr City Branch" }
+  ],
+
+  "price_lists": [
+    { "id": "pl_retail", "name_ar": "التجزئة", "name_en": "Retail", "currency": "EGP", "status": "active", "is_default": true, "priced_items": 8 },
+    { "id": "pl_wholesale", "name_ar": "الجملة", "name_en": "Wholesale", "currency": "EGP", "status": "active", "is_default": false, "priced_items": 6 },
+    { "id": "pl_vip", "name_ar": "عملاء مميزون", "name_en": "VIP", "currency": "EGP", "status": "active", "is_default": false, "priced_items": 4 }
+  ],
+
+  "items": [
+    {
+      "id": "it_rice", "code": "GR-1001", "name_ar": "أرز مصري فاخر ٥ كجم", "name_en": "Egyptian Rice 5kg",
+      "item_type": "stocked", "category_id": "cat_grains", "base_uom_id": "uom_box",
+      "barcodes": ["6224000111014"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-100123-RICE5",
+      "reorder_level": 30, "max_level": 300, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 185.00, "pl_wholesale": 168.00, "pl_vip": 175.00 },
+      "last_purchase_price": 152.00, "avg_cost": 149.30,
+      "units": [ { "uom_id": "uom_box", "factor": 1, "barcode": "6224000111014", "unit_price": 185.00 }, { "uom_id": "uom_carton", "factor": 8, "barcode": "6224000111021", "unit_price": 1440.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 220 }, { "warehouse_id": "wh_nasr", "qty": 45 } ]
+    },
+    {
+      "id": "it_pasta", "code": "GR-1002", "name_ar": "مكرونة الملكة ٤٠٠ جم", "name_en": "Queen Pasta 400g",
+      "item_type": "stocked", "category_id": "cat_grains", "base_uom_id": "uom_pack",
+      "barcodes": ["6223000222020"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-100124-PASTA",
+      "reorder_level": 100, "max_level": 1000, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 12.50, "pl_wholesale": 10.75 },
+      "last_purchase_price": 9.20, "avg_cost": 9.05,
+      "units": [ { "uom_id": "uom_pack", "factor": 1, "barcode": "6223000222020", "unit_price": 12.50 }, { "uom_id": "uom_carton", "factor": 24, "barcode": "6223000222037", "unit_price": 288.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 85 }, { "warehouse_id": "wh_nasr", "qty": 12 } ]
+    },
+    {
+      "id": "it_oil", "code": "OL-2001", "name_ar": "زيت عافية ذرة ٢.٢٥ لتر", "name_en": "Afia Corn Oil 2.25L",
+      "item_type": "stocked", "category_id": "cat_oils", "base_uom_id": "uom_bottle",
+      "barcodes": ["6221031492013"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-200201-OIL",
+      "reorder_level": 40, "max_level": 400, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 168.00, "pl_wholesale": 158.00, "pl_vip": 162.00 },
+      "last_purchase_price": 144.00, "avg_cost": 141.50,
+      "units": [ { "uom_id": "uom_bottle", "factor": 1, "barcode": "6221031492013", "unit_price": 168.00 }, { "uom_id": "uom_carton", "factor": 6, "barcode": "6221031492020", "unit_price": 990.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 132 }, { "warehouse_id": "wh_nasr", "qty": 28 } ]
+    },
+    {
+      "id": "it_tea", "code": "BV-3001", "name_ar": "شاي العروسة ٢٥٠ جم", "name_en": "El Arosa Tea 250g",
+      "item_type": "stocked", "category_id": "cat_bev", "base_uom_id": "uom_pack",
+      "barcodes": ["6224007733018"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-300301-TEA",
+      "reorder_level": 60, "max_level": 600, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 58.00, "pl_wholesale": 52.00 },
+      "last_purchase_price": 46.50, "avg_cost": 45.80,
+      "units": [ { "uom_id": "uom_pack", "factor": 1, "barcode": "6224007733018", "unit_price": 58.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 24 }, { "warehouse_id": "wh_nasr", "qty": 8 } ]
+    },
+    {
+      "id": "it_cola", "code": "BV-3002", "name_ar": "كوكاكولا ١ لتر", "name_en": "Coca-Cola 1L",
+      "item_type": "stocked", "category_id": "cat_bev", "base_uom_id": "uom_bottle",
+      "barcodes": ["5449000054227"], "image": null, "tax_type_id": "tax_t1", "eta_code": "",
+      "reorder_level": 120, "max_level": 1200, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 22.00 },
+      "last_purchase_price": 16.00, "avg_cost": 15.70,
+      "units": [ { "uom_id": "uom_bottle", "factor": 1, "barcode": "5449000054227", "unit_price": 22.00 }, { "uom_id": "uom_carton", "factor": 12, "barcode": "5449000054234", "unit_price": 252.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 340 }, { "warehouse_id": "wh_nasr", "qty": 96 } ],
+      "_flag": "eta_not_ready"
+    },
+    {
+      "id": "it_soap", "code": "CL-4001", "name_ar": "صابون رابسو سائل ٩٠٠ مل", "name_en": "Rabso Liquid Soap 900ml",
+      "item_type": "stocked", "category_id": "cat_clean", "base_uom_id": "uom_bottle",
+      "barcodes": ["6224008844025"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-400401-SOAP",
+      "reorder_level": 50, "max_level": 500, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 74.00, "pl_wholesale": 66.00 },
+      "last_purchase_price": 58.00, "avg_cost": 57.20,
+      "units": [ { "uom_id": "uom_bottle", "factor": 1, "barcode": "6224008844025", "unit_price": 74.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 18 }, { "warehouse_id": "wh_nasr", "qty": 4 } ]
+    },
+    {
+      "id": "it_detergent", "code": "CL-4002", "name_ar": "مسحوق غسيل برسيل ٣ كجم", "name_en": "Persil Powder 3kg",
+      "item_type": "stocked", "category_id": "cat_clean", "base_uom_id": "uom_pack",
+      "barcodes": ["6221155033047"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-400402-DET",
+      "reorder_level": 25, "max_level": 250, "status": "suspended", "incomplete": false,
+      "prices": { "pl_retail": 210.00 },
+      "last_purchase_price": 178.00, "avg_cost": 176.00,
+      "units": [ { "uom_id": "uom_pack", "factor": 1, "barcode": "6221155033047", "unit_price": 210.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 60 } ]
+    },
+    {
+      "id": "it_sugar", "code": "GR-1003", "name_ar": "سكر أبيض", "name_en": "White Sugar",
+      "item_type": "stocked", "category_id": "cat_food", "base_uom_id": "uom_kg",
+      "barcodes": [], "image": null, "tax_type_id": "tax_t1", "eta_code": "",
+      "reorder_level": 200, "max_level": 2000, "status": "active", "incomplete": true,
+      "prices": { "pl_retail": 38.00 },
+      "last_purchase_price": null, "avg_cost": 0,
+      "units": [ { "uom_id": "uom_kg", "factor": 1, "barcode": null, "unit_price": 38.00 } ],
+      "balances": [ { "warehouse_id": "wh_main", "qty": 0 } ],
+      "_flag": "incomplete"
+    },
+    {
+      "id": "it_delivery", "code": "SV-9001", "name_ar": "خدمة توصيل", "name_en": "Delivery Service",
+      "item_type": "service", "category_id": "cat_services", "base_uom_id": "uom_pc",
+      "barcodes": [], "image": null, "tax_type_id": "tax_t2", "eta_code": "EG-900901-DLV",
+      "reorder_level": null, "max_level": null, "status": "active", "incomplete": false,
+      "prices": { "pl_retail": 30.00 },
+      "last_purchase_price": null, "avg_cost": null,
+      "units": [ { "uom_id": "uom_pc", "factor": 1, "barcode": null, "unit_price": 30.00 } ],
+      "balances": []
+    }
+  ],
+
+  "ledger": [
+    { "id": "mv_001", "item_id": "it_rice", "date": "2026-06-01", "type": "opening", "source_ref": "OPEN-2026", "warehouse_id": "wh_main", "qty": 150, "running_balance": 150, "cost": 148.00, "user": "أحمد حسن" },
+    { "id": "mv_002", "item_id": "it_rice", "date": "2026-06-05", "type": "in", "source_ref": "PO-3120", "warehouse_id": "wh_main", "qty": 100, "running_balance": 250, "cost": 150.50, "user": "منى علي" },
+    { "id": "mv_003", "item_id": "it_rice", "date": "2026-06-10", "type": "out", "source_ref": "INV-1041", "warehouse_id": "wh_main", "qty": -30, "running_balance": 220, "cost": 149.30, "user": "كاشير ١" },
+    { "id": "mv_004", "item_id": "it_rice", "date": "2026-06-12", "type": "transfer", "source_ref": "TRF-0042", "warehouse_id": "wh_nasr", "qty": 45, "running_balance": 45, "cost": 149.30, "user": "أحمد حسن" },
+    { "id": "mv_005", "item_id": "it_soap", "date": "2026-06-11", "type": "adjustment", "source_ref": "ADJ-0018", "warehouse_id": "wh_main", "qty": -2, "running_balance": 18, "cost": 57.20, "user": "أحمد حسن" }
+  ],
+
+  "stocktakes": [
+    { "id": "st_0007", "number": "ST-0007", "warehouse_id": "wh_nasr", "date": "2026-06-13", "mode": "live", "status": "counting", "items_count": 12, "net_diff_qty": -3, "net_diff_value": -210.00,
+      "lines": [
+        { "item_id": "it_rice", "book_qty": 45, "actual_qty": 44, "diff": -1 },
+        { "item_id": "it_oil", "book_qty": 28, "actual_qty": 28, "diff": 0 },
+        { "item_id": "it_tea", "book_qty": 8, "actual_qty": 6, "diff": -2 }
+      ] },
+    { "id": "st_0006", "number": "ST-0006", "warehouse_id": "wh_main", "date": "2026-05-30", "mode": "freeze", "status": "approved", "items_count": 40, "net_diff_qty": 5, "net_diff_value": 720.00, "lines": [] }
+  ],
+
+  "transfers": [
+    { "id": "trf_0042", "number": "TRF-0042", "from_wh": "wh_main", "to_wh": "wh_nasr", "date": "2026-06-12", "status": "posted", "note": "تموين الفرع الأسبوعي",
+      "lines": [ { "item_id": "it_rice", "qty": 45, "uom_id": "uom_box" }, { "item_id": "it_oil", "qty": 28, "uom_id": "uom_bottle" } ] }
+  ],
+
+  "adjustments": [
+    { "id": "adj_0018", "number": "ADJ-0018", "warehouse_id": "wh_main", "date": "2026-06-11", "reason": "damage", "note": "زجاجات صابون مكسورة أثناء النقل", "net_diff_value": -114.40,
+      "lines": [ { "item_id": "it_soap", "qty": -2 } ] }
+  ],
+
+  "low_stock": [
+    { "item_id": "it_tea", "warehouse_id": "wh_main", "balance": 24, "reorder_level": 60, "shortfall": 36, "suggested_qty": 100 },
+    { "item_id": "it_soap", "warehouse_id": "wh_main", "balance": 18, "reorder_level": 50, "shortfall": 32, "suggested_qty": 60 }
+  ],
+
+  "import_template_columns": [
+    { "key": "name_ar", "label_ar": "الاسم (عربي)", "label_en": "Name (AR)", "required": true },
+    { "key": "name_en", "label_ar": "الاسم (إنجليزي)", "label_en": "Name (EN)", "required": false },
+    { "key": "code", "label_ar": "الكود", "label_en": "Code", "required": false },
+    { "key": "item_type", "label_ar": "النوع", "label_en": "Type", "required": true },
+    { "key": "category", "label_ar": "التصنيف", "label_en": "Category", "required": false },
+    { "key": "base_uom", "label_ar": "الوحدة", "label_en": "Unit", "required": true },
+    { "key": "sale_price", "label_ar": "سعر البيع", "label_en": "Sale price", "required": false },
+    { "key": "tax_type", "label_ar": "نوع الضريبة", "label_en": "Tax type", "required": false },
+    { "key": "eta_code", "label_ar": "كود ETA", "label_en": "ETA code", "required": false },
+    { "key": "barcode", "label_ar": "الباركود", "label_en": "Barcode", "required": false }
+  ],
+
+  "import_sample_result": {
+    "valid": 142,
+    "errors": [
+      { "row": 7, "reason_ar": "الوحدة غير معروفة: «درزن»", "reason_en": "Unknown unit: 'dozen'" },
+      { "row": 23, "reason_ar": "الكود مكرر: GR-1001", "reason_en": "Duplicate code: GR-1001" },
+      { "row": 51, "reason_ar": "الاسم (عربي) مطلوب", "reason_en": "Name (AR) is required" }
+    ]
+  },
+
+  "barcode_templates": [
+    { "id": "tpl_30", "name_ar": "ملصق ٣٠ × ٢٠ مم", "name_en": "Label 30×20mm" },
+    { "id": "tpl_shelf", "name_ar": "ملصق رف", "name_en": "Shelf label" }
+  ]
+}

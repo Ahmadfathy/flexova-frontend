@@ -1,0 +1,89 @@
+{
+  "_meta": {
+    "module": "hr",
+    "version": "1.0",
+    "currency": "EGP",
+    "statutory_enabled": false,
+    "depends_on": "accounting (payroll entry, advance disbursement), sales/crm (commission base = salesperson-tagged txn)",
+    "notes": "Simple face + optional statutory layer (off). Payroll engine auto-posts a balanced entry. Commission on collected by default. Per-branch numbering. Reversal not delete."
+  },
+
+  "employees": [
+    { "id": "emp_001", "name_ar": "أحمد حسن", "name_en": "Ahmed Hassan", "phone": "01000000001", "employment_type": "monthly", "title": "مدير الفرع", "branch_id": "br_main", "status": "active", "linked_user": "usr_owner",
+      "salary_structure": { "base": 12000.00, "components": [ { "name_ar": "بدل انتقال", "kind": "addition", "type": "fixed", "amount": 800.00 } ] },
+      "advance_balance": 0 },
+    { "id": "emp_002", "name_ar": "منى علي", "name_en": "Mona Ali", "phone": "01000000002", "employment_type": "monthly", "title": "محاسبة", "branch_id": "br_main", "status": "active", "linked_user": "usr_accountant",
+      "salary_structure": { "base": 9000.00, "components": [] },
+      "advance_balance": 1500.00 },
+    { "id": "emp_003", "name_ar": "كريم سمير", "name_en": "Karim Samir", "phone": "01000000003", "employment_type": "commission", "title": "مندوب مبيعات", "branch_id": "br_nasr", "status": "active", "linked_user": null,
+      "salary_structure": { "base": 4000.00, "commission_rule_id": "cr_rep" },
+      "advance_balance": 0 },
+    { "id": "emp_004", "name_ar": "سيد عبد ربه", "name_en": "Sayed Abdo", "phone": "01000000004", "employment_type": "daily", "title": "عامل مخزن", "branch_id": "br_main", "status": "active", "linked_user": null,
+      "salary_structure": { "day_rate": 350.00, "components": [] },
+      "advance_balance": 800.00 },
+    { "id": "emp_005", "name_ar": "فاطمة محمود", "name_en": "Fatma Mahmoud", "phone": "01000000005", "employment_type": "monthly", "title": "كاشير", "branch_id": "br_nasr", "status": "active", "linked_user": null,
+      "salary_structure": { "base": 6500.00, "components": [] },
+      "advance_balance": 0, "_flag": "missing_attendance" }
+  ],
+
+  "attendance": {
+    "period": "2026-06", "branch_id": "br_main",
+    "summary": [
+      { "employee_id": "emp_001", "present": 22, "absent": 0, "leave": 1, "overtime_hours": 0, "late": 0 },
+      { "employee_id": "emp_002", "present": 21, "absent": 1, "leave": 0, "overtime_hours": 4, "late": 2 },
+      { "employee_id": "emp_004", "present": 20, "absent": 2, "leave": 0, "overtime_hours": 6, "late": 0 }
+    ]
+  },
+
+  "commission_rules": [
+    { "id": "cr_rep", "name_ar": "عمولة مندوب", "name_en": "Rep commission", "type": "percent", "value": 2.5, "base": "collected", "tiered": false }
+  ],
+
+  "commissions_accrued": [
+    { "employee_id": "emp_003", "period": "2026-06", "rule_id": "cr_rep", "base_amount": 60000.00, "commission": 1500.00,
+      "sources": [ { "txn": "inv_1042", "collected": 0, "note": "غير محصّل بعد — لا عمولة" }, { "txn": "inv_1041", "collected": 198.36 } ] }
+  ],
+
+  "advances": [
+    { "id": "adv_001", "employee_id": "emp_002", "type": "advance", "amount": 1500.00, "remaining": 1500.00, "status": "outstanding", "granted": "2026-06-05", "treasury_id": "tr_cash_main", "schedule": [ { "period": "2026-06", "amount": 1500.00 } ] },
+    { "id": "adv_002", "employee_id": "emp_004", "type": "loan", "amount": 2400.00, "remaining": 800.00, "status": "outstanding", "granted": "2026-04-01", "treasury_id": "tr_cash_main", "schedule": [ { "period": "2026-06", "amount": 400.00 }, { "period": "2026-07", "amount": 400.00 } ] }
+  ],
+
+  "payroll_runs": [
+    {
+      "id": "run_2026_05", "number": "MN-PR-2026-05", "period": "2026-05", "scope": "all", "status": "posted", "total_net": 30700.00,
+      "posting_entry": {
+        "lines": [
+          { "account": "5200_wages", "name_ar": "مصروف أجور", "dr": 31500.00, "cr": 0 },
+          { "account": "1101", "name_ar": "الخزينة", "dr": 0, "cr": 30700.00 },
+          { "account": "1400_emp_adv", "name_ar": "سلف الموظفين", "dr": 0, "cr": 800.00 }
+        ],
+        "total_dr": 31500.00, "total_cr": 31500.00, "balanced": true
+      },
+      "lines": [
+        { "employee_id": "emp_001", "gross": 12800.00, "deductions": 0, "net": 12800.00 },
+        { "employee_id": "emp_002", "gross": 9000.00, "deductions": 0, "net": 9000.00 },
+        { "employee_id": "emp_004", "gross": 7000.00, "deductions": 400.00, "net": 6600.00, "deduction_detail": [ { "type": "loan_installment", "amount": 400.00, "ref": "adv_002" } ] },
+        { "employee_id": "emp_003", "gross": 5500.00, "deductions": 0, "net": 5500.00, "addition_detail": [ { "type": "commission", "amount": 1500.00, "ref": "cr_rep" } ] }
+      ]
+    },
+    {
+      "id": "run_2026_06", "number": "MN-PR-2026-06", "period": "2026-06", "scope": "all", "status": "draft", "total_net": null,
+      "warnings": [ { "type": "missing_attendance", "employees": ["emp_005"], "text_ar": "موظف بلا بيانات حضور لهذا الشهر", "text_en": "1 employee lacks attendance this month" } ],
+      "lines": []
+    }
+  ],
+
+  "statutory_tables": {
+    "enabled": false,
+    "sample_version": {
+      "version": "2026-v1", "effective_from": "2026-01-01", "_note": "أرقام عيّنة — تُحقَّق من مصدر مالي/قانوني عند التفعيل",
+      "salary_tax_brackets": [ { "up_to": 40000, "rate": 0 }, { "up_to": 55000, "rate": 10 }, { "up_to": 70000, "rate": 15 }, { "up_to": null, "rate": 20 } ],
+      "insurance": { "employee_share_pct": 11, "employer_share_pct": 18.75, "ceiling": 14500 }
+    }
+  },
+
+  "dashboard_kpis": { "headcount": 5, "monthly_payroll_cost": 31500.00, "outstanding_advances": 2300.00, "accrued_commissions": 1500.00, "absences_today": 1, "payroll_run_this_month": false },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}

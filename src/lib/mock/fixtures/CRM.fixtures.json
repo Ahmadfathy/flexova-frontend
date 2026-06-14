@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "module": "crm",
+    "version": "1.0",
+    "currency": "EGP",
+    "loyalty_enabled": false,
+    "depends_on": "sales (invoice history), accounting (AR/aging/credit — READ only)",
+    "notes": "Single shared customer entity. type+TRN drive ETA routing. AR/aging are READ from Accounting, not recomputed. Phone = dedupe key. Maps to FE_02 customers (cu_*)."
+  },
+
+  "customers": [
+    {
+      "id": "cu_noor", "type": "company", "name_ar": "شركة النور للتجارة", "name_en": "Al-Noor Trading Co.",
+      "phone": "01001112233", "trn": "512345678", "national_id": null,
+      "address": { "gov": "القاهرة", "area": "وسط البلد", "street": "شارع عبد العزيز" },
+      "price_list_id": "pl_wholesale", "credit_limit": 50000.00, "segments": ["wholesale", "vip"], "status": "active",
+      "ar_balance": 11755.68, "aging": { "current": 0, "d1_30": 11755.68, "d31_60": 0, "d60_plus": 0 }, "oldest_overdue_days": 5,
+      "contacts": [ { "name": "أحمد النور", "role": "مدير المشتريات", "phone": "01001112244" } ],
+      "last_activity": "2026-06-12"
+    },
+    {
+      "id": "cu_amal", "type": "company", "name_ar": "مؤسسة الأمل", "name_en": "Al-Amal Est.",
+      "phone": "01122334455", "trn": "598765432", "national_id": null,
+      "address": { "gov": "الجيزة", "area": "المهندسين", "street": "شارع جامعة الدول" },
+      "price_list_id": "pl_retail", "credit_limit": 30000.00, "segments": ["wholesale"], "status": "active",
+      "ar_balance": 10000.00, "aging": { "current": 10000.00, "d1_30": 0, "d31_60": 0, "d60_plus": 0 }, "oldest_overdue_days": 0,
+      "contacts": [], "last_activity": "2026-06-13"
+    },
+    {
+      "id": "cu_shifa", "type": "company", "name_ar": "صيدلية الشفاء", "name_en": "Al-Shifa Pharmacy",
+      "phone": "01233445566", "trn": "", "national_id": null,
+      "address": { "gov": "القاهرة", "area": "مدينة نصر", "street": "شارع مكرم عبيد" },
+      "price_list_id": "pl_retail", "credit_limit": 0, "segments": [], "status": "active",
+      "ar_balance": 0, "aging": { "current": 0, "d1_30": 0, "d31_60": 0, "d60_plus": 0 }, "oldest_overdue_days": 0,
+      "contacts": [], "last_activity": "2026-06-12",
+      "_flag": "company_no_trn"
+    },
+    {
+      "id": "cu_mohamed", "type": "individual", "name_ar": "محمد عبد الله", "name_en": "Mohamed Abdullah",
+      "phone": "01099887766", "trn": null, "national_id": "29805121201234",
+      "address": { "gov": "القاهرة", "area": "مدينة نصر", "street": "" },
+      "price_list_id": "pl_retail", "credit_limit": 5000.00, "segments": [], "status": "active",
+      "ar_balance": 0, "aging": { "current": 0, "d1_30": 0, "d31_60": 0, "d60_plus": 0 }, "oldest_overdue_days": 0,
+      "contacts": [], "last_activity": "2026-06-12"
+    },
+    {
+      "id": "cu_samir", "type": "individual", "name_ar": "سمير فؤاد", "name_en": "Samir Fouad",
+      "phone": "01099887766", "trn": null, "national_id": "28709151200987",
+      "address": { "gov": "القاهرة", "area": "حلوان", "street": "" },
+      "price_list_id": "pl_retail", "credit_limit": 0, "segments": [], "status": "active",
+      "ar_balance": 0, "aging": { "current": 0, "d1_30": 0, "d31_60": 0, "d60_plus": 0 }, "oldest_overdue_days": 0,
+      "contacts": [], "last_activity": "2026-05-20",
+      "_flag": "duplicate_phone_with_cu_mohamed"
+    },
+    {
+      "id": "cu_overdue", "type": "company", "name_ar": "بقالة الحاج كمال", "name_en": "Haj Kamal Grocery",
+      "phone": "01555667788", "trn": "334455667", "national_id": null,
+      "address": { "gov": "القليوبية", "area": "بنها", "street": "شارع المحطة" },
+      "price_list_id": "pl_retail", "credit_limit": 20000.00, "segments": ["overdue"], "status": "active",
+      "ar_balance": 23900.00, "aging": { "current": 0, "d1_30": 8000.00, "d31_60": 7900.00, "d60_plus": 8000.00 }, "oldest_overdue_days": 68,
+      "contacts": [], "last_activity": "2026-04-08",
+      "_flag": "over_credit_limit"
+    },
+    {
+      "id": "cu_walkin", "type": "individual", "name_ar": "عميل نقدي", "name_en": "Cash Customer",
+      "phone": null, "trn": null, "national_id": null, "address": null,
+      "price_list_id": "pl_retail", "credit_limit": 0, "segments": [], "status": "active",
+      "ar_balance": 0, "aging": null, "oldest_overdue_days": 0, "contacts": [], "last_activity": null,
+      "is_walkin": true
+    }
+  ],
+
+  "segments": [
+    { "id": "wholesale", "name_ar": "جملة", "name_en": "Wholesale", "count": 3 },
+    { "id": "vip", "name_ar": "مميزون", "name_en": "VIP", "count": 1 },
+    { "id": "overdue", "name_ar": "متعثّرون", "name_en": "Overdue", "count": 1 }
+  ],
+
+  "follow_ups": [
+    { "id": "fu_001", "customer_id": "cu_overdue", "note": "تذكير بسداد المتأخر 23,900 ج.م", "due": "2026-06-14", "owner": "أحمد حسن", "status": "open", "group": "due_today" },
+    { "id": "fu_002", "customer_id": "cu_noor", "note": "متابعة عرض سعر QT-0021", "due": "2026-06-16", "owner": "منى علي", "status": "open", "group": "upcoming" },
+    { "id": "fu_003", "customer_id": "cu_amal", "note": "تأكيد استلام الشحنة", "due": "2026-06-10", "owner": "أحمد حسن", "status": "open", "group": "overdue" }
+  ],
+
+  "communications": [
+    { "id": "cm_001", "customer_id": "cu_overdue", "channel": "whatsapp", "template": "reminder", "date": "2026-06-08T10:00:00", "summary_ar": "تذكير تحصيل أُرسل", "auto": true },
+    { "id": "cm_002", "customer_id": "cu_noor", "channel": "whatsapp", "template": "invoice", "date": "2026-06-12T11:00:00", "summary_ar": "فاتورة MN-INV-1042 أُرسلت", "auto": true },
+    { "id": "cm_003", "customer_id": "cu_amal", "channel": "call", "template": null, "date": "2026-06-13T13:30:00", "summary_ar": "مكالمة تأكيد الطلب", "auto": false }
+  ],
+
+  "whatsapp_templates": [
+    { "id": "wt_greeting", "name_ar": "تحية", "name_en": "Greeting", "body_ar": "أهلاً {{name}}، شكراً لتعاملك مع {{tenant}}." },
+    { "id": "wt_invoice", "name_ar": "فاتورة", "name_en": "Invoice", "body_ar": "{{name}}، فاتورتك رقم {{invoice_no}} بقيمة {{total}} ج.م. {{link}}" },
+    { "id": "wt_receipt", "name_ar": "إيصال", "name_en": "Receipt", "body_ar": "{{name}}، استلمنا مبلغ {{amount}} ج.م. شكراً." },
+    { "id": "wt_reminder", "name_ar": "تذكير تحصيل", "name_en": "Collection reminder", "body_ar": "{{name}}، تذكير ودّي: مستحق عليك {{overdue}} ج.م. برجاء السداد." }
+  ],
+
+  "loyalty": {
+    "enabled": false,
+    "rules": { "earn_per_egp": 0.01, "redeem_value_per_point": 0.10 },
+    "balances": [ { "customer_id": "cu_mohamed", "points": 0 } ]
+  },
+
+  "import_template_columns": [
+    { "key": "name", "label_ar": "الاسم", "required": true },
+    { "key": "phone", "label_ar": "التليفون", "required": true },
+    { "key": "type", "label_ar": "النوع (فرد/شركة)", "required": false },
+    { "key": "trn", "label_ar": "الرقم الضريبي", "required": false },
+    { "key": "opening_balance", "label_ar": "رصيد افتتاحي", "required": false }
+  ],
+
+  "credit_check_example": {
+    "customer_id": "cu_overdue", "limit": 20000.00, "balance": 23900.00, "available": -3900.00, "requested": 5000.00, "result": "soft_block", "override_permission": "crm.credit.override"
+  },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}

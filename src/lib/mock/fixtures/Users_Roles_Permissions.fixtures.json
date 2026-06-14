@@ -1,0 +1,75 @@
+{
+  "_meta": {
+    "module": "admin",
+    "version": "1.0",
+    "depends_on": "consolidates permission keys from FE_01..07",
+    "notes": "Default-deny. Two scope dimensions: branch + row(all/branch/own). Sensitive ⚠ actions write immutable audit. Last-admin lock. Suspend not delete. Multi-tenant isolated."
+  },
+
+  "branches": [
+    { "id": "br_main", "name_ar": "الفرع الرئيسي", "name_en": "Main Branch", "code": "BR-01" },
+    { "id": "br_nasr", "name_ar": "فرع مدينة نصر", "name_en": "Nasr City Branch", "code": "BR-02" }
+  ],
+
+  "permission_catalog": {
+    "inventory": ["inventory.view","item.manage","stock.adjust!","transfer","count","valuation.view"],
+    "sales": ["sales.view","invoice.create","invoice.submit","invoice.cancel!","return!","quote","discount.override!","eta.send","eta.resend","eta.settings!"],
+    "purchasing": ["purchasing.view","po.create","invoice.create","invoice.approve","receipt.create","return!","supplier.manage","payment.create","inbound.respond!"],
+    "finance": ["finance.view_simple","view_accounting","expense.create","receipt.create","payment.create","transfer","treasury.manage","journal.manual!","coa.manage!","reconcile","period.close!","period.reopen!!","reports.view"],
+    "crm": ["crm.customer.view","create","edit","merge!","credit.set","credit.override!","followup.manage","loyalty.manage","communicate","import","export"],
+    "hr": ["hr.employee.view","manage","attendance.manage","advance.request","advance.approve!","commission.manage","payroll.run","payroll.approve!","statutory.config!!","payslip.view","export"],
+    "reports": ["reports.view","view_financial!","view_all_branches","build","save","schedule","export","dashboard.customize","eta.view"],
+    "admin": ["admin.user.manage!","role.manage!","security.config!!","audit.view","branch.manage"]
+  },
+
+  "role_templates": [
+    { "id": "role_owner", "name_ar": "المالك", "name_en": "Owner", "template": true, "user_count": 1,
+      "permissions": "*", "scope": { "branches": "all", "row_rule": "all" } },
+    { "id": "role_branch_mgr", "name_ar": "مدير فرع", "name_en": "Branch Manager", "template": true, "user_count": 1,
+      "permissions": ["sales.*","inventory.*","purchasing.view","crm.*","reports.view","reports.eta.view"], "exclude": ["admin.*","period.reopen!!"], "scope": { "branches": ["assigned"], "row_rule": "branch" } },
+    { "id": "role_cashier", "name_ar": "كاشير", "name_en": "Cashier", "template": true, "user_count": 1,
+      "permissions": ["sales.view","invoice.create","invoice.submit","eta.send","finance.receipt.create","reports.view"], "scope": { "branches": ["assigned"], "row_rule": "own" } },
+    { "id": "role_accountant", "name_ar": "محاسب", "name_en": "Accountant", "template": true, "user_count": 1,
+      "permissions": ["finance.*","reports.view_financial!","reports.view","purchasing.view","sales.view"], "exclude": ["*.delete","period.reopen!!"], "scope": { "branches": "all", "row_rule": "all" } },
+    { "id": "role_stock_keeper", "name_ar": "أمين مخزن", "name_en": "Stock Keeper", "template": true, "user_count": 0,
+      "permissions": ["inventory.view","item.manage","count","transfer","stock.adjust!"], "scope": { "branches": ["assigned"], "row_rule": "branch" } },
+    { "id": "role_sales_rep", "name_ar": "مندوب مبيعات", "name_en": "Sales Rep", "template": true, "user_count": 1,
+      "permissions": ["sales.view","invoice.create","crm.customer.view","crm.create","crm.communicate","finance.receipt.create"], "scope": { "branches": ["assigned"], "row_rule": "own" } }
+  ],
+
+  "users": [
+    { "id": "usr_owner", "name_ar": "أحمد حسن", "login": "01000000001", "roles": ["role_owner"], "scope": { "branches": "all", "row_rule": "all" }, "status": "active", "twofa": true, "last_login": "2026-06-14T07:50:00", "is_last_admin": true },
+    { "id": "usr_mgr_nasr", "name_ar": "خالد فهمي", "login": "khaled@amana.eg", "roles": ["role_branch_mgr"], "scope": { "branches": ["br_nasr"], "row_rule": "branch" }, "status": "active", "twofa": false, "last_login": "2026-06-13T20:10:00" },
+    { "id": "usr_accountant", "name_ar": "منى علي", "login": "01000000002", "roles": ["role_accountant"], "scope": { "branches": "all", "row_rule": "all" }, "status": "active", "twofa": true, "last_login": "2026-06-14T08:05:00" },
+    { "id": "usr_cashier_nasr", "name_ar": "فاطمة محمود", "login": "01000000005", "roles": ["role_cashier"], "scope": { "branches": ["br_nasr"], "row_rule": "own" }, "status": "active", "twofa": false, "last_login": "2026-06-13T21:02:00" },
+    { "id": "usr_rep", "name_ar": "كريم سمير", "login": "01000000003", "roles": ["role_sales_rep"], "scope": { "branches": ["br_nasr"], "row_rule": "own" }, "status": "active", "twofa": false, "last_login": "2026-06-12T18:00:00" },
+    { "id": "usr_old", "name_ar": "محمود السيد", "login": "01099990000", "roles": ["role_stock_keeper"], "scope": { "branches": ["br_main"], "row_rule": "branch" }, "status": "suspended", "twofa": false, "last_login": "2026-05-01T10:00:00" }
+  ],
+
+  "sessions": [
+    { "id": "ses_001", "user_id": "usr_owner", "device": "Chrome · Windows", "ip": "156.x.x.x", "started": "2026-06-14T07:50:00", "current": true },
+    { "id": "ses_002", "user_id": "usr_cashier_nasr", "device": "Flexova POS · Android", "ip": "branch-lan", "started": "2026-06-13T09:00:00", "current": false }
+  ],
+
+  "security_policy": {
+    "password": { "min_length": 8, "require_number": true, "require_symbol": false },
+    "twofa": { "available": true, "enforced": false },
+    "session_timeout_minutes": 120,
+    "trusted_devices": true
+  },
+
+  "audit_log": [
+    { "id": "au_001", "user_id": "usr_owner", "action": "finance.period.close", "sensitive": true, "when": "2026-06-01T09:00:00", "branch_id": "br_main", "target": "fp_2026_05", "summary_ar": "إقفال شهر مايو" },
+    { "id": "au_002", "user_id": "usr_mgr_nasr", "action": "sales.discount.override", "sensitive": true, "when": "2026-06-12T14:20:00", "branch_id": "br_nasr", "target": "NS-INV-1041", "summary_ar": "تجاوز خصم بصلاحية" },
+    { "id": "au_003", "user_id": "usr_owner", "action": "crm.credit.override", "sensitive": true, "when": "2026-06-13T11:00:00", "branch_id": "br_main", "target": "cu_overdue", "summary_ar": "تجاوز حد ائتمان بقالة الحاج كمال" },
+    { "id": "au_004", "user_id": "usr_owner", "action": "admin.user.manage", "sensitive": true, "when": "2026-05-01T10:05:00", "branch_id": null, "target": "usr_old", "summary_ar": "إيقاف مستخدم محمود السيد" }
+  ],
+
+  "blocked_examples": [
+    { "user_id": "usr_cashier_nasr", "attempted": "finance.period.close", "result": "blocked", "message_ar": "تحتاج صلاحية إقفال الفترة — راجع الأدمن", "message_en": "You need the period-close permission — ask your admin" }
+  ],
+
+  "last_admin_lock": { "user_id": "usr_owner", "rule": "cannot_disable_or_demote", "reason_ar": "آخر مدير للنظام" },
+
+  "mock_states": ["loading", "empty", "error", "no_results", "offline"]
+}
