@@ -4,7 +4,6 @@
 
 /* ============================================================
    LAYER B — MODE NEUTRALS + SEMANTICS  (HSL channels)
-   source: SPEC_00 §2 — converted to HSL channels to support opacity modifiers
    ============================================================ */
 :root{
   /* neutrals — light */
@@ -15,69 +14,85 @@
   --fx-muted:     215 16% 47%;   /* #64748B */
   --fx-line:      218 28% 92%;   /* #E6EAF1 */
 
-  /* semantic solids — fixed across modes and themes */
-  --success: 142 76% 36%;        /* #16A34A */
-  --warning: 32 95% 44%;         /* #D97706 */
-  --danger:  0 72% 51%;          /* #DC2626 */
+  /* semantic solids */
+  --success: 142 76% 36%;
+  --warning: 32 95% 44%;
+  --danger:  0 72% 51%;
   --on-brand: 0 0% 100%;
 
-  /* semantic text — lightened in dark (color-mix) */
+  /* semantic text */
   --success-text: hsl(var(--success));
-  --warning-text: hsl(26 90% 37%);            /* #B45309 (slightly darker for contrast on tint) */
+  --warning-text: hsl(26 90% 37%);
   --danger-text:  hsl(var(--danger));
   --brand-text:   hsl(var(--brand-dark));
 
-  /* shape (SPEC_00 §5) */
-  --radius: 14px;                              /* container; control=rounded-sm(10) pill=rounded-full */
+  /* shape — §14.7: 16px (softer) */
+  --radius: 16px;
 
-  /* derived tints (LAYER D) — auto-adapt to tint-base */
+  /* derived tints */
   --brand-tint:   color-mix(in srgb, hsl(var(--brand))   12%, hsl(var(--fx-tint-base)));
   --success-tint: color-mix(in srgb, hsl(var(--success)) 14%, hsl(var(--fx-tint-base)));
   --warning-tint: color-mix(in srgb, hsl(var(--warning)) 14%, hsl(var(--fx-tint-base)));
   --danger-tint:  color-mix(in srgb, hsl(var(--danger))  14%, hsl(var(--fx-tint-base)));
+  --info-tint:    color-mix(in srgb, hsl(var(--brand))   10%, hsl(var(--fx-tint-base)));
 
-  /* shadow + ease + shell metrics */
-  --shadow:    0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.18);
-  --shadow-sm: 0 1px 2px rgba(15,23,42,.06);
+  /* shadows — §14.7: soft + diffuse */
+  --shadow:    0 2px 4px rgba(15,23,42,.04), 0 12px 32px -12px rgba(15,23,42,.12);
+  --shadow-sm: 0 1px 3px rgba(15,23,42,.06);
+
+  /* easing + shell metrics */
   --ease: cubic-bezier(.2,.8,.2,1);
   --nav-w: 240px; --nav-w-collapsed: 72px; --topbar-h: 60px;
+
+  /* font system — §14.6 */
+  --font-ar:     "IBM Plex Sans Arabic";
+  --font-en:     "Inter";
+  --font-active: var(--font-ar);
+  --font-base:   14px;
 }
 
 /* DARK overrides */
 html[data-mode="dark"]{
-  --fx-bg:        218 36% 9%;     /* #0E141E */
-  --fx-surface:   215 29% 13%;    /* #171F2A */
-  --fx-tint-base: 214 26% 16%;    /* #1E2733 */
-  --fx-ink:       215 33% 93%;    /* #E7ECF3 */
-  --fx-muted:     215 19% 64%;    /* #93A1B5 */
-  --fx-line:      213 21% 20%;    /* #29333F */
+  --fx-bg:        218 36% 9%;
+  --fx-surface:   215 29% 13%;
+  --fx-tint-base: 214 26% 16%;
+  --fx-ink:       215 33% 93%;
+  --fx-muted:     215 19% 64%;
+  --fx-line:      213 21% 20%;
 
   --success-text: color-mix(in srgb, white 36%, hsl(var(--success)));
   --warning-text: color-mix(in srgb, white 40%, hsl(var(--warning)));
   --danger-text:  color-mix(in srgb, white 38%, hsl(var(--danger)));
   --brand-text:   color-mix(in srgb, white 38%, hsl(var(--brand)));
 
-  --shadow:    0 1px 2px rgba(0,0,0,.4), 0 10px 28px -12px rgba(0,0,0,.6);
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+  --shadow:    0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.5);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
 }
 
 /* ============================================================
-   LAYER A — THEME PALETTE  (only --brand + --brand-dark per theme)
-   launch: nile · emerald · graphite — structure ready for six
+   LAYER A — THEME PALETTE
    ============================================================ */
 html[data-theme="nile"]    { --brand: 224 76% 48%; --brand-dark: 224 76% 42%; }
 html[data-theme="emerald"] { --brand: 161 94% 30%; --brand-dark: 163 94% 24%; }
 html[data-theme="graphite"]{ --brand: 215 19% 35%; --brand-dark: 215 25% 27%; }
-/* ready but not enabled at launch: */
 html[data-theme="clay"]    { --brand: 17 75% 48%;  --brand-dark: 18 85% 39%; }
 html[data-theme="royal"]   { --brand: 263 70% 50%; --brand-dark: 263 69% 42%; }
 html[data-theme="teal"]    { --brand: 175 84% 32%; --brand-dark: 175 83% 26%; }
-/* fallback if data-theme is unset */
 :root{ --brand: 224 76% 48%; --brand-dark: 224 76% 42%; }
 
 /* ============================================================
-   LAYER C — shadcn BRIDGE  (canonical names → our channels)
-   channels only (H S% L%) so hsl(var(--x) / <alpha>) works
+   FONT SYSTEM — §14.6
+   ============================================================ */
+html[data-font-ar="cairo"]     { --font-ar: "Cairo"; }
+html[data-font-en="plex-sans"] { --font-en: "IBM Plex Sans"; }
+html[lang="ar"] { --font-active: var(--font-ar); }
+html[lang="en"] { --font-active: var(--font-en); }
+html[data-font-scale="sm"] { --font-base: 12px; } /* md − 20% */
+html[data-font-scale="md"] { --font-base: 15px;   }
+html[data-font-scale="lg"] { --font-base: 18px; } /* md + 20% */
+
+/* ============================================================
+   LAYER C — shadcn BRIDGE
    ============================================================ */
 :root{
   --background:            var(--fx-bg);
@@ -88,10 +103,10 @@ html[data-theme="teal"]    { --brand: 175 84% 32%; --brand-dark: 175 83% 26%; }
   --popover-foreground:    var(--fx-ink);
   --primary:               var(--brand);
   --primary-foreground:    var(--on-brand);
-  --secondary:             var(--fx-bg);      /* neutral fill for secondary buttons */
+  --secondary:             var(--fx-bg);
   --secondary-foreground:  var(--fx-ink);
-  --muted:                 var(--fx-bg);      /* shadcn muted = subtle background */
-  --muted-foreground:      var(--fx-muted);   /* our secondary text (#64748B) */
+  --muted:                 var(--fx-bg);
+  --muted-foreground:      var(--fx-muted);
   --accent:                var(--fx-bg);
   --accent-foreground:     var(--fx-ink);
   --destructive:           var(--danger);
@@ -104,23 +119,85 @@ html[data-theme="teal"]    { --brand: 175 84% 32%; --brand-dark: 175 83% 26%; }
 /* ============================================================ BASE */
 *{ box-sizing:border-box; }
 html,body{ margin:0; padding:0; }
+/*
+ * font-size on html (not body) so that rem-based Tailwind utilities
+ * (text-sm = 0.875rem, text-xs = 0.75rem, etc.) all scale with
+ * --font-base when data-font-scale changes on <html>.
+ * Setting it on body has no effect on rem — rem is always relative to html.
+ */
+html{ font-size: var(--font-base); }
 body{
-  font-family: theme('fontFamily.sans');
+  font-family: var(--font-active), system-ui, sans-serif;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
   transition: background .3s var(--ease), color .3s var(--ease);
 }
-@media (prefers-reduced-motion: reduce){ *{ transition:none!important; animation:none!important; } }
+@media (prefers-reduced-motion: reduce){ *{ transition:none!important; animation:none!important; scroll-behavior:auto!important; } }
 :focus-visible{ outline:2px solid hsl(var(--ring)); outline-offset:2px; border-radius:6px; }
 ::selection{ background: var(--brand-tint); }
-.num{ font-variant-numeric: tabular-nums; }   /* numbers/amounts */
+.num{ font-variant-numeric: tabular-nums; }
 
-/* ============================================================ APP SHELL GRID */
-.app{ display:grid; min-height:100vh;
-  grid-template-columns:var(--nav-w) 1fr; grid-template-rows:var(--topbar-h) 1fr;
-  grid-template-areas:"nav top" "nav main"; transition:grid-template-columns .3s var(--ease); }
-html[data-collapsed="true"] .app{ grid-template-columns:var(--nav-w-collapsed) 1fr; }
-html[data-nav="horizontal"] .app{ grid-template-columns:1fr; grid-template-areas:"top" "main"; }
-@media (max-width:1024px){ html[data-nav="vertical"] .app{ grid-template-columns:var(--nav-w-collapsed) 1fr; } }
-@media (max-width:640px){ .app{ grid-template-columns:1fr!important; grid-template-areas:"top" "main"!important; } }
+/* ============================================================ SCROLLBARS
+ * .nav-scroll — applied to HorizontalNav rows (native overflow-x: auto).
+ * Radix ScrollArea (sidebar/split) uses its own styled thumb in scroll-area.tsx.
+ * Both use theme tokens so they adapt to dark mode and theme changes.
+ * ============================================================ */
+.nav-scroll{
+  scrollbar-width: thin;                            /* Firefox */
+  scrollbar-color: hsl(var(--border)) transparent; /* Firefox */
+}
+.nav-scroll::-webkit-scrollbar{ height:3px; width:3px; }
+.nav-scroll::-webkit-scrollbar-track{ background:transparent; }
+.nav-scroll::-webkit-scrollbar-thumb{
+  background: hsl(var(--border));
+  border-radius: 999px;
+}
+.nav-scroll::-webkit-scrollbar-thumb:hover{
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* ============================================================ APP SHELL GRID — §14.4 */
+.app{
+  display:grid; min-height:100vh;
+  /* minmax(0,1fr) prevents the content column from expanding beyond available
+     space — without the 0 floor, 1fr inherits min-width:auto from its content
+     and the grid (and therefore the page) can grow wider than the viewport.  */
+  grid-template-columns:var(--nav-w) minmax(0,1fr);
+  grid-template-rows:var(--topbar-h) minmax(0,1fr);
+  grid-template-areas:"nav top" "nav main";
+  transition:grid-template-columns .3s var(--ease);
+}
+
+/* sidebar — default, collapses to mini */
+html[data-layout="sidebar"] .app{
+  grid-template-columns: var(--nav-w) minmax(0,1fr);
+}
+html[data-collapsed="true"][data-layout="sidebar"] .app{
+  grid-template-columns: var(--nav-w-collapsed) minmax(0,1fr);
+}
+
+/* sidebar-split — rail (72px) + panel (220px) */
+html[data-layout="sidebar-split"] .app{
+  --nav-w: calc(72px + 220px);
+  grid-template-columns: var(--nav-w) minmax(0,1fr);
+}
+html[data-collapsed="true"][data-layout="sidebar-split"] .app{
+  grid-template-columns: 72px minmax(0,1fr);
+}
+
+/* horizontal — no side nav; header grows to fit 3 rows */
+html[data-layout="horizontal"] .app{
+  grid-template-columns: minmax(0,1fr);
+  grid-template-rows: auto minmax(0,1fr);
+  grid-template-areas: "top" "main";
+}
+
+/* mobile — all layouts go drawer */
+@media (max-width:640px){
+  .app{
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "top" "main" !important;
+  }
+}

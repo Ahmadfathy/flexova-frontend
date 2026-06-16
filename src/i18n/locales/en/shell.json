@@ -1,41 +1,124 @@
 {
   "nav": {
-    "dashboard": "Dashboard",
-    "inventory": "Inventory",
-    "sales": "Sales",
-    "purchasing": "Purchasing",
-    "customers": "Customers",
-    "accounting": "Accounting",
-    "hr": "HR",
-    "reports": "Reports",
-    "permissions": "Users & Permissions",
-    "settings": "Settings"
+    "dashboard":    "Dashboard",
+    "inventory":    "Inventory",
+    "sales":        "Sales",
+    "purchasing":   "Purchasing",
+    "customers":    "Customers",
+    "accounting":   "Accounting",
+    "hr":           "HR",
+    "reports":      "Reports",
+    "permissions":  "Users & Permissions",
+    "settings":     "Settings",
+
+    "items":              "Items",
+    "categories":         "Categories",
+    "price_lists":        "Price Lists",
+    "warehouses":         "Warehouses",
+    "stocktakes":         "Stocktakes",
+    "transfers":          "Transfers",
+    "adjustments":        "Adjustments",
+    "low_stock":          "Low Stock",
+
+    "invoices":           "Invoices",
+    "quotations":         "Quotations",
+    "credit_notes":       "Credit Notes",
+    "debit_notes":        "Debit Notes",
+    "receipts":           "Receipts",
+    "eta_hub":            "ETA Hub",
+
+    "suppliers":          "Suppliers",
+    "orders":             "Purchase Orders",
+    "returns":            "Returns",
+    "vouchers":           "Payment Vouchers",
+    "inbound_eta":        "Inbound ETA",
+
+    "finance_overview":   "Overview",
+    "treasuries":         "Treasuries",
+    "expenses":           "Expenses",
+    "receipt_vouchers":   "Receipt Vouchers",
+    "payment_vouchers":   "Payment Vouchers",
+    "fin_transfers":      "Transfers",
+    "journal":            "Journal",
+    "coa":                "Chart of Accounts",
+    "trial_balance":      "Trial Balance",
+    "statements":         "Financial Statements",
+    "reconciliation":     "Bank Reconciliation",
+    "closing":            "Period Closing",
+
+    "customers_list":     "Customers",
+    "follow_ups":         "Follow-ups",
+    "segments":           "Segments",
+    "communications":     "Communications",
+
+    "hr_overview":        "Overview",
+    "employees":          "Employees",
+    "attendance":         "Attendance",
+    "advances":           "Advances",
+    "payroll":            "Payroll",
+    "commissions":        "Commissions",
+
+    "reports_overview":   "Overview",
+    "report_library":     "Report Library",
+    "saved_reports":      "Saved Reports",
+    "eta_tax":            "ETA Tax",
+    "z_report":           "Z Report",
+    "scheduling":         "Scheduling",
+
+    "users":              "Users",
+    "roles":              "Roles & Permissions",
+    "branches":           "Branches",
+    "security":           "Security",
+    "audit":              "Audit Log",
+
+    "settings_appearance": "Appearance"
   },
+
+  "nav_groups": {
+    "core":   "Core",
+    "admin":  "Admin"
+  },
+
+  "soon": "Soon",
+
   "topbar": {
-    "search": "Search invoice, customer, item…",
-    "eta_connected": "ETA connected",
-    "eta_syncing": "Syncing…",
-    "eta_offline": "Offline"
+    "open_menu":        "Open menu",
+    "collapse":         "Collapse sidebar",
+    "expand":           "Expand sidebar",
+    "search":           "Search invoice, customer, item…",
+    "eta_connected":    "ETA connected",
+    "eta_syncing":      "Syncing…",
+    "eta_offline":      "Offline",
+    "fullscreen_enter": "Enter fullscreen",
+    "fullscreen_exit":  "Exit fullscreen",
+    "notifications":    "Notifications",
+    "home":             "Home"
   },
-  "appearance": {
-    "title": "Appearance",
-    "theme": "Theme",
-    "mode": "Mode",
-    "mode_system": "System",
-    "mode_light": "Light",
-    "mode_dark": "Dark",
-    "nav": "Menu",
-    "nav_vertical": "Vertical",
-    "nav_horizontal": "Horizontal",
-    "density": "Density",
-    "density_comfortable": "Comfortable",
-    "density_compact": "Compact",
-    "language": "Language",
-    "lang_ar": "العربية",
-    "lang_en": "English"
-  },
+
   "user": {
-    "profile": "Profile",
-    "logout": "Log out"
+    "account":    "Account",
+    "profile":    "Profile",
+    "language":   "Language",
+    "dark_mode":  "Dark mode",
+    "appearance": "Appearance",
+    "logout":     "Log out"
+  },
+
+  "appearance": {
+    "title":               "Appearance",
+    "theme":               "Theme",
+    "mode":                "Mode",
+    "mode_system":         "System",
+    "mode_light":          "Light",
+    "mode_dark":           "Dark",
+    "nav":                 "Menu",
+    "nav_vertical":        "Vertical",
+    "nav_horizontal":      "Horizontal",
+    "density":             "Density",
+    "density_comfortable": "Comfortable",
+    "density_compact":     "Compact",
+    "language":            "Language",
+    "lang_ar":             "العربية",
+    "lang_en":             "English"
   }
 }

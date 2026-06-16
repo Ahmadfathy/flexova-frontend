@@ -6,6 +6,11 @@ import { Skeleton } from "@/components/patterns/Skeletons";
 // Dashboard
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
 
+// Settings
+const AppearanceSettingsPage = lazy(() =>
+  import("@/features/settings/AppearanceSettings").then(m => ({ default: m.AppearanceSettings }))
+);
+
 // Inventory
 import { InventoryLayout } from "@/features/inventory/InventoryLayout";
 import {
@@ -180,12 +185,22 @@ export default function App() {
             <Route path="audit"    element={<AuditPage />} />
           </Route>
 
-          {/* Settings placeholder */}
-          <Route path="/settings" element={
-            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
-              الإعدادات — قريباً
-            </div>
-          } />
+          {/* Settings */}
+          <Route path="/settings">
+            <Route index element={
+              <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">
+                {/* redirect to appearance by default */}
+              </div>
+            } />
+            <Route
+              path="appearance"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <AppearanceSettingsPage />
+                </Suspense>
+              }
+            />
+          </Route>
 
         </Route>
       </Routes>

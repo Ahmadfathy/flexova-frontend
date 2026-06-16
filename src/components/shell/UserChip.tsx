@@ -1,24 +1,40 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, LogOut, User } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ChevronDown, User, LogOut, Palette, Sun, Moon } from "lucide-react";
+import { useAppearance } from "@/stores/appearance";
+import { cn } from "@/lib/utils";
 
-interface UserChipProps {
+interface UserMenuProps {
   name?: string;
   role?: string;
   branch?: string;
   avatarUrl?: string;
 }
 
-export function UserChip({ name = "أحمد فتحي", role = "مدير", branch = "الفرع الرئيسي", avatarUrl }: UserChipProps) {
+export function UserMenu({
+  name = "أحمد فتحي",
+  role = "مدير",
+  branch = "الفرع الرئيسي",
+  avatarUrl,
+}: UserMenuProps) {
   const { t } = useTranslation("shell");
-  const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const { lang, setLang, mode, setMode } = useAppearance();
+  const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+
+  const [sysDark, setSysDark] = useState(
+    () => window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = () => setSysDark(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  const isDark = mode === "dark" || (mode === "system" && sysDark);
 
   return (
     <Popover>
@@ -35,21 +51,102 @@ export function UserChip({ name = "أحمد فتحي", role = "مدير", branch
           <ChevronDown className="h-3 w-3 text-muted-foreground hidden md:block" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-52 p-2">
-        <div className="px-2 py-1.5">
-          <p className="text-sm font-semibold">{name}</p>
-          <p className="text-xs text-muted-foreground">{role} · {branch}</p>
+
+      <PopoverContent align="end" className="w-60 p-2">
+        {/* Header */}
+        <div className="px-2 py-2">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9">
+              {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
+              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+            </Avatar>
+            <div className="leading-tight min-w-0">
+              <p className="text-sm font-semibold truncate">{name}</p>
+              <p className="text-xs text-muted-foreground truncate">{role} · {branch}</p>
+            </div>
+          </div>
         </div>
+
         <Separator className="my-1" />
-        <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
-          <User className="h-4 w-4" />
+
+        {/* Profile link */}
+        <button className="w-full flex items-center gap-2 h-9 px-2 rounded-sm text-sm text-muted-foreground hover:bg-background hover:text-foreground transition-colors">
+          <User className="h-4 w-4 shrink-0" />
           {t("user.profile")}
-        </Button>
-        <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-danger-text">
-          <LogOut className="h-4 w-4" />
+        </button>
+
+        <Separator className="my-1" />
+
+        {/* Language switch */}
+        <div className="px-2 py-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5">
+            {t("user.language")}
+          </p>
+          <div className="flex gap-1">
+            {(["ar", "en"] as const).map(l => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                className={cn(
+                  "flex-1 h-8 rounded-sm text-xs font-medium transition-colors border",
+                  lang === l
+                    ? "bg-brand-tint text-brand-text border-brand/30"
+                    : "border-border text-muted-foreground hover:bg-background hover:text-foreground"
+                )}
+              >
+                {l === "ar" ? "العربية" : "English"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Dark mode toggle */}
+        <div className="px-2 py-1.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              {t("user.dark_mode")}
+            </div>
+            <button
+              onClick={() => setMode(isDark ? "light" : "dark")}
+              className={cn(
+                "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
+                isDark ? "bg-brand" : "bg-muted-foreground/30"
+              )}
+              role="switch"
+              aria-checked={isDark}
+            >
+              <span
+                className={cn(
+                  "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
+                  isDark ? "translate-x-4 rtl:-translate-x-4" : "translate-x-0"
+                )}
+              />
+            </button>
+          </div>
+        </div>
+
+        <Separator className="my-1" />
+
+        {/* Appearance settings */}
+        <Link
+          to="/settings/appearance"
+          className="w-full flex items-center gap-2 h-9 px-2 rounded-sm text-sm text-muted-foreground hover:bg-background hover:text-foreground transition-colors"
+        >
+          <Palette className="h-4 w-4 shrink-0" />
+          {t("user.appearance")}
+        </Link>
+
+        <Separator className="my-1" />
+
+        {/* Logout */}
+        <button className="w-full flex items-center gap-2 h-9 px-2 rounded-sm text-sm text-danger-text hover:bg-danger-tint transition-colors">
+          <LogOut className="h-4 w-4 shrink-0" />
           {t("user.logout")}
-        </Button>
+        </button>
       </PopoverContent>
     </Popover>
   );
 }
+
+export { UserMenu as UserChip };

@@ -6,7 +6,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"IBM Plex Sans Arabic"', "system-ui", "sans-serif"],
+        sans: ["var(--font-active)", "system-ui", "sans-serif"],
       },
       colors: {
         // shadcn canonical (channels → hsl + alpha)

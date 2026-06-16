@@ -1,8 +1,10 @@
 # Flexova — FE_00 Foundation (build-ready)
 
 > **Phase 4 — first file.** Token/theme system + Appearance + shadcn binding + Tailwind + i18n + folder structure + App Shell wiring + core component inventory.
-> Version: 1.0 — June 2026
+> Version: **1.1 — June 2026**
 > **Source of truth:** `Flexova_SPEC_EN_00_DesignSystem` + `Flexova_Design_Foundations` + `flexova-app-shell.html` (visual reference). Do not redefine anything in those — this file translates them into code.
+>
+> ⚠️ **READ §14 FIRST — Design Update v1.1.** §14 supersedes parts of §4/§6/§7/§8/§9/§12 per the notes there (menu registry, 3 layout variants, collapse→mini, finalized Topbar + User menu, Fullscreen, font system with per-language fonts + font-size scale, Appearance settings page, and the MatDash-inspired visual language). Where §14 conflicts with an earlier section, **§14 wins.** Build from §1–§13 as the base, then apply §14.
 
 ---
 
@@ -581,14 +583,164 @@ pill = `rounded-full` + semantic tint + `currentColor` dot. Ready states: `paid`
 
 | file | status |
 |---|---|
-| `src/styles/globals.css` | §4 — complete |
-| `tailwind.config.ts` | §6 — complete |
-| `src/stores/appearance.ts` · `providers/*` | §7 — complete |
-| `src/i18n/index.ts` · `lib/format.ts` + locales | §8 — complete + sample |
-| `components/shell/*` (AppShell/Sidebar/Topbar/EtaBadge/UserChip/AppearancePopover/MobileDrawer) | §9 — build spec |
+| `src/styles/globals.css` | §4 + §14.6 — complete |
+| `tailwind.config.ts` | §6 + §14.6 — complete |
+| `src/stores/appearance.ts` · `providers/*` | §7 + §14.2 — complete |
+| `src/i18n/index.ts` · `lib/format.ts` + locales | §8 + §14.9 — complete + sample |
+| `src/config/menu.ts` (menu registry) | §14.3 — complete |
+| `components/shell/*` (AppShell/Sidebar variants/Topbar/EtaBadge/Fullscreen/UserMenu/MobileDrawer) | §9 + §14.4/§14.5 — build spec |
+| `features/settings/AppearanceSettings.tsx` (design customization page) | §14.8 — build spec |
 | `components/ui/*` (themed shadcn) + `components/patterns/*` | §10 — inventory + tokens |
 | folder structure | §2 |
 
-**Next:** `Flexova_FE_01_Inventory.md` + `Flexova_FE_01_Inventory.fixtures.json` (page by page, order per the kickoff).
+---
 
-*End of FE_00 Foundation — version 1.0*
+# 14) Design Update v1.1 (supersedes earlier sections where noted)
+
+> All decisions below are **final and build-ready**. Where they conflict with §1–§13, §14 wins.
+
+## 14.1 Summary of changes
+1. **Menu = data-driven registry** (independent modules + sub-items + groups CORE / Sector / ADMIN + `Soon` badge for unentitled modules). Supersedes the fixed nav list in §9.2.
+2. **Three layout variants** chosen by the user: `sidebar` (single-column accordion, default) · `sidebar-split` (dual-pane rail + panel) · `horizontal` (top bar + mega-menu). Supersedes `nav: vertical|horizontal` in §7.
+3. **Sidebar collapse → mini + flyout** (icons only, sub-items on hover).
+4. **Topbar finalized:** Collapse · Search · ETA status · Fullscreen(new) · Notifications. **dark/light + language move to the User menu.** Supersedes the Topbar list in §9.2.
+5. **User menu** (from the avatar): account/profile links · language switch · dark/light toggle · logout.
+6. **Font system:** two fonts per language (AR: IBM Plex Sans Arabic default + Cairo · EN: Inter default + IBM Plex Sans) + **font-size scale** (small/medium/large). Supersedes the single fixed font in §4/§6.
+7. **Appearance settings page** (`/settings/appearance`): layout · color theme · logo upload · company name · font size · font per language. The old Appearance popover (§9.2) becomes a quick subset (theme + mode + layout); full control lives on the page.
+8. **MatDash-inspired visual language** (level: *inspired*, not copied): softer surfaces, larger radius, soft diffuse shadows, pastel KPI cards, refined pills — applied on top of Flexova's six themes (primary still comes from the chosen theme).
+
+## 14.2 Extended appearance store (supersedes §7.2)
+```ts
+type Theme   = "nile" | "emerald" | "graphite";        // ready for clay/royal/teal
+type Mode    = "system" | "light" | "dark";
+type Layout  = "sidebar" | "sidebar-split" | "horizontal";   // was `nav`
+type Density = "comfortable" | "compact";
+type Lang    = "ar" | "en";
+type FontScale = "sm" | "md" | "lg";
+type FontAr  = "plex-arabic" | "cairo";
+type FontEn  = "inter" | "plex-sans";
+
+interface Branding { logoUrl: string | null; companyName: string; }
+
+interface AppearanceState {
+  theme: Theme; mode: Mode; layout: Layout; density: Density; lang: Lang;
+  fontScale: FontScale; fontAr: FontAr; fontEn: FontEn;
+  branding: Branding; collapsed: boolean;
+  setTheme; setMode; setLayout; setDensity; setLang;
+  setFontScale; setFontAr; setFontEn; setBranding; toggleCollapsed;
+}
+// defaults: theme:"nile", mode:"system", layout:"sidebar", density:"comfortable",
+//           lang:"ar", fontScale:"md", fontAr:"plex-arabic", fontEn:"inter",
+//           branding:{logoUrl:null, companyName:""}, collapsed:false
+// persist name: "flexova.appearance"
+```
+**AppearanceProvider** (extends §7.3) sets on `<html>`: `data-theme`, `data-mode`, **`data-layout`**, `data-density`, `data-collapsed`, **`data-font-scale`**, **`data-font-ar`**, **`data-font-en`**, `dir`, `lang`. (Renames `data-nav` → `data-layout`.)
+
+## 14.3 Menu registry (`src/config/menu.ts`) (supersedes the fixed nav in §9.2)
+```ts
+import type { LucideIcon } from "lucide-react";
+export type MenuGroup = "core" | "sector" | "admin";
+export interface MenuItem {
+  key: string;            // i18n key under shell.nav.*
+  icon: LucideIcon;
+  route: string;
+  group: MenuGroup;
+  order: number;
+  permission?: string;    // FE_08 can() key; omit = always visible
+  moduleFlag?: string;    // tenant entitlement flag; omit = core (always on)
+  status?: "active" | "soon";   // "soon" → shown disabled with a "Soon" badge (upsell)
+  subItems?: { key: string; route: string; permission?: string }[];  // in-module tabs
+}
+```
+Rules: render grouped with small section headers — a single **Dashboard** item on top, then **CORE**, then the **Sector** group (header = active sector name; shown only if any sector item is entitled), then **ADMIN**. Filter each item by `moduleFlag` entitled **AND** `can(permission, scope)` (FE_08). `status:"soon"` renders disabled + `Soon` badge instead of hiding. **Each module is its own item; `subItems` are in-module tabs — never nest a module as a tab inside another.** CORE seed: inventory · sales · purchasing · accounting · customers · hr · reports. ADMIN seed: permissions · settings. Sector group: empty at launch (registering e.g. POS with `moduleFlag:"pos"` makes it appear automatically, zero shell changes).
+
+## 14.4 Three layout variants (supersedes §9.1 grid + §9.2 tree)
+All three read the **same** registry; user picks via Appearance (`data-layout`). Mobile (<640px): **all three collapse to a drawer** (opens from the right in RTL).
+
+- **`sidebar` (single, default):** one vertical column, items with icon+label grouped by section header. A module with `subItems` is an **accordion** (chevron expands the sub-list inline). `collapsed` → **mini rail** (icons only, section headers hidden); sub-items show in a **hover flyout**. Active item = `bg-brand-tint + text-brand-text` + brand bar on the start edge.
+- **`sidebar-split` (dual-pane):** narrow **icon rail** (modules) + an adjacent **panel** showing the selected module's sub-items; sub-groups in the panel are **collapsible** `<div>`s (accordion). The panel hides in `collapsed`.
+- **`horizontal`:** modules in a **top bar**; clicking a module opens a **dropdown / mega-menu** with its sub-items (sub-groups shown as columns/sections, **no collapsing** — appear/disappear with the menu). No mini state.
+
+Grid sketch (logical properties; `start/end`, never `left/right`):
+```css
+html[data-layout="sidebar"] .app,
+html[data-layout="sidebar-split"] .app{
+  display:grid; grid-template-columns:var(--nav-w) 1fr;
+  grid-template-areas:"nav top" "nav main"; }
+html[data-layout="sidebar-split"] .app{ --nav-w: calc(72px + 220px); } /* rail + panel */
+html[data-collapsed="true"][data-layout="sidebar"] .app{ grid-template-columns:var(--nav-w-collapsed) 1fr; }
+html[data-collapsed="true"][data-layout="sidebar-split"] .app{ grid-template-columns:72px 1fr; } /* panel hidden */
+html[data-layout="horizontal"] .app{ grid-template-columns:1fr; grid-template-areas:"top" "main"; }
+@media (max-width:640px){ .app{ grid-template-columns:1fr!important; grid-template-areas:"top" "main"!important; } }
+```
+
+## 14.5 Topbar + User menu (supersedes Topbar list in §9.2)
+**Topbar fixed icons** (logical order start→end, RTL-correct, lucide outline, i18n aria-labels):
+`CollapseBtn · GlobalSearch · EtaBadge(§9.3) · FullscreenBtn · NotificationsBtn(badge dot)` → then **UserMenu** (avatar).
+- **FullscreenBtn:** Fullscreen API (`requestFullscreen`/`exitFullscreen`); icon swaps `Maximize ↔ Minimize` on `document.fullscreenElement`; respects `prefers-reduced-motion`.
+- **dark/light and language are NOT standalone Topbar icons** — they live in the User menu.
+
+**UserMenu** (`DropdownMenu` from the avatar): header (avatar + name + plan badge) · profile/account links · **Language** (ar/en inline) · **Dark mode** (toggle inline) · link to **Appearance settings** (§14.8) · **Logout**. RTL-aligned via DirectionProvider.
+
+## 14.6 Font system (supersedes the single font in §4/§6)
+**globals.css additions:**
+```css
+:root{ --font-ar:"IBM Plex Sans Arabic"; --font-en:"Inter"; --font-base:14px; }
+html[data-font-ar="cairo"]      { --font-ar:"Cairo"; }
+html[data-font-en="plex-sans"]  { --font-en:"IBM Plex Sans"; }
+html[lang="ar"]{ --font-active: var(--font-ar); }
+html[lang="en"]{ --font-active: var(--font-en); }
+html[data-font-scale="sm"]{ --font-base:13px; }
+html[data-font-scale="md"]{ --font-base:14px; }
+html[data-font-scale="lg"]{ --font-base:16px; }
+body{ font-family: var(--font-active), system-ui, sans-serif; font-size:var(--font-base); }
+```
+**tailwind.config.ts:** change `fontFamily.sans` to `["var(--font-active)","system-ui","sans-serif"]`.
+**Loading:** load the four families (IBM Plex Sans Arabic, Cairo, Inter, IBM Plex Sans) via `@fontsource` or Google Fonts; Arabic families must include Arabic subsets. Keep weights lean (400/500/600/700) for performance.
+
+## 14.7 MatDash-inspired visual language (level: inspired)
+Apply on top of the six themes — **primary stays from the active theme**, not MatDash purple. Concrete token tweaks (override §4 values):
+- **Radius:** `--radius: 16px` (cards softer; controls `rounded-md`≈12, pills `rounded-full`).
+- **Shadows (soft, diffuse):** `--shadow: 0 2px 4px rgba(15,23,42,.04), 0 12px 32px -12px rgba(15,23,42,.12);`
+- **Surfaces:** keep the bluish off-white bg (`--fx-bg`) with white cards (already in §4) — the soft contrast is the look.
+- **KPI cards — pastel fills (new pattern variant):** `KpiCard` gains a `tone` prop (`brand|success|warning|danger|info`) rendering a **filled pastel** card (`bg-*-tint` with `text-*-text`), per MatDash's colored stat cards. Default `tone="brand"`. Ensure text/number contrast on the tint (use `*-text`).
+- **Pills:** small, `rounded-full`, pastel bg + same-family dark text + optional leading dot (already StatusPill §10.7 — confirm the softer look).
+
+## 14.8 Appearance settings page (`/settings/appearance`) (new; extends §9.2 popover)
+A full page under ADMIN → Settings. Sections:
+- **Layout** — pick `sidebar` / `sidebar-split` / `horizontal` (visual cards).
+- **Color theme** — the six theme swatches (3 enabled at launch).
+- **Mode** — system / light / dark.
+- **Font size** — small / medium / large.
+- **Fonts** — Arabic font (Plex Arabic / Cairo) + English font (Inter / Plex Sans), each with a live preview.
+- **Branding** — logo upload (shown in shell + print) + company name.
+All wired to the appearance store (§14.2), applied live via `data-*`, persisted. The **Topbar/User-menu popover** keeps a quick subset (theme + mode + layout); deep control is on this page.
+**i18n ns:** `settings`. **Permission:** visible to all; branding/company may be gated by `admin.branch.manage` per tenant policy.
+
+## 14.9 New i18n keys (add to `shell.json` / `settings.json`)
+```json
+// ar/shell.json additions
+{ "topbar": { "fullscreen":"ملء الشاشة","exit_fullscreen":"خروج من ملء الشاشة","notifications":"الإشعارات" },
+  "user": { "account":"الحساب","profile":"الملف الشخصي","language":"اللغة","dark_mode":"الوضع الداكن",
+            "appearance":"تخصيص التصميم","logout":"تسجيل الخروج" },
+  "nav_groups": { "core":"الأساسي","admin":"الإدارة" }, "soon":"قريباً" }
+// ar/settings.json
+{ "appearance": { "title":"تخصيص التصميم","layout":"التخطيط",
+  "layout_sidebar":"قائمة جانبية","layout_split":"جانبية مزدوجة","layout_horizontal":"أفقية",
+  "theme":"الثيم","mode":"الوضع","font_size":"حجم الخط","font_sm":"صغير","font_md":"متوسط","font_lg":"كبير",
+  "font_ar":"خط العربية","font_en":"خط الإنجليزية","branding":"الهوية","logo":"الشعار","company_name":"اسم الشركة" } }
+```
+(EN mirror: Fullscreen/Exit fullscreen/Notifications · Account/Profile/Language/Dark mode/Appearance/Logout · Core/Admin · Soon · Appearance/Layout/Sidebar/Split sidebar/Horizontal/Theme/Mode/Font size/Small/Medium/Large/Arabic font/English font/Branding/Logo/Company name.)
+
+## 14.10 Acceptance additions (extend §12)
+8. Menu renders from the registry; a `moduleFlag`-off or no-permission item is hidden; a `status:"soon"` item shows disabled with a Soon badge; modules are independent (sub-items never nest another module).
+9. All three layouts (`sidebar` / `sidebar-split` / `horizontal`) work, switchable from Appearance, persisted; mobile falls back to a right-opening drawer for all three.
+10. `sidebar` collapses to a mini rail with hover flyouts; state persists.
+11. Topbar shows Collapse · Search · ETA · Fullscreen · Notifications; Fullscreen toggles real fullscreen + swaps icon; dark/light + language are in the User menu only.
+12. Font size (sm/md/lg) and per-language font selection apply live and persist; AR uses Plex Arabic/Cairo, EN uses Inter/Plex Sans.
+13. Appearance settings page applies layout/theme/mode/fonts/branding live and persists; logo + company name appear in the shell.
+14. Visual language matches the MatDash-inspired direction (softer radius/shadows, pastel KPI cards) **while** primary follows the active theme.
+
+**Next:** `Flexova_FE_01_Inventory.md` + its fixtures (page by page, order per the kickoff).
+
+*End of FE_00 Foundation — version 1.1*

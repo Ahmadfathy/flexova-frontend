@@ -1,41 +1,124 @@
 {
   "nav": {
-    "dashboard": "لوحة المتابعة",
-    "inventory": "المخزون",
-    "sales": "المبيعات",
-    "purchasing": "المشتريات",
-    "customers": "العملاء",
-    "accounting": "الحسابات",
-    "hr": "الموارد البشرية",
-    "reports": "التقارير",
-    "permissions": "المستخدمون والصلاحيات",
-    "settings": "الإعدادات"
+    "dashboard":    "لوحة المتابعة",
+    "inventory":    "المخزون",
+    "sales":        "المبيعات",
+    "purchasing":   "المشتريات",
+    "customers":    "العملاء",
+    "accounting":   "الحسابات",
+    "hr":           "الموارد البشرية",
+    "reports":      "التقارير",
+    "permissions":  "المستخدمون والصلاحيات",
+    "settings":     "الإعدادات",
+
+    "items":              "الأصناف",
+    "categories":         "الفئات",
+    "price_lists":        "قوائم الأسعار",
+    "warehouses":         "المستودعات",
+    "stocktakes":         "الجرد",
+    "transfers":          "التحويلات",
+    "adjustments":        "تسويات المخزون",
+    "low_stock":          "منخفض المخزون",
+
+    "invoices":           "الفواتير",
+    "quotations":         "عروض الأسعار",
+    "credit_notes":       "إشعارات الخصم",
+    "debit_notes":        "إشعارات الإضافة",
+    "receipts":           "سندات القبض",
+    "eta_hub":            "بوابة ETA",
+
+    "suppliers":          "الموردون",
+    "orders":             "أوامر الشراء",
+    "returns":            "المرتجعات",
+    "vouchers":           "سندات الصرف",
+    "inbound_eta":        "ETA الوارد",
+
+    "finance_overview":   "نظرة عامة",
+    "treasuries":         "الخزائن",
+    "expenses":           "المصروفات",
+    "receipt_vouchers":   "سندات القبض",
+    "payment_vouchers":   "سندات الصرف",
+    "fin_transfers":      "التحويلات",
+    "journal":            "اليومية",
+    "coa":                "دليل الحسابات",
+    "trial_balance":      "ميزان المراجعة",
+    "statements":         "القوائم المالية",
+    "reconciliation":     "التسوية البنكية",
+    "closing":            "الإقفال",
+
+    "customers_list":     "قائمة العملاء",
+    "follow_ups":         "المتابعات",
+    "segments":           "الشرائح",
+    "communications":     "التواصل",
+
+    "hr_overview":        "نظرة عامة",
+    "employees":          "الموظفون",
+    "attendance":         "الحضور والغياب",
+    "advances":           "السلف",
+    "payroll":            "مسير الرواتب",
+    "commissions":        "العمولات",
+
+    "reports_overview":   "نظرة عامة",
+    "report_library":     "مكتبة التقارير",
+    "saved_reports":      "التقارير المحفوظة",
+    "eta_tax":            "الضريبة ETA",
+    "z_report":           "تقرير Z",
+    "scheduling":         "الجدولة",
+
+    "users":              "المستخدمون",
+    "roles":              "الأدوار والصلاحيات",
+    "branches":           "الفروع",
+    "security":           "الأمان",
+    "audit":              "سجل التدقيق",
+
+    "settings_appearance": "تخصيص التصميم"
   },
+
+  "nav_groups": {
+    "core":   "الأساسي",
+    "admin":  "الإدارة"
+  },
+
+  "soon": "قريباً",
+
   "topbar": {
-    "search": "ابحث عن فاتورة، عميل، صنف…",
-    "eta_connected": "ETA متصل",
-    "eta_syncing": "جاري المزامنة…",
-    "eta_offline": "غير متصل"
+    "open_menu":        "فتح القائمة",
+    "collapse":         "طيّ الشريط الجانبي",
+    "expand":           "توسيع الشريط الجانبي",
+    "search":           "ابحث عن فاتورة، عميل، صنف…",
+    "eta_connected":    "ETA متصل",
+    "eta_syncing":      "جاري المزامنة…",
+    "eta_offline":      "غير متصل",
+    "fullscreen_enter": "وضع ملء الشاشة",
+    "fullscreen_exit":  "الخروج من ملء الشاشة",
+    "notifications":    "الإشعارات",
+    "home":             "الرئيسية"
   },
-  "appearance": {
-    "title": "المظهر",
-    "theme": "الثيم",
-    "mode": "الوضع",
-    "mode_system": "النظام",
-    "mode_light": "فاتح",
-    "mode_dark": "داكن",
-    "nav": "القائمة",
-    "nav_vertical": "عمودية",
-    "nav_horizontal": "أفقية",
-    "density": "الكثافة",
-    "density_comfortable": "مريحة",
-    "density_compact": "مكثّفة",
-    "language": "اللغة",
-    "lang_ar": "العربية",
-    "lang_en": "English"
-  },
+
   "user": {
-    "profile": "الملف الشخصي",
-    "logout": "تسجيل الخروج"
+    "account":    "الحساب",
+    "profile":    "الملف الشخصي",
+    "language":   "اللغة",
+    "dark_mode":  "الوضع الداكن",
+    "appearance": "تخصيص التصميم",
+    "logout":     "تسجيل الخروج"
+  },
+
+  "appearance": {
+    "title":               "المظهر",
+    "theme":               "الثيم",
+    "mode":                "الوضع",
+    "mode_system":         "النظام",
+    "mode_light":          "فاتح",
+    "mode_dark":           "داكن",
+    "nav":                 "القائمة",
+    "nav_vertical":        "عمودية",
+    "nav_horizontal":      "أفقية",
+    "density":             "الكثافة",
+    "density_comfortable": "مريحة",
+    "density_compact":     "مكثّفة",
+    "language":            "اللغة",
+    "lang_ar":             "العربية",
+    "lang_en":             "English"
   }
 }
