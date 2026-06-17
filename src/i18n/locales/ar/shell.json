@@ -86,6 +86,7 @@
     "collapse":         "طيّ الشريط الجانبي",
     "expand":           "توسيع الشريط الجانبي",
     "search":           "ابحث عن فاتورة، عميل، صنف…",
+    "search_open":      "فتح البحث",
     "eta_connected":    "ETA متصل",
     "eta_syncing":      "جاري المزامنة…",
     "eta_offline":      "غير متصل",
@@ -93,6 +94,20 @@
     "fullscreen_exit":  "الخروج من ملء الشاشة",
     "notifications":    "الإشعارات",
     "home":             "الرئيسية"
+  },
+
+  "search": {
+    "placeholder":        "بحث عن فاتورة، عميل، صنف…",
+    "filter":             "خيارات البحث",
+    "recently_searched":  "عمليات البحث الأخيرة",
+    "no_results":         "لا توجد نتائج",
+    "groups": {
+      "invoices":  "الفواتير",
+      "customers": "العملاء",
+      "items":     "الأصناف",
+      "suppliers": "الموردون",
+      "employees": "الموظفون"
+    }
   },
 
   "user": {

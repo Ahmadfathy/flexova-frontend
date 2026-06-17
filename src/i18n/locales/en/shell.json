@@ -86,6 +86,7 @@
     "collapse":         "Collapse sidebar",
     "expand":           "Expand sidebar",
     "search":           "Search invoice, customer, item…",
+    "search_open":      "Open search",
     "eta_connected":    "ETA connected",
     "eta_syncing":      "Syncing…",
     "eta_offline":      "Offline",
@@ -93,6 +94,20 @@
     "fullscreen_exit":  "Exit fullscreen",
     "notifications":    "Notifications",
     "home":             "Home"
+  },
+
+  "search": {
+    "placeholder":        "Search invoice, customer, item…",
+    "filter":             "Search filters",
+    "recently_searched":  "Recently searched",
+    "no_results":         "No results",
+    "groups": {
+      "invoices":  "Invoices",
+      "customers": "Customers",
+      "items":     "Items",
+      "suppliers": "Suppliers",
+      "employees": "Employees"
+    }
   },
 
   "user": {

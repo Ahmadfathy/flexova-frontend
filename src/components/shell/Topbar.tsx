@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Menu, PanelLeft, Home, Search, Maximize, Minimize, Bell } from "lucide-react";
+import { Menu, PanelLeft, Home, Maximize, Minimize, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EtaBadge } from "./EtaBadge";
 import { UserMenu } from "./UserChip";
 import { MobileDrawer } from "./MobileDrawer";
 import { HorizontalModuleBar, HorizontalSubBar } from "./HorizontalNav";
+import { SearchPanel } from "./SearchPanel";
 import { useAppearance } from "@/stores/appearance";
 import { cn } from "@/lib/utils";
 
@@ -95,12 +96,8 @@ export function Topbar() {
       </Button>
 
       {/* Search — all layouts, desktop */}
-      <div className="hidden sm:flex flex-1 max-w-sm items-center gap-2 rounded-sm border border-border bg-background px-3 h-9">
-        <Search className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-        <input
-          className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground outline-none"
-          placeholder={t("topbar.search")}
-        />
+      <div className="hidden sm:flex">
+        <SearchPanel />
       </div>
 
       <div className="flex-1" />
