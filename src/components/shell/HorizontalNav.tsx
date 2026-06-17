@@ -17,7 +17,7 @@ export function HorizontalModuleBar() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="flex items-center overflow-x-auto overflow-y-hidden px-4 h-11 nav-scroll w-full min-w-0" aria-label={t("nav_groups.core")}>
+    <nav className="flex items-center justify-center overflow-x-auto overflow-y-hidden px-4 h-11 nav-scroll w-full min-w-0" aria-label={t("nav_groups.core")}>
       {MENU.map(item => {
         const active = isModuleActive(item, pathname);
 
@@ -63,7 +63,7 @@ export function HorizontalSubBar() {
 
   return (
     <nav
-      className="flex items-center overflow-x-auto overflow-y-hidden px-4 h-10 border-t border-border nav-scroll w-full min-w-0"
+      className="flex items-center justify-center overflow-x-auto overflow-y-hidden px-4 h-10 border-t border-border nav-scroll w-full min-w-0"
       aria-label={t(`nav.${activeModule.key}`)}
     >
       {activeModule.subItems.map(sub => (
@@ -203,7 +203,7 @@ export function HorizontalDropdownModuleBar() {
   const { t } = useTranslation("shell");
   return (
     <nav
-      className="flex items-center overflow-x-auto overflow-y-hidden px-4 h-11 nav-scroll w-full min-w-0"
+      className="flex items-center justify-center overflow-x-auto overflow-y-hidden px-4 h-11 nav-scroll w-full min-w-0"
       aria-label={t("nav_groups.core")}
     >
       {MENU.map(item => (
