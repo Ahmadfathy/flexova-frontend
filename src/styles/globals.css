@@ -183,6 +183,10 @@ html[data-layout="sidebar-split"] .app{
   --nav-w: calc(72px + 220px);
   grid-template-columns: var(--nav-w) minmax(0,1fr);
 }
+/* Sub-panel closed by default: only rail visible until first module click */
+html[data-layout="sidebar-split"]:not([data-subpanel-open="true"]) .app{
+  grid-template-columns: 72px minmax(0,1fr);
+}
 html[data-collapsed="true"][data-layout="sidebar-split"] .app{
   grid-template-columns: 72px minmax(0,1fr);
 }
