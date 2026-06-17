@@ -206,7 +206,9 @@ html[data-collapsed="true"][data-layout="sidebar-split"] .app{
 }
 
 /* horizontal — no side nav; header grows to fit 3 rows */
-html[data-layout="horizontal"] .app{
+html[data-layout="horizontal"] .app,
+/* horizontal-dropdown — identical grid; header has 2 rows (no fixed sub-bar) */
+html[data-layout="horizontal-dropdown"] .app{
   grid-template-columns: minmax(0,1fr);
   grid-template-rows: auto minmax(0,1fr);
   grid-template-areas: "top" "main";

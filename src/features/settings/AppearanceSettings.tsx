@@ -77,6 +77,24 @@ const LayoutPreviews: Record<Layout, React.ReactNode> = {
       <rect x="6" y="38" width="60" height="4" rx="2" fill="currentColor" className="text-muted/10" />
     </svg>
   ),
+  "horizontal-dropdown": (
+    /* 2-row header: topbar + module bar; dropdown panel visible below active tab */
+    <svg viewBox="0 0 80 48" className="w-full h-full" aria-hidden>
+      {/* Topbar row */}
+      <rect x="0" y="0" width="80" height="11" fill="currentColor" className="text-muted/20" />
+      {/* Module bar row */}
+      <rect x="0" y="12" width="80" height="8" fill="currentColor" className="text-muted/10" />
+      {/* Active module underline indicator */}
+      <rect x="4" y="18" width="16" height="2" rx="1" fill="currentColor" className="text-brand/60" />
+      {/* Dropdown panel */}
+      <rect x="4" y="22" width="26" height="18" rx="2" fill="currentColor" className="text-muted/20" />
+      <rect x="7" y="26" width="16" height="2.5" rx="1" fill="currentColor" className="text-muted/40" />
+      <rect x="7" y="30.5" width="12" height="2.5" rx="1" fill="currentColor" className="text-muted/25" />
+      <rect x="7" y="35" width="18" height="2.5" rx="1" fill="currentColor" className="text-muted/25" />
+      {/* Content area hint */}
+      <rect x="4" y="43" width="48" height="3" rx="1" fill="currentColor" className="text-muted/10" />
+    </svg>
+  ),
 };
 
 /* ── Theme swatch ────────────────────────────────────────────── */
@@ -109,9 +127,10 @@ export function AppearanceSettings() {
   };
 
   const LAYOUTS: { value: Layout; labelKey: string; descKey: string }[] = [
-    { value: "sidebar",       labelKey: "layout_sidebar",    descKey: "layout_sidebar_desc" },
-    { value: "sidebar-split", labelKey: "layout_split",      descKey: "layout_split_desc" },
-    { value: "horizontal",    labelKey: "layout_horizontal", descKey: "layout_horizontal_desc" },
+    { value: "sidebar",              labelKey: "layout_sidebar",             descKey: "layout_sidebar_desc" },
+    { value: "sidebar-split",        labelKey: "layout_split",               descKey: "layout_split_desc" },
+    { value: "horizontal",           labelKey: "layout_horizontal",          descKey: "layout_horizontal_desc" },
+    { value: "horizontal-dropdown",  labelKey: "layout_horizontal_dropdown", descKey: "layout_horizontal_dropdown_desc" },
   ];
 
   const MODES: { value: Mode; labelKey: string }[] = [
@@ -142,7 +161,7 @@ export function AppearanceSettings() {
 
       {/* Layout */}
       <Section title={t("appearance.layout")}>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {LAYOUTS.map(({ value, labelKey, descKey }) => (
             <OptionCard
               key={value}

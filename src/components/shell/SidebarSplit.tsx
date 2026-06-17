@@ -176,7 +176,7 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
               <nav className="px-2 py-3">
                 {/* Active module title above the links */}
                 {activeModule && (
-                  <p className="px-3 mb-4 text-[20px] font-bold uppercase tracking-widest text-muted-foreground select-none">
+                  <p className="px-3 mb-4 text-[15px] font-bold uppercase tracking-widest text-muted-foreground select-none">
                     {t(`nav.${activeModule.key}`)}
                   </p>
                 )}

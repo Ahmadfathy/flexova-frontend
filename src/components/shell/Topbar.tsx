@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { EtaBadge } from "./EtaBadge";
 import { UserMenu } from "./UserChip";
 import { MobileDrawer } from "./MobileDrawer";
-import { HorizontalModuleBar, HorizontalSubBar } from "./HorizontalNav";
+import { HorizontalModuleBar, HorizontalSubBar, HorizontalDropdownModuleBar } from "./HorizontalNav";
 import { SearchPanel } from "./SearchPanel";
 import { useAppearance } from "@/stores/appearance";
 import { cn } from "@/lib/utils";
@@ -45,7 +45,8 @@ export function Topbar() {
   const { t } = useTranslation("shell");
   const { layout, collapsed, toggleCollapsed, branding } = useAppearance();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const isHorizontal = layout === "horizontal";
+  const isHorizontalDropdown = layout === "horizontal-dropdown";
+  const isHorizontal = layout === "horizontal" || isHorizontalDropdown;
 
   const row1 = (
     <>
@@ -148,14 +149,19 @@ export function Topbar() {
             <div className="relative flex items-center gap-2 px-4 h-[var(--topbar-h)] min-w-0">
               {row1}
             </div>
-            {/* Module tabs — desktop only */}
+            {/* Row 2 — module bar; component differs by layout variant */}
             <div className="border-t border-border hidden sm:block min-w-0">
-              <HorizontalModuleBar />
+              {isHorizontalDropdown
+                ? <HorizontalDropdownModuleBar />
+                : <HorizontalModuleBar />
+              }
             </div>
-            {/* Sub-item bar — desktop only */}
-            <div className="hidden sm:block min-w-0">
-              <HorizontalSubBar />
-            </div>
+            {/* Row 3 — sub-item tabs; only for the plain horizontal layout */}
+            {!isHorizontalDropdown && (
+              <div className="hidden sm:block min-w-0">
+                <HorizontalSubBar />
+              </div>
+            )}
           </>
         ) : (
           row1

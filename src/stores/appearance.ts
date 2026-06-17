@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 export type Theme     = "nile" | "emerald" | "graphite";
 export type Mode      = "system" | "light" | "dark";
-export type Layout    = "sidebar" | "sidebar-split" | "horizontal";
+export type Layout    = "sidebar" | "sidebar-split" | "horizontal" | "horizontal-dropdown";
 export type Density   = "comfortable" | "compact";
 export type Lang      = "ar" | "en";
 export type FontScale = "sm" | "md" | "lg";
