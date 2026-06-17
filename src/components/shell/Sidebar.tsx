@@ -233,12 +233,18 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
   );
 }
 
-/* ── Public Sidebar component (sidebar layout only) ─────────── */
+/* ── Public Sidebar component ───────────────────────────────── */
 interface SidebarProps {
   onClose?: () => void;
+  /**
+   * When true: renders only the scrollable nav list with no <aside> wrapper
+   * and no logo header (the MobileDrawer supplies both). Also forces full
+   * accordion mode regardless of the collapsed preference.
+   */
+  inDrawer?: boolean;
 }
 
-export function Sidebar({ onClose }: SidebarProps) {
+export function Sidebar({ onClose, inDrawer = false }: SidebarProps) {
   const { t } = useTranslation("shell");
   const { collapsed, branding } = useAppearance();
   const location = useLocation();
@@ -254,8 +260,8 @@ export function Sidebar({ onClose }: SidebarProps) {
     });
   };
 
-  /* ── Mini rail ─────────────────────────────────────────────── */
-  if (collapsed) {
+  /* ── Mini rail — desktop only, never inside the drawer ─────── */
+  if (collapsed && !inDrawer) {
     return (
       <TooltipProvider delayDuration={300}>
         <aside className="flex flex-col h-full bg-card border-e border-border [grid-area:nav]">
@@ -278,7 +284,41 @@ export function Sidebar({ onClose }: SidebarProps) {
     );
   }
 
-  /* ── Full accordion sidebar ─────────────────────────────────── */
+  /* ── Full accordion nav list ────────────────────────────────── */
+  const accordionNav = (
+    <ScrollArea className="flex-1 py-2">
+      <nav className="space-y-0.5 px-2">
+        <GroupHeader label={t("nav_groups.core")} />
+        {MENU_CORE.map(item => (
+          <AccordionItem
+            key={item.key}
+            item={item}
+            isActive={isModuleActive(item, location.pathname)}
+            isOpen={openKeys.has(item.key) || isModuleActive(item, location.pathname)}
+            onToggle={() => toggle(item.key)}
+            onClose={onClose}
+          />
+        ))}
+
+        <GroupHeader label={t("nav_groups.admin")} />
+        {MENU_ADMIN.map(item => (
+          <AccordionItem
+            key={item.key}
+            item={item}
+            isActive={isModuleActive(item, location.pathname)}
+            isOpen={openKeys.has(item.key) || isModuleActive(item, location.pathname)}
+            onToggle={() => toggle(item.key)}
+            onClose={onClose}
+          />
+        ))}
+      </nav>
+    </ScrollArea>
+  );
+
+  /* In-drawer: return just the scrollable list; drawer owns the header */
+  if (inDrawer) return accordionNav;
+
+  /* Desktop full sidebar: <aside> wraps logo header + list */
   return (
     <aside className="flex flex-col h-full bg-card border-e border-border [grid-area:nav]">
       <Link to="/" className="flex items-center h-[var(--topbar-h)] px-4 border-b border-border shrink-0 gap-3">
@@ -290,33 +330,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         </span>
       </Link>
 
-      <ScrollArea className="flex-1 py-2">
-        <nav className="space-y-0.5 px-2">
-          <GroupHeader label={t("nav_groups.core")} />
-          {MENU_CORE.map(item => (
-            <AccordionItem
-              key={item.key}
-              item={item}
-              isActive={isModuleActive(item, location.pathname)}
-              isOpen={openKeys.has(item.key) || isModuleActive(item, location.pathname)}
-              onToggle={() => toggle(item.key)}
-              onClose={onClose}
-            />
-          ))}
-
-          <GroupHeader label={t("nav_groups.admin")} />
-          {MENU_ADMIN.map(item => (
-            <AccordionItem
-              key={item.key}
-              item={item}
-              isActive={isModuleActive(item, location.pathname)}
-              isOpen={openKeys.has(item.key) || isModuleActive(item, location.pathname)}
-              onToggle={() => toggle(item.key)}
-              onClose={onClose}
-            />
-          ))}
-        </nav>
-      </ScrollArea>
+      {accordionNav}
     </aside>
   );
 }

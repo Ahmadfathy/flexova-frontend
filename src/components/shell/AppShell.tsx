@@ -9,8 +9,11 @@ export function AppShell() {
 
   return (
     <div className="app">
-      {layout === "sidebar"       && <Sidebar />}
-      {layout === "sidebar-split" && <SidebarSplit />}
+      {/* hidden sm:contents — hides the nav entirely on mobile (no ghost row);
+          display:contents dissolves the wrapper so the <aside> participates
+          directly in the grid on desktop without an extra grid item. */}
+      {layout === "sidebar"       && <div className="hidden sm:contents"><Sidebar /></div>}
+      {layout === "sidebar-split" && <div className="hidden sm:contents"><SidebarSplit /></div>}
       <Topbar />
       <main className="[grid-area:main] overflow-auto p-6 bg-background">
         <Outlet />

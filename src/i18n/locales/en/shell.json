@@ -83,6 +83,7 @@
 
   "topbar": {
     "open_menu":        "Open menu",
+    "close_menu":       "Close menu",
     "collapse":         "Collapse sidebar",
     "expand":           "Expand sidebar",
     "search":           "Search invoice, customer, item…",

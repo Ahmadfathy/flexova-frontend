@@ -49,33 +49,25 @@ export function Topbar() {
 
   const row1 = (
     <>
-      {/* Mobile hamburger */}
+      {/* ── Start side ──────────────────────────────────────── */}
+
+      {/* Hamburger — mobile only; opens the slide-in drawer */}
       <Button
         variant="icon"
         size="icon"
-        className="sm:hidden"
+        className="sm:hidden shrink-0"
         onClick={() => setDrawerOpen(true)}
         aria-label={t("topbar.open_menu")}
       >
         <Menu className="h-5 w-5" />
       </Button>
 
-      {/* Brand link — horizontal layout, desktop */}
-      {isHorizontal && (
-        <Link
-          to="/"
-          className="hidden sm:inline-flex text-base font-bold text-brand tracking-tight shrink-0"
-        >
-          {branding.companyName || "Flexova"}
-        </Link>
-      )}
-
-      {/* Collapse — sidebar layouts, desktop */}
+      {/* Collapse toggle — sidebar layouts, desktop only */}
       {!isHorizontal && (
         <Button
           variant="icon"
           size="icon"
-          className="hidden sm:inline-flex"
+          className="hidden sm:inline-flex shrink-0"
           onClick={toggleCollapsed}
           aria-label={collapsed ? t("topbar.expand") : t("topbar.collapse")}
         >
@@ -88,24 +80,53 @@ export function Topbar() {
         </Button>
       )}
 
-      {/* Home — all layouts, desktop */}
-      <Button variant="icon" size="icon" asChild className="hidden sm:inline-flex">
+      {/* Brand wordmark — horizontal layout, desktop only.
+          On mobile the brand lives in the drawer header instead. */}
+      {isHorizontal && (
+        <Link
+          to="/"
+          className="hidden sm:inline-flex text-base font-bold text-brand tracking-tight shrink-0"
+        >
+          {branding.companyName || "Flexova"}
+        </Link>
+      )}
+
+      {/* Home — all layouts, all sizes */}
+      <Button variant="icon" size="icon" asChild className="shrink-0">
         <Link to="/" aria-label={t("topbar.home")}>
           <Home className="h-4 w-4" />
         </Link>
       </Button>
 
-      {/* Search — all layouts, desktop */}
-      <div className="hidden sm:flex">
+      {/* Search — all layouts, all sizes.
+          PopoverContent uses w-[min(560px,calc(100vw-2rem))], so it's
+          essentially full-width on narrow screens. */}
+      <div className="shrink-0">
         <SearchPanel />
       </div>
 
-      <div className="flex-1" />
+      {/* ── Spacer ──────────────────────────────────────────── */}
+      <div className="flex-1 min-w-0" />
 
+      {/* ── End side ────────────────────────────────────────── */}
+
+      {/* ETA badge — always visible, sits in its own slot */}
       <EtaBadge state="connected" />
-      <FullscreenButton />
 
-      <Button variant="icon" size="icon" aria-label={t("topbar.notifications")} className="relative">
+      {/* Fullscreen — desktop only; too cramped on 375 px.
+          sm:contents dissolves the wrapper so the Button is a
+          direct flex child on desktop. */}
+      <div className="hidden sm:contents">
+        <FullscreenButton />
+      </div>
+
+      {/* Notifications */}
+      <Button
+        variant="icon"
+        size="icon"
+        aria-label={t("topbar.notifications")}
+        className="relative shrink-0"
+      >
         <Bell className="h-4 w-4" />
         <span className="absolute top-1.5 end-1.5 h-2 w-2 rounded-full bg-danger" />
       </Button>
@@ -118,21 +139,20 @@ export function Topbar() {
     <>
       <header
         className={cn(
-          /* min-w-0: prevents the grid item from expanding the column beyond
-             the viewport when inner content is wider than available space.    */
           "sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-sm [grid-area:top] min-w-0 w-full",
-          !isHorizontal && "flex items-center gap-2 px-4 h-[var(--topbar-h)]"
+          !isHorizontal && "relative flex items-center gap-2 px-4 h-[var(--topbar-h)]"
         )}
       >
         {isHorizontal ? (
           <>
-            {/* Row 1 — min-w-0 keeps the flex row from pushing the header wider */}
-            <div className="flex items-center gap-2 px-4 h-[var(--topbar-h)] min-w-0">{row1}</div>
-            {/* Row 2: module tabs — desktop only */}
+            <div className="relative flex items-center gap-2 px-4 h-[var(--topbar-h)] min-w-0">
+              {row1}
+            </div>
+            {/* Module tabs — desktop only */}
             <div className="border-t border-border hidden sm:block min-w-0">
               <HorizontalModuleBar />
             </div>
-            {/* Row 3: active module's sub-items — desktop only, hidden when no sub-items */}
+            {/* Sub-item bar — desktop only */}
             <div className="hidden sm:block min-w-0">
               <HorizontalSubBar />
             </div>

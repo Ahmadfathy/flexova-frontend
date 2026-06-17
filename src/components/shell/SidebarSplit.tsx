@@ -165,28 +165,37 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
           )}
         >
           <div className="w-[220px] flex flex-col h-full bg-card/60">
+            {/* Top bar — company name, mirrors the rail's logo cell */}
             <div className="h-[var(--topbar-h)] border-b border-border shrink-0 flex items-center px-4">
-              <span className="text-sm font-semibold text-foreground truncate">
-                {activeModule ? t(`nav.${activeModule.key}`) : (branding.companyName || "Flexova")}
+              <span className="text-sm font-semibold text-brand truncate">
+                {branding.companyName || "Flexova"}
               </span>
             </div>
 
-            <ScrollArea className="flex-1 py-2">
-              <nav className="space-y-0.5 px-2">
-                {activeModule?.subItems?.length ? (
-                  activeModule.subItems.map(sub => (
-                    <PanelSubItem
-                      key={sub.key}
-                      route={sub.route}
-                      label={t(`nav.${sub.key}`)}
-                      onClose={onClose}
-                    />
-                  ))
-                ) : (
-                  <p className="px-3 py-4 text-xs text-muted-foreground/60 text-center">
-                    {branding.companyName || "Flexova"}
+            <ScrollArea className="flex-1">
+              <nav className="px-2 py-3">
+                {/* Active module title above the links */}
+                {activeModule && (
+                  <p className="px-3 mb-4 text-[20px] font-bold uppercase tracking-widest text-muted-foreground select-none">
+                    {t(`nav.${activeModule.key}`)}
                   </p>
                 )}
+                <div className="space-y-0.5">
+                  {activeModule?.subItems?.length ? (
+                    activeModule.subItems.map(sub => (
+                      <PanelSubItem
+                        key={sub.key}
+                        route={sub.route}
+                        label={t(`nav.${sub.key}`)}
+                        onClose={onClose}
+                      />
+                    ))
+                  ) : (
+                    <p className="px-3 py-4 text-xs text-muted-foreground/60 text-center">
+                      —
+                    </p>
+                  )}
+                </div>
               </nav>
             </ScrollArea>
           </div>

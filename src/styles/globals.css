@@ -158,6 +158,20 @@ body{
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
+/* ============================================================ MOBILE DRAWER ANIMATION
+ * RTL-aware: in RTL start-0 = physical right, so the drawer slides from the right.
+ * prefers-reduced-motion in the base rule above kills all animations incl. these.
+ * ============================================================ */
+@keyframes drawer-in-ltr  { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes drawer-out-ltr { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes drawer-in-rtl  { from { transform: translateX(100%);  } to { transform: translateX(0); } }
+@keyframes drawer-out-rtl { from { transform: translateX(0); } to { transform: translateX(100%);  } }
+
+html[dir="ltr"] .drawer-panel[data-state="open"]   { animation: drawer-in-ltr  .22s var(--ease) both; }
+html[dir="ltr"] .drawer-panel[data-state="closed"] { animation: drawer-out-ltr .22s var(--ease) both; }
+html[dir="rtl"] .drawer-panel[data-state="open"]   { animation: drawer-in-rtl  .22s var(--ease) both; }
+html[dir="rtl"] .drawer-panel[data-state="closed"] { animation: drawer-out-rtl .22s var(--ease) both; }
+
 /* ============================================================ APP SHELL GRID — §14.4 */
 .app{
   display:grid; min-height:100vh;
