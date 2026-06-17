@@ -120,6 +120,27 @@
     "logout":     "Log out"
   },
 
+  "quick_add": {
+    "trigger":              "Quick add",
+    "btn_label":            "New",
+    "title":                "Create new",
+    "new_invoice":          "Invoice",
+    "new_quotation":        "Quotation",
+    "new_receipt":          "Receipt",
+    "new_item":             "Item",
+    "new_transfer":         "Transfer",
+    "new_adjustment":       "Adjustment",
+    "new_purchase_invoice": "Purchase Invoice",
+    "new_purchase_order":   "Purchase Order",
+    "new_supplier":         "Supplier",
+    "new_customer":         "Customer",
+    "new_follow_up":        "Follow-up",
+    "new_expense":          "Expense",
+    "new_payment_voucher":  "Payment Voucher",
+    "new_employee":         "Employee",
+    "new_advance":          "Advance"
+  },
+
   "appearance": {
     "title":               "Appearance",
     "theme":               "Theme",

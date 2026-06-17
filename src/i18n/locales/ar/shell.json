@@ -120,6 +120,27 @@
     "logout":     "تسجيل الخروج"
   },
 
+  "quick_add": {
+    "trigger":              "إضافة سريعة",
+    "btn_label":            "جديد",
+    "title":                "إنشاء جديد",
+    "new_invoice":          "فاتورة",
+    "new_quotation":        "عرض سعر",
+    "new_receipt":          "سند قبض",
+    "new_item":             "صنف",
+    "new_transfer":         "تحويل مخزون",
+    "new_adjustment":       "تسوية مخزون",
+    "new_purchase_invoice": "فاتورة شراء",
+    "new_purchase_order":   "أمر شراء",
+    "new_supplier":         "مورد",
+    "new_customer":         "عميل",
+    "new_follow_up":        "متابعة",
+    "new_expense":          "مصروف",
+    "new_payment_voucher":  "سند صرف",
+    "new_employee":         "موظف",
+    "new_advance":          "سلفة"
+  },
+
   "appearance": {
     "title":               "المظهر",
     "theme":               "الثيم",

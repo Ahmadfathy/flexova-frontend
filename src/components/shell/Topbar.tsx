@@ -8,6 +8,7 @@ import { UserMenu } from "./UserChip";
 import { MobileDrawer } from "./MobileDrawer";
 import { HorizontalModuleBar, HorizontalSubBar, HorizontalDropdownModuleBar } from "./HorizontalNav";
 import { SearchPanel } from "./SearchPanel";
+import { QuickAdd } from "./QuickAdd";
 import { useAppearance } from "@/stores/appearance";
 import { cn } from "@/lib/utils";
 
@@ -105,6 +106,9 @@ export function Topbar() {
       <div className="shrink-0">
         <SearchPanel />
       </div>
+
+      {/* Quick Add — outlined button, right next to Search */}
+      <QuickAdd />
 
       {/* ── Spacer ──────────────────────────────────────────── */}
       <div className="flex-1 min-w-0" />

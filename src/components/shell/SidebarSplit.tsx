@@ -34,6 +34,66 @@ function PanelSubItem({ route, label, onClose }: { route: string; label: string;
   );
 }
 
+/* ── Rail item (icon on top + label below) ───────────────────── */
+interface RailItemProps {
+  item: MenuItem;
+  active: boolean;
+  onClick: () => void;
+}
+
+function RailItem({ item, active, onClick }: RailItemProps) {
+  const { t } = useTranslation("shell");
+  const label = t(`nav.${item.key}`);
+  const tooltipLabel = item.status === "soon" ? `${label} — ${t("soon")}` : label;
+
+  const cls = cn(
+    // fixed width so every item occupies the same footprint in the rail
+    "relative w-[56px] flex flex-col items-center gap-1 py-2.5 rounded-lg",
+    "transition-colors motion-reduce:transition-none",
+    active
+      ? "bg-card shadow text-brand"
+      : "text-muted-foreground hover:bg-background hover:text-foreground",
+    item.status === "soon" && "opacity-40 cursor-not-allowed"
+  );
+
+  const inner = (
+    <>
+      <item.icon className="h-4 w-4 shrink-0" />
+      {/*
+        Single-line label; overflow hidden + text-overflow ellipsis handles
+        long names. px-1 prevents the text from touching the card edge.
+        The tooltip (side="end") always shows the full name regardless.
+      */}
+      <span className="w-full px-1 text-[10px] font-medium leading-none text-center truncate">
+        {label}
+      </span>
+    </>
+  );
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {item.status === "soon" ? (
+          <div className={cls}>{inner}</div>
+        ) : (
+          <NavLink
+            to={item.route}
+            end={item.route === "/"}
+            onClick={onClick}
+            className={() => cls}
+          >
+            {inner}
+          </NavLink>
+        )}
+      </TooltipTrigger>
+      {/* Opens toward the content area; Radix mirrors "right"→left in RTL via DirectionProvider */}
+      <TooltipContent side="right" sideOffset={8}>
+        {tooltipLabel}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 /* ── SidebarSplit ────────────────────────────────────────────── */
 interface SidebarSplitProps {
   onClose?: () => void;
@@ -46,14 +106,10 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
 
   const activeModule = MENU.find(m => isModuleActive(m, location.pathname));
 
-  // Sub-panel is closed by default; opens on first module click and stays open
-  // for the rest of the browser session (sessionStorage).
   const [subPanelOpen, setSubPanelOpen] = useState(
     () => sessionStorage.getItem(SESSION_KEY) === "true"
   );
 
-  // Keep the html data-attribute in sync so the CSS grid rule can react.
-  // Cleanup removes the attribute when the layout switches away from sidebar-split.
   useEffect(() => {
     document.documentElement.dataset.subpanelOpen = subPanelOpen ? "true" : "";
     return () => {
@@ -61,7 +117,6 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
     };
   }, [subPanelOpen]);
 
-  // Close the panel whenever the user lands on home — regardless of how they got there.
   useEffect(() => {
     if (location.pathname === "/") {
       document.documentElement.dataset.subpanelOpen = "";
@@ -95,68 +150,22 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
             }
           </Link>
 
+          {/* Scrollable so the rail never clips items on short viewports */}
           <ScrollArea className="flex-1 py-2">
-            <nav className="flex flex-col items-center gap-1 py-1">
-              {MENU.map(item => {
-                const active = isModuleActive(item, location.pathname);
-
-                const box = cn(
-                  "relative flex items-center justify-center h-10 w-10 rounded-md transition-colors",
-                  active
-                    ? "bg-brand-tint text-brand"
-                    : "text-muted-foreground hover:bg-background hover:text-foreground",
-                  item.status === "soon" && "opacity-40 cursor-not-allowed"
-                );
-
-                const tooltipLabel = item.status === "soon"
-                  ? `${t(`nav.${item.key}`)} — ${t("soon")}`
-                  : t(`nav.${item.key}`);
-
-                const iconEl = (
-                  <>
-                    {active && (
-                      <span
-                        className="absolute start-0 top-2 bottom-2 w-0.5 rounded-e-full bg-brand"
-                        aria-hidden="true"
-                      />
-                    )}
-                    <item.icon className="h-4 w-4" />
-                  </>
-                );
-
-                return (
-                  <Tooltip key={item.key}>
-                    <TooltipTrigger asChild>
-                      {item.status === "soon" ? (
-                        <div className={box}>{iconEl}</div>
-                      ) : (
-                        <NavLink
-                          to={item.route}
-                          end={item.route === "/"}
-                          onClick={openSubPanel}
-                          className={() => box}
-                        >
-                          {iconEl}
-                        </NavLink>
-                      )}
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={8}>
-                      {tooltipLabel}
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
+            <nav className="flex flex-col items-center gap-1 py-1 px-2">
+              {MENU.map(item => (
+                <RailItem
+                  key={item.key}
+                  item={item}
+                  active={isModuleActive(item, location.pathname)}
+                  onClick={openSubPanel}
+                />
+              ))}
             </nav>
           </ScrollArea>
         </div>
 
         {/* ── Sub-item panel — always in DOM, animates width ─── */}
-        {/*
-          Always rendered so the width transition plays smoothly alongside
-          the CSS grid transition. overflow-hidden clips content at w-0.
-          The inner fixed-width div prevents content from compressing
-          while the outer wrapper is mid-transition.
-        */}
         <div
           className={cn(
             "overflow-hidden border-e border-border",
@@ -165,7 +174,6 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
           )}
         >
           <div className="w-[220px] flex flex-col h-full bg-card/60">
-            {/* Top bar — company name, mirrors the rail's logo cell */}
             <div className="h-[var(--topbar-h)] border-b border-border shrink-0 flex items-center px-4">
               <span className="text-sm font-semibold text-brand truncate">
                 {branding.companyName || "Flexova"}
@@ -174,7 +182,6 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
 
             <ScrollArea className="flex-1">
               <nav className="px-2 py-3">
-                {/* Active module title above the links */}
                 {activeModule && (
                   <p className="px-3 mb-4 text-[15px] font-bold uppercase tracking-widest text-muted-foreground select-none">
                     {t(`nav.${activeModule.key}`)}
