@@ -34,62 +34,40 @@ function PanelSubItem({ route, label, onClose }: { route: string; label: string;
   );
 }
 
-/* ── Rail item (icon on top + label below) ───────────────────── */
+/* ── Rail item ───────────────────────────────────────────────── */
+const RAIL_BASE   = "size-10 rounded flex items-center justify-center text-muted-foreground hover:bg-background transition-colors motion-reduce:transition-none";
+const RAIL_ACTIVE = "bg-[var(--brand-tint)] text-[var(--brand-text)]";
+
 interface RailItemProps {
   item: MenuItem;
-  active: boolean;
   onClick: () => void;
 }
 
-function RailItem({ item, active, onClick }: RailItemProps) {
+function RailItem({ item, onClick }: RailItemProps) {
   const { t } = useTranslation("shell");
+  const { pathname } = useLocation();
   const label = t(`nav.${item.key}`);
   const tooltipLabel = item.status === "soon" ? `${label} — ${t("soon")}` : label;
-
-  const cls = cn(
-    // fixed width so every item occupies the same footprint in the rail
-    "relative w-[56px] flex flex-col items-center gap-1 py-2.5 rounded-lg",
-    "transition-colors motion-reduce:transition-none",
-    active
-      ? "bg-card shadow text-brand"
-      : "text-muted-foreground hover:bg-background hover:text-foreground",
-    item.status === "soon" && "opacity-40 cursor-not-allowed"
-  );
-
-  const inner = (
-    <>
-      <item.icon className="h-4 w-4 shrink-0" />
-      {/*
-        Single-line label; overflow hidden + text-overflow ellipsis handles
-        long names. px-1 prevents the text from touching the card edge.
-        The tooltip (side="end") always shows the full name regardless.
-      */}
-      <span className="w-full px-1 text-[10px] font-medium leading-none text-center truncate">
-        {label}
-      </span>
-    </>
-  );
+  const isActive = isModuleActive(item, pathname);
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         {item.status === "soon" ? (
-          <div className={cls}>{inner}</div>
+          <div className={cn(RAIL_BASE, "opacity-40 cursor-not-allowed")}>
+            <item.icon className="size-5" />
+          </div>
         ) : (
-          <NavLink
+          <Link
             to={item.route}
-            end={item.route === "/"}
             onClick={onClick}
-            className={() => cls}
+            className={cn(RAIL_BASE, isActive && RAIL_ACTIVE)}
           >
-            {inner}
-          </NavLink>
+            <item.icon className="size-5" />
+          </Link>
         )}
       </TooltipTrigger>
-      {/* Opens toward the content area; Radix mirrors "right"→left in RTL via DirectionProvider */}
-      <TooltipContent side="right" sideOffset={8}>
-        {tooltipLabel}
-      </TooltipContent>
+      <TooltipContent side="right" sideOffset={8}>{tooltipLabel}</TooltipContent>
     </Tooltip>
   );
 }
@@ -157,7 +135,6 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
                 <RailItem
                   key={item.key}
                   item={item}
-                  active={isModuleActive(item, location.pathname)}
                   onClick={openSubPanel}
                 />
               ))}
