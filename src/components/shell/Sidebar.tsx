@@ -122,11 +122,13 @@ function AccordionItem({
 
 /* ── Mini-rail item ─────────────────────────────────────────── */
 /*
- * Items WITHOUT sub-items → Radix Tooltip (pointer-events:none, pure label).
- * Items WITH sub-items    → Radix Popover (interactive flyout) with side="end"
- *                           and sideOffset so the panel never overlaps the icon.
- * Both use side="end" which Radix resolves as logical-end via DirectionProvider,
- * i.e. right in LTR and left in RTL — always toward the content area.
+ * Uses plain <Link> (not NavLink) so className is always a plain string —
+ * isActive is computed via useLocation to avoid the arrow-function className
+ * anti-pattern that caused the tooltip-covering-icon bug.
+ *
+ * Items WITHOUT sub-items → Tooltip (pointer-events:none, pure label).
+ * Items WITH sub-items    → Popover flyout with side="end" + sideOffset.
+ * Both use side="end" which Radix resolves as logical-end via DirectionProvider.
  */
 function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
   const { t } = useTranslation("shell");
@@ -150,7 +152,6 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
       : "text-muted-foreground hover:bg-background hover:text-foreground"
   );
 
-  /* "soon" items — tooltip only, no interaction */
   if (item.status === "soon") {
     return (
       <Tooltip>
@@ -166,21 +167,20 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
     );
   }
 
-  /* Items with sub-items — Popover flyout */
   if (item.subItems?.length) {
     return (
       <Popover open={flyOpen} onOpenChange={setFlyOpen}>
         <PopoverTrigger asChild>
-          <NavLink
+          {/* Plain Link with string className — no arrow-function wrapper */}
+          <Link
             to={item.route}
-            end={item.route === "/"}
             onClick={onClose}
             onMouseEnter={() => { cancelClose(); setFlyOpen(true); }}
             onMouseLeave={scheduleClose}
-            className={() => iconCls}
+            className={iconCls}
           >
             <item.icon className="h-4 w-4" />
-          </NavLink>
+          </Link>
         </PopoverTrigger>
         <PopoverContent
           side="end"
@@ -215,18 +215,19 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
     );
   }
 
-  /* Items without sub-items — pure Tooltip (pointer-events:none, icon stays clickable) */
+  /* Plain Tooltip — TooltipContent has pointer-events:none so it never
+     intercepts clicks on the Link beneath it. */
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <NavLink
+        {/* Plain Link with string className — fixes tooltip-covering-icon */}
+        <Link
           to={item.route}
-          end={item.route === "/"}
           onClick={onClose}
-          className={() => iconCls}
+          className={iconCls}
         >
           <item.icon className="h-4 w-4" />
-        </NavLink>
+        </Link>
       </TooltipTrigger>
       <TooltipContent side="end" sideOffset={8}>{label}</TooltipContent>
     </Tooltip>
@@ -236,11 +237,6 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
 /* ── Public Sidebar component ───────────────────────────────── */
 interface SidebarProps {
   onClose?: () => void;
-  /**
-   * When true: renders only the scrollable nav list with no <aside> wrapper
-   * and no logo header (the MobileDrawer supplies both). Also forces full
-   * accordion mode regardless of the collapsed preference.
-   */
   inDrawer?: boolean;
 }
 
@@ -260,7 +256,6 @@ export function Sidebar({ onClose, inDrawer = false }: SidebarProps) {
     });
   };
 
-  /* ── Mini rail — desktop only, never inside the drawer ─────── */
   if (collapsed && !inDrawer) {
     return (
       <TooltipProvider delayDuration={300}>
@@ -284,7 +279,6 @@ export function Sidebar({ onClose, inDrawer = false }: SidebarProps) {
     );
   }
 
-  /* ── Full accordion nav list ────────────────────────────────── */
   const accordionNav = (
     <ScrollArea className="flex-1 py-2">
       <nav className="space-y-0.5 px-2">
@@ -315,10 +309,8 @@ export function Sidebar({ onClose, inDrawer = false }: SidebarProps) {
     </ScrollArea>
   );
 
-  /* In-drawer: return just the scrollable list; drawer owns the header */
   if (inDrawer) return accordionNav;
 
-  /* Desktop full sidebar: <aside> wraps logo header + list */
   return (
     <aside className="flex flex-col h-full bg-card border-e border-border [grid-area:nav]">
       <Link to="/" className="flex items-center h-[var(--topbar-h)] px-4 border-b border-border shrink-0 gap-3">

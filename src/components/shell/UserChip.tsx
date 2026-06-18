@@ -2,8 +2,13 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ChevronDown, User, LogOut, Palette, Sun, Moon } from "lucide-react";
 import { useAppearance } from "@/stores/appearance";
 import { cn } from "@/lib/utils";
@@ -37,8 +42,8 @@ export function UserMenu({
   const isDark = mode === "dark" || (mode === "system" && sysDark);
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-2 rounded-sm px-2 py-1 hover:bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <Avatar className="h-7 w-7">
             {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
@@ -50,10 +55,10 @@ export function UserMenu({
           </div>
           <ChevronDown className="h-3 w-3 text-muted-foreground hidden md:block" />
         </button>
-      </PopoverTrigger>
+      </DropdownMenuTrigger>
 
-      <PopoverContent align="end" className="w-60 p-2">
-        {/* Header */}
+      <DropdownMenuContent align="end" className="w-60 p-2">
+        {/* User info header — non-interactive */}
         <div className="px-2 py-2">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
@@ -67,17 +72,16 @@ export function UserMenu({
           </div>
         </div>
 
-        <Separator className="my-1" />
+        <DropdownMenuSeparator />
 
-        {/* Profile link */}
-        <button className="w-full flex items-center gap-2 h-9 px-2 rounded-sm text-sm text-muted-foreground hover:bg-background hover:text-foreground transition-colors">
+        <DropdownMenuItem className="gap-2 text-muted-foreground">
           <User className="h-4 w-4 shrink-0" />
           {t("user.profile")}
-        </button>
+        </DropdownMenuItem>
 
-        <Separator className="my-1" />
+        <DropdownMenuSeparator />
 
-        {/* Language switch */}
+        {/* Language toggle — custom section, not a DropdownMenuItem */}
         <div className="px-2 py-1.5">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5">
             {t("user.language")}
@@ -100,7 +104,7 @@ export function UserMenu({
           </div>
         </div>
 
-        {/* Dark mode toggle */}
+        {/* Dark mode toggle — custom section */}
         <div className="px-2 py-1.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -126,26 +130,23 @@ export function UserMenu({
           </div>
         </div>
 
-        <Separator className="my-1" />
+        <DropdownMenuSeparator />
 
-        {/* Appearance settings */}
-        <Link
-          to="/settings/appearance"
-          className="w-full flex items-center gap-2 h-9 px-2 rounded-sm text-sm text-muted-foreground hover:bg-background hover:text-foreground transition-colors"
-        >
-          <Palette className="h-4 w-4 shrink-0" />
-          {t("user.appearance")}
-        </Link>
+        <DropdownMenuItem asChild className="gap-2 text-muted-foreground">
+          <Link to="/settings/appearance">
+            <Palette className="h-4 w-4 shrink-0" />
+            {t("user.appearance")}
+          </Link>
+        </DropdownMenuItem>
 
-        <Separator className="my-1" />
+        <DropdownMenuSeparator />
 
-        {/* Logout */}
-        <button className="w-full flex items-center gap-2 h-9 px-2 rounded-sm text-sm text-danger-text hover:bg-danger-tint transition-colors">
+        <DropdownMenuItem className="gap-2 text-danger-text focus:text-danger-text focus:bg-danger-tint">
           <LogOut className="h-4 w-4 shrink-0" />
           {t("user.logout")}
-        </button>
-      </PopoverContent>
-    </Popover>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

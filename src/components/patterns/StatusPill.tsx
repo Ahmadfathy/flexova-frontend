@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 type PillVariant = "paid" | "credit" | "sent" | "rejected" | "default";
 
@@ -19,9 +20,17 @@ interface StatusPillProps {
 export function StatusPill({ variant = "default", label, className }: StatusPillProps) {
   const cls = pillClasses[variant];
   return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium", cls.bg, cls.text, className)}>
+    <Badge
+      variant="outline"
+      className={cn(
+        "border-transparent gap-1.5 font-medium",
+        cls.bg,
+        cls.text,
+        className
+      )}
+    >
       <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", cls.dot)} />
       {label}
-    </span>
+    </Badge>
   );
 }

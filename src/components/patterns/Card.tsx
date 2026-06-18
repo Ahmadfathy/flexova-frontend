@@ -1,26 +1,39 @@
+import React from "react";
 import { cn } from "@/lib/utils";
+import {
+  Card as ShadCard,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 interface CardProps {
   title?: string;
   subtitle?: string;
   className?: string;
+  contentClassName?: string;
   children?: React.ReactNode;
 }
 
-export function Card({ title, subtitle, className, children }: CardProps) {
+export function Card({ title, subtitle, className, contentClassName, children }: CardProps) {
+  const hasHeader = title || subtitle;
+
   return (
-    <div className={cn("bg-card rounded-lg border border-border shadow-sm p-6", className)}>
-      {(title || subtitle) && (
-        <div className="mb-4">
+    <ShadCard className={className}>
+      {hasHeader && (
+        <CardHeader>
           {title && (
-            <h3 className="text-sm font-semibold text-foreground leading-none">{title}</h3>
+            <CardTitle className="text-sm font-semibold leading-none">{title}</CardTitle>
           )}
           {subtitle && (
-            <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
+            <CardDescription>{subtitle}</CardDescription>
           )}
-        </div>
+        </CardHeader>
       )}
-      {children}
-    </div>
+      <CardContent className={cn(hasHeader ? "pt-0" : "p-6", contentClassName)}>
+        {children}
+      </CardContent>
+    </ShadCard>
   );
 }
