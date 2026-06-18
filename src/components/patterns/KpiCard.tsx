@@ -29,7 +29,7 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "border rounded-lg shadow-sm p-5 flex flex-col gap-3 transition-colors",
+        "border rounded-lg shadow-sm p-6 flex flex-col gap-3 transition-colors",
         t ? `${t.card} border-transparent` : "bg-card border-border",
         className
       )}
