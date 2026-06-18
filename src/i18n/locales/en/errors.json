@@ -1,0 +1,22 @@
+{
+  "not_found": {
+    "title": "Page not found",
+    "subtitle": "This link seems broken or the page no longer exists",
+    "action": "Go home"
+  },
+  "forbidden": {
+    "title": "Access denied",
+    "subtitle": "You don't have permission to view this page — contact your administrator",
+    "action": "Go home"
+  },
+  "server_error": {
+    "title": "Something went wrong",
+    "subtitle": "We hit a problem on our end — try again or contact support",
+    "action": "Try again"
+  },
+  "offline": {
+    "title": "No internet connection",
+    "subtitle": "Check your connection and try again",
+    "action": "Try again"
+  }
+}

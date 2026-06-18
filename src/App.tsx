@@ -1,7 +1,22 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AppShell } from "@/components/shell/AppShell";
+import { AuthGuard } from "@/components/shell/AuthGuard";
 import { Skeleton } from "@/components/patterns/Skeletons";
+
+// Auth
+import { AuthLayout }          from "@/features/auth/AuthLayout";
+import { LoginPage }           from "@/features/auth/LoginPage";
+import { ForgotPasswordPage }  from "@/features/auth/ForgotPasswordPage";
+import { ResetPasswordPage }   from "@/features/auth/ResetPasswordPage";
+import { TwoFAPage }           from "@/features/auth/TwoFAPage";
+import { SetPasswordPage }     from "@/features/auth/SetPasswordPage";
+
+// Error pages
+import { NotFoundPage }    from "@/features/errors/NotFoundPage";
+import { ForbiddenPage }   from "@/features/errors/ForbiddenPage";
+import { ServerErrorPage } from "@/features/errors/ServerErrorPage";
+import { OfflinePage }     from "@/features/errors/OfflinePage";
 
 // Dashboard
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"));
@@ -80,6 +95,24 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* ── Auth pages (no shell) ─────────────────────────── */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route index element={<Navigate to="login" replace />} />
+          <Route path="login"           element={<LoginPage />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="reset-password"  element={<ResetPasswordPage />} />
+          <Route path="2fa"             element={<TwoFAPage />} />
+          <Route path="set-password"    element={<SetPasswordPage />} />
+        </Route>
+
+        {/* ── Standalone error pages (no shell) ───────────────── */}
+        <Route path="/403"     element={<ForbiddenPage />} />
+        <Route path="/500"     element={<ServerErrorPage />} />
+        <Route path="/offline" element={<OfflinePage />} />
+
+        {/* ── Authenticated app (guarded shell) ───────────────── */}
+        <Route element={<AuthGuard />}>
         <Route element={<AppShell />}>
 
           {/* Dashboard */}
@@ -203,6 +236,11 @@ export default function App() {
           </Route>
 
         </Route>
+        </Route> {/* end AuthGuard */}
+
+        {/* ── 404 catch-all ───────────────────────────────────── */}
+        <Route path="*" element={<NotFoundPage />} />
+
       </Routes>
     </BrowserRouter>
   );

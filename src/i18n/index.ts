@@ -23,21 +23,27 @@ import arReports     from "./locales/ar/reports.json";
 import enReports     from "./locales/en/reports.json";
 import arAdmin       from "./locales/ar/admin.json";
 import enAdmin       from "./locales/en/admin.json";
+import arAuth        from "./locales/ar/auth.json";
+import enAuth        from "./locales/en/auth.json";
+import arErrors      from "./locales/ar/errors.json";
+import enErrors      from "./locales/en/errors.json";
 
 i18n.use(initReactI18next).init({
   lng: "ar", fallbackLng: "ar",
-  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin"],
+  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors"],
   defaultNS: "common",
   resources: {
     ar: {
       common: arCommon, shell: arShell, settings: arSettings,
       inventory: arInventory, sales: arSales, purchasing: arPurchasing,
       finance: arFinance, crm: arCrm, hr: arHr, reports: arReports, admin: arAdmin,
+      auth: arAuth, errors: arErrors,
     },
     en: {
       common: enCommon, shell: enShell, settings: enSettings,
       inventory: enInventory, sales: enSales, purchasing: enPurchasing,
       finance: enFinance, crm: enCrm, hr: enHr, reports: enReports, admin: enAdmin,
+      auth: enAuth, errors: enErrors,
     },
   },
   interpolation: { escapeValue: false },
