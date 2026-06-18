@@ -10,7 +10,79 @@
     "adjustments": "Adjustments",
     "low_stock":   "Low stock"
   },
-  "items":       { "title": "Items" },
+  "items": {
+    "title":            "Items",
+    "count":            "{{n}} items",
+    "new":              "New item",
+    "search_ph":        "Search by code, name, or barcode…",
+    "empty_title":      "No items yet",
+    "empty_sub":        "Add your first item or import your list from Excel",
+    "no_results":       "No results for \"{{q}}\"",
+    "no_results_empty": "No results for these filters",
+    "cant_delete":      "Can't delete — item has recorded movements",
+    "showing":          "Showing {{from}} - {{to}} of {{total}}"
+  },
+  "actions": {
+    "import":          "Import",
+    "export":          "Export",
+    "print_barcode":   "Print barcode",
+    "new_item":        "New item",
+    "import_excel":    "Import from Excel",
+    "clear_filters":   "Clear filters",
+    "retry":           "Retry",
+    "edit":            "Edit",
+    "ledger":          "View ledger",
+    "duplicate":       "Duplicate",
+    "suspend":         "Suspend",
+    "activate":        "Activate",
+    "delete":          "Delete",
+    "change_category": "Change category",
+    "export_selected": "Export selected",
+    "bulk_activate":   "Activate",
+    "bulk_suspend":    "Suspend",
+    "filters":         "Filters",
+    "selected":        "selected"
+  },
+  "status": {
+    "active":     "Active",
+    "suspended":  "Suspended",
+    "incomplete": "Incomplete",
+    "low_stock":  "Low stock"
+  },
+  "offline": {
+    "banner": "Offline — changes saved locally, will sync when back online"
+  },
+  "errors": {
+    "load": "Failed to load items",
+    "save": "Couldn't save — please try again"
+  },
+  "filters": {
+    "category":       "Category",
+    "warehouse":      "Warehouse",
+    "item_type":      "Item type",
+    "status":         "Status",
+    "low_stock":      "Low stock only",
+    "price_range":    "Price range",
+    "price_from":     "From",
+    "price_to":       "To",
+    "all_categories": "All categories",
+    "all_warehouses": "All warehouses",
+    "all_types":      "All types",
+    "all_statuses":   "All statuses"
+  },
+  "columns": {
+    "code":     "Code",
+    "name":     "Name",
+    "category": "Category",
+    "unit":     "Unit",
+    "balance":  "Balance",
+    "price":    "Price"
+  },
+  "item_types": {
+    "stocked":   "Stocked",
+    "service":   "Service",
+    "non_stock": "Non-stock"
+  },
   "categories":  { "title": "Categories" },
   "price_lists": { "title": "Price lists" },
   "warehouses":  { "title": "Warehouses" },

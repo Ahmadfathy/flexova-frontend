@@ -10,7 +10,79 @@
     "adjustments": "التسويات",
     "low_stock":   "قاربت النفاد"
   },
-  "items":       { "title": "الأصناف" },
+  "items": {
+    "title":              "الأصناف",
+    "count":              "{{n}} صنف",
+    "new":                "صنف جديد",
+    "search_ph":          "ابحث بالكود أو الاسم أو الباركود…",
+    "empty_title":        "لسه مفيش أصناف",
+    "empty_sub":          "ابدأ بإضافة أول صنف أو استورد قائمتك من Excel",
+    "no_results":         "مفيش نتائج لـ \"{{q}}\"",
+    "no_results_empty":   "مفيش نتائج بالفلاتر دي",
+    "cant_delete":        "لا يمكن الحذف — للصنف حركات مسجّلة",
+    "showing":            "عرض {{from}} - {{to}} من {{total}}"
+  },
+  "actions": {
+    "import":          "استيراد",
+    "export":          "تصدير",
+    "print_barcode":   "طباعة باركود",
+    "new_item":        "صنف جديد",
+    "import_excel":    "استيراد من Excel",
+    "clear_filters":   "مسح الفلاتر",
+    "retry":           "إعادة المحاولة",
+    "edit":            "تعديل",
+    "ledger":          "حركة الصنف",
+    "duplicate":       "نسخ",
+    "suspend":         "إيقاف",
+    "activate":        "تفعيل",
+    "delete":          "حذف",
+    "change_category": "تغيير التصنيف",
+    "export_selected": "تصدير المحدد",
+    "bulk_activate":   "تفعيل",
+    "bulk_suspend":    "إيقاف",
+    "filters":         "الفلاتر",
+    "selected":        "محدد"
+  },
+  "status": {
+    "active":     "نشط",
+    "suspended":  "موقوف",
+    "incomplete": "غير مكتمل",
+    "low_stock":  "قارب النفاد"
+  },
+  "offline": {
+    "banner": "غير متصل — تُحفظ التغييرات محلياً وتُزامن عند عودة الاتصال"
+  },
+  "errors": {
+    "load": "تعذّر تحميل الأصناف",
+    "save": "تعذّر الحفظ — حاول مرة أخرى"
+  },
+  "filters": {
+    "category":       "التصنيف",
+    "warehouse":      "المخزن",
+    "item_type":      "نوع الصنف",
+    "status":         "الحالة",
+    "low_stock":      "قارب النفاد فقط",
+    "price_range":    "نطاق السعر",
+    "price_from":     "من",
+    "price_to":       "إلى",
+    "all_categories": "كل التصنيفات",
+    "all_warehouses": "كل المخازن",
+    "all_types":      "كل الأنواع",
+    "all_statuses":   "كل الحالات"
+  },
+  "columns": {
+    "code":     "الكود",
+    "name":     "الاسم",
+    "category": "التصنيف",
+    "unit":     "الوحدة",
+    "balance":  "الرصيد",
+    "price":    "السعر"
+  },
+  "item_types": {
+    "stocked":   "مخزّن",
+    "service":   "خدمة",
+    "non_stock": "غير مخزّن"
+  },
   "categories":  { "title": "التصنيفات" },
   "price_lists": { "title": "قوائم الأسعار" },
   "warehouses":  { "title": "المخازن" },

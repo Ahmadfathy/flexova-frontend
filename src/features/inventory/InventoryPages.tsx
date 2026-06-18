@@ -2,6 +2,9 @@ import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { EmptyState } from "@/components/patterns/EmptyState";
 
+// Items list is fully implemented — re-export directly
+export { ItemsListPage as ItemsPage } from "./items/ItemsListPage";
+
 function Page({ k }: { k: string }) {
   const { t } = useTranslation("inventory");
   return (
@@ -12,7 +15,6 @@ function Page({ k }: { k: string }) {
   );
 }
 
-export const ItemsPage       = () => <Page k="items" />;
 export const CategoriesPage  = () => <Page k="categories" />;
 export const PriceListsPage  = () => <Page k="price_lists" />;
 export const WarehousesPage  = () => <Page k="warehouses" />;
