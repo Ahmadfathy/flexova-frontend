@@ -2,6 +2,14 @@ import { useState } from "react";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { TableSkeleton } from "./Skeletons";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
@@ -51,50 +59,60 @@ export function DataTable<T>({
   if (data.length === 0) return <EmptyState />;
 
   return (
-    <div className={cn("w-full overflow-auto rounded-lg border border-border", className)}>
-      <table className="w-full text-sm">
-        <thead className="sticky top-0 bg-card border-b border-border">
-          <tr>
+    /*
+     * Table already wraps in overflow-auto; we add rounded-lg border to match
+     * the card visual. The inner <table> gets w-full text-sm from shadcn.
+     */
+    <Table className={cn("rounded-lg border border-border", className)}>
+      <TableHeader className="sticky top-0 bg-card">
+        <TableRow className="border-b border-border hover:bg-transparent">
+          {columns.map((col) => (
+            <TableHead
+              key={col.key}
+              className={cn(
+                /* logical start instead of shadcn's physical text-left */
+                "h-auto py-3 px-4 text-start font-medium text-muted-foreground whitespace-nowrap",
+                col.numeric && "text-end",
+                col.sortable && "cursor-pointer select-none hover:text-foreground",
+                col.className
+              )}
+              onClick={col.sortable ? () => handleSort(col.key) : undefined}
+            >
+              <span className="inline-flex items-center gap-1">
+                {col.header}
+                {col.sortable && (
+                  sortKey === col.key ? (
+                    sortDir === "asc"
+                      ? <ChevronUp className="h-3 w-3" />
+                      : <ChevronDown className="h-3 w-3" />
+                  ) : (
+                    <ChevronsUpDown className="h-3 w-3 opacity-40" />
+                  )
+                )}
+              </span>
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {data.map((row) => (
+          <TableRow key={keyExtractor(row)} className="border-b border-border last:border-0">
             {columns.map((col) => (
-              <th
+              <TableCell
                 key={col.key}
                 className={cn(
-                  "px-4 py-3 font-medium text-muted-foreground text-start whitespace-nowrap",
-                  col.numeric && "text-end",
-                  col.sortable && "cursor-pointer select-none hover:text-foreground",
+                  "px-4 py-3",
+                  col.numeric && "text-end tabular-nums num",
                   col.className
                 )}
-                onClick={col.sortable ? () => handleSort(col.key) : undefined}
               >
-                <span className="inline-flex items-center gap-1">
-                  {col.header}
-                  {col.sortable && (
-                    sortKey === col.key ? (
-                      sortDir === "asc" ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                    ) : (
-                      <ChevronsUpDown className="h-3 w-3 opacity-40" />
-                    )
-                  )}
-                </span>
-              </th>
+                {col.cell(row)}
+              </TableCell>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row) => (
-            <tr key={keyExtractor(row)} className="border-b border-border last:border-0 hover:bg-muted/50 transition-colors">
-              {columns.map((col) => (
-                <td
-                  key={col.key}
-                  className={cn("px-4 py-3", col.numeric && "text-end tabular-nums num", col.className)}
-                >
-                  {col.cell(row)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
