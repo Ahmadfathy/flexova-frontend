@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/patterns/PageHeader";
+import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
 
 function Page({ k }: { k: string }) {
@@ -7,7 +8,7 @@ function Page({ k }: { k: string }) {
   return (
     <>
       <PageHeader title={t(`${k}.title`)} />
-      <EmptyState />
+      <PageSection><EmptyState /></PageSection>
     </>
   );
 }

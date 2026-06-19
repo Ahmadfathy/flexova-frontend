@@ -3,17 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Check, Upload, X } from "lucide-react";
 import { useAppearance, type Layout, type Mode, type FontScale, type FontAr, type FontEn, type Theme } from "@/stores/appearance";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
-
-/* ── Section wrapper ─────────────────────────────────────────── */
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="space-y-4">
-      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-      {children}
-    </section>
-  );
-}
+import { PageSection } from "@/components/patterns/PageSection";
 
 /* ── Option card (layout + mode) ─────────────────────────────── */
 function OptionCard({
@@ -154,13 +144,13 @@ export function AppearanceSettings() {
     );
 
   return (
-    <div className="max-w-2xl space-y-8">
+    <div className="max-w-2xl space-y-4">
       <div>
         <h1 className="text-lg font-bold">{t("appearance.title")}</h1>
       </div>
 
       {/* Layout */}
-      <Section title={t("appearance.layout")}>
+      <PageSection title={t("appearance.layout")}>
         <div className="grid grid-cols-2 gap-3">
           {LAYOUTS.map(({ value, labelKey, descKey }) => (
             <OptionCard
@@ -173,12 +163,10 @@ export function AppearanceSettings() {
             />
           ))}
         </div>
-      </Section>
-
-      <Separator />
+      </PageSection>
 
       {/* Color theme */}
-      <Section title={t("appearance.theme")}>
+      <PageSection title={t("appearance.theme")}>
         <div className="flex gap-3 flex-wrap">
           {(Object.keys(THEME_COLORS) as Theme[]).map(th => (
             <button
@@ -199,12 +187,10 @@ export function AppearanceSettings() {
             </button>
           ))}
         </div>
-      </Section>
-
-      <Separator />
+      </PageSection>
 
       {/* Mode */}
-      <Section title={t("appearance.mode")}>
+      <PageSection title={t("appearance.mode")}>
         <div className="flex gap-1 p-1 bg-muted rounded-sm w-fit">
           {MODES.map(({ value, labelKey }) => (
             <button
@@ -221,12 +207,10 @@ export function AppearanceSettings() {
             </button>
           ))}
         </div>
-      </Section>
-
-      <Separator />
+      </PageSection>
 
       {/* Font size */}
-      <Section title={t("appearance.font_size")}>
+      <PageSection title={t("appearance.font_size")}>
         <div className="flex gap-1">
           {FONT_SCALES.map(({ value, labelKey }) => (
             <button
@@ -238,12 +222,10 @@ export function AppearanceSettings() {
             </button>
           ))}
         </div>
-      </Section>
-
-      <Separator />
+      </PageSection>
 
       {/* Fonts */}
-      <Section title={`${t("appearance.font_ar")} · ${t("appearance.font_en")}`}>
+      <PageSection title={`${t("appearance.font_ar")} · ${t("appearance.font_en")}`}>
         <div className="grid grid-cols-2 gap-4">
           {/* Arabic font */}
           <div className="space-y-2">
@@ -303,12 +285,10 @@ export function AppearanceSettings() {
             </div>
           </div>
         </div>
-      </Section>
-
-      <Separator />
+      </PageSection>
 
       {/* Branding */}
-      <Section title={t("appearance.branding")}>
+      <PageSection title={t("appearance.branding")}>
         <div className="space-y-4">
           {/* Logo */}
           <div>
@@ -362,7 +342,7 @@ export function AppearanceSettings() {
             />
           </div>
         </div>
-      </Section>
+      </PageSection>
     </div>
   );
 }

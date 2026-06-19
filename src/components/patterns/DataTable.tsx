@@ -63,7 +63,7 @@ export function DataTable<T>({
      * Table already wraps in overflow-auto; we add rounded-lg border to match
      * the card visual. The inner <table> gets w-full text-sm from shadcn.
      */
-    <Table className={cn("rounded-lg border border-border", className)}>
+    <Table className={className}>
       <TableHeader className="sticky top-0 bg-card">
         <TableRow className="border-b border-border hover:bg-transparent">
           {columns.map((col) => (

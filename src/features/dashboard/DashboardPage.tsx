@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Package, ShoppingCart, Users, TrendingUp } from "lucide-react";
 import { PageHeader } from "@/components/patterns/PageHeader";
+import { PageSection } from "@/components/patterns/PageSection";
 import { KpiCard } from "@/components/patterns/KpiCard";
 import { StatusPill } from "@/components/patterns/StatusPill";
 import { DataTable, Column } from "@/components/patterns/DataTable";
@@ -16,11 +17,11 @@ interface RecentSale {
 }
 
 const RECENT: RecentSale[] = [
-  { id: "INV-001", customer: "سوبر ماركت النيل", amount: 12450, status: "paid", date: "2026-06-14" },
-  { id: "INV-002", customer: "مطعم الأصيل",       amount: 3200,  status: "credit", date: "2026-06-13" },
-  { id: "INV-003", customer: "مخبز الجودة",        amount: 870,   status: "sent",   date: "2026-06-13" },
-  { id: "INV-004", customer: "كافيه الزهراء",      amount: 5600,  status: "paid",   date: "2026-06-12" },
-  { id: "INV-005", customer: "محل الأمانة",        amount: 980,   status: "rejected",date: "2026-06-11" },
+  { id: "INV-001", customer: "سوبر ماركت النيل", amount: 12450, status: "paid",     date: "2026-06-14" },
+  { id: "INV-002", customer: "مطعم الأصيل",       amount: 3200,  status: "credit",   date: "2026-06-13" },
+  { id: "INV-003", customer: "مخبز الجودة",        amount: 870,   status: "sent",     date: "2026-06-13" },
+  { id: "INV-004", customer: "كافيه الزهراء",      amount: 5600,  status: "paid",     date: "2026-06-12" },
+  { id: "INV-005", customer: "محل الأمانة",        amount: 980,   status: "rejected", date: "2026-06-11" },
 ];
 
 const STATUS_LABELS: Record<string, string> = {
@@ -28,7 +29,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export default function DashboardPage() {
-  const { t } = useTranslation("shell");
+  const { t }    = useTranslation("shell");
   const { lang } = useAppearance();
 
   const columns: Column<RecentSale>[] = [
@@ -40,22 +41,25 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageHeader title={t("nav.dashboard")} subtitle="مرحباً بك في فليكسوڤا" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-        <KpiCard icon={ShoppingCart} label="المبيعات اليوم"  value={formatMoney(24350, lang)} delta="+12%" deltaPositive />
-        <KpiCard icon={Package}     label="أصناف في المخزون" value="1,234" />
-        <KpiCard icon={Users}       label="عملاء نشطون"     value="87" delta="+3" deltaPositive />
+      {/* KPI row — each KpiCard is already a card variant */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <KpiCard icon={ShoppingCart} label="المبيعات اليوم"   value={formatMoney(24350, lang)} delta="+12%" deltaPositive />
+        <KpiCard icon={Package}     label="أصناف في المخزون"  value="1,234" />
+        <KpiCard icon={Users}       label="عملاء نشطون"       value="87"    delta="+3"  deltaPositive />
         <KpiCard icon={TrendingUp}  label="الإيرادات الشهرية" value={formatMoney(312000, lang)} delta="+8%" deltaPositive />
       </div>
 
-      <h2 className="text-base font-semibold mb-3">آخر المبيعات</h2>
-      <DataTable
-        columns={columns}
-        data={RECENT}
-        keyExtractor={(r) => r.id}
-      />
+      {/* Recent sales — table reaches card edges via padded=false */}
+      <PageSection title="آخر المبيعات" subtitle="آخر 5 فواتير" padded={false}>
+        <DataTable
+          columns={columns}
+          data={RECENT}
+          keyExtractor={(r) => r.id}
+        />
+      </PageSection>
     </div>
   );
 }

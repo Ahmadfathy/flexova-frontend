@@ -1,39 +1,21 @@
+/**
+ * Thin wrapper kept for backward-compatibility.
+ * New code should import PageSection directly.
+ */
 import React from "react";
-import { cn } from "@/lib/utils";
-import {
-  Card as ShadCard,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { PageSection } from "./PageSection";
 
 interface CardProps {
   title?: string;
   subtitle?: string;
   className?: string;
-  contentClassName?: string;
   children?: React.ReactNode;
 }
 
-export function Card({ title, subtitle, className, contentClassName, children }: CardProps) {
-  const hasHeader = title || subtitle;
-
+export function Card({ title, subtitle, className, children }: CardProps) {
   return (
-    <ShadCard className={className}>
-      {hasHeader && (
-        <CardHeader>
-          {title && (
-            <CardTitle className="text-sm font-semibold leading-none">{title}</CardTitle>
-          )}
-          {subtitle && (
-            <CardDescription>{subtitle}</CardDescription>
-          )}
-        </CardHeader>
-      )}
-      <CardContent className={cn(hasHeader ? "pt-0" : "p-6", contentClassName)}>
-        {children}
-      </CardContent>
-    </ShadCard>
+    <PageSection title={title} subtitle={subtitle} className={className}>
+      {children}
+    </PageSection>
   );
 }
