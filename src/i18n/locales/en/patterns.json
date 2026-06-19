@@ -1,0 +1,62 @@
+{
+  "page_title": "Component Library",
+  "page_subtitle": "Content pattern previews — developer reference",
+
+  "list_row_section":   "ListRow — List row",
+  "list_row_subtitle":  "Leading icon inside a tinted box, title + subtitle, trailing value / badge",
+
+  "data_table_section":  "DataTable — Data table",
+  "data_table_subtitle": "Comfortable rows, tinted header, avatar+name cell, colored status pills",
+
+  "stat_card_section":   "StatCard — Statistic card",
+  "stat_card_subtitle":  "Large value + delta + optional sparkline",
+
+  "progress_section":    "ProgressRow — Progress bar",
+  "progress_subtitle":   "Label + value + semantic-colored progress bar",
+
+  "form_section":        "FormLayout — Form",
+  "form_subtitle":       "Field layout inside a card: label + control + error + actions row",
+
+  "mini_chart_section":  "MiniChart / Gauge — Inline charts",
+  "mini_chart_subtitle": "Area sparkline, bar sparkline, radial gauge",
+
+  "col_member":     "Member",
+  "col_role":       "Role",
+  "col_status":     "Status",
+  "col_joined":     "Joined",
+  "col_sales":      "Sales",
+  "col_actions":    "Actions",
+
+  "role_owner":     "Owner",
+  "role_manager":   "Manager",
+  "role_cashier":   "Cashier",
+  "role_accountant":"Accountant",
+
+  "lbl_revenue":       "Revenue",
+  "lbl_orders":        "Orders",
+  "lbl_customers":     "Customers",
+  "lbl_avg_basket":    "Avg. Basket",
+
+  "lbl_sales_target":  "Sales Target",
+  "lbl_collection":    "Collection Rate",
+  "lbl_new_customers": "New Customers",
+  "lbl_satisfaction":  "Satisfaction",
+
+  "form_basic":        "Basic Information",
+  "form_basic_sub":    "Business unit details",
+  "lbl_company":       "Company Name",
+  "lbl_tax_id":        "Tax ID",
+  "lbl_phone":         "Phone",
+  "lbl_address":       "Address",
+  "ph_company":        "Enter company name",
+  "ph_tax_id":         "123-456-789",
+  "ph_phone":          "+20 10 XXXX XXXX",
+  "ph_address":        "City, Street",
+  "helper_tax":        "Issued by the Tax Authority",
+
+  "gauge_action":     "Action Needed",
+  "gauge_users":      "User Base",
+  "lbl_active":       "Active",
+  "lbl_inactive":     "Inactive",
+  "lbl_pending_lbl":  "Pending"
+}

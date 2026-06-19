@@ -1,0 +1,62 @@
+{
+  "page_title": "مكتبة المكوّنات",
+  "page_subtitle": "معاينة أنماط المحتوى المشتركة — مرجع للمطوّرين",
+
+  "list_row_section":   "ListRow — صف قائمة",
+  "list_row_subtitle":  "أيقونة رئيسية مع عنوان + وصف + قيمة/شارة نهائية",
+
+  "data_table_section":  "DataTable — جدول بيانات",
+  "data_table_subtitle": "صفوف مريحة، رأس مميّز، خليّة اسم + أفاتار، حبّات حالة ملوّنة",
+
+  "stat_card_section":   "StatCard — بطاقة إحصائية",
+  "stat_card_subtitle":  "قيمة رئيسية + تغيّر + خطّ بياني صغير",
+
+  "progress_section":    "ProgressRow — شريط تقدّم",
+  "progress_subtitle":   "تسمية + قيمة + شريط تقدّم بلون دلالي",
+
+  "form_section":        "FormLayout — نموذج",
+  "form_subtitle":       "تخطيط حقول النموذج داخل البطاقة: تسمية + حقل + خطأ + إجراءات",
+
+  "mini_chart_section":  "MiniChart / Gauge — رسوم بيانية صغيرة",
+  "mini_chart_subtitle": "مخطط مساحة، مخطط أعمدة، مقياس دائري",
+
+  "col_member":     "العضو",
+  "col_role":       "الدور",
+  "col_status":     "الحالة",
+  "col_joined":     "تاريخ الانضمام",
+  "col_sales":      "المبيعات",
+  "col_actions":    "إجراءات",
+
+  "role_owner":    "مالك",
+  "role_manager":  "مدير",
+  "role_cashier":  "أمين صندوق",
+  "role_accountant":"محاسب",
+
+  "lbl_revenue":       "الإيرادات",
+  "lbl_orders":        "الطلبات",
+  "lbl_customers":     "العملاء",
+  "lbl_avg_basket":    "متوسط السلّة",
+
+  "lbl_sales_target":  "هدف المبيعات",
+  "lbl_collection":    "التحصيل",
+  "lbl_new_customers": "عملاء جدد",
+  "lbl_satisfaction":  "رضا العملاء",
+
+  "form_basic":        "المعلومات الأساسية",
+  "form_basic_sub":    "بيانات الوحدة التجارية",
+  "lbl_company":       "اسم الشركة",
+  "lbl_tax_id":        "الرقم الضريبي",
+  "lbl_phone":         "رقم الهاتف",
+  "lbl_address":       "العنوان",
+  "ph_company":        "أدخل اسم الشركة",
+  "ph_tax_id":         "123-456-789",
+  "ph_phone":          "+20 10 XXXX XXXX",
+  "ph_address":        "المدينة، الشارع",
+  "helper_tax":        "الرقم الصادر من مصلحة الضرائب",
+
+  "gauge_action":     "تحتاج إجراء",
+  "gauge_users":      "قاعدة المستخدمين",
+  "lbl_active":       "نشطون",
+  "lbl_inactive":     "غير نشطين",
+  "lbl_pending_lbl":  "معلّقون"
+}

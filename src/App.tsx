@@ -82,6 +82,9 @@ import {
   UsersPage, RolesPage, BranchesPage, SecurityPage, AuditPage,
 } from "@/features/admin/AdminPages";
 
+// Dev tools
+import { PatternsPage } from "@/features/dev/PatternsPage";
+
 function PageFallback() {
   return (
     <div className="space-y-4">
@@ -217,6 +220,9 @@ export default function App() {
             <Route path="security" element={<SecurityPage />} />
             <Route path="audit"    element={<AuditPage />} />
           </Route>
+
+          {/* Dev tools — pattern library preview */}
+          <Route path="/dev/patterns" element={<PatternsPage />} />
 
           {/* Settings */}
           <Route path="/settings">
