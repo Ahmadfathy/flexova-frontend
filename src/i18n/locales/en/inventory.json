@@ -76,7 +76,8 @@
     "category": "Category",
     "unit":     "Unit",
     "balance":  "Balance",
-    "price":    "Price"
+    "price":    "Price",
+    "status":   "Status"
   },
   "item_types": {
     "stocked":   "Stocked",

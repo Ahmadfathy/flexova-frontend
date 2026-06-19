@@ -13,6 +13,7 @@ import {
 
 // Patterns
 import { PageHeader }    from "@/components/patterns/PageHeader";
+import { PageSection }   from "@/components/patterns/PageSection";
 import { EmptyState }    from "@/components/patterns/EmptyState";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
@@ -93,7 +94,7 @@ const DEFAULT_FILTERS: ItemFilters = {
 
 function ItemsSkeleton() {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div>
       <div className="flex gap-3 px-4 py-3 border-b border-border bg-muted/30">
         {[16, 36, 64, 120, 88, 56, 52, 64, 60, 32].map((w, i) => (
           <Skeleton key={i} className="h-3.5 rounded shrink-0" style={{ width: w }} />
@@ -626,10 +627,15 @@ export function ItemsListPage() {
     colHelper.display({
       id: "thumb",
       cell: ({ row }) => (
-        <div className="h-9 w-9 rounded-sm bg-muted flex items-center justify-center shrink-0 overflow-hidden">
-          {row.original.image
-            ? <img src={row.original.image} alt="" className="h-full w-full object-cover" loading="lazy" />
-            : <Package className="h-4 w-4 text-muted-foreground" />}
+        <div className="h-9 w-9 rounded-sm bg-muted shrink-0 overflow-hidden">
+          {row.original.image && (
+            <img
+              src={row.original.image}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          )}
         </div>
       ),
     }),
@@ -726,7 +732,7 @@ export function ItemsListPage() {
     // Status
     colHelper.display({
       id: "status",
-      header: "",
+      header: t("columns.status"),
       cell: ({ row }) => {
         const st = getEffectiveStatus(row.original);
         return (
@@ -828,9 +834,12 @@ export function ItemsListPage() {
         actions={pageActions}
       />
 
-      {/* ── Toolbar ── */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 flex-wrap">
+      {/* ── Card: toolbar + content + pagination ── */}
+      <PageSection padded={false}>
+
+        {/* Toolbar — search + filters + chips; its own padding row */}
+        <div className="px-4 py-3 border-b border-border space-y-2">
+          <div className="flex items-center gap-2 flex-wrap">
           {/* Search */}
           <div className="relative flex-1 min-w-48">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -918,148 +927,153 @@ export function ItemsListPage() {
             </Button>
           </div>
         )}
-      </div>
+        </div>{/* end toolbar */}
 
-      {/* ── Content states ── */}
+        {/* Content states */}
+        {showSkeleton && <ItemsSkeleton />}
 
-      {showSkeleton && <ItemsSkeleton />}
+        {showError && (
+          <div className="p-6">
+            <ErrorState description={t("errors.load")} onRetry={reload} />
+          </div>
+        )}
 
-      {showError && (
-        <ErrorState description={t("errors.load")} onRetry={reload} />
-      )}
+        {isEmpty && (
+          <div className="p-6">
+            <EmptyState
+              icon={Package}
+              title={t("items.empty_title")}
+              description={t("items.empty_sub")}
+              action={
+                can("inventory.item.create")
+                  ? { label: t("items.new"), onClick: () => navigate("/inventory/items/new") }
+                  : undefined
+              }
+            />
+          </div>
+        )}
 
-      {isEmpty && (
-        <EmptyState
-          icon={Package}
-          title={t("items.empty_title")}
-          description={t("items.empty_sub")}
-          action={
-            can("inventory.item.create")
-              ? { label: t("items.new"), onClick: () => navigate("/inventory/items/new") }
-              : undefined
-          }
-        />
-      )}
+        {hasNoResults && !showSkeleton && (
+          <NoResults query={debouncedSearch} onClear={clearAllFilters} />
+        )}
 
-      {hasNoResults && !showSkeleton && (
-        <NoResults query={debouncedSearch} onClear={clearAllFilters} />
-      )}
+        {showTable && (
+          <>
+            {/* Desktop / tablet table — card provides the border; no extra wrapper needed */}
+            <div className="hidden sm:block">
+              <Table>
+                <TableHeader className="bg-muted/40">
+                  {table.getHeaderGroups().map((hg) => (
+                    <TableRow key={hg.id} className="hover:bg-transparent border-b border-border">
+                      {hg.headers.map((header) => {
+                        const isSortable = header.column.getCanSort();
+                        const sortDir    = header.column.getIsSorted();
+                        const isNumeric  = ["balance", "sale_price"].includes(header.column.id);
+                        const isHiddenOnMd = ["category", "unit"].includes(header.column.id);
 
-      {showTable && (
-        <>
-          {/* Desktop / tablet table */}
-          <div className="hidden sm:block rounded-lg border border-border overflow-hidden">
-            <Table>
-              <TableHeader className="bg-muted/40">
-                {table.getHeaderGroups().map((hg) => (
-                  <TableRow key={hg.id} className="hover:bg-transparent border-b border-border">
-                    {hg.headers.map((header) => {
-                      const isSortable = header.column.getCanSort();
-                      const sortDir    = header.column.getIsSorted();
-                      const isNumeric  = ["balance", "sale_price"].includes(header.column.id);
-                      const isHiddenOnMd = ["category", "unit"].includes(header.column.id);
+                        return (
+                          <TableHead
+                            key={header.id}
+                            className={cn(
+                              "h-10 py-2 px-3 text-start text-xs font-medium text-muted-foreground whitespace-nowrap select-none",
+                              isNumeric && "text-end",
+                              isSortable && "cursor-pointer hover:text-foreground",
+                              isHiddenOnMd && "hidden lg:table-cell",
+                              header.column.id === "select" && "w-14 px-0 ps-4 pe-2",
+                              header.column.id === "thumb" && "w-12",
+                              header.column.id === "actions" && "w-10",
+                            )}
+                            onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
+                          >
+                            {header.isPlaceholder ? null : (
+                              <span className="inline-flex items-center gap-1">
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                {isSortable && <SortIcon dir={sortDir} />}
+                              </span>
+                            )}
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableHeader>
 
-                      return (
-                        <TableHead
-                          key={header.id}
-                          className={cn(
-                            "h-10 py-2 px-3 text-start text-xs font-medium text-muted-foreground whitespace-nowrap select-none",
-                            isNumeric && "text-end",
-                            isSortable && "cursor-pointer hover:text-foreground",
-                            isHiddenOnMd && "hidden lg:table-cell",
-                            header.column.id === "select" && "w-10",
-                            header.column.id === "thumb" && "w-12",
-                            header.column.id === "actions" && "w-10",
-                          )}
-                          onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
-                        >
-                          {header.isPlaceholder ? null : (
-                            <span className="inline-flex items-center gap-1">
-                              {flexRender(header.column.columnDef.header, header.getContext())}
-                              {isSortable && <SortIcon dir={sortDir} />}
-                            </span>
-                          )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() ? "selected" : undefined}
+                      className="cursor-pointer border-b border-border last:border-0"
+                      onClick={() => navigate(`/inventory/items/${row.original.id}`)}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const isNumeric  = ["balance", "sale_price"].includes(cell.column.id);
+                        const isHiddenMd = ["category", "unit"].includes(cell.column.id);
 
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() ? "selected" : undefined}
-                    className="cursor-pointer border-b border-border last:border-0"
-                    onClick={() => navigate(`/inventory/items/${row.original.id}`)}
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      const isNumeric   = ["balance", "sale_price"].includes(cell.column.id);
-                      const isHiddenMd  = ["category", "unit"].includes(cell.column.id);
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className={cn(
+                              "px-3 py-2.5 align-middle",
+                              isNumeric && "text-end tabular-nums",
+                              isHiddenMd && "hidden lg:table-cell",
+                              cell.column.id === "select" && "w-14 px-0 ps-4 pe-2",
+                              cell.column.id === "thumb"  && "w-12",
+                              cell.column.id === "actions" && "w-10",
+                            )}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
 
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={cn(
-                            "px-3 py-2.5 align-middle",
-                            isNumeric && "text-end tabular-nums",
-                            isHiddenMd && "hidden lg:table-cell",
-                            cell.column.id === "select" && "w-10",
-                            cell.column.id === "thumb"  && "w-12",
-                            cell.column.id === "actions" && "w-10",
-                          )}
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+              {/* Pagination footer — inside the card at the bottom */}
+              <div className="flex items-center justify-end px-4 py-2 border-t border-border bg-muted/20">
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t("items.showing", {
+                    from: filteredItems.length > 0 ? 1 : 0,
+                    to:   filteredItems.length,
+                    total: filteredItems.length,
+                  })}
+                </span>
+              </div>
+            </div>
 
-            {/* Pagination footer */}
-            <div className="flex items-center justify-end px-4 py-2 border-t border-border bg-muted/20">
-              <span className="text-xs text-muted-foreground tabular-nums">
+            {/* Mobile card list — padded inside the card */}
+            <div className="sm:hidden p-3 space-y-2">
+              {table.getRowModel().rows.map((row) => (
+                <ItemCard
+                  key={row.original.id}
+                  item={row.original}
+                  selected={row.getIsSelected()}
+                  onToggle={(v) => row.toggleSelected(!!v)}
+                  lang={lang}
+                  categoryMap={categoryMap}
+                  uomMap={uomMap}
+                  can={can}
+                  t={t}
+                  onNavigate={navigate}
+                />
+              ))}
+              {/* Mobile pagination note */}
+              <p className="text-xs text-muted-foreground text-center tabular-nums py-2">
                 {t("items.showing", {
                   from: filteredItems.length > 0 ? 1 : 0,
                   to:   filteredItems.length,
                   total: filteredItems.length,
                 })}
-              </span>
+              </p>
             </div>
-          </div>
+          </>
+        )}
 
-          {/* Mobile card list */}
-          <div className="sm:hidden space-y-2">
-            {table.getRowModel().rows.map((row) => (
-              <ItemCard
-                key={row.original.id}
-                item={row.original}
-                selected={row.getIsSelected()}
-                onToggle={(v) => row.toggleSelected(!!v)}
-                lang={lang}
-                categoryMap={categoryMap}
-                uomMap={uomMap}
-                can={can}
-                t={t}
-                onNavigate={navigate}
-              />
-            ))}
-            {/* Mobile pagination note */}
-            <p className="text-xs text-muted-foreground text-center tabular-nums py-2">
-              {t("items.showing", {
-                from: filteredItems.length > 0 ? 1 : 0,
-                to:   filteredItems.length,
-                total: filteredItems.length,
-              })}
-            </p>
-          </div>
-        </>
-      )}
+      </PageSection>{/* end card */}
 
-      {/* ── Bulk action bar ── */}
+      {/* ── Bulk action bar — fixed position, outside the card ── */}
       {selectedCount > 0 && (
         <BulkBar count={selectedCount} can={can} t={t} onClear={clearSelection} />
       )}

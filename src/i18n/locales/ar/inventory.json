@@ -76,7 +76,8 @@
     "category": "التصنيف",
     "unit":     "الوحدة",
     "balance":  "الرصيد",
-    "price":    "السعر"
+    "price":    "السعر",
+    "status":   "الحالة"
   },
   "item_types": {
     "stocked":   "مخزّن",

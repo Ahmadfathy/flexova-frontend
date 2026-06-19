@@ -53,7 +53,7 @@
     {
       "id": "it_rice", "code": "GR-1001", "name_ar": "أرز مصري فاخر ٥ كجم", "name_en": "Egyptian Rice 5kg",
       "item_type": "stocked", "category_id": "cat_grains", "base_uom_id": "uom_box",
-      "barcodes": ["6224000111014"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-100123-RICE5",
+      "barcodes": ["6224000111014"], "image": "https://placehold.co/80x80/e8f5e9/388e3c?text=Rice", "tax_type_id": "tax_t1", "eta_code": "EG-100123-RICE5",
       "reorder_level": 30, "max_level": 300, "status": "active", "incomplete": false,
       "prices": { "pl_retail": 185.00, "pl_wholesale": 168.00, "pl_vip": 175.00 },
       "last_purchase_price": 152.00, "avg_cost": 149.30,
@@ -73,7 +73,7 @@
     {
       "id": "it_oil", "code": "OL-2001", "name_ar": "زيت عافية ذرة ٢.٢٥ لتر", "name_en": "Afia Corn Oil 2.25L",
       "item_type": "stocked", "category_id": "cat_oils", "base_uom_id": "uom_bottle",
-      "barcodes": ["6221031492013"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-200201-OIL",
+      "barcodes": ["6221031492013"], "image": "https://placehold.co/80x80/fff8e1/f57f17?text=Oil", "tax_type_id": "tax_t1", "eta_code": "EG-200201-OIL",
       "reorder_level": 40, "max_level": 400, "status": "active", "incomplete": false,
       "prices": { "pl_retail": 168.00, "pl_wholesale": 158.00, "pl_vip": 162.00 },
       "last_purchase_price": 144.00, "avg_cost": 141.50,
@@ -83,7 +83,7 @@
     {
       "id": "it_tea", "code": "BV-3001", "name_ar": "شاي العروسة ٢٥٠ جم", "name_en": "El Arosa Tea 250g",
       "item_type": "stocked", "category_id": "cat_bev", "base_uom_id": "uom_pack",
-      "barcodes": ["6224007733018"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-300301-TEA",
+      "barcodes": ["6224007733018"], "image": "https://placehold.co/80x80/fce4ec/c62828?text=Tea", "tax_type_id": "tax_t1", "eta_code": "EG-300301-TEA",
       "reorder_level": 60, "max_level": 600, "status": "active", "incomplete": false,
       "prices": { "pl_retail": 58.00, "pl_wholesale": 52.00 },
       "last_purchase_price": 46.50, "avg_cost": 45.80,
@@ -93,7 +93,7 @@
     {
       "id": "it_cola", "code": "BV-3002", "name_ar": "كوكاكولا ١ لتر", "name_en": "Coca-Cola 1L",
       "item_type": "stocked", "category_id": "cat_bev", "base_uom_id": "uom_bottle",
-      "barcodes": ["5449000054227"], "image": null, "tax_type_id": "tax_t1", "eta_code": "",
+      "barcodes": ["5449000054227"], "image": "https://placehold.co/80x80/ffebee/b71c1c?text=Cola", "tax_type_id": "tax_t1", "eta_code": "",
       "reorder_level": 120, "max_level": 1200, "status": "active", "incomplete": false,
       "prices": { "pl_retail": 22.00 },
       "last_purchase_price": 16.00, "avg_cost": 15.70,
