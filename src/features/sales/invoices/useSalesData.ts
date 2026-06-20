@@ -53,6 +53,76 @@ export interface PriceList {
 }
 
 // ── Sales-sourced types ──────────────────────────────────────────
+export interface SalesInvoiceLine {
+  item_id: string;
+  description: string;
+  qty: number;
+  uom_id: string;
+  price: number;
+  line_discount: number;
+  tax_type_id: string;
+  line_total: number;
+}
+
+export interface SalesInvoiceEta {
+  uuid?: string | null;
+  long_id?: string;
+  accepted_at?: string;
+  qr?: string;
+  environment?: string;
+  rejected_at?: string;
+  reason_ar?: string;
+  reason_en?: string;
+  offending_field?: string;
+  raw_code?: string;
+  submitted_at?: string;
+  queued_at?: string;
+  window_deadline?: string;
+  window_remaining_hours?: number;
+  note_ar?: string;
+  note_en?: string;
+}
+
+export type EtaStatus =
+  | "draft" | "unsent" | "queued" | "clearing"
+  | "valid" | "rejected" | "cancelled" | "buyer_rejected";
+
+export type PaymentStatus = "paid" | "partial" | "credit" | "returned";
+
+export interface SalesInvoice {
+  id: string;
+  number: string;
+  branch_id: string;
+  date: string;
+  customer_id: string;
+  channel: "e-invoice" | "e-receipt";
+  payment_method: string;
+  warehouse_id: string;
+  payment_status: PaymentStatus;
+  eta_status: EtaStatus;
+  eta: SalesInvoiceEta;
+  lines: SalesInvoiceLine[];
+  totals: {
+    subtotal: number;
+    discount: number;
+    taxable_base: number;
+    tax: number;
+    grand_total: number;
+  };
+  collected: number;
+  balance: number;
+  linked_credit_note?: string;
+  _submit_blockers?: string[];
+  _flag?: string;
+}
+
+export interface Treasury {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  type: "cash" | "bank";
+}
+
 export interface SalesCustomer {
   id: string;
   name_ar: string;
@@ -87,6 +157,8 @@ export interface SalesData {
   warehouses: Warehouse[];
   branches: Branch[];
   priceLists: PriceList[];
+  invoices: SalesInvoice[];
+  treasuries: Treasury[];
 }
 
 // ── Internal fixture shapes ──────────────────────────────────────
@@ -104,6 +176,8 @@ interface SalesFixtureSlim {
   customers: SalesCustomer[];
   payment_methods: PaymentMethod[];
   eta_settings: EtaSettings;
+  invoices: SalesInvoice[];
+  treasuries: Treasury[];
   [k: string]: unknown;
 }
 
@@ -122,6 +196,8 @@ const EMPTY: SalesData = {
   warehouses: [],
   branches: [],
   priceLists: [],
+  invoices: [],
+  treasuries: [],
 };
 
 export interface UseSalesDataResult {
@@ -158,6 +234,8 @@ export function useSalesData(): UseSalesDataResult {
         warehouses:     inv.warehouses,
         branches:       inv.branches,
         priceLists:     inv.price_lists,
+        invoices:       sales.invoices,
+        treasuries:     sales.treasuries,
       };
     };
 
@@ -183,6 +261,8 @@ export function useSalesData(): UseSalesDataResult {
             warehouses:     inv.warehouses,
             branches:       inv.branches,
             priceLists:     inv.price_lists,
+            invoices:       sales.invoices,
+            treasuries:     sales.treasuries,
           });
         } catch {
           setData(EMPTY);

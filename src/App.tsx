@@ -38,7 +38,7 @@ import { SalesLayout } from "@/features/sales/SalesLayout";
 import {
   InvoicesPage, QuotationsPage, CreditNotesPage,
   DebitNotesPage, ReceiptsPage, EtaHubPage,
-  InvoiceEditorPage,
+  InvoiceEditorPage, IssuedInvoicePage,
 } from "@/features/sales/SalesPages";
 
 // Purchasing
@@ -151,7 +151,7 @@ export default function App() {
             <Route index element={<Navigate to="invoices" replace />} />
             <Route path="invoices"         element={<InvoicesPage />} />
             <Route path="invoices/new"     element={<InvoiceEditorPage />} />
-            <Route path="invoices/:id"     element={<InvoiceEditorPage />} />
+            <Route path="invoices/:id"     element={<IssuedInvoicePage />} />
             <Route path="quotations"       element={<QuotationsPage />} />
             <Route path="credit-notes"     element={<CreditNotesPage />} />
             <Route path="debit-notes"      element={<DebitNotesPage />} />

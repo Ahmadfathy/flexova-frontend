@@ -3,7 +3,10 @@ import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
 
-export { InvoiceEditorPage } from "./invoices/InvoiceEditorPage";
+export { InvoiceEditorPage }  from "./invoices/InvoiceEditorPage";
+export { InvoicesListPage }   from "./invoices/InvoicesListPage";
+export { IssuedInvoicePage }  from "./invoices/IssuedInvoicePage";
+export { InvoicesListPage as InvoicesPage } from "./invoices/InvoicesListPage";
 
 function Page({ k }: { k: string }) {
   const { t } = useTranslation("sales");
@@ -14,8 +17,6 @@ function Page({ k }: { k: string }) {
     </>
   );
 }
-
-export const InvoicesPage    = () => <Page k="invoices" />;
 export const QuotationsPage  = () => <Page k="quotations" />;
 export const CreditNotesPage = () => <Page k="credit_notes" />;
 export const DebitNotesPage  = () => <Page k="debit_notes" />;
