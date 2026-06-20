@@ -975,7 +975,7 @@ export function ItemsListPage() {
                           <TableHead
                             key={header.id}
                             className={cn(
-                              "h-10 py-2 px-3 text-start text-xs font-medium text-muted-foreground whitespace-nowrap select-none",
+                              "h-10 py-2 px-3 text-start text-xs font-semibold text-muted-foreground whitespace-nowrap select-none",
                               isNumeric && "text-end",
                               isSortable && "cursor-pointer hover:text-foreground",
                               isHiddenOnMd && "hidden lg:table-cell",

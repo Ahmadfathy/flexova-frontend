@@ -22,7 +22,7 @@ export function ErrorState({ title, description, onRetry, className }: ErrorStat
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       {onRetry && (
-        <Button variant="secondary" size="sm" onClick={onRetry}>
+        <Button variant="outline" size="sm" onClick={onRetry}>
           {t("error_retry")}
         </Button>
       )}

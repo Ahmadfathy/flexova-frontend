@@ -176,6 +176,7 @@
     "date":        "Date",
     "mode":        "Mode",
     "net_diff":    "Net diff",
+    "warehouse":   "Warehouse",
     "from_wh":     "From",
     "to_wh":       "To",
     "reason":      "Reason",

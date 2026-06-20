@@ -155,13 +155,13 @@ export function CategoriesPage() {
             <Table>
               <TableHeader className="bg-muted/40">
                 <TableRow className="hover:bg-transparent border-b border-border">
-                  <TableHead className="h-10 py-2 px-4 text-xs font-medium text-muted-foreground">
+                  <TableHead className="h-10 py-2 px-4 text-xs font-semibold text-muted-foreground">
                     {t("columns.name")}
                   </TableHead>
-                  <TableHead className="h-10 py-2 px-3 text-xs font-medium text-muted-foreground hidden sm:table-cell">
+                  <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground hidden sm:table-cell">
                     {t("columns.parent")}
                   </TableHead>
-                  <TableHead className="h-10 py-2 px-3 text-xs font-medium text-muted-foreground text-end">
+                  <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground text-end">
                     {t("columns.items_count")}
                   </TableHead>
                   <TableHead className="h-10 w-10 py-2 px-3" />

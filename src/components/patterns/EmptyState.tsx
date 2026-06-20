@@ -23,7 +23,7 @@ export function EmptyState({ icon: Icon = Inbox, title, description, action, cla
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       {action && (
-        <Button variant="secondary" size="sm" onClick={action.onClick}>
+        <Button variant="outline" size="sm" onClick={action.onClick}>
           {action.label ?? t("empty_add")}
         </Button>
       )}

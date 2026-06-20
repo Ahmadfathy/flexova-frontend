@@ -130,7 +130,7 @@ export function LowStockPage() {
                     <TableHead
                       key={col.key}
                       className={cn(
-                        "h-10 py-2 px-3 text-xs font-medium text-muted-foreground whitespace-nowrap",
+                        "h-10 py-2 px-3 text-xs font-semibold text-muted-foreground whitespace-nowrap",
                         col.cls
                       )}
                     >

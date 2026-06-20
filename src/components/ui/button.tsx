@@ -4,6 +4,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Button role → variant mapping — use consistently across every screen:
+ *
+ *  Primary action   (New, Save, Submit)          variant="default"      brand-filled
+ *  Secondary action (Export, Import, Print, …)   variant="outline"      card-surface + border
+ *  Tertiary / light (Cancel, Clear, Close, …)    variant="ghost"        text-only
+ *  Danger action    (Delete, Revoke, Suspend)     variant="destructive"  red-filled
+ *  Icon-only button (toolbar / row icons)         variant="ghost" size="icon"
+ *
+ * Do NOT use variant="secondary" — it maps to the shadcn secondary token,
+ * not our design system roles, and produces inconsistent appearance.
+ */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -12,8 +24,9 @@ const buttonVariants = cva(
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        // "secondary role" — card-surface background + border, muted text
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-card hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
