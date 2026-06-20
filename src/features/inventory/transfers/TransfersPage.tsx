@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
@@ -21,6 +22,7 @@ import { Plus, ArrowRightLeft, MoreVertical, ArrowRight } from "lucide-react";
 import { cn }       from "@/lib/utils";
 import { useCan }   from "@/lib/permissions";
 import { useItems } from "../items/useItems";
+import { NewTransferSheet } from "./NewTransferSheet";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -55,6 +57,8 @@ export function TransfersPage() {
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
 
+  const [sheetOpen, setSheetOpen] = useState(false);
+
   const { data, loading, error, reload } = useItems();
 
   const transfers = (data?.transfers ?? []) as Array<{
@@ -80,7 +84,7 @@ export function TransfersPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.transfer.create") ? (
-    <Button size="sm">
+    <Button size="sm" onClick={() => setSheetOpen(true)}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("actions.new_transfer")}
     </Button>
@@ -111,7 +115,7 @@ export function TransfersPage() {
               description={t("transfers.empty_sub")}
               action={
                 can("inventory.transfer.create")
-                  ? { label: t("actions.new_transfer"), onClick: () => {} }
+                  ? { label: t("actions.new_transfer"), onClick: () => setSheetOpen(true) }
                   : undefined
               }
             />
@@ -222,6 +226,8 @@ export function TransfersPage() {
           </>
         )}
       </PageSection>
+
+      <NewTransferSheet open={sheetOpen} onOpenChange={setSheetOpen} data={data} />
     </div>
   );
 }

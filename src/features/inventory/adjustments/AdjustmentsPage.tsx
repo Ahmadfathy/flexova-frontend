@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
@@ -22,6 +23,7 @@ import { formatMoney } from "@/lib/format";
 import { cn }          from "@/lib/utils";
 import { useCan }      from "@/lib/permissions";
 import { useItems }    from "../items/useItems";
+import { NewAdjustmentSheet } from "./NewAdjustmentSheet";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -55,6 +57,8 @@ export function AdjustmentsPage() {
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
 
+  const [sheetOpen, setSheetOpen] = useState(false);
+
   const { data, loading, error, reload } = useItems();
 
   const adjustments = (data?.adjustments ?? []) as Array<{
@@ -80,7 +84,7 @@ export function AdjustmentsPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.adjustment.create") ? (
-    <Button size="sm">
+    <Button size="sm" onClick={() => setSheetOpen(true)}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("actions.new_adjustment")}
     </Button>
@@ -111,7 +115,7 @@ export function AdjustmentsPage() {
               description={t("adjustments.empty_sub")}
               action={
                 can("inventory.adjustment.create")
-                  ? { label: t("actions.new_adjustment"), onClick: () => {} }
+                  ? { label: t("actions.new_adjustment"), onClick: () => setSheetOpen(true) }
                   : undefined
               }
             />
@@ -220,6 +224,8 @@ export function AdjustmentsPage() {
           </>
         )}
       </PageSection>
+
+      <NewAdjustmentSheet open={sheetOpen} onOpenChange={setSheetOpen} data={data} />
     </div>
   );
 }

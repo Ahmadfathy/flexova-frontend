@@ -85,6 +85,8 @@ import {
 // Dev tools
 import { PatternsPage } from "@/features/dev/PatternsPage";
 
+import { Toaster } from "@/components/ui/sonner";
+
 function PageFallback() {
   return (
     <div className="space-y-4">
@@ -248,6 +250,7 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
 
       </Routes>
+      <Toaster position="bottom-center" />
     </BrowserRouter>
   );
 }
