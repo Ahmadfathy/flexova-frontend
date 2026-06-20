@@ -13,5 +13,95 @@
   "credit_notes": { "title": "Returns & credit notes" },
   "debit_notes":  { "title": "Debit notes" },
   "receipts":     { "title": "Payment receipts" },
-  "eta_hub":      { "title": "E-invoice hub" }
+  "eta_hub":      { "title": "E-invoice hub" },
+
+  "editor": {
+    "title_new":         "New invoice",
+    "title_edit":        "Edit invoice",
+    "zone_header":       "Customer & invoice details",
+    "zone_lines":        "Invoice lines",
+    "zone_totals":       "Totals",
+    "customer":          "Customer",
+    "cash_customer":     "Cash customer",
+    "trn":               "Tax Reg. No. (TRN)",
+    "uin":               "UIN",
+    "channel":           "Channel",
+    "channel_auto":      "Auto-detected",
+    "channel_einvoice":  "E-invoice (B2B)",
+    "channel_ereceipt":  "E-receipt (B2C)",
+    "date":              "Date",
+    "warehouse":         "Warehouse",
+    "branch":            "Branch",
+    "payment_method":    "Payment method",
+    "notes":             "Notes",
+    "add_item":          "Add item",
+    "col_item":          "Item",
+    "col_desc":          "Description",
+    "col_qty":           "Qty",
+    "col_uom":           "Unit",
+    "col_price":         "Price",
+    "col_discount":      "Discount",
+    "col_tax":           "Tax",
+    "col_total":         "Total",
+    "no_items":          "No items added yet",
+    "price_overridden":  "Price overridden",
+    "subtotal":          "Subtotal",
+    "total_discount":    "Discount",
+    "taxable_base":      "Taxable base",
+    "tax":               "Tax",
+    "grand_total":       "Grand total",
+    "save_draft":        "Save draft",
+    "issue":             "Issue & submit",
+    "will_submit":       "Will submit as {{channel}} · {{env}}",
+    "select_customer":   "Select customer",
+    "select_warehouse":  "Select warehouse",
+    "select_payment":    "Select payment method",
+    "select_item":       "Select item",
+    "saving":            "Saving…",
+    "submitting":        "Submitting…",
+    "saved_draft":       "Saved as draft",
+    "submitted_b2b":     "Submitted — awaiting ETA acceptance",
+    "submitted_b2c":     "Issued — queued for submission",
+    "submit_error":      "Submit failed — try again",
+    "pick_customer_first": "Select a customer first",
+    "scan_placeholder":  "Scan barcode or search for an item"
+  },
+
+  "readiness": {
+    "title":       "E-invoice readiness",
+    "ready":       "Ready to submit",
+    "fix":         "Fix",
+    "no_eta_code": "Item \"{{item}}\" has no EGS/GS1 code",
+    "no_trn":      "Buyer TRN is missing or invalid",
+    "no_seal":     "E-seal is not configured",
+    "no_tax_type": "Tax type missing on line {{n}}",
+    "no_customer": "No customer selected",
+    "no_warehouse": "No warehouse selected",
+    "no_lines":    "No items on the invoice",
+    "no_date":     "Date is required",
+    "eta_settings": "ETA settings"
+  },
+
+  "eta": {
+    "draft":          "Draft",
+    "unsent":         "Unsent",
+    "queued":         "Queued",
+    "clearing":       "Clearing",
+    "valid":          "Valid",
+    "rejected":       "Rejected",
+    "cancelled":      "Cancelled",
+    "buyer_rejected": "Buyer rejected"
+  },
+
+  "pay": {
+    "paid":     "Paid",
+    "partial":  "Partially paid",
+    "credit":   "Credit",
+    "returned": "Returned"
+  },
+
+  "filters": {
+    "payment": "Payment status",
+    "eta":     "E-invoice status"
+  }
 }

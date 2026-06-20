@@ -3,6 +3,8 @@ import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
 
+export { InvoiceEditorPage } from "./invoices/InvoiceEditorPage";
+
 function Page({ k }: { k: string }) {
   const { t } = useTranslation("sales");
   return (

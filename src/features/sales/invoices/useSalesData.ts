@@ -1,0 +1,201 @@
+import { useState, useEffect, useCallback } from "react";
+import { mockFetch, loadFixture } from "@/lib/mock/client";
+
+// ── Inventory-sourced types ──────────────────────────────────────
+export interface InventoryItem {
+  id: string;
+  code: string;
+  name_ar: string;
+  name_en: string;
+  item_type: string;
+  base_uom_id: string;
+  tax_type_id: string;
+  eta_code: string;
+  status: string;
+  incomplete: boolean;
+  prices: Record<string, number>;
+  balances: { warehouse_id: string; qty: number }[];
+}
+
+export interface TaxType {
+  id: string;
+  code: string;
+  name_ar: string;
+  name_en: string;
+  rate: number;
+}
+
+export interface UOM {
+  id: string;
+  name_ar: string;
+  name_en: string;
+}
+
+export interface Warehouse {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  branch_id: string;
+  is_default: boolean;
+}
+
+export interface Branch {
+  id: string;
+  name_ar: string;
+  name_en: string;
+}
+
+export interface PriceList {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  is_default: boolean;
+}
+
+// ── Sales-sourced types ──────────────────────────────────────────
+export interface SalesCustomer {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  type: "b2b" | "b2c";
+  trn: string | null;
+  uin: string | null;
+  price_list_id: string;
+  default_payment: string;
+}
+
+export interface PaymentMethod {
+  id: string;
+  name_ar: string;
+  name_en: string;
+}
+
+export interface EtaSettings {
+  trn: string;
+  eseal: { configured: boolean; type: string; expires: string };
+  environment: string;
+  test_mode: boolean;
+}
+
+export interface SalesData {
+  customers: SalesCustomer[];
+  paymentMethods: PaymentMethod[];
+  etaSettings: EtaSettings;
+  items: InventoryItem[];
+  taxTypes: TaxType[];
+  uoms: UOM[];
+  warehouses: Warehouse[];
+  branches: Branch[];
+  priceLists: PriceList[];
+}
+
+// ── Internal fixture shapes ──────────────────────────────────────
+interface InventoryFixtureSlim {
+  items: InventoryItem[];
+  tax_types: TaxType[];
+  uoms: UOM[];
+  warehouses: Warehouse[];
+  branches: Branch[];
+  price_lists: PriceList[];
+  [k: string]: unknown;
+}
+
+interface SalesFixtureSlim {
+  customers: SalesCustomer[];
+  payment_methods: PaymentMethod[];
+  eta_settings: EtaSettings;
+  [k: string]: unknown;
+}
+
+const EMPTY: SalesData = {
+  customers: [],
+  paymentMethods: [],
+  etaSettings: {
+    trn: "",
+    eseal: { configured: false, type: "", expires: "" },
+    environment: "sandbox",
+    test_mode: true,
+  },
+  items: [],
+  taxTypes: [],
+  uoms: [],
+  warehouses: [],
+  branches: [],
+  priceLists: [],
+};
+
+export interface UseSalesDataResult {
+  data: SalesData | null;
+  loading: boolean;
+  error: string | null;
+  isOffline: boolean;
+  reload: () => void;
+}
+
+export function useSalesData(): UseSalesDataResult {
+  const [data, setData]         = useState<SalesData | null>(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string | null>(null);
+  const [isOffline, setIsOffline] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setIsOffline(false);
+
+    const merge = async (): Promise<SalesData> => {
+      const [inv, sales] = await Promise.all([
+        loadFixture<InventoryFixtureSlim>("inventory"),
+        loadFixture<SalesFixtureSlim>("sales"),
+      ]);
+      return {
+        customers:      sales.customers,
+        paymentMethods: sales.payment_methods,
+        etaSettings:    sales.eta_settings,
+        items:          inv.items,
+        taxTypes:       inv.tax_types,
+        uoms:           inv.uoms,
+        warehouses:     inv.warehouses,
+        branches:       inv.branches,
+        priceLists:     inv.price_lists,
+      };
+    };
+
+    try {
+      const result = await mockFetch(merge, EMPTY);
+      setData(result);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown";
+      if (msg === "mock_offline") {
+        setIsOffline(true);
+        try {
+          const [inv, sales] = await Promise.all([
+            loadFixture<InventoryFixtureSlim>("inventory"),
+            loadFixture<SalesFixtureSlim>("sales"),
+          ]);
+          setData({
+            customers:      sales.customers,
+            paymentMethods: sales.payment_methods,
+            etaSettings:    sales.eta_settings,
+            items:          inv.items,
+            taxTypes:       inv.tax_types,
+            uoms:           inv.uoms,
+            warehouses:     inv.warehouses,
+            branches:       inv.branches,
+            priceLists:     inv.price_lists,
+          });
+        } catch {
+          setData(EMPTY);
+        }
+      } else {
+        setError(msg);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  return { data, loading, error, isOffline, reload: load };
+}

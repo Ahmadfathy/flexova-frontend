@@ -38,6 +38,7 @@ import { SalesLayout } from "@/features/sales/SalesLayout";
 import {
   InvoicesPage, QuotationsPage, CreditNotesPage,
   DebitNotesPage, ReceiptsPage, EtaHubPage,
+  InvoiceEditorPage,
 } from "@/features/sales/SalesPages";
 
 // Purchasing
@@ -148,12 +149,14 @@ export default function App() {
           {/* Sales — FE_02 */}
           <Route path="/sales" element={<SalesLayout />}>
             <Route index element={<Navigate to="invoices" replace />} />
-            <Route path="invoices"    element={<InvoicesPage />} />
-            <Route path="quotations"  element={<QuotationsPage />} />
-            <Route path="credit-notes" element={<CreditNotesPage />} />
-            <Route path="debit-notes"  element={<DebitNotesPage />} />
-            <Route path="receipts"    element={<ReceiptsPage />} />
-            <Route path="eta-hub"     element={<EtaHubPage />} />
+            <Route path="invoices"         element={<InvoicesPage />} />
+            <Route path="invoices/new"     element={<InvoiceEditorPage />} />
+            <Route path="invoices/:id"     element={<InvoiceEditorPage />} />
+            <Route path="quotations"       element={<QuotationsPage />} />
+            <Route path="credit-notes"     element={<CreditNotesPage />} />
+            <Route path="debit-notes"      element={<DebitNotesPage />} />
+            <Route path="receipts"         element={<ReceiptsPage />} />
+            <Route path="eta-hub"          element={<EtaHubPage />} />
           </Route>
 
           {/* Purchasing — FE_03 */}

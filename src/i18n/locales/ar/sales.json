@@ -13,5 +13,95 @@
   "credit_notes": { "title": "المرتجعات وإشعارات الدائن" },
   "debit_notes":  { "title": "إشعارات المدين" },
   "receipts":     { "title": "سندات التحصيل" },
-  "eta_hub":      { "title": "مركز الفاتورة الإلكترونية" }
+  "eta_hub":      { "title": "مركز الفاتورة الإلكترونية" },
+
+  "editor": {
+    "title_new":         "فاتورة جديدة",
+    "title_edit":        "تعديل الفاتورة",
+    "zone_header":       "بيانات العميل والفاتورة",
+    "zone_lines":        "أصناف الفاتورة",
+    "zone_totals":       "الإجماليات",
+    "customer":          "العميل",
+    "cash_customer":     "عميل نقدي",
+    "trn":               "الرقم الضريبي (TRN)",
+    "uin":               "المعرّف الفريد (UIN)",
+    "channel":           "قناة الإرسال",
+    "channel_auto":      "يُحدَّد آلياً",
+    "channel_einvoice":  "فاتورة إلكترونية (B2B)",
+    "channel_ereceipt":  "إيصال إلكتروني (B2C)",
+    "date":              "التاريخ",
+    "warehouse":         "المخزن",
+    "branch":            "الفرع",
+    "payment_method":    "طريقة الدفع",
+    "notes":             "ملاحظات",
+    "add_item":          "إضافة صنف",
+    "col_item":          "الصنف",
+    "col_desc":          "الوصف",
+    "col_qty":           "الكمية",
+    "col_uom":           "الوحدة",
+    "col_price":         "السعر",
+    "col_discount":      "الخصم",
+    "col_tax":           "الضريبة",
+    "col_total":         "الإجمالي",
+    "no_items":          "لم تتم إضافة أصناف بعد",
+    "price_overridden":  "سعر معدَّل",
+    "subtotal":          "إجمالي قبل الخصم",
+    "total_discount":    "الخصم",
+    "taxable_base":      "الوعاء الضريبي",
+    "tax":               "الضريبة",
+    "grand_total":       "الإجمالي الكلي",
+    "save_draft":        "حفظ كمسودة",
+    "issue":             "إصدار وإرسال",
+    "will_submit":       "سيتم الإرسال كـ {{channel}} · {{env}}",
+    "select_customer":   "اختر العميل",
+    "select_warehouse":  "اختر المخزن",
+    "select_payment":    "اختر طريقة الدفع",
+    "select_item":       "اختر الصنف",
+    "saving":            "جارٍ الحفظ…",
+    "submitting":        "جارٍ الإرسال…",
+    "saved_draft":       "تم الحفظ كمسودة",
+    "submitted_b2b":     "تم الإرسال — بانتظار اعتماد المصلحة",
+    "submitted_b2c":     "تم الإصدار — في طابور الإرسال",
+    "submit_error":      "تعذّر الإرسال — حاول مجدداً",
+    "pick_customer_first": "اختر العميل أولاً",
+    "scan_placeholder":  "أدخل الباركود أو ابحث عن الصنف"
+  },
+
+  "readiness": {
+    "title":       "جاهزية الفاتورة الإلكترونية",
+    "ready":       "جاهزة للإرسال",
+    "fix":         "تصحيح",
+    "no_eta_code": "الصنف «{{item}}» بدون كود EGS/GS1",
+    "no_trn":      "الرقم الضريبي للعميل ناقص أو غير صحيح",
+    "no_seal":     "الختم الإلكتروني غير مُهيّأ",
+    "no_tax_type": "نوع الضريبة مفقود في السطر {{n}}",
+    "no_customer": "لم يتم اختيار العميل",
+    "no_warehouse": "لم يتم اختيار المخزن",
+    "no_lines":    "لا توجد أصناف في الفاتورة",
+    "no_date":     "التاريخ مطلوب",
+    "eta_settings": "إعدادات الفاتورة الإلكترونية"
+  },
+
+  "eta": {
+    "draft":          "مسودة",
+    "unsent":         "غير مُرسَلة",
+    "queued":         "في الطابور",
+    "clearing":       "قيد الاعتماد",
+    "valid":          "مقبولة",
+    "rejected":       "مرفوضة",
+    "cancelled":      "ملغاة",
+    "buyer_rejected": "رفضها المشتري"
+  },
+
+  "pay": {
+    "paid":     "مدفوعة",
+    "partial":  "مدفوعة جزئياً",
+    "credit":   "آجلة",
+    "returned": "مرتجعة"
+  },
+
+  "filters": {
+    "payment": "حالة الدفع",
+    "eta":     "حالة الفاتورة الإلكترونية"
+  }
 }
