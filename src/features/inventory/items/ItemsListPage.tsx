@@ -55,6 +55,7 @@ import { cn }             from "@/lib/utils";
 import { useCan }         from "@/lib/permissions";
 import { useItems }       from "./useItems";
 import { QuickAddModal }  from "./QuickAddModal";
+import { ImportDrawer }   from "./ImportDrawer";
 import type { InventoryItem, InventoryCategory, InventoryWarehouse, InventoryUom, ItemStatus, ItemFilters } from "./types";
 
 /* ─── Module-level helpers ──────────────────────────────────── */
@@ -492,6 +493,7 @@ export function ItemsListPage() {
   const { data, loading, error, isOffline, reload } = useItems();
 
   const [quickAddOpen, setQuickAddOpen]   = useState(false);
+  const [importOpen,   setImportOpen]     = useState(false);
   const [search, setSearch]               = useState("");
   const [debouncedSearch, setDebounced]   = useState("");
   const [filters, setFilters]             = useState<ItemFilters>(DEFAULT_FILTERS);
@@ -802,7 +804,7 @@ export function ItemsListPage() {
         </Button>
       )}
       {can("inventory.item.import") && (
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
           <Upload className="h-4 w-4 me-1.5" />
           {t("actions.import")}
         </Button>
@@ -1084,6 +1086,13 @@ export function ItemsListPage() {
       <QuickAddModal
         open={quickAddOpen}
         onOpenChange={setQuickAddOpen}
+        data={data}
+      />
+
+      {/* ── Import wizard drawer ──────────────────────────────── */}
+      <ImportDrawer
+        open={importOpen}
+        onOpenChange={setImportOpen}
         data={data}
       />
     </div>

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -23,6 +25,7 @@ import { formatNumber } from "@/lib/format";
 import { cn }           from "@/lib/utils";
 import { useCan }       from "@/lib/permissions";
 import { useItems }     from "../items/useItems";
+import { NewStocktakeDialog } from "./NewStocktakeDialog";
 
 /* ─── Status variant mapping ─────────────────────────────────── */
 
@@ -67,7 +70,10 @@ function StSkeleton() {
 export function StocktakesPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
+  const navigate     = useNavigate();
   const can          = useCan();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data, loading, error, reload } = useItems();
 
@@ -95,7 +101,7 @@ export function StocktakesPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.stocktake.create") ? (
-    <Button size="sm">
+    <Button size="sm" onClick={() => setDialogOpen(true)}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("actions.new_stocktake")}
     </Button>
@@ -126,7 +132,7 @@ export function StocktakesPage() {
               description={t("stocktakes.empty_sub")}
               action={
                 can("inventory.stocktake.create")
-                  ? { label: t("actions.new_stocktake"), onClick: () => {} }
+                  ? { label: t("actions.new_stocktake"), onClick: () => setDialogOpen(true) }
                   : undefined
               }
             />
@@ -170,6 +176,7 @@ export function StocktakesPage() {
                     <TableRow
                       key={st.id}
                       className="border-b border-border last:border-0 hover:bg-muted/30 cursor-pointer"
+                      onClick={() => navigate(`/inventory/stocktakes/${st.id}`)}
                     >
                       {/* Number */}
                       <TableCell className="px-3 py-3">
@@ -244,6 +251,8 @@ export function StocktakesPage() {
           </>
         )}
       </PageSection>
+
+      <NewStocktakeDialog open={dialogOpen} onOpenChange={setDialogOpen} data={data} />
     </div>
   );
 }

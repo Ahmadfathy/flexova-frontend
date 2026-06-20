@@ -29,8 +29,8 @@ const AppearanceSettingsPage = lazy(() =>
 // Inventory
 import { InventoryLayout } from "@/features/inventory/InventoryLayout";
 import {
-  ItemsPage, CategoriesPage, PriceListsPage, WarehousesPage,
-  StocktakesPage, TransfersPage, AdjustmentsPage, LowStockPage,
+  ItemsPage, CategoriesPage, PriceListsPage, PriceListEditorPage, WarehousesPage,
+  StocktakesPage, StocktakeEditorPage, TransfersPage, AdjustmentsPage, LowStockPage,
 } from "@/features/inventory/InventoryPages";
 
 // Sales
@@ -135,9 +135,11 @@ export default function App() {
             <Route index element={<Navigate to="items" replace />} />
             <Route path="items"       element={<ItemsPage />} />
             <Route path="categories"  element={<CategoriesPage />} />
-            <Route path="price-lists" element={<PriceListsPage />} />
-            <Route path="warehouses"  element={<WarehousesPage />} />
-            <Route path="stocktakes"  element={<StocktakesPage />} />
+            <Route path="price-lists"        element={<PriceListsPage />} />
+            <Route path="price-lists/:id"   element={<PriceListEditorPage />} />
+            <Route path="warehouses"         element={<WarehousesPage />} />
+            <Route path="stocktakes"         element={<StocktakesPage />} />
+            <Route path="stocktakes/:id"    element={<StocktakeEditorPage />} />
             <Route path="transfers"   element={<TransfersPage />} />
             <Route path="adjustments" element={<AdjustmentsPage />} />
             <Route path="low-stock"   element={<LowStockPage />} />
