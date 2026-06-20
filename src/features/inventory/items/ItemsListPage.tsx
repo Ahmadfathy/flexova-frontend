@@ -54,6 +54,7 @@ import { formatMoney, formatNumber } from "@/lib/format";
 import { cn }             from "@/lib/utils";
 import { useCan }         from "@/lib/permissions";
 import { useItems }       from "./useItems";
+import { QuickAddModal }  from "./QuickAddModal";
 import type { InventoryItem, InventoryCategory, InventoryWarehouse, InventoryUom, ItemStatus, ItemFilters } from "./types";
 
 /* ─── Module-level helpers ──────────────────────────────────── */
@@ -490,6 +491,7 @@ export function ItemsListPage() {
 
   const { data, loading, error, isOffline, reload } = useItems();
 
+  const [quickAddOpen, setQuickAddOpen]   = useState(false);
   const [search, setSearch]               = useState("");
   const [debouncedSearch, setDebounced]   = useState("");
   const [filters, setFilters]             = useState<ItemFilters>(DEFAULT_FILTERS);
@@ -794,7 +796,7 @@ export function ItemsListPage() {
   const pageActions = (
     <div className="flex items-center gap-2 flex-wrap justify-end">
       {can("inventory.item.create") && (
-        <Button size="sm" onClick={() => navigate("/inventory/items/new")}>
+        <Button size="sm" onClick={() => setQuickAddOpen(true)}>
           <Plus className="h-4 w-4 me-1.5" />
           {t("items.new")}
         </Button>
@@ -946,7 +948,7 @@ export function ItemsListPage() {
               description={t("items.empty_sub")}
               action={
                 can("inventory.item.create")
-                  ? { label: t("items.new"), onClick: () => navigate("/inventory/items/new") }
+                  ? { label: t("items.new"), onClick: () => setQuickAddOpen(true) }
                   : undefined
               }
             />
@@ -1077,6 +1079,13 @@ export function ItemsListPage() {
       {selectedCount > 0 && (
         <BulkBar count={selectedCount} can={can} t={t} onClear={clearSelection} />
       )}
+
+      {/* ── Quick-add item modal ─────────────────────────────── */}
+      <QuickAddModal
+        open={quickAddOpen}
+        onOpenChange={setQuickAddOpen}
+        data={data}
+      />
     </div>
   );
 }

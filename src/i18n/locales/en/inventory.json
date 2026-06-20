@@ -23,23 +23,52 @@
     "showing":          "Showing {{from}} - {{to}} of {{total}}"
   },
   "categories": {
-    "title":       "Categories",
-    "count":       "{{n}} categories",
-    "new":         "New category",
-    "search_ph":   "Search categories…",
-    "empty_title": "No categories yet",
-    "empty_sub":   "Add categories to organise your items",
-    "showing":     "Showing {{from}} - {{to}} of {{total}}",
-    "root":        "Root"
+    "title":               "Categories",
+    "count":               "{{n}} categories",
+    "new":                 "New category",
+    "search_ph":           "Search categories…",
+    "empty_title":         "No categories yet",
+    "empty_sub":           "Add categories to organise your items",
+    "showing":             "Showing {{from}} - {{to}} of {{total}}",
+    "root":                "Root",
+    "edit":                "Edit category",
+    "add_child":           "New subcategory",
+    "depth_block":         "Max 3 levels — can't add a 4th level",
+    "cant_delete":         "Can't delete — category contains items",
+    "form_name":           "Category name",
+    "form_parent":         "Parent category",
+    "form_no_parent":      "No parent (root)",
+    "form_name_required":  "Category name is required",
+    "delete_title":        "Delete category?",
+    "delete_desc":         "This action cannot be undone.",
+    "delete_blocked_desc": "Can't delete — this category has items. Reassign items first."
   },
   "warehouses": {
-    "title":         "Warehouses",
-    "count":         "{{n}} warehouses",
-    "new":           "New warehouse",
-    "empty_title":   "No warehouses yet",
-    "empty_sub":     "Add warehouses to track stock across locations",
-    "showing":       "Showing {{from}} - {{to}} of {{total}}",
-    "default_badge": "Default"
+    "title":                "Warehouses",
+    "count":                "{{n}} warehouses",
+    "new":                  "New warehouse",
+    "empty_title":          "No warehouses yet",
+    "empty_sub":            "Add warehouses to track stock across locations",
+    "showing":              "Showing {{from}} - {{to}} of {{total}}",
+    "default_badge":        "Default",
+    "edit":                 "Edit warehouse",
+    "cant_delete":          "Can't delete — warehouse holds stock",
+    "form_name":            "Warehouse name",
+    "form_code":            "Code",
+    "form_branch":          "Branch",
+    "form_type":            "Type",
+    "form_status":          "Status",
+    "form_is_default":      "Default warehouse",
+    "form_is_default_hint": "Used as the default source for operations",
+    "form_name_required":   "Warehouse name is required",
+    "delete_title":         "Delete warehouse?",
+    "delete_desc":          "This action cannot be undone.",
+    "delete_blocked_desc":  "Can't delete — warehouse holds stock. Transfer stock first.",
+    "types": {
+      "sale":    "Sale",
+      "storage": "Storage",
+      "damaged": "Damaged"
+    }
   },
   "price_lists": {
     "title":         "Price lists",
@@ -81,6 +110,22 @@
     "empty_sub":   "No items have reached their reorder level",
     "showing":     "Showing {{from}} - {{to}} of {{total}}"
   },
+  "quickadd": {
+    "title":         "Quick add",
+    "hint":          "You can complete the rest later",
+    "name_ar":       "Item name",
+    "name_ar_ph":    "Enter item name…",
+    "category":      "Category",
+    "category_ph":   "Select category",
+    "unit":          "Base unit",
+    "price":         "Sale price",
+    "code":          "Code (SKU)",
+    "code_auto":     "Auto",
+    "code_edit":     "Edit",
+    "add":           "Add",
+    "name_required": "Item name is required",
+    "success":       "Added — item will appear as incomplete in the list"
+  },
   "actions": {
     "import":          "Import",
     "export":          "Export",
@@ -105,7 +150,12 @@
     "view_items":      "View items",
     "new_transfer":    "New transfer",
     "new_stocktake":   "New stocktake",
-    "new_adjustment":  "New adjustment"
+    "new_adjustment":  "New adjustment",
+    "save":            "Save",
+    "cancel":          "Cancel",
+    "close":           "Close",
+    "confirm_delete":  "Delete",
+    "add_child":       "Add child"
   },
   "status": {
     "active":     "Active",
@@ -183,7 +233,8 @@
     "note":        "Note",
     "reorder":     "Reorder level",
     "shortfall":   "Shortfall",
-    "suggested":   "Suggested qty"
+    "suggested":   "Suggested qty",
+    "default":     "Default"
   },
   "item_types": {
     "stocked":   "Stocked",

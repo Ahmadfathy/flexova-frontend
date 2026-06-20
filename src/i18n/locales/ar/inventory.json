@@ -23,31 +23,60 @@
     "showing":            "عرض {{from}} - {{to}} من {{total}}"
   },
   "categories": {
-    "title":       "التصنيفات",
-    "count":       "{{n}} تصنيف",
-    "new":         "تصنيف جديد",
-    "search_ph":   "ابحث في التصنيفات…",
-    "empty_title": "لسه مفيش تصنيفات",
-    "empty_sub":   "أضف تصنيفاتك لتنظيم أصنافك",
-    "showing":     "عرض {{from}} - {{to}} من {{total}}",
-    "root":        "رئيسي"
+    "title":               "التصنيفات",
+    "count":               "{{n}} تصنيف",
+    "new":                 "تصنيف جديد",
+    "search_ph":           "ابحث في التصنيفات…",
+    "empty_title":         "لسه مفيش تصنيفات",
+    "empty_sub":           "أضف تصنيفاتك لتنظيم أصنافك",
+    "showing":             "عرض {{from}} - {{to}} من {{total}}",
+    "root":                "رئيسي",
+    "edit":                "تعديل التصنيف",
+    "add_child":           "تصنيف فرعي جديد",
+    "depth_block":         "الحد الأقصى ٣ مستويات — لا يمكن إضافة مستوى رابع",
+    "cant_delete":         "لا يمكن الحذف — التصنيف يحتوي أصنافاً",
+    "form_name":           "اسم التصنيف",
+    "form_parent":         "التصنيف الرئيسي",
+    "form_no_parent":      "بدون تصنيف رئيسي (رئيسي)",
+    "form_name_required":  "اسم التصنيف مطلوب",
+    "delete_title":        "حذف التصنيف؟",
+    "delete_desc":         "هذا الإجراء لا يمكن التراجع عنه.",
+    "delete_blocked_desc": "لا يمكن حذف هذا التصنيف لأنه يحتوي أصنافاً. أعد تعيين الأصناف أولاً."
   },
   "warehouses": {
-    "title":       "المخازن",
-    "count":       "{{n}} مخزن",
-    "new":         "مخزن جديد",
-    "empty_title": "لسه مفيش مخازن",
-    "empty_sub":   "أضف مخازنك لتتبع المخزون بالفروع",
-    "showing":     "عرض {{from}} - {{to}} من {{total}}",
-    "default_badge": "افتراضي"
+    "title":                "المخازن",
+    "count":                "{{n}} مخزن",
+    "new":                  "مخزن جديد",
+    "empty_title":          "لسه مفيش مخازن",
+    "empty_sub":            "أضف مخازنك لتتبع المخزون بالفروع",
+    "showing":              "عرض {{from}} - {{to}} من {{total}}",
+    "default_badge":        "افتراضي",
+    "edit":                 "تعديل المخزن",
+    "cant_delete":          "لا يمكن الحذف — المخزن به رصيد",
+    "form_name":            "اسم المخزن",
+    "form_code":            "الكود",
+    "form_branch":          "الفرع",
+    "form_type":            "النوع",
+    "form_status":          "الحالة",
+    "form_is_default":      "مخزن افتراضي",
+    "form_is_default_hint": "يُستخدم كمصدر افتراضي للعمليات",
+    "form_name_required":   "اسم المخزن مطلوب",
+    "delete_title":         "حذف المخزن؟",
+    "delete_desc":          "هذا الإجراء لا يمكن التراجع عنه.",
+    "delete_blocked_desc":  "لا يمكن الحذف — المخزن يحتوي رصيداً. حوّل المخزون أولاً.",
+    "types": {
+      "sale":    "بيع",
+      "storage": "تخزين",
+      "damaged": "تالف"
+    }
   },
   "price_lists": {
-    "title":       "قوائم الأسعار",
-    "count":       "{{n}} قائمة",
-    "new":         "قائمة جديدة",
-    "empty_title": "لسه مفيش قوائم أسعار",
-    "empty_sub":   "أضف قوائم أسعار لكل شريحة عملاء",
-    "showing":     "عرض {{from}} - {{to}} من {{total}}",
+    "title":         "قوائم الأسعار",
+    "count":         "{{n}} قائمة",
+    "new":           "قائمة جديدة",
+    "empty_title":   "لسه مفيش قوائم أسعار",
+    "empty_sub":     "أضف قوائم أسعار لكل شريحة عملاء",
+    "showing":       "عرض {{from}} - {{to}} من {{total}}",
     "default_badge": "افتراضي"
   },
   "stocktakes": {
@@ -81,6 +110,22 @@
     "empty_sub":   "مفيش أصناف وصلت للحد الأدنى للطلب",
     "showing":     "عرض {{from}} - {{to}} من {{total}}"
   },
+  "quickadd": {
+    "title":         "إضافة سريعة",
+    "hint":          "تقدر تكمّل باقي البيانات لاحقاً",
+    "name_ar":       "اسم الصنف",
+    "name_ar_ph":    "أدخل اسم الصنف…",
+    "category":      "التصنيف",
+    "category_ph":   "اختر التصنيف",
+    "unit":          "الوحدة الأساسية",
+    "price":         "سعر البيع",
+    "code":          "الكود (SKU)",
+    "code_auto":     "تلقائي",
+    "code_edit":     "تعديل",
+    "add":           "إضافة",
+    "name_required": "اسم الصنف مطلوب",
+    "success":       "تمت الإضافة — سيظهر الصنف في القائمة غير مكتمل"
+  },
   "actions": {
     "import":          "استيراد",
     "export":          "تصدير",
@@ -105,7 +150,12 @@
     "view_items":      "عرض الأصناف",
     "new_transfer":    "تحويل جديد",
     "new_stocktake":   "جرد جديد",
-    "new_adjustment":  "تسوية جديدة"
+    "new_adjustment":  "تسوية جديدة",
+    "save":            "حفظ",
+    "cancel":          "إلغاء",
+    "close":           "إغلاق",
+    "confirm_delete":  "حذف",
+    "add_child":       "إضافة فرعي"
   },
   "status": {
     "active":     "نشط",
@@ -183,7 +233,8 @@
     "note":        "ملاحظة",
     "reorder":     "الحد الأدنى",
     "shortfall":   "النقص",
-    "suggested":   "كمية مقترحة"
+    "suggested":   "كمية مقترحة",
+    "default":     "افتراضي"
   },
   "item_types": {
     "stocked":   "مخزّن",
