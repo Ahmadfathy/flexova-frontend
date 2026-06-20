@@ -22,6 +22,65 @@
     "cant_delete":        "لا يمكن الحذف — للصنف حركات مسجّلة",
     "showing":            "عرض {{from}} - {{to}} من {{total}}"
   },
+  "categories": {
+    "title":       "التصنيفات",
+    "count":       "{{n}} تصنيف",
+    "new":         "تصنيف جديد",
+    "search_ph":   "ابحث في التصنيفات…",
+    "empty_title": "لسه مفيش تصنيفات",
+    "empty_sub":   "أضف تصنيفاتك لتنظيم أصنافك",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}",
+    "root":        "رئيسي"
+  },
+  "warehouses": {
+    "title":       "المخازن",
+    "count":       "{{n}} مخزن",
+    "new":         "مخزن جديد",
+    "empty_title": "لسه مفيش مخازن",
+    "empty_sub":   "أضف مخازنك لتتبع المخزون بالفروع",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}",
+    "default_badge": "افتراضي"
+  },
+  "price_lists": {
+    "title":       "قوائم الأسعار",
+    "count":       "{{n}} قائمة",
+    "new":         "قائمة جديدة",
+    "empty_title": "لسه مفيش قوائم أسعار",
+    "empty_sub":   "أضف قوائم أسعار لكل شريحة عملاء",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}",
+    "default_badge": "افتراضي"
+  },
+  "stocktakes": {
+    "title":       "الجرد",
+    "count":       "{{n}} جرد",
+    "new":         "جرد جديد",
+    "empty_title": "لسه مفيش جرد",
+    "empty_sub":   "ابدأ بجرد مخزنك للتأكد من دقة الأرصدة",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}"
+  },
+  "transfers": {
+    "title":       "التحويلات",
+    "count":       "{{n}} تحويل",
+    "new":         "تحويل جديد",
+    "empty_title": "لسه مفيش تحويلات",
+    "empty_sub":   "حوّل الأصناف بين المخازن",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}"
+  },
+  "adjustments": {
+    "title":       "التسويات",
+    "count":       "{{n}} تسوية",
+    "new":         "تسوية جديدة",
+    "empty_title": "لسه مفيش تسويات",
+    "empty_sub":   "أضف تسوية لتصحيح أرصدة المخزون",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}"
+  },
+  "low_stock": {
+    "title":       "قاربت النفاد",
+    "count":       "{{n}} صنف",
+    "empty_title": "كل الأصناف كويسة",
+    "empty_sub":   "مفيش أصناف وصلت للحد الأدنى للطلب",
+    "showing":     "عرض {{from}} - {{to}} من {{total}}"
+  },
   "actions": {
     "import":          "استيراد",
     "export":          "تصدير",
@@ -41,19 +100,47 @@
     "bulk_activate":   "تفعيل",
     "bulk_suspend":    "إيقاف",
     "filters":         "الفلاتر",
-    "selected":        "محدد"
+    "selected":        "محدد",
+    "set_default":     "اضبط كافتراضي",
+    "view_items":      "عرض الأصناف",
+    "new_transfer":    "تحويل جديد",
+    "new_stocktake":   "جرد جديد",
+    "new_adjustment":  "تسوية جديدة"
   },
   "status": {
     "active":     "نشط",
     "suspended":  "موقوف",
     "incomplete": "غير مكتمل",
-    "low_stock":  "قارب النفاد"
+    "low_stock":  "قارب النفاد",
+    "inactive":   "غير نشط"
+  },
+  "wh_types": {
+    "storage": "تخزين",
+    "sale":    "بيع",
+    "damaged": "تالف"
+  },
+  "stock_modes": {
+    "live":   "مباشر",
+    "freeze": "تجميد"
+  },
+  "stock_status": {
+    "counting":  "جارٍ العد",
+    "approved":  "معتمد",
+    "draft":     "مسودة",
+    "posted":    "مرحّل"
+  },
+  "adj_reasons": {
+    "damage":     "تالف",
+    "theft":      "سرقة",
+    "expiry":     "انتهاء صلاحية",
+    "correction": "تصحيح",
+    "other":      "أخرى"
   },
   "offline": {
     "banner": "غير متصل — تُحفظ التغييرات محلياً وتُزامن عند عودة الاتصال"
   },
   "errors": {
-    "load": "تعذّر تحميل الأصناف",
+    "load": "تعذّر تحميل البيانات",
     "save": "تعذّر الحفظ — حاول مرة أخرى"
   },
   "filters": {
@@ -71,24 +158,35 @@
     "all_statuses":   "كل الحالات"
   },
   "columns": {
-    "code":     "الكود",
-    "name":     "الاسم",
-    "category": "التصنيف",
-    "unit":     "الوحدة",
-    "balance":  "الرصيد",
-    "price":    "السعر",
-    "status":   "الحالة"
+    "code":        "الكود",
+    "name":        "الاسم",
+    "category":    "التصنيف",
+    "parent":      "التصنيف الرئيسي",
+    "items_count": "الأصناف",
+    "unit":        "الوحدة",
+    "balance":     "الرصيد",
+    "price":       "السعر",
+    "status":      "الحالة",
+    "type":        "النوع",
+    "branch":      "الفرع",
+    "stock_value": "قيمة المخزون",
+    "currency":    "العملة",
+    "priced_items":"أصناف مسعّرة",
+    "number":      "الرقم",
+    "date":        "التاريخ",
+    "mode":        "نوع الجرد",
+    "net_diff":    "الفرق الصافي",
+    "from_wh":     "من مخزن",
+    "to_wh":       "إلى مخزن",
+    "reason":      "السبب",
+    "note":        "ملاحظة",
+    "reorder":     "الحد الأدنى",
+    "shortfall":   "النقص",
+    "suggested":   "كمية مقترحة"
   },
   "item_types": {
     "stocked":   "مخزّن",
     "service":   "خدمة",
     "non_stock": "غير مخزّن"
-  },
-  "categories":  { "title": "التصنيفات" },
-  "price_lists": { "title": "قوائم الأسعار" },
-  "warehouses":  { "title": "المخازن" },
-  "stocktakes":  { "title": "الجرد" },
-  "transfers":   { "title": "التحويلات" },
-  "adjustments": { "title": "التسويات" },
-  "low_stock":   { "title": "قاربت النفاد" }
+  }
 }

@@ -22,6 +22,65 @@
     "cant_delete":      "Can't delete — item has recorded movements",
     "showing":          "Showing {{from}} - {{to}} of {{total}}"
   },
+  "categories": {
+    "title":       "Categories",
+    "count":       "{{n}} categories",
+    "new":         "New category",
+    "search_ph":   "Search categories…",
+    "empty_title": "No categories yet",
+    "empty_sub":   "Add categories to organise your items",
+    "showing":     "Showing {{from}} - {{to}} of {{total}}",
+    "root":        "Root"
+  },
+  "warehouses": {
+    "title":         "Warehouses",
+    "count":         "{{n}} warehouses",
+    "new":           "New warehouse",
+    "empty_title":   "No warehouses yet",
+    "empty_sub":     "Add warehouses to track stock across locations",
+    "showing":       "Showing {{from}} - {{to}} of {{total}}",
+    "default_badge": "Default"
+  },
+  "price_lists": {
+    "title":         "Price lists",
+    "count":         "{{n}} price lists",
+    "new":           "New price list",
+    "empty_title":   "No price lists yet",
+    "empty_sub":     "Add price lists for each customer segment",
+    "showing":       "Showing {{from}} - {{to}} of {{total}}",
+    "default_badge": "Default"
+  },
+  "stocktakes": {
+    "title":       "Stocktakes",
+    "count":       "{{n}} stocktakes",
+    "new":         "New stocktake",
+    "empty_title": "No stocktakes yet",
+    "empty_sub":   "Start a stocktake to verify your stock balances",
+    "showing":     "Showing {{from}} - {{to}} of {{total}}"
+  },
+  "transfers": {
+    "title":       "Transfers",
+    "count":       "{{n}} transfers",
+    "new":         "New transfer",
+    "empty_title": "No transfers yet",
+    "empty_sub":   "Move items between warehouses",
+    "showing":     "Showing {{from}} - {{to}} of {{total}}"
+  },
+  "adjustments": {
+    "title":       "Adjustments",
+    "count":       "{{n}} adjustments",
+    "new":         "New adjustment",
+    "empty_title": "No adjustments yet",
+    "empty_sub":   "Add an adjustment to correct stock balances",
+    "showing":     "Showing {{from}} - {{to}} of {{total}}"
+  },
+  "low_stock": {
+    "title":       "Low stock",
+    "count":       "{{n}} items",
+    "empty_title": "All stock levels OK",
+    "empty_sub":   "No items have reached their reorder level",
+    "showing":     "Showing {{from}} - {{to}} of {{total}}"
+  },
   "actions": {
     "import":          "Import",
     "export":          "Export",
@@ -41,19 +100,47 @@
     "bulk_activate":   "Activate",
     "bulk_suspend":    "Suspend",
     "filters":         "Filters",
-    "selected":        "selected"
+    "selected":        "selected",
+    "set_default":     "Set as default",
+    "view_items":      "View items",
+    "new_transfer":    "New transfer",
+    "new_stocktake":   "New stocktake",
+    "new_adjustment":  "New adjustment"
   },
   "status": {
     "active":     "Active",
     "suspended":  "Suspended",
     "incomplete": "Incomplete",
-    "low_stock":  "Low stock"
+    "low_stock":  "Low stock",
+    "inactive":   "Inactive"
+  },
+  "wh_types": {
+    "storage": "Storage",
+    "sale":    "Sale",
+    "damaged": "Damaged"
+  },
+  "stock_modes": {
+    "live":   "Live",
+    "freeze": "Freeze"
+  },
+  "stock_status": {
+    "counting":  "Counting",
+    "approved":  "Approved",
+    "draft":     "Draft",
+    "posted":    "Posted"
+  },
+  "adj_reasons": {
+    "damage":     "Damage",
+    "theft":      "Theft",
+    "expiry":     "Expiry",
+    "correction": "Correction",
+    "other":      "Other"
   },
   "offline": {
     "banner": "Offline — changes saved locally, will sync when back online"
   },
   "errors": {
-    "load": "Failed to load items",
+    "load": "Failed to load data",
     "save": "Couldn't save — please try again"
   },
   "filters": {
@@ -71,24 +158,35 @@
     "all_statuses":   "All statuses"
   },
   "columns": {
-    "code":     "Code",
-    "name":     "Name",
-    "category": "Category",
-    "unit":     "Unit",
-    "balance":  "Balance",
-    "price":    "Price",
-    "status":   "Status"
+    "code":        "Code",
+    "name":        "Name",
+    "category":    "Category",
+    "parent":      "Parent category",
+    "items_count": "Items",
+    "unit":        "Unit",
+    "balance":     "Balance",
+    "price":       "Price",
+    "status":      "Status",
+    "type":        "Type",
+    "branch":      "Branch",
+    "stock_value": "Stock value",
+    "currency":    "Currency",
+    "priced_items":"Priced items",
+    "number":      "Number",
+    "date":        "Date",
+    "mode":        "Mode",
+    "net_diff":    "Net diff",
+    "from_wh":     "From",
+    "to_wh":       "To",
+    "reason":      "Reason",
+    "note":        "Note",
+    "reorder":     "Reorder level",
+    "shortfall":   "Shortfall",
+    "suggested":   "Suggested qty"
   },
   "item_types": {
     "stocked":   "Stocked",
     "service":   "Service",
     "non_stock": "Non-stock"
-  },
-  "categories":  { "title": "Categories" },
-  "price_lists": { "title": "Price lists" },
-  "warehouses":  { "title": "Warehouses" },
-  "stocktakes":  { "title": "Stocktakes" },
-  "transfers":   { "title": "Transfers" },
-  "adjustments": { "title": "Adjustments" },
-  "low_stock":   { "title": "Low stock" }
+  }
 }
