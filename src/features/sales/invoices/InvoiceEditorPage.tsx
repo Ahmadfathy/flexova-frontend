@@ -211,7 +211,7 @@ interface LineRowProps {
   hasBlocker: boolean;
 }
 
-function LineRow({ line, idx, data, customer, lang, t, onUpdate, onSelectItem, onRemove, hasBlocker }: LineRowProps) {
+function LineRow({ line, idx, data, lang, t, onUpdate, onSelectItem, onRemove, hasBlocker }: LineRowProps) {
   const n = idx + 1;
   const item   = data.items.find(i => i.id === line.item_id);
   const lineNet = line.qty * line.price - line.line_discount;

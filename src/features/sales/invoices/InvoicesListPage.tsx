@@ -113,9 +113,6 @@ const EMPTY_FILTERS: InvoiceFilters = {
   branch: "", channel: "", dateFrom: "", dateTo: "",
 };
 
-function hasActiveFilters(f: InvoiceFilters) {
-  return f.search || f.paymentStatus || f.etaStatus || f.branch || f.channel || f.dateFrom || f.dateTo;
-}
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -272,10 +269,6 @@ export function InvoicesListPage() {
   const customerMap = useMemo(
     () => Object.fromEntries((data?.customers ?? []).map(c => [c.id, c])),
     [data?.customers]
-  );
-  const branchMap = useMemo(
-    () => Object.fromEntries((data?.branches ?? []).map(b => [b.id, b])),
-    [data?.branches]
   );
 
   /* ── filtered list ── */

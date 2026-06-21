@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table";
 
 import {
-  ArrowRight, Printer, Share2, Download, Wallet,
+  Printer, Share2, Download, Wallet,
   RotateCcw, Ban, RefreshCw, AlertTriangle, CheckCircle2,
   Clock, ExternalLink, QrCode, ChevronLeft,
 } from "lucide-react";
@@ -223,7 +223,7 @@ function FixResendSheet({
 
   return (
     <Sheet open={open} onOpenChange={open ? undefined : onClose}>
-      <SheetContent side="end" className="w-full sm:max-w-md">
+      <SheetContent side="right" className="w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle>{t("issued.fix_resend")}</SheetTitle>
           <SheetDescription>
@@ -273,7 +273,6 @@ export function IssuedInvoicePage() {
 
   const [cancelOpen,    setCancelOpen]    = useState(false);
   const [fixSheetOpen,  setFixSheetOpen]  = useState(false);
-  const [collectOpen,   setCollectOpen]   = useState(false);
 
   const invoice = useMemo(
     () => data?.invoices.find(inv => inv.id === id) ?? null,
@@ -620,7 +619,7 @@ export function IssuedInvoicePage() {
                 <Button
                   size="sm"
                   className="w-full"
-                  onClick={() => { setCollectOpen(true); toast.info(t("issued.collect")); }}
+                  onClick={() => { toast.info(t("issued.collect")); }}
                 >
                   <Wallet className="h-4 w-4 me-1.5" />
                   {t("issued.collect")}

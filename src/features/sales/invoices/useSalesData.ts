@@ -123,6 +123,105 @@ export interface Treasury {
   type: "cash" | "bank";
 }
 
+// ── Credit / Debit note types ────────────────────────────────────
+export interface NoteLine {
+  item_id: string;
+  qty: number;
+  uom_id: string;
+  price: number;
+  line_total: number;
+}
+
+export interface CreditNote {
+  id: string;
+  number: string;
+  source_invoice: string;
+  date: string;
+  customer_id: string;
+  reason_ar: string;
+  reason_en: string;
+  eta_status: EtaStatus;
+  eta: { uuid?: string; accepted_at?: string; environment?: string };
+  lines: NoteLine[];
+  totals: { value: number };
+  remaining_noteable: number;
+}
+
+export interface DebitNote {
+  id: string;
+  number: string;
+  source_invoice: string;
+  date: string;
+  customer_id: string;
+  reason_ar: string;
+  reason_en: string;
+  eta_status: EtaStatus;
+  eta: { uuid?: string; accepted_at?: string; environment?: string };
+  lines: NoteLine[];
+  totals: { value: number };
+}
+
+// ── Quotation types ──────────────────────────────────────────────
+export type QuotationStatus = "draft" | "sent" | "accepted" | "rejected" | "expired";
+
+export interface QuotationLine {
+  item_id: string;
+  qty: number;
+  uom_id: string;
+  price: number;
+  line_total: number;
+}
+
+export interface Quotation {
+  id: string;
+  number: string;
+  date: string;
+  customer_id: string;
+  status: QuotationStatus;
+  valid_until: string;
+  lines: QuotationLine[];
+  totals: { subtotal: number; tax: number; grand_total: number };
+}
+
+// ── ETA Hub types ────────────────────────────────────────────────
+export interface EtaHubKpis {
+  acceptance_rate: number;
+  nearing_window: number;
+  rejected: number;
+  compliance_tier: number;
+}
+
+export interface EtaHubAlert {
+  level: "warning" | "danger" | "info";
+  key: string;
+  text_ar: string;
+  text_en: string;
+}
+
+export interface EtaRejectionReason {
+  reason_ar: string;
+  reason_en: string;
+  count: number;
+}
+
+export interface EtaHub {
+  kpis: EtaHubKpis;
+  alerts: EtaHubAlert[];
+  top_rejection_reasons: EtaRejectionReason[];
+}
+
+// ── Receipt type ─────────────────────────────────────────────────
+export interface Receipt {
+  id: string;
+  number: string;
+  date: string;
+  customer_id: string;
+  invoice_id: string;
+  amount: number;
+  method: string;
+  treasury_id: string;
+}
+
 export interface SalesCustomer {
   id: string;
   name_ar: string;
@@ -142,6 +241,8 @@ export interface PaymentMethod {
 
 export interface EtaSettings {
   trn: string;
+  activity_ar?: string;
+  activity_en?: string;
   eseal: { configured: boolean; type: string; expires: string };
   environment: string;
   test_mode: boolean;
@@ -159,6 +260,11 @@ export interface SalesData {
   priceLists: PriceList[];
   invoices: SalesInvoice[];
   treasuries: Treasury[];
+  creditNotes: CreditNote[];
+  debitNotes: DebitNote[];
+  quotations: Quotation[];
+  receipts: Receipt[];
+  etaHub: EtaHub;
 }
 
 // ── Internal fixture shapes ──────────────────────────────────────
@@ -178,6 +284,11 @@ interface SalesFixtureSlim {
   eta_settings: EtaSettings;
   invoices: SalesInvoice[];
   treasuries: Treasury[];
+  credit_notes: CreditNote[];
+  debit_notes: DebitNote[];
+  quotations: Quotation[];
+  receipts: Receipt[];
+  eta_hub: EtaHub;
   [k: string]: unknown;
 }
 
@@ -198,6 +309,15 @@ const EMPTY: SalesData = {
   priceLists: [],
   invoices: [],
   treasuries: [],
+  creditNotes: [],
+  debitNotes: [],
+  quotations: [],
+  receipts: [],
+  etaHub: {
+    kpis: { acceptance_rate: 100, nearing_window: 0, rejected: 0, compliance_tier: 1 },
+    alerts: [],
+    top_rejection_reasons: [],
+  },
 };
 
 export interface UseSalesDataResult {
@@ -236,6 +356,11 @@ export function useSalesData(): UseSalesDataResult {
         priceLists:     inv.price_lists,
         invoices:       sales.invoices,
         treasuries:     sales.treasuries,
+        creditNotes:    sales.credit_notes,
+        debitNotes:     sales.debit_notes,
+        quotations:     sales.quotations,
+        receipts:       sales.receipts,
+        etaHub:         sales.eta_hub,
       };
     };
 
@@ -263,6 +388,11 @@ export function useSalesData(): UseSalesDataResult {
             priceLists:     inv.price_lists,
             invoices:       sales.invoices,
             treasuries:     sales.treasuries,
+            creditNotes:    sales.credit_notes,
+            debitNotes:     sales.debit_notes,
+            quotations:     sales.quotations,
+            receipts:       sales.receipts,
+            etaHub:         sales.eta_hub,
           });
         } catch {
           setData(EMPTY);

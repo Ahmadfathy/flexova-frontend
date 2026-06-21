@@ -1,8 +1,9 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 
-function Skeleton({ className }: { className?: string }) {
+function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={cn("animate-pulse rounded-md bg-muted", className)} />
+    <div className={cn("animate-pulse rounded-md bg-muted", className)} style={style} />
   );
 }
 

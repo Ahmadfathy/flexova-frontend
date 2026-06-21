@@ -39,6 +39,7 @@ import {
   InvoicesPage, QuotationsPage, CreditNotesPage,
   DebitNotesPage, ReceiptsPage, EtaHubPage,
   InvoiceEditorPage, IssuedInvoicePage,
+  QuotationEditorPage,
 } from "@/features/sales/SalesPages";
 
 // Purchasing
@@ -152,7 +153,9 @@ export default function App() {
             <Route path="invoices"         element={<InvoicesPage />} />
             <Route path="invoices/new"     element={<InvoiceEditorPage />} />
             <Route path="invoices/:id"     element={<IssuedInvoicePage />} />
-            <Route path="quotations"       element={<QuotationsPage />} />
+            <Route path="quotations"        element={<QuotationsPage />} />
+            <Route path="quotations/new"   element={<QuotationEditorPage />} />
+            <Route path="quotations/:id"   element={<QuotationEditorPage />} />
             <Route path="credit-notes"     element={<CreditNotesPage />} />
             <Route path="debit-notes"      element={<DebitNotesPage />} />
             <Route path="receipts"         element={<ReceiptsPage />} />

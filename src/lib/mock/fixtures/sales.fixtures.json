@@ -109,17 +109,31 @@
       "totals": { "value": 376.20 }, "remaining_noteable": 1128.60 }
   ],
 
-  "debit_notes": [],
+  "debit_notes": [
+    { "id": "dn_0003", "number": "MN-DN-0003", "source_invoice": "inv_1042", "date": "2026-06-15", "customer_id": "cu_noor",
+      "reason_ar": "فرق سعر بعد مراجعة العقد", "reason_en": "Price adjustment after contract review", "eta_status": "valid",
+      "eta": { "uuid": "CC3D4E5F60718293", "accepted_at": "2026-06-15T11:00:00", "environment": "production" },
+      "lines": [ { "item_id": "it_rice", "qty": 40, "uom_id": "uom_box", "price": 5.00, "line_total": 200.00 } ],
+      "totals": { "value": 228.00 } }
+  ],
 
   "quotations": [
     { "id": "qt_0021", "number": "QT-0021", "date": "2026-06-10", "customer_id": "cu_noor", "status": "sent", "valid_until": "2026-06-24",
       "lines": [ { "item_id": "it_rice", "qty": 80, "uom_id": "uom_box", "price": 168.00, "line_total": 13440.00 } ],
-      "totals": { "subtotal": 13440.00, "tax": 1881.60, "grand_total": 15321.60 } }
+      "totals": { "subtotal": 13440.00, "tax": 1881.60, "grand_total": 15321.60 } },
+    { "id": "qt_0020", "number": "QT-0020", "date": "2026-06-05", "customer_id": "cu_amal", "status": "draft", "valid_until": "2026-06-19",
+      "lines": [ { "item_id": "it_oil", "qty": 30, "uom_id": "uom_bottle", "price": 158.00, "line_total": 4740.00 } ],
+      "totals": { "subtotal": 4740.00, "tax": 663.60, "grand_total": 5403.60 } },
+    { "id": "qt_0019", "number": "QT-0019", "date": "2026-05-28", "customer_id": "cu_amal", "status": "accepted", "valid_until": "2026-06-11",
+      "lines": [ { "item_id": "it_tea", "qty": 100, "uom_id": "uom_pack", "price": 58.00, "line_total": 5800.00 } ],
+      "totals": { "subtotal": 5800.00, "tax": 812.00, "grand_total": 6612.00 } }
   ],
 
   "receipts": [
     { "id": "rcv_0055", "number": "RCV-0055", "date": "2026-06-13", "customer_id": "cu_amal", "invoice_id": "inv_1039",
-      "amount": 9152.00, "method": "pm_transfer", "treasury_id": "tr_bank_cib" }
+      "amount": 9152.00, "method": "pm_transfer", "treasury_id": "tr_bank_cib" },
+    { "id": "rcv_0056", "number": "RCV-0056", "date": "2026-06-14", "customer_id": "cu_noor", "invoice_id": "inv_1037",
+      "amount": 1504.80, "method": "pm_cash", "treasury_id": "tr_cash_main" }
   ],
 
   "eta_settings": {
