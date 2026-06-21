@@ -29,7 +29,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, Tag, MoreVertical, Star, Loader2 } from "lucide-react";
+import { Plus, Tag, MoreVertical, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { formatNumber } from "@/lib/format";
@@ -109,7 +109,7 @@ export function PriceListsPage() {
     toast.success(lang === "ar" ? "تمت الإضافة" : "Price list created");
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete(_id: string) {
     await new Promise(r => setTimeout(r, 400));
     setDeleteTarget(null);
     toast.success(lang === "ar" ? "تم الحذف" : "Deleted");

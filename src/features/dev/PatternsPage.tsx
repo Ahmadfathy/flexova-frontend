@@ -5,11 +5,7 @@
  */
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Users, FileText, Package, BarChart2, Star,
-  Pencil, Trash2, Eye, Download,
-  Building2, Phone, MapPin, Hash,
-} from "lucide-react";
+import { FileText, Pencil, Trash2, Eye } from "lucide-react";
 
 import { PageHeader }   from "@/components/patterns/PageHeader";
 import { PageSection }  from "@/components/patterns/PageSection";
@@ -27,7 +23,7 @@ import {
 } from "@/components/patterns/MiniChart";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge }   from "@/components/ui/badge";
+
 import { Input }   from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatMoney } from "@/lib/format";
@@ -93,7 +89,7 @@ export function PatternsPage() {
       cell: (r) => (
         <StatusPill
           variant={r.status as Parameters<typeof StatusPill>[0]["variant"]}
-          label={t(`common:status_${r.status}` as Parameters<typeof t>[0], r.status)}
+          label={t(`common:status_${r.status}` as string, { defaultValue: r.status })}
         />
       ),
     },
@@ -111,7 +107,7 @@ export function PatternsPage() {
     {
       key: "actions",
       header: "",
-      cell: (r) => (
+      cell: () => (
         <ActionCell actions={[
           { icon: <Eye className="h-3.5 w-3.5" />,    label: "عرض",  onClick: () => {} },
           { icon: <Pencil className="h-3.5 w-3.5" />, label: "تعديل", onClick: () => {} },

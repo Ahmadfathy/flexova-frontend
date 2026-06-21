@@ -1,9 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
-import { Badge }  from "@/components/ui/badge";
 import {
   Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
 } from "@/components/ui/sheet";
@@ -13,7 +10,7 @@ import {
 
 import {
   Download, Upload, CheckCircle2, XCircle, Loader2, FileSpreadsheet,
-  AlertTriangle, ArrowLeft, ArrowRight, X,
+  ArrowLeft, ArrowRight, X,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -52,7 +49,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
   const [fileError, setFileError] = useState("");
   const [tab,       setTab]       = useState<"valid" | "errors">("valid");
   const [importing, setImporting] = useState(false);
-  const [importDone, setImportDone] = useState(false);
+  const [, setImportDone] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function reset() {

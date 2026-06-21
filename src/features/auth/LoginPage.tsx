@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link, Navigate } from "react-router-dom";
 import { AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";

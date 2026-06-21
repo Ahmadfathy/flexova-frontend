@@ -111,11 +111,6 @@ export function NewTransferSheet({ open, onOpenChange, data }: NewTransferSheetP
     return uoms.filter(u => ids.has(u.id));
   }
 
-  function whLabel(id: string) {
-    const wh = warehouses.find(w => w.id === id);
-    return wh ? (lang === "ar" ? wh.name_ar : wh.name_en) : id;
-  }
-
   /* ── Validation ──────────────────────────────────────────── */
 
   function validate(): boolean {

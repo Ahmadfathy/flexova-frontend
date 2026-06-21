@@ -18,13 +18,10 @@ function isModuleActive(item: MenuItem, pathname: string) {
 /* ── Row 2: module tabs ─────────────────────────────────────── */
 export function HorizontalModuleBar() {
   const { t } = useTranslation("shell");
-  const { pathname } = useLocation();
 
   return (
     <nav className="flex items-center justify-center overflow-x-auto overflow-y-hidden px-4 h-11 nav-scroll w-full min-w-0" aria-label={t("nav_groups.core")}>
       {MENU.map(item => {
-        const active = isModuleActive(item, pathname);
-
         if (item.status === "soon") {
           return (
             <div

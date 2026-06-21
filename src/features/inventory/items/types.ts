@@ -68,7 +68,7 @@ export interface InventoryFixture {
   transfers: unknown[];
   adjustments: unknown[];
   low_stock: Array<{ item_id: string; warehouse_id: string; balance: number; reorder_level: number; shortfall: number; suggested_qty: number }>;
-  import_template_columns: unknown[];
+  import_template_columns: Array<{ key: string; label_ar: string; label_en: string; required?: boolean }>;
   import_sample_result: { valid: number; errors: unknown[] };
   barcode_templates: unknown[];
 }

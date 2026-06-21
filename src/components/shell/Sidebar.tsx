@@ -160,7 +160,8 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
             <item.icon className="h-4 w-4" />
           </div>
         </TooltipTrigger>
-        <TooltipContent side="end" sideOffset={8}>
+        {/* TODO(RTL-bug): logical "end" should map to "left" in RTL; Radix doesn't support logical sides yet */}
+        <TooltipContent side={"end" as "right"} sideOffset={8}>
           {label} — {t("soon")}
         </TooltipContent>
       </Tooltip>
@@ -182,8 +183,9 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
             <item.icon className="h-4 w-4" />
           </Link>
         </PopoverTrigger>
+        {/* TODO(RTL-bug): logical "end" should map to "left" in RTL; Radix doesn't support logical sides yet */}
         <PopoverContent
-          side="end"
+          side={"end" as "right"}
           sideOffset={8}
           align="start"
           onMouseEnter={cancelClose}
@@ -229,7 +231,8 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
           <item.icon className="h-4 w-4" />
         </Link>
       </TooltipTrigger>
-      <TooltipContent side="end" sideOffset={8}>{label}</TooltipContent>
+      {/* TODO(RTL-bug): logical "end" should map to "left" in RTL; Radix doesn't support logical sides yet */}
+      <TooltipContent side={"end" as "right"} sideOffset={8}>{label}</TooltipContent>
     </Tooltip>
   );
 }

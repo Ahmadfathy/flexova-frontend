@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTranslation } from "react-i18next";
+
 import {
   Table,
   TableBody,
@@ -47,7 +47,6 @@ export function DataTable<T>({
   keyExtractor,
   className,
 }: DataTableProps<T>) {
-  const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
 
