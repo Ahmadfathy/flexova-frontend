@@ -246,6 +246,12 @@ export interface EtaSettings {
   eseal: { configured: boolean; type: string; expires: string };
   environment: string;
   test_mode: boolean;
+  numbering?: {
+    mode: string;
+    branches: Record<string, { prefix: string; next: number }>;
+  };
+  send_behavior?: { b2b: string; b2c: string };
+  enabled_tax_types?: string[];
 }
 
 export interface SalesData {

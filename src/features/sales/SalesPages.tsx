@@ -9,3 +9,4 @@ export { QuotationsPage }     from "./quotations/QuotationsPage";
 export { QuotationEditorPage } from "./quotations/QuotationEditorPage";
 export { ReceiptsPage }       from "./receipts/ReceiptsPage";
 export { EtaHubPage }         from "./eta-hub/EtaHubPage";
+export { EtaSettingsPage }    from "./eta-hub/EtaSettingsPage";

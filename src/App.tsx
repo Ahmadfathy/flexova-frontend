@@ -39,7 +39,7 @@ import {
   InvoicesPage, QuotationsPage, CreditNotesPage,
   DebitNotesPage, ReceiptsPage, EtaHubPage,
   InvoiceEditorPage, IssuedInvoicePage,
-  QuotationEditorPage,
+  QuotationEditorPage, EtaSettingsPage,
 } from "@/features/sales/SalesPages";
 
 // Purchasing
@@ -160,6 +160,7 @@ export default function App() {
             <Route path="debit-notes"      element={<DebitNotesPage />} />
             <Route path="receipts"         element={<ReceiptsPage />} />
             <Route path="eta-hub"          element={<EtaHubPage />} />
+            <Route path="settings/eta"     element={<EtaSettingsPage />} />
           </Route>
 
           {/* Purchasing — FE_03 */}
