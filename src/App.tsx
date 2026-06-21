@@ -45,7 +45,7 @@ import {
 // Purchasing
 import { PurchasingLayout } from "@/features/purchasing/PurchasingLayout";
 import {
-  SuppliersPage, PurchasesPage, OrdersPage,
+  SuppliersPage, SupplierCard, PurchasesPage, OrdersPage,
   ReturnsPage, VouchersPage, InboundEtaPage,
 } from "@/features/purchasing/PurchasingPages";
 
@@ -166,7 +166,8 @@ export default function App() {
           {/* Purchasing — FE_03 */}
           <Route path="/purchasing" element={<PurchasingLayout />}>
             <Route index element={<Navigate to="suppliers" replace />} />
-            <Route path="suppliers"   element={<SuppliersPage />} />
+            <Route path="suppliers"       element={<SuppliersPage />} />
+            <Route path="suppliers/:id"  element={<SupplierCard />} />
             <Route path="invoices"    element={<PurchasesPage />} />
             <Route path="orders"      element={<OrdersPage />} />
             <Route path="returns"     element={<ReturnsPage />} />

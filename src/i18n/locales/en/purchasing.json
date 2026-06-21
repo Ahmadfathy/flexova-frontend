@@ -1,17 +1,122 @@
 {
   "module_title": "Purchasing",
   "nav": {
-    "suppliers":    "Suppliers",
-    "invoices":     "Purchases",
-    "orders":       "Purchase orders",
-    "returns":      "Purchase returns",
-    "vouchers":     "Payment vouchers",
-    "inbound_eta":  "Inbound e-invoices"
+    "suppliers":   "Suppliers",
+    "invoices":    "Purchases",
+    "orders":      "Purchase orders",
+    "returns":     "Purchase returns",
+    "vouchers":    "Payment vouchers",
+    "inbound_eta": "Inbound e-invoices"
   },
-  "suppliers":    { "title": "Suppliers" },
-  "invoices":     { "title": "Purchases" },
-  "orders":       { "title": "Purchase orders" },
-  "returns":      { "title": "Purchase returns" },
-  "vouchers":     { "title": "Payment vouchers" },
-  "inbound_eta":  { "title": "Inbound e-invoices" }
+  "suppliers": {
+    "title":              "Suppliers",
+    "count":              "{{n}} suppliers",
+    "new":                "New supplier",
+    "export":             "Export",
+    "search_placeholder": "Search name, code or TRN…",
+    "all_categories":     "All categories",
+    "all_statuses":       "All statuses",
+    "with_balance":       "With balance only",
+    "no_suppliers":       "No suppliers yet",
+    "empty_sub":          "Add your first supplier to start tracking purchases.",
+    "no_results":         "No suppliers match your filters",
+    "clear_filters":      "Clear filters"
+  },
+  "invoices":    { "title": "Purchases" },
+  "orders":      { "title": "Purchase orders" },
+  "returns":     { "title": "Purchase returns" },
+  "vouchers":    { "title": "Payment vouchers" },
+  "inbound_eta": { "title": "Inbound e-invoices" },
+  "col": {
+    "code":    "Code",
+    "name":    "Supplier",
+    "trn":     "TRN",
+    "terms":   "Terms",
+    "balance": "Balance",
+    "status":  "Status"
+  },
+  "terms": {
+    "cash":   "Cash",
+    "credit": "Net {{n}} days"
+  },
+  "category": {
+    "local":    "Local",
+    "imported": "Imported"
+  },
+  "status": {
+    "active":    "Active",
+    "suspended": "Suspended"
+  },
+  "form": {
+    "new_title":      "New supplier",
+    "edit_title":     "Edit supplier",
+    "name_label":     "Name",
+    "code_label":     "Code (auto-generated)",
+    "trn_label":      "TRN",
+    "uin_label":      "UIN",
+    "terms_type":     "Payment type",
+    "terms_cash":     "Cash",
+    "terms_credit":   "Credit",
+    "terms_days":     "Net days",
+    "terms_limit":    "Credit limit (optional)",
+    "category_label": "Category",
+    "phone_label":    "Phone",
+    "email_label":    "Email",
+    "address_label":  "Address",
+    "balance_note":   "Balance is computed from purchase documents and cannot be set here.",
+    "name_req":       "Name is required",
+    "saved":          "Supplier saved"
+  },
+  "card": {
+    "balance":      "Current balance",
+    "balance_note": "Computed from purchase documents",
+    "no_trn":       "No TRN",
+    "trn":          "TRN",
+    "uin":          "UIN",
+    "terms":        "Payment terms",
+    "category":     "Category",
+    "contact":      "Contact"
+  },
+  "statement": {
+    "title":        "Statement",
+    "col_date":     "Date",
+    "col_doc":      "Document",
+    "col_debit":    "Debit",
+    "col_credit":   "Credit",
+    "col_balance":  "Running balance",
+    "all_types":    "All types",
+    "type_invoice": "Purchase invoice",
+    "type_return":  "Return",
+    "type_voucher": "Payment",
+    "empty":        "No transactions for this supplier",
+    "date_from":    "From",
+    "date_to":      "To"
+  },
+  "actions": {
+    "view":     "View",
+    "edit":     "Edit",
+    "pay":      "Pay",
+    "suspend":  "Suspend",
+    "activate": "Activate"
+  },
+  "receipt": {
+    "pending":   "Pending",
+    "partial":   "Partially received",
+    "completed": "Completed"
+  },
+  "pay": {
+    "paid":    "Paid",
+    "partial": "Partially paid",
+    "credit":  "Credit"
+  },
+  "inbound": {
+    "pending":   "Pending response",
+    "accepted":  "Accepted",
+    "rejected":  "Rejected",
+    "unmatched": "Unmatched"
+  },
+  "errors": {
+    "load":        "Failed to load data",
+    "not_found":   "Supplier not found"
+  }
 }

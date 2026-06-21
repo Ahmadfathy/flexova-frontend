@@ -1,17 +1,122 @@
 {
   "module_title": "المشتريات",
   "nav": {
-    "suppliers":    "الموردون",
-    "invoices":     "المشتريات",
-    "orders":       "أوامر الشراء",
-    "returns":      "مرتجعات الشراء",
-    "vouchers":     "سندات الدفع",
-    "inbound_eta":  "ETA الواردة"
+    "suppliers":   "الموردون",
+    "invoices":    "المشتريات",
+    "orders":      "أوامر الشراء",
+    "returns":     "مرتجعات الشراء",
+    "vouchers":    "سندات الدفع",
+    "inbound_eta": "ETA الواردة"
   },
-  "suppliers":    { "title": "الموردون" },
-  "invoices":     { "title": "المشتريات" },
-  "orders":       { "title": "أوامر الشراء" },
-  "returns":      { "title": "مرتجعات الشراء" },
-  "vouchers":     { "title": "سندات الدفع" },
-  "inbound_eta":  { "title": "فواتير ETA الواردة" }
+  "suppliers": {
+    "title":              "الموردون",
+    "count":              "{{n}} مورّد",
+    "new":                "مورّد جديد",
+    "export":             "تصدير",
+    "search_placeholder": "بحث باسم أو كود أو رقم ضريبي…",
+    "all_categories":     "كل الفئات",
+    "all_statuses":       "كل الحالات",
+    "with_balance":       "برصيد مستحق فقط",
+    "no_suppliers":       "لا يوجد موردون بعد",
+    "empty_sub":          "أضف أول مورّد لبدء تتبع مشترياتك.",
+    "no_results":         "لا توجد نتائج تطابق الفلاتر",
+    "clear_filters":      "مسح الفلاتر"
+  },
+  "invoices":    { "title": "المشتريات" },
+  "orders":      { "title": "أوامر الشراء" },
+  "returns":     { "title": "مرتجعات الشراء" },
+  "vouchers":    { "title": "سندات الدفع" },
+  "inbound_eta": { "title": "فواتير ETA الواردة" },
+  "col": {
+    "code":    "الكود",
+    "name":    "المورّد",
+    "trn":     "الرقم الضريبي",
+    "terms":   "شروط الدفع",
+    "balance": "الرصيد",
+    "status":  "الحالة"
+  },
+  "terms": {
+    "cash":   "نقدي",
+    "credit": "آجل {{n}} يوم"
+  },
+  "category": {
+    "local":    "محلي",
+    "imported": "مستورد"
+  },
+  "status": {
+    "active":    "نشط",
+    "suspended": "موقوف"
+  },
+  "form": {
+    "new_title":      "مورّد جديد",
+    "edit_title":     "تعديل مورّد",
+    "name_label":     "الاسم",
+    "code_label":     "الكود (تلقائي)",
+    "trn_label":      "الرقم الضريبي",
+    "uin_label":      "UIN",
+    "terms_type":     "نوع الدفع",
+    "terms_cash":     "نقدي",
+    "terms_credit":   "آجل",
+    "terms_days":     "عدد الأيام",
+    "terms_limit":    "حد الائتمان (اختياري)",
+    "category_label": "الفئة",
+    "phone_label":    "الهاتف",
+    "email_label":    "البريد الإلكتروني",
+    "address_label":  "العنوان",
+    "balance_note":   "الرصيد محسوب من المستندات ولا يمكن تعديله هنا.",
+    "name_req":       "الاسم مطلوب",
+    "saved":          "تم حفظ المورّد"
+  },
+  "card": {
+    "balance":      "الرصيد الحالي",
+    "balance_note": "محسوب من مستندات الشراء",
+    "no_trn":       "بلا رقم ضريبي",
+    "trn":          "الرقم الضريبي",
+    "uin":          "UIN",
+    "terms":        "شروط الدفع",
+    "category":     "الفئة",
+    "contact":      "معلومات التواصل"
+  },
+  "statement": {
+    "title":        "كشف الحساب",
+    "col_date":     "التاريخ",
+    "col_doc":      "المستند",
+    "col_debit":    "مدين",
+    "col_credit":   "دائن",
+    "col_balance":  "الرصيد المتراكم",
+    "all_types":    "كل الأنواع",
+    "type_invoice": "فاتورة شراء",
+    "type_return":  "مرتجع",
+    "type_voucher": "سند دفع",
+    "empty":        "لا توجد حركات لهذا المورّد",
+    "date_from":    "من",
+    "date_to":      "إلى"
+  },
+  "actions": {
+    "view":     "عرض",
+    "edit":     "تعديل",
+    "pay":      "سند دفع",
+    "suspend":  "إيقاف",
+    "activate": "تفعيل"
+  },
+  "receipt": {
+    "pending":   "بانتظار الاستلام",
+    "partial":   "مستلم جزئياً",
+    "completed": "مكتمل"
+  },
+  "pay": {
+    "paid":    "مدفوعة",
+    "partial": "مدفوعة جزئياً",
+    "credit":  "آجلة"
+  },
+  "inbound": {
+    "pending":   "بانتظار الرد",
+    "accepted":  "مقبولة",
+    "rejected":  "مرفوضة",
+    "unmatched": "غير مطابقة"
+  },
+  "errors": {
+    "load":      "فشل تحميل البيانات",
+    "not_found": "المورّد غير موجود"
+  }
 }
