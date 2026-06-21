@@ -5,9 +5,11 @@ import { EmptyState }  from "@/components/patterns/EmptyState";
 
 import { SuppliersListPage } from "./suppliers/SuppliersListPage";
 import { SupplierCardPage }  from "./suppliers/SupplierCardPage";
+import { PurchasesListPage } from "./invoices/PurchasesListPage";
 
-export { SuppliersListPage as SuppliersPage };
-export { SupplierCardPage  as SupplierCard  };
+export { SuppliersListPage as SuppliersPage  };
+export { SupplierCardPage  as SupplierCard   };
+export { PurchasesListPage as PurchasesPage  };
 
 function Page({ k }: { k: string }) {
   const { t } = useTranslation("purchasing");
@@ -19,7 +21,6 @@ function Page({ k }: { k: string }) {
   );
 }
 
-export const PurchasesPage  = () => <Page k="invoices" />;
 export const OrdersPage     = () => <Page k="orders" />;
 export const ReturnsPage    = () => <Page k="returns" />;
 export const VouchersPage   = () => <Page k="vouchers" />;
