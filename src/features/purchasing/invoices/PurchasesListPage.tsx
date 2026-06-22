@@ -206,7 +206,7 @@ function InvoiceActions({
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={e => { e.stopPropagation(); onNavigate(`/purchasing/invoices/${inv.id}/return`); }}
+              onClick={e => { e.stopPropagation(); onNavigate(`/purchasing/returns/new?source=${inv.id}`); }}
             >
               <RotateCcw className="h-4 w-4 me-2" />
               {t("invoices.action_return")}

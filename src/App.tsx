@@ -45,8 +45,9 @@ import {
 // Purchasing
 import { PurchasingLayout } from "@/features/purchasing/PurchasingLayout";
 import {
-  SuppliersPage, SupplierCard, PurchasesPage, OrdersPage,
-  ReturnsPage, VouchersPage, InboundEtaPage,
+  SuppliersPage, SupplierCard, PurchasesPage,
+  PurchaseInvoiceEditor, PurchaseInvoiceView,
+  OrdersPage, ReturnsPage, VouchersPage, InboundEtaHubPage,
 } from "@/features/purchasing/PurchasingPages";
 
 // Finance
@@ -168,11 +169,15 @@ export default function App() {
             <Route index element={<Navigate to="suppliers" replace />} />
             <Route path="suppliers"       element={<SuppliersPage />} />
             <Route path="suppliers/:id"  element={<SupplierCard />} />
-            <Route path="invoices"    element={<PurchasesPage />} />
-            <Route path="orders"      element={<OrdersPage />} />
-            <Route path="returns"     element={<ReturnsPage />} />
-            <Route path="vouchers"    element={<VouchersPage />} />
-            <Route path="inbound-eta" element={<InboundEtaPage />} />
+            <Route path="invoices"        element={<PurchasesPage />} />
+            <Route path="invoices/new"    element={<PurchaseInvoiceEditor />} />
+            <Route path="invoices/:id"    element={<PurchaseInvoiceView />} />
+            <Route path="orders"          element={<OrdersPage />} />
+            <Route path="returns"         element={<ReturnsPage />} />
+            <Route path="returns/new"     element={<ReturnsPage />} />
+            <Route path="vouchers"        element={<VouchersPage />} />
+            <Route path="vouchers/new"    element={<VouchersPage />} />
+            <Route path="inbound-eta"     element={<InboundEtaHubPage />} />
           </Route>
 
           {/* Finance — FE_04 */}
