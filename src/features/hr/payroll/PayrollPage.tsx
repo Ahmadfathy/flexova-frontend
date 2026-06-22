@@ -25,7 +25,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 
-import { formatMoney, formatDate } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
 import { useHrData, type PayrollRun } from "../data/useHrData";
@@ -65,7 +65,7 @@ function PayrollSheet({
               <p className="text-base font-semibold" dir="ltr">{run.period}</p>
             </div>
             <StatusPill
-              variant={run.status === "posted" ? "success" : "secondary"}
+              variant={run.status === "posted" ? "approved" : "pending"}
               label={t(run.status === "posted" ? "payroll.status_posted" : "payroll.status_draft")}
             />
           </SheetTitle>
