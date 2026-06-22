@@ -1,6 +1,16 @@
 import type { PillVariant } from "@/components/patterns/StatusPill";
 import type { ReceiptStatus, PurchasePaymentStatus, InboundEtaStatus } from "./usePurchasingData";
 
+export function poStatusPillVariant(s: string): PillVariant {
+  switch (s) {
+    case "completed":          return "approved";
+    case "partially_received": return "in-progress";
+    case "sent":               return "pending";
+    case "cancelled":          return "rejected";
+    default:                   return "inactive"; // draft
+  }
+}
+
 export function receiptPillVariant(s: ReceiptStatus): PillVariant {
   switch (s) {
     case "completed":          return "approved";
