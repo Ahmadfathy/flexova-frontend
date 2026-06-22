@@ -1,27 +1,34 @@
 import { useTranslation } from "react-i18next";
-import { PageHeader } from "@/components/patterns/PageHeader";
+import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
-import { EmptyState } from "@/components/patterns/EmptyState";
+import { EmptyState }  from "@/components/patterns/EmptyState";
 
-function Page({ k }: { k: string }) {
+import { FinanceDashboardPage as _Dashboard }   from "./dashboard/FinanceDashboardPage";
+import { TreasuriesPage as _Treasuries }        from "./treasuries/TreasuriesPage";
+import { ExpensesPage as _Expenses }            from "./expenses/ExpensesPage";
+import { ReceiptVouchersPage as _Receipts }     from "./receipts/ReceiptVouchersPage";
+import { PaymentVouchersPage as _Payments }     from "./payments/PaymentVouchersPage";
+import { TransfersPage as _Transfers }          from "./transfers/TransfersPage";
+
+function Stub({ k }: { k: string }) {
   const { t } = useTranslation("finance");
   return (
     <>
-      <PageHeader title={t(`${k}.title`)} />
+      <PageHeader title={t(`${k}.title` as Parameters<typeof t>[0])} />
       <PageSection><EmptyState /></PageSection>
     </>
   );
 }
 
-export const FinanceDashboardPage  = () => <Page k="dashboard" />;
-export const TreasuriesPage        = () => <Page k="treasuries" />;
-export const ExpensesPage          = () => <Page k="expenses" />;
-export const ReceiptVouchersPage   = () => <Page k="receipts" />;
-export const PaymentVouchersPage   = () => <Page k="payments" />;
-export const FinanceTransfersPage  = () => <Page k="transfers" />;
-export const JournalPage           = () => <Page k="journal" />;
-export const CoaPage               = () => <Page k="coa" />;
-export const TrialBalancePage      = () => <Page k="trial_balance" />;
-export const StatementsPage        = () => <Page k="statements" />;
-export const ReconciliationPage    = () => <Page k="reconciliation" />;
-export const ClosingPage           = () => <Page k="closing" />;
+export const FinanceDashboardPage  = _Dashboard;
+export const TreasuriesPage        = _Treasuries;
+export const ExpensesPage          = _Expenses;
+export const ReceiptVouchersPage   = _Receipts;
+export const PaymentVouchersPage   = _Payments;
+export const FinanceTransfersPage  = _Transfers;
+export const JournalPage           = () => <Stub k="journal" />;
+export const CoaPage               = () => <Stub k="coa" />;
+export const TrialBalancePage      = () => <Stub k="trial_balance" />;
+export const StatementsPage        = () => <Stub k="statements" />;
+export const ReconciliationPage    = () => <Stub k="reconciliation" />;
+export const ClosingPage           = () => <Stub k="closing" />;
