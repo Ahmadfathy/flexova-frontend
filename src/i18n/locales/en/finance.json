@@ -211,7 +211,17 @@
     "root_2":            "Liabilities",
     "root_3":            "Equity",
     "root_4":            "Revenue",
-    "root_5":            "Expenses"
+    "root_5":            "Expenses",
+    "form_title":        "New account",
+    "form_code":         "Account code",
+    "form_code_hint":    "e.g. 1105 (must be unique)",
+    "form_name_ar":      "Arabic name",
+    "form_name_en":      "English name",
+    "form_parent":       "Parent account",
+    "form_parent_ph":    "Select parent (optional)",
+    "form_type":         "Account type",
+    "form_code_taken":   "This code is already in use",
+    "saved_toast":       "Account saved"
   },
   "trial_balance": {
     "title":             "Trial balance",
