@@ -43,21 +43,21 @@ function PayrollSheet({
   lang: "ar" | "en";
   t: ReturnType<typeof useTranslation<"hr">>["t"];
 }) {
-  if (!run) return null;
-
   function empName(id: string) {
     const e = (employees as any[]).find((emp: any) => emp.id === id);
     if (!e) return id;
     return lang === "ar" ? e.name_ar : e.name_en;
   }
 
-  const totalGross      = run.lines.reduce((s, l) => s + l.gross, 0);
-  const totalDeductions = run.lines.reduce((s, l) => s + l.deductions, 0);
-  const totalNet        = run.lines.reduce((s, l) => s + l.net, 0);
+  const totalGross      = run?.lines.reduce((s, l) => s + l.gross, 0) ?? 0;
+  const totalDeductions = run?.lines.reduce((s, l) => s + l.deductions, 0) ?? 0;
+  const totalNet        = run?.lines.reduce((s, l) => s + l.net, 0) ?? 0;
 
   return (
     <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="end" className="w-full sm:max-w-xl overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto">
+        {run && (
+        <>
         <SheetHeader className="pb-4">
           <SheetTitle className="flex items-center justify-between gap-2">
             <div>
@@ -170,6 +170,8 @@ function PayrollSheet({
             </Button>
           )}
         </div>
+        </>
+        )}
       </SheetContent>
     </Sheet>
   );

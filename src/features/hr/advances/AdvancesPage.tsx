@@ -46,12 +46,13 @@ function AdvanceSheet({
   lang: "ar" | "en";
   t: ReturnType<typeof useTranslation<"hr">>["t"];
 }) {
-  if (!adv) return null;
-  const pct = adv.amount > 0 ? Math.round(((adv.amount - adv.remaining) / adv.amount) * 100) : 0;
+  const pct = adv && adv.amount > 0 ? Math.round(((adv.amount - adv.remaining) / adv.amount) * 100) : 0;
 
   return (
     <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="end" className="w-full sm:max-w-sm overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-sm overflow-y-auto">
+        {adv && (
+        <>
         <SheetHeader className="pb-4">
           <SheetTitle>
             <Badge variant="outline" className="text-xs mb-1">
@@ -99,6 +100,8 @@ function AdvanceSheet({
             </div>
           )}
         </div>
+        </>
+        )}
       </SheetContent>
     </Sheet>
   );

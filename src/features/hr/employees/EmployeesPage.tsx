@@ -58,13 +58,14 @@ function EmployeeSheet({
   lang: "ar" | "en";
   t: ReturnType<typeof useTranslation<"hr">>["t"];
 }) {
-  if (!emp) return null;
-  const name = lang === "ar" ? emp.name_ar : emp.name_en;
-  const ss = emp.salary_structure;
+  const name = emp ? (lang === "ar" ? emp.name_ar : emp.name_en) : "";
+  const ss   = emp?.salary_structure;
 
   return (
     <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="end" className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+        {emp && (
+        <>
         <SheetHeader className="pb-4">
           <SheetTitle>{name}</SheetTitle>
           <p className="text-sm text-muted-foreground">{emp.title}</p>
@@ -88,19 +89,19 @@ function EmployeeSheet({
           <div>
             <p className="text-xs font-medium text-muted-foreground mb-3">{t("employees.card_structure")}</p>
             <div className="space-y-2">
-              {ss.base !== undefined && (
+              {ss?.base !== undefined && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{t("employees.card_base")}</span>
-                  <span className="tabular-nums font-medium">{formatMoney(ss.base, lang)}</span>
+                  <span className="tabular-nums font-medium">{formatMoney(ss.base!, lang)}</span>
                 </div>
               )}
-              {ss.day_rate !== undefined && (
+              {ss?.day_rate !== undefined && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{t("employees.card_day_rate")}</span>
-                  <span className="tabular-nums font-medium">{formatMoney(ss.day_rate, lang)}</span>
+                  <span className="tabular-nums font-medium">{formatMoney(ss.day_rate!, lang)}</span>
                 </div>
               )}
-              {(ss.components ?? []).map((comp, i) => (
+              {(ss?.components ?? []).map((comp, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{comp.name_ar}</span>
                   <span className={cn(
@@ -135,6 +136,8 @@ function EmployeeSheet({
             </div>
           )}
         </div>
+        </>
+        )}
       </SheetContent>
     </Sheet>
   );

@@ -93,17 +93,19 @@ function CustomerSheet({
   lang: "ar" | "en";
   t: ReturnType<typeof useTranslation<"crm">>["t"];
 }) {
-  if (!customer) return null;
-
-  const name = lang === "ar" ? customer.name_ar : customer.name_en;
-  const creditPct = customer.credit_limit > 0
+  const name = customer ? (lang === "ar" ? customer.name_ar : customer.name_en) : "";
+  const creditPct = customer && customer.credit_limit > 0
     ? Math.min(Math.round((customer.ar_balance / customer.credit_limit) * 100), 999)
     : 0;
-  const overLimit = customer.credit_limit > 0 && customer.ar_balance > customer.credit_limit;
+  const overLimit = customer
+    ? customer.credit_limit > 0 && customer.ar_balance > customer.credit_limit
+    : false;
 
   return (
     <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="end" className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+        {customer && (
+        <>
         <SheetHeader className="pb-4">
           <SheetTitle className="flex items-center gap-2">
             {customer.type === "company"
@@ -235,6 +237,8 @@ function CustomerSheet({
             </p>
           )}
         </div>
+        </>
+        )}
       </SheetContent>
     </Sheet>
   );
