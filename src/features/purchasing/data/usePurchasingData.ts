@@ -15,6 +15,9 @@ export interface InventoryItem {
   status: string;
   incomplete: boolean;
   prices: Record<string, number>;
+  last_purchase_price: number | null;
+  avg_cost: number | null;
+  units: { uom_id: string; factor: number; barcode: string | null; unit_price: number }[];
   balances: { warehouse_id: string; qty: number }[];
 }
 
