@@ -25,12 +25,8 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
 import { Switch } from "@/components/ui/switch";
 
 import { formatMoney, formatDate } from "@/lib/format";
@@ -102,26 +98,27 @@ function CustomerSheet({
     : false;
 
   return (
-    <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
-        {customer && (
-        <>
-        <SheetHeader className="pb-4">
-          <SheetTitle className="flex items-center gap-2">
-            {customer.type === "company"
-              ? <Building2 className="h-4 w-4 text-muted-foreground" />
-              : <User className="h-4 w-4 text-muted-foreground" />
-            }
-            {name}
-          </SheetTitle>
-          {customer.phone && (
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5" />
-              <span dir="ltr">{customer.phone}</span>
-            </p>
-          )}
-        </SheetHeader>
-
+    <DrawerShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={customer ? (
+        <span className="flex items-center gap-2">
+          {customer.type === "company"
+            ? <Building2 className="h-4 w-4 text-muted-foreground" />
+            : <User className="h-4 w-4 text-muted-foreground" />
+          }
+          {name}
+        </span>
+      ) : ""}
+      description={customer?.phone ? (
+        <span className="flex items-center gap-1.5">
+          <Phone className="h-3.5 w-3.5" />
+          <span dir="ltr">{customer.phone}</span>
+        </span>
+      ) : undefined}
+      size="md"
+    >
+      {customer && (
         <div className="space-y-5">
           {/* AR balance + credit */}
           <div className="grid grid-cols-2 gap-3">
@@ -237,10 +234,8 @@ function CustomerSheet({
             </p>
           )}
         </div>
-        </>
-        )}
-      </SheetContent>
-    </Sheet>
+      )}
+    </DrawerShell>
   );
 }
 
@@ -274,60 +269,62 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("list.form_title_new")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("list.form_type")} *</Label>
-            <Select value={type} onValueChange={v => setType(v as "company" | "individual")}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="company">{t("list.type_company")}</SelectItem>
-                <SelectItem value="individual">{t("list.type_individual")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("list.form_name_ar")} *</Label>
-            <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("list.form_name_en")} *</Label>
-            <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("list.form_phone")}</Label>
-            <Input value={phone} onChange={e => setPhone(e.target.value)} dir="ltr" type="tel" />
-          </div>
-          {type === "company" && (
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">{t("list.form_trn")}</Label>
-              <Input value={trn} onChange={e => setTrn(e.target.value)} dir="ltr" />
-            </div>
-          )}
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("list.form_credit_limit")}</Label>
-            <Input
-              type="number" min={0} step="100"
-              value={limit}
-              onChange={e => setLimit(e.target.value)}
-              className="tabular-nums text-end"
-              placeholder="0"
-            />
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("list.form_title_new")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!isValid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("list.form_type")} *</Label>
+          <Select value={type} onValueChange={v => setType(v as "company" | "individual")}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="company">{t("list.type_company")}</SelectItem>
+              <SelectItem value="individual">{t("list.type_individual")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("list.form_name_ar")} *</Label>
+          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("list.form_name_en")} *</Label>
+          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("list.form_phone")}</Label>
+          <Input value={phone} onChange={e => setPhone(e.target.value)} dir="ltr" type="tel" />
+        </div>
+        {type === "company" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{t("list.form_trn")}</Label>
+            <Input value={trn} onChange={e => setTrn(e.target.value)} dir="ltr" />
+          </div>
+        )}
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("list.form_credit_limit")}</Label>
+          <Input
+            type="number" min={0} step="100"
+            value={limit}
+            onChange={e => setLimit(e.target.value)}
+            className="tabular-nums text-end"
+            placeholder="0"
+          />
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

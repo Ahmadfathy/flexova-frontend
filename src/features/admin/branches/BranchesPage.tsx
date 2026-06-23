@@ -10,12 +10,11 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
+import { ModalShell } from "@/components/patterns/ModalShell";
+
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -46,31 +45,33 @@ function BranchDialog({
   const valid = nameAr.trim() && nameEn.trim() && code.trim();
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("branches.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("branches.form_name_ar")} *</Label>
-            <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("branches.form_name_en")} *</Label>
-            <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("branches.form_code")} *</Label>
-            <Input value={code} onChange={e => setCode(e.target.value)} dir="ltr" className="font-mono" />
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("branches.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!valid} onClick={handleSave}>{lang === "ar" ? "حفظ" : "Save"}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("branches.form_name_ar")} *</Label>
+          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("branches.form_name_en")} *</Label>
+          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("branches.form_code")} *</Label>
+          <Input value={code} onChange={e => setCode(e.target.value)} dir="ltr" className="font-mono" />
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

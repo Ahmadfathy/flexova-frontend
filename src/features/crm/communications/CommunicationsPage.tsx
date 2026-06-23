@@ -20,9 +20,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import { Separator } from "@/components/ui/separator";
 
 import { formatDate } from "@/lib/format";
@@ -67,58 +65,18 @@ function SendDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MessageCircle className="h-4 w-4 text-green-500" />
-            {t("communications.form_title")}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("communications.form_customer")} *</Label>
-            <Select value={customerId} onValueChange={setCust}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("communications.form_customer_ph")} />
-              </SelectTrigger>
-              <SelectContent>
-                {customers.map(c => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {lang === "ar" ? c.name_ar : c.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("communications.form_template")} *</Label>
-            <Select value={templateId} onValueChange={setTmpl}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("communications.form_template_ph")} />
-              </SelectTrigger>
-              <SelectContent>
-                {templates.map(tp => (
-                  <SelectItem key={tp.id} value={tp.id}>
-                    {lang === "ar" ? tp.name_ar : tp.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          {selectedTmpl && (
-            <>
-              <Separator />
-              <div className="space-y-1.5">
-                <p className="text-xs font-medium text-muted-foreground">{t("communications.form_preview")}</p>
-                <div className="rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 p-3 text-sm text-foreground leading-relaxed">
-                  {selectedTmpl.body_ar}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={
+        <span className="flex items-center gap-2">
+          <MessageCircle className="h-4 w-4 text-green-500" />
+          {t("communications.form_title")}
+        </span>
+      }
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button
             disabled={!isValid || sending}
@@ -131,9 +89,53 @@ function SendDialog({
             }
             {t("communications.send_btn")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("communications.form_customer")} *</Label>
+          <Select value={customerId} onValueChange={setCust}>
+            <SelectTrigger>
+              <SelectValue placeholder={t("communications.form_customer_ph")} />
+            </SelectTrigger>
+            <SelectContent>
+              {customers.map(c => (
+                <SelectItem key={c.id} value={c.id}>
+                  {lang === "ar" ? c.name_ar : c.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("communications.form_template")} *</Label>
+          <Select value={templateId} onValueChange={setTmpl}>
+            <SelectTrigger>
+              <SelectValue placeholder={t("communications.form_template_ph")} />
+            </SelectTrigger>
+            <SelectContent>
+              {templates.map(tp => (
+                <SelectItem key={tp.id} value={tp.id}>
+                  {lang === "ar" ? tp.name_ar : tp.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {selectedTmpl && (
+          <>
+            <Separator />
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">{t("communications.form_preview")}</p>
+              <div className="rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 p-3 text-sm text-foreground leading-relaxed">
+                {selectedTmpl.body_ar}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </ModalShell>
   );
 }
 

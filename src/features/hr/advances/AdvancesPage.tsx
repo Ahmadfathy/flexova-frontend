@@ -22,12 +22,8 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -49,20 +45,21 @@ function AdvanceSheet({
   const pct = adv && adv.amount > 0 ? Math.round(((adv.amount - adv.remaining) / adv.amount) * 100) : 0;
 
   return (
-    <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-sm overflow-y-auto">
-        {adv && (
+    <DrawerShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={adv ? (
         <>
-        <SheetHeader className="pb-4">
-          <SheetTitle>
-            <Badge variant="outline" className="text-xs mb-1">
-              {t(adv.type === "advance" ? "advances.type_advance" : "advances.type_loan")}
-            </Badge>
-            <div>{empName}</div>
-          </SheetTitle>
-          <p className="text-xs text-muted-foreground">{formatDate(adv.granted)}</p>
-        </SheetHeader>
-
+          <Badge variant="outline" className="text-xs mb-1">
+            {t(adv.type === "advance" ? "advances.type_advance" : "advances.type_loan")}
+          </Badge>
+          <div>{empName}</div>
+        </>
+      ) : ""}
+      description={adv ? formatDate(adv.granted) : undefined}
+      size="sm"
+    >
+      {adv && (
         <div className="space-y-5">
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-lg border border-border p-3">
@@ -100,10 +97,8 @@ function AdvanceSheet({
             </div>
           )}
         </div>
-        </>
-        )}
-      </SheetContent>
-    </Sheet>
+      )}
+    </DrawerShell>
   );
 }
 
@@ -137,59 +132,61 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("advances.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("advances.form_employee")} *</Label>
-            <Select value={empId} onValueChange={setEmpId}>
-              <SelectTrigger><SelectValue placeholder={t("advances.form_employee_ph")} /></SelectTrigger>
-              <SelectContent>
-                {employees.map(e => (
-                  <SelectItem key={e.id} value={e.id}>
-                    {lang === "ar" ? e.name_ar : e.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("advances.form_type")} *</Label>
-            <Select value={type} onValueChange={v => setType(v as Advance["type"])}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="advance">{t("advances.type_advance")}</SelectItem>
-                <SelectItem value="loan">{t("advances.type_loan")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("advances.form_amount")} *</Label>
-            <Input type="number" min={0} value={amount} onChange={e => setAmount(e.target.value)} className="tabular-nums text-end" placeholder="0" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("advances.form_date")} *</Label>
-            <Input type="date" value={date} onChange={e => setDate(e.target.value)} dir="ltr" />
-          </div>
-          {type === "loan" && (
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">{t("advances.form_installment")}</Label>
-              <Input type="number" min={0} value={installment} onChange={e => setInst(e.target.value)} className="tabular-nums text-end" placeholder="0" />
-            </div>
-          )}
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("advances.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!isValid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("advances.form_employee")} *</Label>
+          <Select value={empId} onValueChange={setEmpId}>
+            <SelectTrigger><SelectValue placeholder={t("advances.form_employee_ph")} /></SelectTrigger>
+            <SelectContent>
+              {employees.map(e => (
+                <SelectItem key={e.id} value={e.id}>
+                  {lang === "ar" ? e.name_ar : e.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("advances.form_type")} *</Label>
+          <Select value={type} onValueChange={v => setType(v as Advance["type"])}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="advance">{t("advances.type_advance")}</SelectItem>
+              <SelectItem value="loan">{t("advances.type_loan")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("advances.form_amount")} *</Label>
+          <Input type="number" min={0} value={amount} onChange={e => setAmount(e.target.value)} className="tabular-nums text-end" placeholder="0" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("advances.form_date")} *</Label>
+          <Input type="date" value={date} onChange={e => setDate(e.target.value)} dir="ltr" />
+        </div>
+        {type === "loan" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{t("advances.form_installment")}</Label>
+            <Input type="number" min={0} value={installment} onChange={e => setInst(e.target.value)} className="tabular-nums text-end" placeholder="0" />
+          </div>
+        )}
+      </div>
+    </ModalShell>
   );
 }
 

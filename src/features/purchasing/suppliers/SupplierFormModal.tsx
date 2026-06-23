@@ -6,10 +6,7 @@ import { Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogDescription,
-  DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -106,17 +103,24 @@ export function SupplierFormModal({ open, onOpenChange, supplier, onSaved }: Sup
   const canSave = form.name_ar.trim().length > 0;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit ? t("form.edit_title") : t("form.new_title")}
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            {isEdit ? t("form.edit_title") : t("form.new_title")}
-          </DialogDescription>
-        </DialogHeader>
-
+    <ModalShell
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isEdit ? t("form.edit_title") : t("form.new_title")}
+      description={isEdit ? t("form.edit_title") : t("form.new_title")}
+      size="md"
+      footer={
+        <>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+            {t("common:cancel", { defaultValue: "Cancel" })}
+          </Button>
+          <Button onClick={handleSave} disabled={saving || !canSave}>
+            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+            {t("common:save", { defaultValue: "Save" })}
+          </Button>
+        </>
+      }
+    >
         <div className="space-y-5 py-2">
           {/* Name */}
           <div className="grid grid-cols-2 gap-3">
@@ -285,17 +289,6 @@ export function SupplierFormModal({ open, onOpenChange, supplier, onSaved }: Sup
             <span>{t("form.balance_note")}</span>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
-            {t("common:cancel", { defaultValue: "Cancel" })}
-          </Button>
-          <Button onClick={handleSave} disabled={saving || !canSave}>
-            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-            {t("common:save", { defaultValue: "Save" })}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    </ModalShell>
   );
 }

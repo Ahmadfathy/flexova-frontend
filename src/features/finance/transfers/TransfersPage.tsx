@@ -19,9 +19,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -63,76 +61,78 @@ function CreateDialog({
   const ArrowIcon = lang === "ar" ? ArrowLeft : ArrowRight;
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("transfers.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("transfers.from_label")} *</Label>
-            <Select value={from} onValueChange={setFrom}>
-              <SelectTrigger className={cn(!from && "border-muted-foreground/40")}>
-                <SelectValue placeholder={t("transfers.from_ph")} />
-              </SelectTrigger>
-              <SelectContent>
-                {data.treasuries.map(tr => (
-                  <SelectItem key={tr.id} value={tr.id} disabled={tr.id === to}>
-                    {lang === "ar" ? tr.name_ar : tr.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex justify-center">
-            <ArrowIcon className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("transfers.to_label")} *</Label>
-            <Select value={to} onValueChange={setTo}>
-              <SelectTrigger className={cn(!to && "border-muted-foreground/40", sameError && "border-danger")}>
-                <SelectValue placeholder={t("transfers.to_ph")} />
-              </SelectTrigger>
-              <SelectContent>
-                {data.treasuries.map(tr => (
-                  <SelectItem key={tr.id} value={tr.id} disabled={tr.id === from}>
-                    {lang === "ar" ? tr.name_ar : tr.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {sameError && (
-              <p className="text-xs text-danger">{t("transfers.same_treasury")}</p>
-            )}
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("transfers.amount_label")} *</Label>
-            <Input
-              type="number" min={0.01} step="0.01"
-              value={amount}
-              onChange={e => setAmount(e.target.value)}
-              className="tabular-nums text-end"
-              placeholder="0.00"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("transfers.date_label")} *</Label>
-            <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("transfers.memo_label")}</Label>
-            <Input value={memo} onChange={e => setMemo(e.target.value)} />
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("transfers.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!isValid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("transfers.from_label")} *</Label>
+          <Select value={from} onValueChange={setFrom}>
+            <SelectTrigger className={cn(!from && "border-muted-foreground/40")}>
+              <SelectValue placeholder={t("transfers.from_ph")} />
+            </SelectTrigger>
+            <SelectContent>
+              {data.treasuries.map(tr => (
+                <SelectItem key={tr.id} value={tr.id} disabled={tr.id === to}>
+                  {lang === "ar" ? tr.name_ar : tr.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex justify-center">
+          <ArrowIcon className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("transfers.to_label")} *</Label>
+          <Select value={to} onValueChange={setTo}>
+            <SelectTrigger className={cn(!to && "border-muted-foreground/40", sameError && "border-danger")}>
+              <SelectValue placeholder={t("transfers.to_ph")} />
+            </SelectTrigger>
+            <SelectContent>
+              {data.treasuries.map(tr => (
+                <SelectItem key={tr.id} value={tr.id} disabled={tr.id === from}>
+                  {lang === "ar" ? tr.name_ar : tr.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {sameError && (
+            <p className="text-xs text-danger">{t("transfers.same_treasury")}</p>
+          )}
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("transfers.amount_label")} *</Label>
+          <Input
+            type="number" min={0.01} step="0.01"
+            value={amount}
+            onChange={e => setAmount(e.target.value)}
+            className="tabular-nums text-end"
+            placeholder="0.00"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("transfers.date_label")} *</Label>
+          <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("transfers.memo_label")}</Label>
+          <Input value={memo} onChange={e => setMemo(e.target.value)} />
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

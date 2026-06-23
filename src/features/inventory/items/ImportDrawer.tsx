@@ -1,9 +1,7 @@
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -122,19 +120,47 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
   const ForwardIcon = lang === "ar" ? ArrowLeft  : ArrowRight;
 
   return (
-    <Sheet open={open} onOpenChange={handleClose}>
-      <SheetContent
-        side="right"
-        className="flex flex-col p-0 w-full sm:max-w-2xl"
-      >
-        {/* Header */}
-        <SheetHeader className="shrink-0 px-6 py-4 border-b border-border">
-          <SheetTitle>{t("import_wizard.title")}</SheetTitle>
-          <SheetDescription className="sr-only">{t("actions.import")}</SheetDescription>
-        </SheetHeader>
+    <DrawerShell
+      open={open}
+      onOpenChange={handleClose}
+      title={t("import_wizard.title")}
+      description={t("actions.import")}
+      size="lg"
+      className="sm:max-w-2xl"
+      footer={
+        step !== "step_result" ? (
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={stepIdx === 0 ? handleClose : prevStep}
+            >
+              {stepIdx === 0
+                ? t("actions.cancel")
+                : (<><BackIcon className="h-4 w-4 me-1" />{t("import_wizard.back_step")}</>)}
+            </Button>
 
+            {step === "step_confirm" ? (
+              <Button onClick={handleImport} disabled={importing}>
+                {importing && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+                {importing ? t("import_wizard.importing") : t("import_wizard.step_result")}
+              </Button>
+            ) : (
+              <Button onClick={nextStep}>
+                {t("import_wizard.next")}
+                <ForwardIcon className="h-4 w-4 ms-1" />
+              </Button>
+            )}
+          </>
+        ) : (
+          <Button className="ms-auto" onClick={handleClose}>
+            {t("import_wizard.done")}
+          </Button>
+        )
+      }
+    >
         {/* Step indicator */}
-        <div className="shrink-0 px-6 pt-4 pb-3 border-b border-border bg-muted/20">
+        <div className="shrink-0 -mx-6 -mt-4 px-6 pt-4 pb-3 border-b border-border bg-muted/20 mb-4">
           <div className="flex items-center gap-2">
             {STEPS.map((s, i) => (
               <div key={s} className="flex items-center gap-2 min-w-0">
@@ -163,7 +189,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="space-y-4">
 
           {/* ── Step 1: Download + Upload ── */}
           {step === "step_download" && (
@@ -427,40 +453,6 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
             </div>
           )}
         </div>
-
-        {/* Footer */}
-        <div className="shrink-0 px-6 py-4 border-t border-border flex items-center justify-between gap-2">
-          {step !== "step_result" ? (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={stepIdx === 0 ? handleClose : prevStep}
-              >
-                {stepIdx === 0
-                  ? t("actions.cancel")
-                  : (<><BackIcon className="h-4 w-4 me-1" />{t("import_wizard.back_step")}</>)}
-              </Button>
-
-              {step === "step_confirm" ? (
-                <Button onClick={handleImport} disabled={importing}>
-                  {importing && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-                  {importing ? t("import_wizard.importing") : t("import_wizard.step_result")}
-                </Button>
-              ) : (
-                <Button onClick={nextStep}>
-                  {t("import_wizard.next")}
-                  <ForwardIcon className="h-4 w-4 ms-1" />
-                </Button>
-              )}
-            </>
-          ) : (
-            <Button className="ms-auto" onClick={handleClose}>
-              {t("import_wizard.done")}
-            </Button>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+    </DrawerShell>
   );
 }

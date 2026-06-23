@@ -18,12 +18,8 @@ import { Separator } from "@/components/ui/separator";
 import {
   Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
 
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -54,23 +50,24 @@ function PayrollSheet({
   const totalNet        = run?.lines.reduce((s, l) => s + l.net, 0) ?? 0;
 
   return (
-    <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto">
-        {run && (
-        <>
-        <SheetHeader className="pb-4">
-          <SheetTitle className="flex items-center justify-between gap-2">
-            <div>
-              <p className="font-mono text-sm text-muted-foreground">{run.number}</p>
-              <p className="text-base font-semibold" dir="ltr">{run.period}</p>
-            </div>
-            <StatusPill
-              variant={run.status === "posted" ? "approved" : "pending"}
-              label={t(run.status === "posted" ? "payroll.status_posted" : "payroll.status_draft")}
-            />
-          </SheetTitle>
-        </SheetHeader>
-
+    <DrawerShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={run ? (
+        <div className="flex items-center justify-between gap-2 w-full">
+          <div>
+            <p className="font-mono text-sm text-muted-foreground">{run.number}</p>
+            <p className="text-base font-semibold" dir="ltr">{run.period}</p>
+          </div>
+          <StatusPill
+            variant={run.status === "posted" ? "approved" : "pending"}
+            label={t(run.status === "posted" ? "payroll.status_posted" : "payroll.status_draft")}
+          />
+        </div>
+      ) : ""}
+      size="lg"
+    >
+      {run && (
         <div className="space-y-5">
           {/* Warnings */}
           {(run.warnings ?? []).length > 0 && (
@@ -170,10 +167,8 @@ function PayrollSheet({
             </Button>
           )}
         </div>
-        </>
-        )}
-      </SheetContent>
-    </Sheet>
+      )}
+    </DrawerShell>
   );
 }
 
@@ -199,31 +194,33 @@ function RunDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("payroll.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("payroll.form_period")} *</Label>
-            <Input
-              value={period}
-              onChange={e => setPeriod(e.target.value)}
-              placeholder="YYYY-MM"
-              dir="ltr"
-            />
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("payroll.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!period || saving} onClick={handleRun}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {t("payroll.new")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("payroll.form_period")} *</Label>
+          <Input
+            value={period}
+            onChange={e => setPeriod(e.target.value)}
+            placeholder="YYYY-MM"
+            dir="ltr"
+          />
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

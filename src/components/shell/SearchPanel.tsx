@@ -114,7 +114,7 @@ export function SearchPanel() {
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-[min(560px,calc(100vw-2rem))] p-0 rounded-lg overflow-hidden"
+        className="w-[min(560px,calc(100vw-2rem))] p-0 rounded overflow-hidden"
         align="start"
         sideOffset={8}
         /* Let cmdk auto-focus its input */
@@ -144,7 +144,7 @@ export function SearchPanel() {
                         onSelect={() => handleSelect(item)}
                         className="gap-3 px-3 py-2 cursor-pointer"
                       >
-                        <span className={cn("shrink-0 flex items-center justify-center w-8 h-8 rounded-md", TYPE_BOX_CLASS[item.type])}>
+                        <span className={cn("shrink-0 flex items-center justify-center w-8 h-8 rounded", TYPE_BOX_CLASS[item.type])}>
                           <Icon className="w-4 h-4" />
                         </span>
                         <span className="flex-1 min-w-0">
@@ -172,7 +172,7 @@ export function SearchPanel() {
                           onSelect={() => handleSelect(item)}
                           className="gap-3 px-3 py-2 cursor-pointer"
                         >
-                          <span className={cn("shrink-0 flex items-center justify-center w-8 h-8 rounded-md", TYPE_BOX_CLASS[item.type])}>
+                          <span className={cn("shrink-0 flex items-center justify-center w-8 h-8 rounded", TYPE_BOX_CLASS[item.type])}>
                             <Icon className="w-4 h-4" />
                           </span>
                           <span className="flex-1 min-w-0">

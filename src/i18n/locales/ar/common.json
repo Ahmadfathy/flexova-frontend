@@ -27,5 +27,6 @@
   "name": "الاسم",
   "code": "الكود",
   "page_of": "{{current}} من {{total}}",
-  "rows_per_page": "صفوف في الصفحة"
+  "rows_per_page": "صفوف في الصفحة",
+  "close": "إغلاق"
 }

@@ -31,7 +31,7 @@ function SubLink({ route, label, onClose }: { route: string; label: string; onCl
       onClick={onClose}
       className={({ isActive }) =>
         cn(
-          "flex items-center h-8 rounded-sm text-xs transition-colors ps-3 pe-2",
+          "flex items-center h-8 rounded text-xs transition-colors ps-3 pe-2",
           isActive
             ? "bg-brand-tint text-brand-text font-medium"
             : "text-muted-foreground hover:bg-background hover:text-foreground"
@@ -59,7 +59,7 @@ function AccordionItem({
 
   if (item.status === "soon") {
     return (
-      <div className="flex items-center gap-3 h-10 px-3 rounded-sm text-sm text-muted-foreground/50 cursor-not-allowed select-none">
+      <div className="flex items-center gap-3 h-10 px-3 rounded text-sm text-muted-foreground/50 cursor-not-allowed select-none">
         <item.icon className="h-4 w-4 shrink-0" />
         <span className="flex-1">{label}</span>
         <Badge variant="outline" className="text-[10px] px-1 py-0 h-4">{t("soon")}</Badge>
@@ -75,7 +75,7 @@ function AccordionItem({
         onClick={onClose}
         className={({ isActive: a }) =>
           cn(
-            "flex items-center gap-3 h-10 px-3 rounded-sm text-sm transition-colors relative",
+            "flex items-center gap-3 h-10 px-3 rounded text-sm transition-colors relative",
             a
               ? "bg-brand-tint text-brand-text font-medium before:absolute before:start-0 before:top-1 before:bottom-1 before:w-0.5 before:rounded-full before:bg-brand"
               : "text-muted-foreground hover:bg-background hover:text-foreground"
@@ -93,7 +93,7 @@ function AccordionItem({
       <button
         onClick={onToggle}
         className={cn(
-          "w-full flex items-center gap-3 h-10 px-3 rounded-sm text-sm transition-colors",
+          "w-full flex items-center gap-3 h-10 px-3 rounded text-sm transition-colors",
           isActive && !isOpen
             ? "bg-brand-tint text-brand-text font-medium"
             : "text-muted-foreground hover:bg-background hover:text-foreground"
@@ -146,7 +146,7 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
   };
 
   const iconCls = cn(
-    "flex items-center justify-center h-10 w-full rounded-sm transition-colors",
+    "flex items-center justify-center h-10 w-full rounded transition-colors",
     active
       ? "bg-brand-tint text-brand-text"
       : "text-muted-foreground hover:bg-background hover:text-foreground"
@@ -202,7 +202,7 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
               onClick={() => { onClose?.(); setFlyOpen(false); }}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center h-8 px-2 rounded-sm text-xs transition-colors",
+                  "flex items-center h-8 px-2 rounded text-xs transition-colors",
                   isActive
                     ? "bg-brand-tint text-brand-text font-medium"
                     : "text-muted-foreground hover:bg-background hover:text-foreground"

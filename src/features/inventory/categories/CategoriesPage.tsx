@@ -11,10 +11,7 @@ import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
 import { Badge }   from "@/components/ui/badge";
 import { Label }   from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -94,6 +91,7 @@ interface CatFormProps {
 }
 
 function CatFormDialog({ dialog, categories, lang, t, onClose }: CatFormProps) {
+  const open = dialog.open;
   const [name, setName]       = useState<string>(() => {
     if (dialog.mode === "edit" && dialog.category) {
       return lang === "ar" ? dialog.category.name_ar : dialog.category.name_en;
@@ -144,12 +142,24 @@ function CatFormDialog({ dialog, categories, lang, t, onClose }: CatFormProps) {
   }
 
   return (
-    <DialogContent className="sm:max-w-sm">
-      <DialogHeader className="text-start">
-        <DialogTitle>{dialogTitle}</DialogTitle>
-        <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>
-      </DialogHeader>
-
+    <ModalShell
+      open={open}
+      onOpenChange={v => !v && onClose()}
+      title={dialogTitle}
+      description={dialogTitle}
+      size="sm"
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
+            {t("actions.cancel")}
+          </Button>
+          <Button onClick={handleSave} disabled={saving}>
+            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+            {t("actions.save")}
+          </Button>
+        </>
+      }
+    >
       <div className="space-y-4 py-1">
         {/* Name */}
         <div className="space-y-1.5">
@@ -212,17 +222,7 @@ function CatFormDialog({ dialog, categories, lang, t, onClose }: CatFormProps) {
           )}
         </div>
       </div>
-
-      <DialogFooter className="gap-2">
-        <Button variant="ghost" onClick={onClose} disabled={saving}>
-          {t("actions.cancel")}
-        </Button>
-        <Button onClick={handleSave} disabled={saving}>
-          {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-          {t("actions.save")}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
+    </ModalShell>
   );
 }
 
@@ -573,18 +573,14 @@ export function CategoriesPage() {
       </PageSection>
 
       {/* ─── Add / Edit Dialog ──────────────────────────────────── */}
-      <Dialog open={catDialog.open} onOpenChange={(open) => !open && setCatDialog((d) => ({ ...d, open: false }))}>
-        {catDialog.open && (
-          <CatFormDialog
-            key={`${catDialog.mode}-${catDialog.category?.id ?? "new"}`}
-            dialog={catDialog}
-            categories={categories}
-            lang={lang}
-            t={t}
-            onClose={() => setCatDialog((d) => ({ ...d, open: false }))}
-          />
-        )}
-      </Dialog>
+      <CatFormDialog
+        key={`${catDialog.mode}-${catDialog.category?.id ?? "new"}`}
+        dialog={catDialog}
+        categories={categories}
+        lang={lang}
+        t={t}
+        onClose={() => setCatDialog((d) => ({ ...d, open: false }))}
+      />
 
       {/* ─── Delete AlertDialog ──────────────────────────────────── */}
       <AlertDialog

@@ -25,9 +25,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -365,12 +363,26 @@ export function PurchaseReturnsPage() {
       </div>
 
       {/* Create dialog */}
-      <Dialog open={dialogOpen} onOpenChange={open => { if (!open) closeDialog(); }}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{t("returns.form_title")}</DialogTitle>
-          </DialogHeader>
-
+      <ModalShell
+        open={dialogOpen}
+        onOpenChange={open => { if (!open) closeDialog(); }}
+        title={t("returns.form_title")}
+        size="lg"
+        footer={
+          <>
+            <Button variant="outline" onClick={closeDialog}>
+              {t("common:cancel", "Cancel")}
+            </Button>
+            <Button
+              disabled={!sourceId || !reason.trim() || !hasLines || overMax || saving}
+              onClick={handleSave}
+            >
+              {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
+              {t("common:save", "Save")}
+            </Button>
+          </>
+        }
+      >
           <div className="space-y-4 py-1">
             {/* Source invoice */}
             <div className="space-y-1.5">
@@ -483,21 +495,7 @@ export function PurchaseReturnsPage() {
               </div>
             )}
           </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={closeDialog}>
-              {t("common:cancel", "Cancel")}
-            </Button>
-            <Button
-              disabled={!sourceId || !reason.trim() || !hasLines || overMax || saving}
-              onClick={handleSave}
-            >
-              {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-              {t("common:save", "Save")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      </ModalShell>
     </>
   );
 }

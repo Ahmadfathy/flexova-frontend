@@ -13,9 +13,7 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
@@ -86,30 +84,32 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("segments.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("segments.form_name_ar")} *</Label>
-            <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("segments.form_name_en")} *</Label>
-            <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("segments.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!isValid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("segments.form_name_ar")} *</Label>
+          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("segments.form_name_en")} *</Label>
+          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

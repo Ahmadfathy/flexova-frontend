@@ -22,12 +22,8 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -62,14 +58,14 @@ function EmployeeSheet({
   const ss   = emp?.salary_structure;
 
   return (
-    <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
-        {emp && (
-        <>
-        <SheetHeader className="pb-4">
-          <SheetTitle>{name}</SheetTitle>
-          <p className="text-sm text-muted-foreground">{emp.title}</p>
-        </SheetHeader>
+    <DrawerShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={name}
+      description={emp?.title}
+      size="md"
+    >
+      {emp && (
         <div className="space-y-5">
           {/* Info */}
           <div className="grid grid-cols-2 gap-3 text-sm">
@@ -136,10 +132,8 @@ function EmployeeSheet({
             </div>
           )}
         </div>
-        </>
-        )}
-      </SheetContent>
-    </Sheet>
+      )}
+    </DrawerShell>
   );
 }
 
@@ -173,62 +167,64 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("employees.form_title_new")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("employees.form_name_ar")} *</Label>
-            <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("employees.form_name_en")} *</Label>
-            <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("employees.form_title_f")} *</Label>
-            <Input value={title} onChange={e => setTitle(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("employees.form_phone")}</Label>
-            <Input value={phone} onChange={e => setPhone(e.target.value)} dir="ltr" type="tel" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("employees.form_emp_type")} *</Label>
-            <Select value={empType} onValueChange={v => setEmpType(v as Employee["employment_type"])}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="monthly">{t("employees.type_monthly")}</SelectItem>
-                <SelectItem value="daily">{t("employees.type_daily")}</SelectItem>
-                <SelectItem value="commission">{t("employees.type_commission")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {empType !== "commission" && (
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">
-                {empType === "daily" ? t("employees.form_day_rate") : t("employees.form_base")}
-              </Label>
-              <Input
-                type="number" min={0} value={base}
-                onChange={e => setBase(e.target.value)}
-                className="tabular-nums text-end"
-                placeholder="0"
-              />
-            </div>
-          )}
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("employees.form_title_new")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!isValid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("employees.form_name_ar")} *</Label>
+          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("employees.form_name_en")} *</Label>
+          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("employees.form_title_f")} *</Label>
+          <Input value={title} onChange={e => setTitle(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("employees.form_phone")}</Label>
+          <Input value={phone} onChange={e => setPhone(e.target.value)} dir="ltr" type="tel" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("employees.form_emp_type")} *</Label>
+          <Select value={empType} onValueChange={v => setEmpType(v as Employee["employment_type"])}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="monthly">{t("employees.type_monthly")}</SelectItem>
+              <SelectItem value="daily">{t("employees.type_daily")}</SelectItem>
+              <SelectItem value="commission">{t("employees.type_commission")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {empType !== "commission" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">
+              {empType === "daily" ? t("employees.form_day_rate") : t("employees.form_base")}
+            </Label>
+            <Input
+              type="number" min={0} value={base}
+              onChange={e => setBase(e.target.value)}
+              className="tabular-nums text-end"
+              placeholder="0"
+            />
+          </div>
+        )}
+      </div>
+    </ModalShell>
   );
 }
 

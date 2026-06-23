@@ -5,10 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -83,13 +80,24 @@ export function NewStocktakeDialog({ open, onOpenChange, data }: NewStocktakeDia
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{t("stocktakes.new_title")}</DialogTitle>
-          <DialogDescription className="sr-only">{t("stocktakes.new")}</DialogDescription>
-        </DialogHeader>
-
+    <ModalShell
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("stocktakes.new_title")}
+      description={t("stocktakes.new")}
+      size="md"
+      footer={
+        <>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+            {t("actions.cancel")}
+          </Button>
+          <Button onClick={handleCreate} disabled={saving}>
+            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+            {t("stocktakes.new")}
+          </Button>
+        </>
+      }
+    >
         <div className="space-y-4">
           {/* Warehouse */}
           <div className="space-y-1.5">
@@ -162,17 +170,6 @@ export function NewStocktakeDialog({ open, onOpenChange, data }: NewStocktakeDia
             </RadioGroup>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
-            {t("actions.cancel")}
-          </Button>
-          <Button onClick={handleCreate} disabled={saving}>
-            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-            {t("stocktakes.new")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    </ModalShell>
   );
 }

@@ -16,9 +16,7 @@ import { Label }     from "@/components/ui/label";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -60,52 +58,54 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("treasuries.form_title_new")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("treasuries.form_name")} *</Label>
-            <Input
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder={lang === "ar" ? "مثل: خزينة المبيعات" : "e.g. Sales register"}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("treasuries.form_type")} *</Label>
-            <Select value={type} onValueChange={v => setType(v as TreasuryType)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cash">{t("treasuries.type_cash")}</SelectItem>
-                <SelectItem value="bank">{t("treasuries.type_bank")}</SelectItem>
-                <SelectItem value="wallet">{t("treasuries.type_wallet")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          {type === "bank" && (
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">{t("treasuries.form_account_no")}</Label>
-              <Input
-                value={accountNo}
-                onChange={e => setAccNo(e.target.value)}
-                dir="ltr"
-                placeholder="XXXXXXXXXX"
-              />
-            </div>
-          )}
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("treasuries.form_title_new")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!name.trim() || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("treasuries.form_name")} *</Label>
+          <Input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder={lang === "ar" ? "مثل: خزينة المبيعات" : "e.g. Sales register"}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("treasuries.form_type")} *</Label>
+          <Select value={type} onValueChange={v => setType(v as TreasuryType)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="cash">{t("treasuries.type_cash")}</SelectItem>
+              <SelectItem value="bank">{t("treasuries.type_bank")}</SelectItem>
+              <SelectItem value="wallet">{t("treasuries.type_wallet")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {type === "bank" && (
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{t("treasuries.form_account_no")}</Label>
+            <Input
+              value={accountNo}
+              onChange={e => setAccNo(e.target.value)}
+              dir="ltr"
+              placeholder="XXXXXXXXXX"
+            />
+          </div>
+        )}
+      </div>
+    </ModalShell>
   );
 }
 

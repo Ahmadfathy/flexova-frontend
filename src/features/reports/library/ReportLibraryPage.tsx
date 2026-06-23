@@ -16,9 +16,7 @@ import { Badge }     from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -55,59 +53,58 @@ function RunDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-lg">
-        {rep && (
-          <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                {lang === "ar" ? rep.name_ar : rep.name_en}
-                {rep.financial && (
-                  <Badge variant="outline" className="text-xs font-normal">
-                    {t("library.financial_badge")}
-                  </Badge>
-                )}
-              </DialogTitle>
-              <p className="text-xs text-muted-foreground">{t("library.run_subtitle")}</p>
-            </DialogHeader>
-
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/30 hover:bg-muted/30">
-                    {rep.columns.map(col => (
-                      <TableHead key={col} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        {col.replace(/_/g, " ")}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {/* Sample rows — not real data */}
-                  {[1, 2, 3].map(i => (
-                    <TableRow key={i} className="border-b border-border last:border-0">
-                      {rep.columns.map(col => (
-                        <TableCell key={col} className="text-sm text-muted-foreground">
-                          <span className="inline-block h-3 w-16 rounded bg-muted animate-pulse" />
-                        </TableCell>
-                      ))}
-                    </TableRow>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={rep ? (
+        <span className="flex items-center gap-2">
+          {lang === "ar" ? rep.name_ar : rep.name_en}
+          {rep.financial && (
+            <Badge variant="outline" className="text-xs font-normal">
+              {t("library.financial_badge")}
+            </Badge>
+          )}
+        </span>
+      ) : ""}
+      description={rep ? t("library.run_subtitle") : undefined}
+      footer={
+        <>
+          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إغلاق" : "Close"}</Button>
+          <Button onClick={handleSave}>
+            <Bookmark className="h-4 w-4 me-1.5" />
+            {t("library.save_btn")}
+          </Button>
+        </>
+      }
+    >
+      {rep && (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-muted/30 hover:bg-muted/30">
+                {rep.columns.map(col => (
+                  <TableHead key={col} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {col.replace(/_/g, " ")}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {/* Sample rows — not real data */}
+              {[1, 2, 3].map(i => (
+                <TableRow key={i} className="border-b border-border last:border-0">
+                  {rep.columns.map(col => (
+                    <TableCell key={col} className="text-sm text-muted-foreground">
+                      <span className="inline-block h-3 w-16 rounded bg-muted animate-pulse" />
+                    </TableCell>
                   ))}
-                </TableBody>
-              </Table>
-            </div>
-
-            <DialogFooter>
-              <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إغلاق" : "Close"}</Button>
-              <Button onClick={handleSave}>
-                <Bookmark className="h-4 w-4 me-1.5" />
-                {t("library.save_btn")}
-              </Button>
-            </DialogFooter>
-          </>
-        )}
-      </DialogContent>
-    </Dialog>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+    </ModalShell>
   );
 }
 

@@ -21,9 +21,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter,
-} from "@/components/ui/sheet";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
 
 import { Plus, FilePlus2, Info } from "lucide-react";
 
@@ -79,13 +77,23 @@ function NewDebitNoteSheet({ open, onOpenChange }: NewDebitNoteSheetProps) {
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full max-w-lg flex flex-col gap-0 p-0">
-        <SheetHeader className="px-6 py-4 border-b">
-          <SheetTitle className="text-start font-semibold">{t("debit.new")}</SheetTitle>
-        </SheetHeader>
-
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+    <DrawerShell
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("debit.new")}
+      size="lg"
+      footer={
+        <>
+          <span className="me-auto font-semibold tabular-nums text-sm">
+            {+amount > 0 ? formatMoney(+amount * 1.14, lang) : "—"}
+          </span>
+          <Button disabled={!canSubmit || submitting} onClick={handleIssue}>
+            {submitting ? "…" : t("debit.issue")}
+          </Button>
+        </>
+      }
+    >
+        <div className="space-y-5">
           {/* Source invoice */}
           <div className="space-y-2">
             <Label>{t("debit.source_invoice")}</Label>
@@ -150,17 +158,7 @@ function NewDebitNoteSheet({ open, onOpenChange }: NewDebitNoteSheetProps) {
             {t("debit.note_eta")}
           </p>
         </div>
-
-        <SheetFooter className="px-6 py-4 border-t flex items-center justify-between gap-2">
-          <div className="font-semibold tabular-nums text-sm">
-            {+amount > 0 ? formatMoney(+amount * 1.14, lang) : "—"}
-          </div>
-          <Button disabled={!canSubmit || submitting} onClick={handleIssue}>
-            {submitting ? "…" : t("debit.issue")}
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+    </DrawerShell>
   );
 }
 

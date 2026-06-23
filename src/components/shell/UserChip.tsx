@@ -44,7 +44,7 @@ export function UserMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-sm px-2 py-1 hover:bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <button className="flex items-center gap-2 rounded px-2 py-1 hover:bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <Avatar className="h-7 w-7">
             {avatarUrl && <AvatarImage src={avatarUrl} alt={name} />}
             <AvatarFallback className="text-[10px]">{initials}</AvatarFallback>
@@ -92,7 +92,7 @@ export function UserMenu({
                 key={l}
                 onClick={() => setLang(l)}
                 className={cn(
-                  "flex-1 h-8 rounded-sm text-xs font-medium transition-colors border",
+                  "flex-1 h-8 rounded text-xs font-medium transition-colors border",
                   lang === l
                     ? "bg-brand-tint text-brand-text border-brand/30"
                     : "border-border text-muted-foreground hover:bg-background hover:text-foreground"
@@ -114,7 +114,7 @@ export function UserMenu({
             <button
               onClick={() => setMode(isDark ? "light" : "dark")}
               className={cn(
-                "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
+                "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded border-2 border-transparent transition-colors",
                 isDark ? "bg-brand" : "bg-muted-foreground/30"
               )}
               role="switch"
@@ -122,7 +122,7 @@ export function UserMenu({
             >
               <span
                 className={cn(
-                  "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-sm ring-0 transition-transform",
+                  "pointer-events-none inline-block h-4 w-4 rounded bg-white shadow-sm ring-0 transition-transform",
                   isDark ? "translate-x-4 rtl:-translate-x-4" : "translate-x-0"
                 )}
               />

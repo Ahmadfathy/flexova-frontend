@@ -1,43 +1,58 @@
 import {
-  CircleCheck,
+  CheckCircle2,
   Info,
+  AlertTriangle,
+  XCircle,
   LoaderCircle,
-  OctagonX,
-  TriangleAlert,
-} from "lucide-react"
-import { useTheme } from "next-themes"
-import { Toaster as Sonner } from "sonner"
+} from "lucide-react";
+import { Toaster as Sonner } from "sonner";
+import { useAppearance } from "@/stores/appearance";
 
-type ToasterProps = React.ComponentProps<typeof Sonner>
+type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const { mode } = useAppearance();
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
-      className="toaster group"
+      theme={mode}
+      dir="auto"
+      position="bottom-right"
       icons={{
-        success: <CircleCheck className="h-4 w-4" />,
-        info: <Info className="h-4 w-4" />,
-        warning: <TriangleAlert className="h-4 w-4" />,
-        error: <OctagonX className="h-4 w-4" />,
-        loading: <LoaderCircle className="h-4 w-4 animate-spin" />,
+        success: <CheckCircle2  className="size-5 text-success" />,
+        error:   <XCircle       className="size-5 text-danger"  />,
+        warning: <AlertTriangle className="size-5 text-warning" />,
+        info:    <Info          className="size-5 text-brand"   />,
+        loading: <LoaderCircle  className="size-5 animate-spin text-muted-foreground" />,
       }}
       toastOptions={{
+        // unstyled removes data-styled="true" → Sonner's bg/border/color/radius CSS
+        // doesn't fire; animations (transform/opacity) are unaffected (no data-styled gate)
+        unstyled: true,
         classNames: {
-          toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+          // Layout only — no color here so per-type overrides win cleanly
+          toast: [
+            "flex w-full items-start gap-3",
+            "rounded border px-4 py-3 text-sm",
+            "shadow-sm pointer-events-auto",
+          ].join(" "),
+          icon:        "mt-0.5 size-5 shrink-0",
+          content:     "flex-1 min-w-0",
+          title:       "font-semibold leading-snug",
+          description: "leading-snug",
+          // Default / loading → Alert "white" variant
+          default: "bg-card border-border text-foreground",
+          loading: "bg-card border-border text-muted-foreground",
+          // Semantic variants — exact same tokens as the Alert component
+          success: "bg-success-tint border-success/30 text-success-text",
+          error:   "bg-danger-tint  border-danger/30  text-danger-text",
+          warning: "bg-warning-tint border-warning/30 text-warning-text",
+          info:    "bg-info-tint    border-brand/30   text-brand-text",
         },
       }}
       {...props}
     />
-  )
-}
+  );
+};
 
-export { Toaster }
+export { Toaster };

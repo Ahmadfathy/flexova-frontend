@@ -14,9 +14,7 @@ import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
 import { Label }   from "@/components/ui/label";
 import { Badge }   from "@/components/ui/badge";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -63,49 +61,51 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("follow_ups.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("follow_ups.form_customer")} *</Label>
-            <Select value={customerId} onValueChange={setCust}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("follow_ups.form_customer_ph")} />
-              </SelectTrigger>
-              <SelectContent>
-                {customers.map(c => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {lang === "ar" ? c.name_ar : c.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("follow_ups.form_note")} *</Label>
-            <Input value={note} onChange={e => setNote(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("follow_ups.form_due")} *</Label>
-            <Input type="date" value={due} onChange={e => setDue(e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("follow_ups.form_owner")}</Label>
-            <Input value={owner} onChange={e => setOwner(e.target.value)} />
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("follow_ups.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!isValid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {lang === "ar" ? "حفظ" : "Save"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_customer")} *</Label>
+          <Select value={customerId} onValueChange={setCust}>
+            <SelectTrigger>
+              <SelectValue placeholder={t("follow_ups.form_customer_ph")} />
+            </SelectTrigger>
+            <SelectContent>
+              {customers.map(c => (
+                <SelectItem key={c.id} value={c.id}>
+                  {lang === "ar" ? c.name_ar : c.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_note")} *</Label>
+          <Input value={note} onChange={e => setNote(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_due")} *</Label>
+          <Input type="date" value={due} onChange={e => setDue(e.target.value)} dir="ltr" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_owner")}</Label>
+          <Input value={owner} onChange={e => setOwner(e.target.value)} />
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

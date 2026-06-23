@@ -142,9 +142,9 @@ export function EntityCell({
 }: EntityCellProps) {
   return (
     <span className="flex items-center gap-3 min-w-0">
-      <Avatar className={cn("h-8 w-8 shrink-0 rounded-md", avatarClass)}>
+      <Avatar className={cn("h-8 w-8 shrink-0 rounded", avatarClass)}>
         {avatarSrc && <AvatarImage src={avatarSrc} alt={name} />}
-        <AvatarFallback className="rounded-md text-xs bg-brand-tint text-brand-text font-semibold">
+        <AvatarFallback className="rounded text-xs bg-brand-tint text-brand-text font-semibold">
           {avatarFallback ?? name.slice(0, 2).toUpperCase()}
         </AvatarFallback>
       </Avatar>

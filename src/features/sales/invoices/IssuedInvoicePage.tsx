@@ -17,9 +17,7 @@ import {
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
   AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription,
-} from "@/components/ui/sheet";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -222,41 +220,39 @@ function FixResendSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={open ? undefined : onClose}>
-      <SheetContent side="right" className="w-full sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>{t("issued.fix_resend")}</SheetTitle>
-          <SheetDescription>
-            {lang === "ar" ? invoice.eta.reason_ar : invoice.eta.reason_en}
-          </SheetDescription>
-        </SheetHeader>
-        <div className="mt-6 space-y-4">
-          <div className="p-4 rounded-lg bg-muted/40 border border-border space-y-2">
-            <p className="text-xs text-muted-foreground font-mono">
-              {invoice.eta.offending_field ?? "unknown"}
-            </p>
-            <p className="text-sm">
-              {lang === "ar" ? invoice.eta.reason_ar : invoice.eta.reason_en}
-            </p>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {t("issued.no_edit")}
+    <DrawerShell
+      open={open}
+      onOpenChange={open ? () => {} : onClose}
+      title={t("issued.fix_resend")}
+      description={lang === "ar" ? invoice.eta.reason_ar : invoice.eta.reason_en}
+      size="md"
+    >
+      <div className="space-y-4">
+        <div className="p-4 rounded-lg bg-muted/40 border border-border space-y-2">
+          <p className="text-xs text-muted-foreground font-mono">
+            {invoice.eta.offending_field ?? "unknown"}
           </p>
-          <div className="flex gap-2 pt-2">
-            <Button
-              className="flex-1"
-              disabled={submitting}
-              onClick={handle}
-            >
-              {submitting ? t("editor.submitting") : t("issued.fix_resend")}
-            </Button>
-            <Button variant="outline" onClick={onClose} disabled={submitting}>
-              {t("issued.close")}
-            </Button>
-          </div>
+          <p className="text-sm">
+            {lang === "ar" ? invoice.eta.reason_ar : invoice.eta.reason_en}
+          </p>
         </div>
-      </SheetContent>
-    </Sheet>
+        <p className="text-sm text-muted-foreground">
+          {t("issued.no_edit")}
+        </p>
+        <div className="flex gap-2 pt-2">
+          <Button
+            className="flex-1"
+            disabled={submitting}
+            onClick={handle}
+          >
+            {submitting ? t("editor.submitting") : t("issued.fix_resend")}
+          </Button>
+          <Button variant="outline" onClick={onClose} disabled={submitting}>
+            {t("issued.close")}
+          </Button>
+        </div>
+      </div>
+    </DrawerShell>
   );
 }
 

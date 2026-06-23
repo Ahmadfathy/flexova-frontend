@@ -22,9 +22,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -390,12 +388,23 @@ export function PurchaseVouchersPage() {
       </div>
 
       {/* Create dialog */}
-      <Dialog open={dialogOpen} onOpenChange={open => { if (!open) setDialogOpen(false); }}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{t("vouchers.form_title")}</DialogTitle>
-          </DialogHeader>
-
+      <ModalShell
+        open={dialogOpen}
+        onOpenChange={open => { if (!open) setDialogOpen(false); }}
+        title={t("vouchers.form_title")}
+        size="md"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              {t("common:cancel", "Cancel")}
+            </Button>
+            <Button disabled={!isValid || saving} onClick={handleSave}>
+              {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
+              {t("common:save", "Save")}
+            </Button>
+          </>
+        }
+      >
           <div className="space-y-4 py-1">
             {/* Supplier */}
             <div className="space-y-1.5">
@@ -515,18 +524,7 @@ export function PurchaseVouchersPage() {
               />
             </div>
           </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              {t("common:cancel", "Cancel")}
-            </Button>
-            <Button disabled={!isValid || saving} onClick={handleSave}>
-              {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-              {t("common:save", "Save")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      </ModalShell>
     </>
   );
 }

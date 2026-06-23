@@ -63,7 +63,7 @@ export function ListRow({
       {/* Leading tinted icon/avatar box */}
       <span
         className={cn(
-          "shrink-0 flex items-center justify-center rounded-md",
+          "shrink-0 flex items-center justify-center rounded",
           isCompact ? "h-8 w-8" : "h-10 w-10",
           ICON_WRAP[tone]
         )}

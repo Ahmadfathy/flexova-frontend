@@ -15,10 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
   AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
@@ -119,6 +116,7 @@ function whToForm(wh: InventoryWarehouse): WhForm {
 /* ─── Warehouse form dialog ──────────────────────────────────── */
 
 interface WhFormDialogProps {
+  open:       boolean;
   mode:       "add" | "edit";
   warehouse?: InventoryWarehouse;
   lang:       "ar" | "en";
@@ -126,7 +124,7 @@ interface WhFormDialogProps {
   onClose:    () => void;
 }
 
-function WhFormDialog({ mode, warehouse, lang, t, onClose }: WhFormDialogProps) {
+function WhFormDialog({ open, mode, warehouse, lang, t, onClose }: WhFormDialogProps) {
   const [form,   setForm]   = useState<WhForm>(
     () => (mode === "edit" && warehouse ? whToForm(warehouse) : EMPTY_FORM)
   );
@@ -155,12 +153,24 @@ function WhFormDialog({ mode, warehouse, lang, t, onClose }: WhFormDialogProps) 
   ];
 
   return (
-    <DialogContent className="sm:max-w-md">
-      <DialogHeader className="text-start">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription className="sr-only">{title}</DialogDescription>
-      </DialogHeader>
-
+    <ModalShell
+      open={open}
+      onOpenChange={v => !v && onClose()}
+      title={title}
+      description={title}
+      size="md"
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
+            {t("actions.cancel")}
+          </Button>
+          <Button onClick={handleSave} disabled={saving}>
+            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+            {t("actions.save")}
+          </Button>
+        </>
+      }
+    >
       <div className="space-y-4 py-1">
         {/* Name AR — required */}
         <div className="space-y-1.5">
@@ -268,17 +278,7 @@ function WhFormDialog({ mode, warehouse, lang, t, onClose }: WhFormDialogProps) 
           />
         </div>
       </div>
-
-      <DialogFooter className="gap-2">
-        <Button variant="ghost" onClick={onClose} disabled={saving}>
-          {t("actions.cancel")}
-        </Button>
-        <Button onClick={handleSave} disabled={saving}>
-          {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-          {t("actions.save")}
-        </Button>
-      </DialogFooter>
-    </DialogContent>
+    </ModalShell>
   );
 }
 
@@ -485,21 +485,15 @@ export function WarehousesPage() {
       </PageSection>
 
       {/* ─── Add / Edit Dialog ──────────────────────────────────── */}
-      <Dialog
+      <WhFormDialog
+        key={`${whDialog.mode}-${whDialog.warehouse?.id ?? "new"}`}
         open={whDialog.open}
-        onOpenChange={(open) => !open && setWhDialog((d) => ({ ...d, open: false }))}
-      >
-        {whDialog.open && (
-          <WhFormDialog
-            key={`${whDialog.mode}-${whDialog.warehouse?.id ?? "new"}`}
-            mode={whDialog.mode}
-            warehouse={whDialog.warehouse}
-            lang={lang}
-            t={t}
-            onClose={() => setWhDialog((d) => ({ ...d, open: false }))}
-          />
-        )}
-      </Dialog>
+        mode={whDialog.mode}
+        warehouse={whDialog.warehouse}
+        lang={lang}
+        t={t}
+        onClose={() => setWhDialog((d) => ({ ...d, open: false }))}
+      />
 
       {/* ─── Delete AlertDialog ──────────────────────────────────── */}
       <AlertDialog

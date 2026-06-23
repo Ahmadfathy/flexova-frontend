@@ -38,6 +38,7 @@ const config: Config = {
         "success-tint": "var(--success-tint)",
         "warning-tint": "var(--warning-tint)",
         "danger-tint":  "var(--danger-tint)",
+        "info-tint":    "var(--info-tint)",
       },
       borderRadius: {
         lg: "var(--radius)",                          // 14

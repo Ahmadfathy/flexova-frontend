@@ -5,9 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
-import {
-  Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -140,19 +138,25 @@ export function NewAdjustmentSheet({ open, onOpenChange, data }: NewAdjustmentSh
 
   return (
     <>
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="right"
-          className="flex flex-col p-0 w-full sm:max-w-xl"
-        >
-          {/* Header */}
-          <SheetHeader className="shrink-0 px-6 py-4 border-b border-border">
-            <SheetTitle>{t("adjustments.new_title")}</SheetTitle>
-            <SheetDescription className="sr-only">{t("adjustments.new")}</SheetDescription>
-          </SheetHeader>
-
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+      <DrawerShell
+        open={open}
+        onOpenChange={onOpenChange}
+        title={t("adjustments.new_title")}
+        description={t("adjustments.new")}
+        size="lg"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
+              {t("actions.cancel")}
+            </Button>
+            <Button onClick={handlePost} disabled={saving}>
+              {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+              {t("adjustments.post")}
+            </Button>
+          </>
+        }
+      >
+          <div className="space-y-5">
 
             {/* Warehouse + Date */}
             <div className="grid grid-cols-2 gap-3">
@@ -290,19 +294,7 @@ export function NewAdjustmentSheet({ open, onOpenChange, data }: NewAdjustmentSh
               </Button>
             </div>
           </div>
-
-          {/* Footer */}
-          <div className="shrink-0 px-6 py-4 border-t border-border flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
-              {t("actions.cancel")}
-            </Button>
-            <Button onClick={handlePost} disabled={saving}>
-              {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-              {t("adjustments.post")}
-            </Button>
-          </div>
-        </SheetContent>
-      </Sheet>
+      </DrawerShell>
 
       {/* Post confirm */}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>

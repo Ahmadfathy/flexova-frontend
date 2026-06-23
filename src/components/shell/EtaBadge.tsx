@@ -18,7 +18,7 @@ export function EtaBadge({ state = "connected" }: EtaBadgeProps) {
   const cls = stateClasses[state];
 
   return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium", cls.badge)}>
+    <span className={cn("inline-flex items-center gap-1.5 rounded px-3 py-1 text-xs font-medium", cls.badge)}>
       <span className={cn("h-1.5 w-1.5 rounded-full", cls.dot)} />
       {t(`topbar.eta_${state}`)}
     </span>

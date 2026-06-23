@@ -16,10 +16,7 @@ import { Badge }  from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -268,43 +265,14 @@ export function PriceListsPage() {
       </PageSection>
 
       {/* ── Create price list dialog ──────────────────────────── */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{t("price_lists.new_form_title")}</DialogTitle>
-            <DialogDescription className="sr-only">
-              {t("price_lists.new")}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>{t("price_lists.form_name")} (AR) *</Label>
-              <Input
-                value={form.name_ar}
-                onChange={e => { setForm(f => ({ ...f, name_ar: e.target.value })); setFormErr(""); }}
-                placeholder={lang === "ar" ? "اسم القائمة بالعربي" : "Arabic name"}
-                className={cn(formErr && "border-destructive")}
-                dir="rtl"
-              />
-              {formErr && <p className="text-xs text-destructive">{formErr}</p>}
-            </div>
-            <div className="space-y-1.5">
-              <Label>{t("price_lists.form_name")} (EN)</Label>
-              <Input
-                value={form.name_en}
-                onChange={e => setForm(f => ({ ...f, name_en: e.target.value }))}
-                placeholder="English name"
-                dir="ltr"
-              />
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>{t("price_lists.form_currency")}:</span>
-              <span className="font-mono font-medium text-foreground">EGP</span>
-            </div>
-          </div>
-
-          <DialogFooter>
+      <ModalShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        title={t("price_lists.new_form_title")}
+        description={t("price_lists.new")}
+        size="sm"
+        footer={
+          <>
             <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={formSaving}>
               {t("actions.cancel")}
             </Button>
@@ -312,9 +280,36 @@ export function PriceListsPage() {
               {formSaving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
               {t("actions.save")}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <div className="space-y-1.5">
+            <Label>{t("price_lists.form_name")} (AR) *</Label>
+            <Input
+              value={form.name_ar}
+              onChange={e => { setForm(f => ({ ...f, name_ar: e.target.value })); setFormErr(""); }}
+              placeholder={lang === "ar" ? "اسم القائمة بالعربي" : "Arabic name"}
+              className={cn(formErr && "border-destructive")}
+              dir="rtl"
+            />
+            {formErr && <p className="text-xs text-destructive">{formErr}</p>}
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t("price_lists.form_name")} (EN)</Label>
+            <Input
+              value={form.name_en}
+              onChange={e => setForm(f => ({ ...f, name_en: e.target.value }))}
+              placeholder="English name"
+              dir="ltr"
+            />
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>{t("price_lists.form_currency")}:</span>
+            <span className="font-mono font-medium text-foreground">EGP</span>
+          </div>
+        </div>
+      </ModalShell>
 
       {/* ── Delete confirm ────────────────────────────────────── */}
       <AlertDialog open={!!deleteTarget} onOpenChange={v => !v && setDeleteTarget(null)}>

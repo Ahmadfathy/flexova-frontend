@@ -4,10 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -92,16 +89,29 @@ export function QuickAddModal({ open, onOpenChange, data }: QuickAddModalProps) 
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader className="text-start">
-          <DialogTitle>{t("quickadd.title")}</DialogTitle>
-          <DialogDescription className="text-start">
-            {t("quickadd.hint")}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
+    <ModalShell
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("quickadd.title")}
+      description={t("quickadd.hint")}
+      size="sm"
+      footer={
+        <>
+          <Button
+            variant="ghost"
+            onClick={() => onOpenChange(false)}
+            disabled={saving}
+          >
+            {t("actions.cancel")}
+          </Button>
+          <Button onClick={handleAdd} disabled={saving}>
+            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
+            {t("quickadd.add")}
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-4">
           {/* Name AR — required */}
           <div className="space-y-1.5">
             <Label htmlFor="qa-name">
@@ -212,21 +222,6 @@ export function QuickAddModal({ open, onOpenChange, data }: QuickAddModalProps) 
             />
           </div>
         </div>
-
-        <DialogFooter className="gap-2">
-          <Button
-            variant="ghost"
-            onClick={() => onOpenChange(false)}
-            disabled={saving}
-          >
-            {t("actions.cancel")}
-          </Button>
-          <Button onClick={handleAdd} disabled={saving}>
-            {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-            {t("quickadd.add")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    </ModalShell>
   );
 }

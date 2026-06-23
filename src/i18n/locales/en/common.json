@@ -27,5 +27,6 @@
   "name": "Name",
   "code": "Code",
   "page_of": "{{current}} of {{total}}",
-  "rows_per_page": "Rows per page"
+  "rows_per_page": "Rows per page",
+  "close": "Close"
 }

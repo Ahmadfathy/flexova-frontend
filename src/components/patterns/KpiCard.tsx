@@ -42,7 +42,7 @@ export function KpiCard({
           </span>
           <span
             className={cn(
-              "flex items-center justify-center h-9 w-9 rounded-md",
+              "flex items-center justify-center h-9 w-9 rounded",
               t ? "bg-white/40" : "bg-brand-tint"
             )}
           >

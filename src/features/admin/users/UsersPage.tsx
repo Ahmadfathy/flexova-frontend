@@ -14,6 +14,8 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
+import { ModalShell } from "@/components/patterns/ModalShell";
+
 import { Button }   from "@/components/ui/button";
 import { Badge }    from "@/components/ui/badge";
 import { Input }    from "@/components/ui/input";
@@ -21,9 +23,6 @@ import { Label }    from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/components/ui/tooltip";
@@ -64,56 +63,58 @@ function InviteDialog({
   const valid = name.trim() && login.trim() && role;
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("users.form_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("users.form_name")} *</Label>
-            <Input value={name} onChange={e => setName(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("users.form_login")} *</Label>
-            <Input value={login} onChange={e => setLogin(e.target.value)} dir="ltr" />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("users.form_role")} *</Label>
-            <Select value={role} onValueChange={setRole}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {roles.map(r => (
-                  <SelectItem key={r.id} value={r.id}>
-                    {lang === "ar" ? r.name_ar : r.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("users.form_branch")}</Label>
-            <Select>
-              <SelectTrigger><SelectValue placeholder={t("users.scope_all")} /></SelectTrigger>
-              <SelectContent>
-                {branches.map(b => (
-                  <SelectItem key={b.id} value={b.id}>
-                    {lang === "ar" ? b.name_ar : b.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <DialogFooter>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("users.form_title")}
+      size="sm"
+      footer={
+        <>
           <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
           <Button disabled={!valid || saving} onClick={handleSave}>
             {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
             {t("users.invite")}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    >
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("users.form_name")} *</Label>
+          <Input value={name} onChange={e => setName(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("users.form_login")} *</Label>
+          <Input value={login} onChange={e => setLogin(e.target.value)} dir="ltr" />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("users.form_role")} *</Label>
+          <Select value={role} onValueChange={setRole}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {roles.map(r => (
+                <SelectItem key={r.id} value={r.id}>
+                  {lang === "ar" ? r.name_ar : r.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">{t("users.form_branch")}</Label>
+          <Select>
+            <SelectTrigger><SelectValue placeholder={t("users.scope_all")} /></SelectTrigger>
+            <SelectContent>
+              {branches.map(b => (
+                <SelectItem key={b.id} value={b.id}>
+                  {lang === "ar" ? b.name_ar : b.name_en}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    </ModalShell>
   );
 }
 

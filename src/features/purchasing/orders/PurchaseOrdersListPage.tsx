@@ -27,12 +27,8 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -141,15 +137,17 @@ function PoDetailSheet({
   const statusLabel = t(`orders.status_${po.status}` as Parameters<typeof t>[0], po.status);
 
   return (
-    <Sheet open={open} onOpenChange={o => !o && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto">
-        <SheetHeader className="pb-4">
-          <SheetTitle className="flex items-center gap-2">
-            <span dir="ltr" className="font-mono">{po.number}</span>
-            <StatusPill variant={poStatusPillVariant(po.status)} label={statusLabel} />
-          </SheetTitle>
-        </SheetHeader>
-
+    <DrawerShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={
+        <span className="flex items-center gap-2">
+          <span dir="ltr" className="font-mono">{po.number}</span>
+          <StatusPill variant={poStatusPillVariant(po.status)} label={statusLabel} />
+        </span>
+      }
+      size="lg"
+    >
         {/* Header info */}
         <div className="grid grid-cols-2 gap-3 text-sm mb-4">
           <div>
@@ -276,8 +274,7 @@ function PoDetailSheet({
             </div>
           </>
         )}
-      </SheetContent>
-    </Sheet>
+    </DrawerShell>
   );
 }
 
@@ -348,12 +345,32 @@ function CreatePoDialog({
   if (!data) return null;
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("orders.form_title")}</DialogTitle>
-        </DialogHeader>
-
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("orders.form_title")}
+      size="lg"
+      footer={
+        <>
+          <Button variant="outline" onClick={onClose}>{t("common:cancel", "Cancel")}</Button>
+          <Button
+            variant="outline"
+            disabled={!isValid || saving}
+            onClick={() => handleSave(false)}
+          >
+            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
+            {t("orders.save_draft")}
+          </Button>
+          <Button
+            disabled={!isValid || saving}
+            onClick={() => handleSave(true)}
+          >
+            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
+            {t("orders.send_po")}
+          </Button>
+        </>
+      }
+    >
         <div className="space-y-4">
           {/* Header fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -522,27 +539,7 @@ function CreatePoDialog({
             </div>
           </div>
         </div>
-
-        <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={onClose}>{t("common:cancel", "Cancel")}</Button>
-          <Button
-            variant="outline"
-            disabled={!isValid || saving}
-            onClick={() => handleSave(false)}
-          >
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {t("orders.save_draft")}
-          </Button>
-          <Button
-            disabled={!isValid || saving}
-            onClick={() => handleSave(true)}
-          >
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {t("orders.send_po")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    </ModalShell>
   );
 }
 

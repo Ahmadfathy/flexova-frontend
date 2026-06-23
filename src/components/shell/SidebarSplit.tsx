@@ -21,7 +21,7 @@ function PanelSubItem({ route, label, onClose }: { route: string; label: string;
       onClick={onClose}
       className={({ isActive }) =>
         cn(
-          "flex items-center h-8 px-3 rounded-sm text-xs transition-colors",
+          "flex items-center h-8 px-3 rounded text-xs transition-colors",
           isActive
             ? "bg-brand-tint text-brand-text font-medium"
             : "text-muted-foreground hover:bg-background hover:text-foreground"

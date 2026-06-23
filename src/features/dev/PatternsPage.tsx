@@ -5,7 +5,7 @@
  */
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FileText, Pencil, Trash2, Eye } from "lucide-react";
+import { FileText, Pencil, Trash2, Eye, Download, Zap } from "lucide-react";
 
 import { PageHeader }   from "@/components/patterns/PageHeader";
 import { PageSection }  from "@/components/patterns/PageSection";
@@ -23,6 +23,8 @@ import {
 } from "@/components/patterns/MiniChart";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Alert, type AlertVariant } from "@/components/ui/alert";
+import { Button, type ButtonTone } from "@/components/ui/button";
 
 import { Input }   from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -60,6 +62,7 @@ export function PatternsPage() {
   const { t }    = useTranslation("patterns");
   const { lang } = useAppearance();
   const [saving, setSaving] = useState(false);
+  const [alertClosed, setAlertClosed] = useState(false);
 
   /* DataTable columns */
   const cols: Column<Member>[] = [
@@ -399,6 +402,110 @@ export function PatternsPage() {
           {(["approved","active","sent","paid","in-progress","pending","credit","rejected","inactive","default"] as const).map((v) => (
             <StatusPill key={v} variant={v} label={v} />
           ))}
+        </div>
+      </PageSection>
+
+      {/* ── Button matrix ───────────────────────────────────── */}
+      <PageSection
+        title="Button — tone × variant matrix"
+        subtitle="8 tones × 4 fill styles × 3 shapes (text · text+icon · icon-only)"
+      >
+        {/* Column headers */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-left text-muted-foreground">
+                <th className="pb-3 pe-4 font-medium w-20">Tone</th>
+                {(["solid", "soft", "outline", "ghost"] as const).map((v) => (
+                  <th key={v} className="pb-3 pe-6 font-medium capitalize">{v}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {(["primary","secondary","success","info","warning","danger","light","dark"] as ButtonTone[]).map((tone) => (
+                <tr key={tone}>
+                  <td className="py-3 pe-4 text-muted-foreground font-medium capitalize align-middle">
+                    {tone}
+                  </td>
+                  {(["solid", "soft", "outline", "ghost"] as const).map((variant) => (
+                    <td key={variant} className="py-3 pe-6 align-middle">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {/* text-only */}
+                        <Button variant={variant} tone={tone} size="sm">
+                          {tone}
+                        </Button>
+                        {/* text + icon */}
+                        <Button variant={variant} tone={tone} size="sm">
+                          <Download />
+                          {tone}
+                        </Button>
+                        {/* icon-only */}
+                        <Button variant={variant} tone={tone} size="icon"
+                          className="h-9 w-9"
+                          aria-label={`${tone} ${variant} icon`}
+                        >
+                          <Zap />
+                        </Button>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Legacy variants (backward-compat reference) */}
+        <div className="mt-6 pt-4 border-t border-border">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+            Legacy variants (backward compat)
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button>default</Button>
+            <Button variant="destructive">destructive</Button>
+            <Button variant="outline">outline</Button>
+            <Button variant="ghost">ghost</Button>
+            <Button variant="secondary">secondary</Button>
+            <Button variant="link">link</Button>
+            <Button variant="ghost" size="icon" aria-label="icon variant">
+              <Zap />
+            </Button>
+          </div>
+        </div>
+      </PageSection>
+
+      {/* ── Alert ────────────────────────────────────────────── */}
+      <PageSection title="Alert — Inline alerts" subtitle="6 variants · with/without title · optional close">
+        <div className="space-y-3">
+          {(["success","danger","warning","info","light","white"] as AlertVariant[]).map((v) => (
+            <Alert key={v} variant={v} title={v.charAt(0).toUpperCase() + v.slice(1)}>
+              هذا تنبيه من نوع <strong>{v}</strong> — يظهر مضمّناً داخل الصفحة.
+            </Alert>
+          ))}
+
+          <Alert variant="info">
+            تنبيه بدون عنوان — النص مباشرة بجانب الأيقونة.
+          </Alert>
+
+          {!alertClosed ? (
+            <Alert
+              variant="warning"
+              title="تنبيه قابل للإغلاق"
+              onClose={() => setAlertClosed(true)}
+            >
+              اضغط على × لإخفاء هذا التنبيه.
+            </Alert>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              تم إغلاق التنبيه.{" "}
+              <button
+                className="underline text-brand"
+                onClick={() => setAlertClosed(false)}
+              >
+                إعادة الظهور
+              </button>
+            </p>
+          )}
         </div>
       </PageSection>
     </div>

@@ -24,9 +24,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
+import { ModalShell } from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -66,11 +64,21 @@ function CreateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("journal.form_title")}</DialogTitle>
-        </DialogHeader>
+    <ModalShell
+      open={open}
+      onOpenChange={o => !o && onClose()}
+      title={t("journal.form_title")}
+      size="lg"
+      footer={
+        <>
+          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
+          <Button disabled={!balanced || !memo.trim() || saving} onClick={handleSave}>
+            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
+            {lang === "ar" ? "حفظ" : "Save"}
+          </Button>
+        </>
+      }
+    >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
@@ -170,15 +178,7 @@ function CreateDialog({
             </p>
           )}
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!balanced || !memo.trim() || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    </ModalShell>
   );
 }
 
