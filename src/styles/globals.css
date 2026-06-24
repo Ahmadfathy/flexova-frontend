@@ -132,7 +132,12 @@ body{
   transition: background .3s var(--ease), color .3s var(--ease);
 }
 @media (prefers-reduced-motion: reduce){ *{ transition:none!important; animation:none!important; scroll-behavior:auto!important; } }
-:focus-visible{ outline:2px solid hsl(var(--ring)); outline-offset:2px; border-radius:6px; }
+a, button, input, select, textarea,
+a:focus, a:focus-visible, a:hover, a:active,
+button:focus, button:focus-visible, button:hover, button:active,
+input:focus, input:focus-visible, input:hover, input:active,
+select:focus, select:focus-visible, select:hover, select:active,
+textarea:focus, textarea:focus-visible, textarea:hover, textarea:active { outline: none; }
 ::selection{ background: var(--brand-tint); }
 .num{ font-variant-numeric: tabular-nums; }
 
