@@ -26,9 +26,6 @@
   --danger-text:  hsl(var(--danger));
   --brand-text:   hsl(var(--brand-dark));
 
-  /* shape — §14.7: 16px (softer) */
-  --radius: 16px;
-
   /* derived tints */
   --brand-tint:   color-mix(in srgb, hsl(var(--brand))   12%, hsl(var(--fx-tint-base)));
   --success-tint: color-mix(in srgb, hsl(var(--success)) 14%, hsl(var(--fx-tint-base)));

@@ -41,9 +41,11 @@ const config: Config = {
         "info-tint":    "var(--info-tint)",
       },
       borderRadius: {
-        lg: "var(--radius)",                          // 14
-        md: "calc(var(--radius) - 2px)",              // 12
-        sm: "calc(var(--radius) - 4px)",              // 10
+        DEFAULT: '0.25rem',
+        sm:      '0.40rem',
+        md:      '0.55rem',
+        lg:      '0.75rem',
+        xl:      '1rem',
       },
       boxShadow: { DEFAULT: "var(--shadow)", sm: "var(--shadow-sm)" },
       // base-4 spacing already in Tailwind: 1=4 2=8 3=12 4=16 5=20 6=24 8=32 10=40 12=48 16=64
