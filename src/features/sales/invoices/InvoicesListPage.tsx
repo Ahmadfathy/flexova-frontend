@@ -153,7 +153,7 @@ function NoResults({ onClear }: { onClear: () => void }) {
   const { t } = useTranslation("sales");
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
-      <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-muted text-muted-foreground">
+      <div className="flex items-center justify-center h-12 w-12 rounded bg-muted text-muted-foreground">
         <Search className="h-6 w-6" />
       </div>
       <div className="space-y-1">

@@ -28,7 +28,7 @@ function KpiCard({
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
         <div className={cn(
-          "h-9 w-9 rounded-lg flex items-center justify-center",
+          "h-9 w-9 rounded flex items-center justify-center",
           accent === "danger"  && "bg-danger/10 text-danger",
           accent === "warning" && "bg-warning/10 text-warning",
           accent === "success" && "bg-success/10 text-success",
@@ -148,7 +148,7 @@ export function HrDashboardPage() {
           const base = emp.salary_structure.base ?? emp.salary_structure.day_rate ?? 0;
           return (
             <div key={emp.id} className="flex items-center gap-3 px-4 py-3 border-b border-border last:border-0 hover:bg-muted/30">
-              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground shrink-0">
+              <div className="h-8 w-8 rounded bg-muted flex items-center justify-center text-sm font-medium text-muted-foreground shrink-0">
                 {name.slice(0, 1)}
               </div>
               <div className="flex-1 min-w-0">

@@ -166,8 +166,8 @@ export function PatternsPage() {
             key={m.id}
             tone="brand"
             leading={
-              <Avatar className="h-6 w-6 rounded-full">
-                <AvatarFallback className="text-[10px] rounded-full bg-transparent text-inherit font-bold">
+              <Avatar className="h-6 w-6 rounded">
+                <AvatarFallback className="text-[10px] rounded bg-transparent text-inherit font-bold">
                   {m.name.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>

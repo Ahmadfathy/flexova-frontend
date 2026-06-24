@@ -58,7 +58,7 @@ function KpiCard({
             </p>
           </div>
           <div className={cn(
-            "rounded-lg p-2 shrink-0",
+            "rounded p-2 shrink-0",
             accent === "success" ? "bg-success/10" : accent === "danger" ? "bg-danger/10" : "bg-muted",
           )}>
             <Icon className={cn("h-5 w-5", color)} />

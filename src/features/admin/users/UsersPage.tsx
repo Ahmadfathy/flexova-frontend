@@ -244,7 +244,7 @@ export function UsersPage() {
                         {/* Name */}
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs font-semibold">
+                            <div className="h-7 w-7 rounded bg-muted flex items-center justify-center text-xs font-semibold">
                               {u.name_ar.slice(0, 1)}
                             </div>
                             <span className="text-sm font-medium">{u.name_ar}</span>

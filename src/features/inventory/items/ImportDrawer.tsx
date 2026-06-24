@@ -414,7 +414,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
           {/* ── Step 3: Confirm ── */}
           {step === "step_confirm" && (
             <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
-              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="h-16 w-16 rounded bg-primary/10 flex items-center justify-center">
                 <Upload className="h-8 w-8 text-primary" />
               </div>
               <p className="text-base font-medium">
@@ -433,7 +433,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
           {/* ── Step 4: Result ── */}
           {step === "step_result" && (
             <div className="flex flex-col items-center justify-center gap-4 py-8 text-center">
-              <div className="h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center">
+              <div className="h-16 w-16 rounded bg-emerald-100 dark:bg-emerald-950/40 flex items-center justify-center">
                 <CheckCircle2 className="h-8 w-8 text-emerald-600" />
               </div>
               <p className="text-base font-semibold text-foreground">

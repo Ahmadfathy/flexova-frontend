@@ -15,7 +15,7 @@ export function EmptyState({ icon: Icon = Inbox, title, description, action, cla
   const { t } = useTranslation();
   return (
     <div className={cn("flex flex-col items-center justify-center py-16 gap-4 text-center", className)}>
-      <div className="flex items-center justify-center h-12 w-12 rounded-lg bg-muted text-muted-foreground">
+      <div className="flex items-center justify-center h-12 w-12 rounded bg-muted text-muted-foreground">
         <Icon className="h-6 w-6" />
       </div>
       <div className="space-y-1">

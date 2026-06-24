@@ -58,7 +58,7 @@ export function ResetPasswordPage() {
     return (
       <>
         <CardHeader className="items-center text-center pb-4">
-          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-success/10">
+          <div className="mb-3 flex h-14 w-14 items-center justify-center rounded bg-success/10">
             <CheckCircle2 className="h-7 w-7 text-success" />
           </div>
           <CardTitle className="text-xl">{t("reset.success")}</CardTitle>
