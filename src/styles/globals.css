@@ -142,10 +142,31 @@ textarea:focus, textarea:focus-visible, textarea:hover, textarea:active { outlin
 .num{ font-variant-numeric: tabular-nums; }
 
 /* ============================================================ SCROLLBARS
- * .nav-scroll — applied to HorizontalNav rows (native overflow-x: auto).
- * Radix ScrollArea (sidebar/split) uses its own styled thumb in scroll-area.tsx.
- * Both use theme tokens so they adapt to dark mode and theme changes.
+ * Global default — 8px rounded thumb using fx-line/fx-muted tokens.
+ *   Adapts to dark mode automatically; RTL handled by the browser.
+ * .nav-scroll — narrower 3px variant for HorizontalNav rows (overrides below).
+ * Radix ScrollArea (sidebar/split) keeps its own styled thumb in scroll-area.tsx.
  * ============================================================ */
+
+/* ── Global default ──────────────────────────────────────── */
+*{
+  scrollbar-width: thin;                              /* Firefox */
+  scrollbar-color: hsl(var(--fx-line)) transparent;  /* Firefox thumb / track */
+}
+*::-webkit-scrollbar{ width:8px; height:8px; }
+*::-webkit-scrollbar-track{ background:transparent; }
+*::-webkit-scrollbar-thumb{
+  background:      hsl(var(--fx-line));
+  border-radius:   9999px;
+  border:          2px solid transparent; /* inset via padding-box */
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover{
+  background:      hsl(var(--fx-muted) / 0.6);
+  background-clip: padding-box;
+}
+
+/* ── .nav-scroll — 3px variant for HorizontalNav rows ────── */
 .nav-scroll{
   scrollbar-width: thin;                            /* Firefox */
   scrollbar-color: hsl(var(--border)) transparent; /* Firefox */
