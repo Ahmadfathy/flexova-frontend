@@ -118,7 +118,7 @@ const EMPTY_FILTERS: InvoiceFilters = {
 
 function InvoicesSkeleton() {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div className="overflow-hidden">
       <div className="flex gap-3 px-4 py-3 border-b border-border bg-muted/30">
         {[16, 100, 72, 140, 72, 80, 80, 80, 32].map((w, i) => (
           <Skeleton key={i} className="h-3.5 rounded shrink-0" style={{ width: w }} />

@@ -28,7 +28,7 @@ export function TableSkeleton({ rows = 5, cols = 4 }: { rows?: number; cols?: nu
 
 export function KpiSkeleton() {
   return (
-    <div className="bg-card border border-border rounded-lg shadow-sm p-5 space-y-3">
+    <div className="bg-card rounded-sm shadow-sm p-5 space-y-3">
       <div className="flex items-center justify-between">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-9 w-9 rounded-sm" />

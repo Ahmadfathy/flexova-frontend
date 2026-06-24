@@ -29,7 +29,7 @@ function KpiWidget({ w, lang, t }: {
 
   return (
     <div
-      className={cn("rounded-xl border border-border bg-card p-5 space-y-3", w.drill && "cursor-pointer hover:border-primary/40 transition-colors")}
+      className={cn("rounded-sm bg-card shadow-sm p-5 space-y-3", w.drill && "cursor-pointer transition-colors hover:bg-muted/30")}
       onClick={() => w.drill && navigate(w.drill)}
     >
       <div className="flex items-center justify-between gap-2">
@@ -63,7 +63,7 @@ function CashflowWidget({ w, t }: {
   t: ReturnType<typeof useTranslation<"reports">>["t"];
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5 col-span-full lg:col-span-2">
+    <div className="rounded-sm bg-card shadow-sm p-5 col-span-full lg:col-span-2">
       <p className="text-xs font-medium text-muted-foreground mb-4">{w.title_ar}</p>
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={w.series} barCategoryGap="30%">
@@ -83,7 +83,7 @@ function CashflowWidget({ w, t }: {
 
 function ListWidget({ w, lang }: { w: DashWidget; lang: "ar" | "en" }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5">
+    <div className="rounded-sm bg-card shadow-sm p-5">
       <p className="text-xs font-medium text-muted-foreground mb-3">{w.title_ar}</p>
       <div className="space-y-2">
         {(w.items ?? []).map((item, i) => (
@@ -110,7 +110,7 @@ export function ReportsDashboardPage() {
         <PageHeader title={t("dashboard.title")} />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border bg-card p-5 space-y-3">
+            <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <Skeleton className="h-3.5 w-28" />
               <Skeleton className="h-8 w-24" />
             </div>

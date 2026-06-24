@@ -92,7 +92,7 @@ function CreateDialog({
           </div>
 
           {/* Lines */}
-          <div className="rounded-md border border-border overflow-hidden">
+          <div className="rounded-sm overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30">

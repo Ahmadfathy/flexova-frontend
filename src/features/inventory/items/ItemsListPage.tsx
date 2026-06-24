@@ -221,7 +221,7 @@ function ItemCard({
   return (
     <div
       className={cn(
-        "flex items-start gap-3 p-3 rounded-lg border border-border bg-card cursor-pointer transition-colors hover:bg-muted/40",
+        "flex items-start gap-3 p-3 rounded-sm border border-border bg-card cursor-pointer transition-colors hover:bg-muted/40",
         selected && "bg-muted/50 border-primary/40"
       )}
       onClick={() => onNavigate(`/inventory/items/${item.id}`)}

@@ -51,7 +51,7 @@ import { SupplierFormModal } from "./SupplierFormModal";
 
 function SuppliersSkeleton() {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div className="overflow-hidden">
       <div className="flex gap-3 px-4 py-3 border-b border-border bg-muted/30">
         {[80, 160, 120, 100, 100, 80, 32].map((w, i) => (
           <Skeleton key={i} className="h-3.5 rounded shrink-0" style={{ width: w }} />

@@ -105,19 +105,19 @@ function IssuedSkeleton() {
       </div>
       <div className="flex flex-col lg:flex-row gap-4 items-start">
         <div className="flex-1 min-w-0 space-y-4">
-          <div className="rounded-lg border border-border p-6 space-y-3">
+          <div className="rounded-sm bg-card shadow-sm p-6 space-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton key={i} className={cn("h-3.5 rounded", i === 0 ? "w-48" : "w-full")} />
             ))}
           </div>
         </div>
         <div className="w-full lg:w-80 shrink-0 space-y-4">
-          <div className="rounded-lg border border-border p-4 space-y-3">
+          <div className="rounded-sm bg-card shadow-sm p-4 space-y-3">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-3.5 rounded w-full" />
             ))}
           </div>
-          <div className="rounded-lg border border-border p-4 space-y-3">
+          <div className="rounded-sm bg-card shadow-sm p-4 space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-3.5 rounded w-full" />
             ))}

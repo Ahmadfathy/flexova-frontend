@@ -75,7 +75,7 @@ export function ZReportPage() {
           { label: "opened_label",  value: formatDate(z.opened) },
           { label: "closed_label",  value: formatDate(z.closed) },
         ].map(({ label, value }) => (
-          <div key={label} className="rounded-xl border border-border bg-card p-4 space-y-1">
+          <div key={label} className="rounded-sm bg-card shadow-sm p-4 space-y-1">
             <p className="text-xs text-muted-foreground">{t(`z_report.${label}` as Parameters<typeof t>[0])}</p>
             <p className="font-medium text-sm">{value}</p>
           </div>

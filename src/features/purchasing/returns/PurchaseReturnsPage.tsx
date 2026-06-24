@@ -419,7 +419,7 @@ export function PurchaseReturnsPage() {
 
             {/* Lines table */}
             {returnLines.length > 0 && (
-              <div className="rounded-md border border-border overflow-hidden">
+              <div className="rounded-sm overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/30">

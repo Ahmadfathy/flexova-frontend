@@ -24,7 +24,7 @@ function KpiCard({
   accent?: "danger" | "warning" | "success";
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-3">
+    <div className="rounded-sm bg-card shadow-sm p-5 space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
         <div className={cn(
@@ -58,7 +58,7 @@ export function HrDashboardPage() {
         <PageHeader title={t("dashboard.title")} />
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 px-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border bg-card p-5 space-y-3">
+            <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <Skeleton className="h-4 w-28" />
                 <Skeleton className="h-9 w-9 rounded-lg" />

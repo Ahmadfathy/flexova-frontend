@@ -94,7 +94,7 @@ export function CommissionsPage() {
       <PageSection title={t("commissions.rules_title")}>
         <div className="flex flex-wrap gap-3">
           {rules.map(r => (
-            <div key={r.id} className="rounded-xl border border-border bg-card px-4 py-3 space-y-1 min-w-48">
+            <div key={r.id} className="rounded-sm bg-muted/50 px-4 py-3 space-y-1 min-w-48">
               <p className="font-semibold text-sm">{lang === "ar" ? r.name_ar : r.name_en}</p>
               <p className="text-xs text-muted-foreground">{ruleLabel(r.id)}</p>
               <Badge variant="outline" className="text-xs font-normal">

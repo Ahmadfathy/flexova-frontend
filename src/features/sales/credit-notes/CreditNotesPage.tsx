@@ -152,7 +152,7 @@ function NewCreditNoteSheet({ open, onOpenChange, defaultSourceId }: NewCreditNo
                   {t("credit.source_total")}: {formatMoney(sourceInv.totals.grand_total, lang)}
                 </span>
               </div>
-              <div className="border rounded-md overflow-hidden">
+              <div className="rounded-sm overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow>

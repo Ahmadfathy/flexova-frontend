@@ -30,8 +30,8 @@ export function KpiCard({
   return (
     <Card
       className={cn(
-        /* shadcn Card already provides: rounded-lg border bg-card shadow-sm */
-        t ? `${t.card} border-transparent` : "",
+        /* Card provides: rounded-sm bg-card shadow-sm (no border) */
+        t ? t.card : "",
         className
       )}
     >

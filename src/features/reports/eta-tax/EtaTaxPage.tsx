@@ -58,7 +58,7 @@ function QueueTable({
 }) {
   if (!items.length) return null;
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
+    <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -105,7 +105,7 @@ export function EtaTaxPage() {
         <PageHeader title={t("eta_tax.title")} />
         <div className="space-y-3 px-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border p-4 space-y-2">
+            <div key={i} className="rounded-sm bg-card shadow-sm p-4 space-y-2">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-3.5 w-56" />
             </div>
@@ -159,7 +159,7 @@ export function EtaTaxPage() {
             { label: "vat_deductible", value: vat.vat_deductible, danger: false },
             { label: isRefund ? "vat_refund" : "vat_due", value: Math.abs(vat.net), danger: !isRefund },
           ].map(({ label, value, danger }) => (
-            <div key={label} className="rounded-xl border border-border bg-card p-4 space-y-1">
+            <div key={label} className="rounded-sm bg-card shadow-sm p-4 space-y-1">
               <p className="text-xs text-muted-foreground">{t(`eta_tax.${label}` as Parameters<typeof t>[0])}</p>
               <p className={cn("text-lg font-bold tabular-nums", danger ? "text-danger" : isRefund && label !== "vat_payable" && label !== "vat_deductible" ? "text-success" : "")}>
                 {formatMoney(value, lang)}

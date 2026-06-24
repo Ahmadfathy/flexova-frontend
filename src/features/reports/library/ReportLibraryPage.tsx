@@ -78,7 +78,7 @@ function RunDialog({
       }
     >
       {rep && (
-        <div className="overflow-x-auto rounded-lg border border-border">
+        <div className="overflow-x-auto rounded-sm">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -205,7 +205,7 @@ export function ReportLibraryPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
             {filtered.map(rep => (
-              <div key={rep.id} className="rounded-xl border border-border bg-card p-5 space-y-3 flex flex-col">
+              <div key={rep.id} className="rounded-sm bg-card shadow-sm p-5 space-y-3 flex flex-col">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold text-sm leading-snug">
                     {lang === "ar" ? rep.name_ar : rep.name_en}

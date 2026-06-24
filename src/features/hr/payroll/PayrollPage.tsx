@@ -86,7 +86,7 @@ function PayrollSheet({
           {run.lines.length > 0 && (
             <div>
               <p className="text-xs font-medium text-muted-foreground mb-2">{t("payroll.lines_title")}</p>
-              <div className="overflow-x-auto rounded-lg border border-border">
+              <div className="overflow-x-auto rounded-sm">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/30 hover:bg-muted/30">

@@ -125,7 +125,7 @@ function ScheduleCard({
   const effective = paused ? "paused" : s.status;
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+    <div className="rounded-sm bg-card shadow-sm p-4 space-y-3">
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-0.5 min-w-0">
           <p className="font-semibold text-sm truncate">{s.name_ar}</p>

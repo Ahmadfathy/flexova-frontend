@@ -69,7 +69,7 @@ function RoleCard({
                                        t("roles.row_own");
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 space-y-4">
+    <div className="rounded-sm bg-card shadow-sm p-5 space-y-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-0.5">
@@ -153,7 +153,7 @@ export function RolesPage() {
         <PageHeader title={t("roles.title")} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border p-5 space-y-3">
+            <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <Skeleton className="h-4 w-32" />
               <Skeleton className="h-3.5 w-20" />
               <div className="flex flex-wrap gap-1 pt-2">

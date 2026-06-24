@@ -186,7 +186,7 @@ function PoDetailSheet({
         </div>
 
         {/* Lines table */}
-        <div className="rounded-md border border-border overflow-hidden mb-4">
+        <div className="rounded-sm overflow-hidden mb-4">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30">
@@ -424,7 +424,7 @@ function CreatePoDialog({
           </div>
 
           {/* Lines */}
-          <div className="rounded-md border border-border overflow-hidden">
+          <div className="rounded-sm overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/30">
