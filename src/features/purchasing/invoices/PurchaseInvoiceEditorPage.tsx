@@ -24,10 +24,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
@@ -795,25 +792,16 @@ export function PurchaseInvoiceEditorPage() {
         </div>
       </div>
 
-      {/* Approve confirmation dialog */}
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("editor.approve_title")}</AlertDialogTitle>
-            <AlertDialogDescription>{t("editor.approve_body")}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t("common:cancel", "Cancel")}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleApprove}
-              disabled={approving}
-            >
-              {approving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-              {t("editor.approve")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={t("editor.approve_title")}
+        description={t("editor.approve_body")}
+        confirmTone="primary"
+        confirmLabel={t("editor.approve")}
+        onConfirm={handleApprove}
+        loading={approving}
+      />
     </>
   );
 }

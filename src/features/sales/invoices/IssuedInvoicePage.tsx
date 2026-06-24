@@ -10,14 +10,10 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
-import { Button }   from "@/components/ui/button";
-import { Badge }    from "@/components/ui/badge";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel,
-  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
-  AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { Button }        from "@/components/ui/button";
+import { Badge }         from "@/components/ui/badge";
+import { DrawerShell }   from "@/components/patterns/DrawerShell";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -679,38 +675,15 @@ export function IssuedInvoicePage() {
 
               {/* Cancel invoice — gated */}
               {!isCancelled && can("sales.invoice.cancel") && (
-                <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full justify-start text-destructive hover:text-destructive hover:bg-danger-tint border-border"
-                    >
-                      <Ban className="h-4 w-4 me-2" />
-                      {t("issued.cancel")}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>{t("issued.cancel")}</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {t("issued.cancel_confirm")}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>{t("issued.close")}</AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        onClick={() => {
-                          setCancelOpen(false);
-                          toast.info(t("issued.cancel"));
-                        }}
-                      >
-                        {t("issued.cancel")}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full justify-start text-destructive hover:text-destructive hover:bg-danger-tint border-border"
+                  onClick={() => setCancelOpen(true)}
+                >
+                  <Ban className="h-4 w-4 me-2" />
+                  {t("issued.cancel")}
+                </Button>
               )}
             </div>
           </PageSection>
@@ -724,6 +697,21 @@ export function IssuedInvoicePage() {
         onClose={() => setFixSheetOpen(false)}
         invoice={invoice}
         lang={lang}
+      />
+
+      {/* Cancel invoice confirm */}
+      <ConfirmDialog
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
+        title={t("issued.cancel")}
+        description={t("issued.cancel_confirm")}
+        confirmTone="danger"
+        confirmLabel={t("issued.cancel")}
+        cancelLabel={t("issued.close")}
+        onConfirm={() => {
+          setCancelOpen(false);
+          toast.info(t("issued.cancel"));
+        }}
       />
     </div>
   );

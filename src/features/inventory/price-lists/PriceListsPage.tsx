@@ -16,11 +16,8 @@ import { Badge }  from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { ModalShell } from "@/components/patterns/ModalShell";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ModalShell }    from "@/components/patterns/ModalShell";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -312,23 +309,15 @@ export function PriceListsPage() {
       </ModalShell>
 
       {/* ── Delete confirm ────────────────────────────────────── */}
-      <AlertDialog open={!!deleteTarget} onOpenChange={v => !v && setDeleteTarget(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("price_lists.delete_title")}</AlertDialogTitle>
-            <AlertDialogDescription>{t("price_lists.delete_desc")}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t("actions.cancel")}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => deleteTarget && handleDelete(deleteTarget)}
-            >
-              {t("actions.confirm_delete")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        onOpenChange={v => !v && setDeleteTarget(null)}
+        title={t("price_lists.delete_title")}
+        description={t("price_lists.delete_desc")}
+        confirmTone="danger"
+        confirmLabel={t("actions.confirm_delete")}
+        onConfirm={() => deleteTarget && handleDelete(deleteTarget)}
+      />
     </div>
   );
 }

@@ -11,12 +11,8 @@ import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
 import { Badge }   from "@/components/ui/badge";
 import { Label }   from "@/components/ui/label";
-import { ModalShell } from "@/components/patterns/ModalShell";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel,
-  AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
-  AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ModalShell }    from "@/components/patterns/ModalShell";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -582,41 +578,28 @@ export function CategoriesPage() {
         onClose={() => setCatDialog((d) => ({ ...d, open: false }))}
       />
 
-      {/* ─── Delete AlertDialog ──────────────────────────────────── */}
-      <AlertDialog
+      <ConfirmDialog
         open={deleteDialog.open}
-        onOpenChange={(open) => !open && setDeleteDialog({ open: false })}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader className="text-start">
-            <AlertDialogTitle>
-              {deleteDialog.category && isDeleteBlocked(deleteDialog.category)
-                ? t("categories.cant_delete")
-                : t("categories.delete_title")}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {deleteDialog.category && isDeleteBlocked(deleteDialog.category)
-                ? t("categories.delete_blocked_desc")
-                : t("categories.delete_desc")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="gap-2">
-            {deleteDialog.category && isDeleteBlocked(deleteDialog.category) ? (
-              <AlertDialogCancel>{t("actions.close")}</AlertDialogCancel>
-            ) : (
-              <>
-                <AlertDialogCancel>{t("actions.cancel")}</AlertDialogCancel>
-                <AlertDialogAction
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  onClick={() => setDeleteDialog({ open: false })}
-                >
-                  {t("actions.confirm_delete")}
-                </AlertDialogAction>
-              </>
-            )}
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onOpenChange={o => !o && setDeleteDialog({ open: false })}
+        title={deleteDialog.category && isDeleteBlocked(deleteDialog.category)
+          ? t("categories.cant_delete")
+          : t("categories.delete_title")
+        }
+        description={deleteDialog.category && isDeleteBlocked(deleteDialog.category)
+          ? t("categories.delete_blocked_desc")
+          : t("categories.delete_desc")
+        }
+        cancelLabel={deleteDialog.category && isDeleteBlocked(deleteDialog.category)
+          ? t("actions.close")
+          : t("actions.cancel")
+        }
+        confirmTone="danger"
+        confirmLabel={t("actions.confirm_delete")}
+        onConfirm={deleteDialog.category && isDeleteBlocked(deleteDialog.category)
+          ? undefined
+          : () => setDeleteDialog({ open: false })
+        }
+      />
     </div>
   );
 }

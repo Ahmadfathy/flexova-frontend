@@ -17,16 +17,7 @@ import { Switch }   from "@/components/ui/switch";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 
 import {
   CheckCircle2, AlertTriangle, ShieldCheck, Lock,
@@ -392,27 +383,16 @@ export function EtaSettingsPage() {
         </PageSection>
       )}
 
-      {/* ── Go Live AlertDialog ────────────────────────────────── */}
-      <AlertDialog open={goLiveOpen} onOpenChange={setGoLiveOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("settings.switch_confirm_title")}</AlertDialogTitle>
-            <AlertDialogDescription className="text-sm leading-relaxed">
-              {t("settings.switch_confirm_body")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t("settings.switch_cancel")}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={handleGoLiveConfirm}
-            >
-              {t("settings.switch_confirm_action")}
-              <ArrowRight className="size-3.5 ms-1" />
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={goLiveOpen}
+        onOpenChange={setGoLiveOpen}
+        title={t("settings.switch_confirm_title")}
+        description={t("settings.switch_confirm_body")}
+        confirmTone="danger"
+        confirmLabel={<>{t("settings.switch_confirm_action")}<ArrowRight className="size-3.5 ms-1" /></>}
+        cancelLabel={t("settings.switch_cancel")}
+        onConfirm={handleGoLiveConfirm}
+      />
     </div>
   );
 }

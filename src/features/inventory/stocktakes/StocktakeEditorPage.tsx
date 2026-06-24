@@ -15,10 +15,7 @@ import { Badge }  from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 
 import {
   ArrowLeft, ArrowRight, Loader2, Snowflake, Activity, ScanLine, CheckCircle2,
@@ -466,23 +463,16 @@ export function StocktakeEditorPage() {
       </div>
 
       {/* Approve confirm */}
-      <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("stocktakes.approve")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("stocktakes.approve_confirm")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={saving}>{t("actions.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleApprove} disabled={saving}>
-              {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-              {t("stocktakes.approve")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={confirm}
+        onOpenChange={setConfirm}
+        title={t("stocktakes.approve")}
+        description={t("stocktakes.approve_confirm")}
+        confirmTone="primary"
+        confirmLabel={t("stocktakes.approve")}
+        onConfirm={handleApprove}
+        loading={saving}
+      />
     </div>
   );
 }

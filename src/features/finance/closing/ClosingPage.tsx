@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Lock, LockOpen, AlertTriangle, Loader2, CalendarClock } from "lucide-react";
+import { Lock, LockOpen, Loader2, CalendarClock } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -10,18 +10,15 @@ import { EmptyState }    from "@/components/patterns/EmptyState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 import { StatusPill }    from "@/components/patterns/StatusPill";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
+import { Alert }         from "@/components/ui/alert";
 
 import { Button }    from "@/components/ui/button";
 import { Badge }     from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
-import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
 import { useFinanceData, type FiscalPeriod } from "../data/useFinanceData";
 
@@ -155,43 +152,33 @@ export function ClosingPage() {
         </PageSection>
       </div>
 
-      {/* Confirmation dialog */}
-      <AlertDialog open={pendingPeriod !== null} onOpenChange={o => !o && !saving && setPending(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className={cn(pendingPeriod?.action === "reopen" && "text-warning")}>
-              {pendingPeriod?.action === "close"
-                ? t("closing.confirm_close")
-                : t("closing.confirm_reopen")
-              }
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {pendingPeriod?.action === "reopen" && (
-                <span className="flex items-center gap-2 mb-2 text-warning font-medium">
-                  <AlertTriangle className="h-4 w-4 shrink-0" />
-                  {t("closing.reopen_warning")}
-                </span>
-              )}
-              {pendingPeriod && t("closing.confirm_body", {
-                period: periodLabel(pendingPeriod.period, lang),
-              })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={saving}>
-              {lang === "ar" ? "إلغاء" : "Cancel"}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirm}
-              disabled={saving}
-              className={cn(pendingPeriod?.action === "reopen" && "bg-warning hover:bg-warning/90 text-white")}
-            >
-              {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-              {pendingPeriod?.action === "close" ? t("closing.action_close") : t("closing.action_reopen")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={pendingPeriod !== null}
+        onOpenChange={o => !o && !saving && setPending(null)}
+        title={pendingPeriod?.action === "close"
+          ? t("closing.confirm_close")
+          : t("closing.confirm_reopen")
+        }
+        confirmTone={pendingPeriod?.action === "reopen" ? "warning" : "primary"}
+        confirmLabel={
+          <>
+            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
+            {pendingPeriod?.action === "close" ? t("closing.action_close") : t("closing.action_reopen")}
+          </>
+        }
+        cancelLabel={lang === "ar" ? "إلغاء" : "Cancel"}
+        onConfirm={handleConfirm}
+        loading={saving}
+      >
+        {pendingPeriod?.action === "reopen" && (
+          <Alert variant="warning">{t("closing.reopen_warning")}</Alert>
+        )}
+        {pendingPeriod && (
+          <p className="text-sm text-muted-foreground">
+            {t("closing.confirm_body", { period: periodLabel(pendingPeriod.period, lang) })}
+          </p>
+        )}
+      </ConfirmDialog>
     </>
   );
 }

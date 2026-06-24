@@ -25,10 +25,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  AlertDialog, AlertDialogCancel, AlertDialogContent,
-  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -444,39 +441,29 @@ export function InboundEtaPage() {
         </PageSection>
       </div>
 
-      {/* Reject dialog */}
-      <AlertDialog open={rejectId !== null} onOpenChange={open => !open && setRejectId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("inbound_eta.reject_title")}</AlertDialogTitle>
-          </AlertDialogHeader>
-          <div className="space-y-1.5 py-2">
-            <Label className="text-xs text-muted-foreground">
-              {t("inbound_eta.reject_reason_label")} *
-            </Label>
-            <Textarea
-              rows={3}
-              className="resize-none"
-              placeholder={t("inbound_eta.reject_reason_ph")}
-              value={rejectReason}
-              onChange={e => setRejectReason(e.target.value)}
-            />
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={rejecting}>
-              {t("common:cancel", "Cancel")}
-            </AlertDialogCancel>
-            <Button
-              variant="destructive"
-              disabled={!rejectReason.trim() || rejecting}
-              onClick={handleReject}
-            >
-              {rejecting && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-              {t("inbound_eta.reject_confirm")}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={rejectId !== null}
+        onOpenChange={open => !open && setRejectId(null)}
+        title={t("inbound_eta.reject_title")}
+        confirmTone="danger"
+        confirmLabel={t("inbound_eta.reject_confirm")}
+        onConfirm={handleReject}
+        loading={rejecting}
+        confirmDisabled={!rejectReason.trim()}
+      >
+        <div className="space-y-1.5">
+          <Label className="text-xs text-muted-foreground">
+            {t("inbound_eta.reject_reason_label")} *
+          </Label>
+          <Textarea
+            rows={3}
+            className="resize-none"
+            placeholder={t("inbound_eta.reject_reason_ph")}
+            value={rejectReason}
+            onChange={e => setRejectReason(e.target.value)}
+          />
+        </div>
+      </ConfirmDialog>
     </>
   );
 }

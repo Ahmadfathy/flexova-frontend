@@ -10,10 +10,7 @@ import { DatePicker }  from "@/components/patterns/DatePicker";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
@@ -146,6 +143,7 @@ export function NewTransferSheet({ open, onOpenChange, data }: NewTransferSheetP
     setSaving(true);
     await new Promise(r => setTimeout(r, 700));
     setSaving(false);
+    setConfirm(false);
     onOpenChange(false);
     toast.success(lang === "ar" ? "تم ترحيل التحويل" : "Transfer posted");
   }
@@ -327,21 +325,16 @@ export function NewTransferSheet({ open, onOpenChange, data }: NewTransferSheetP
       </DrawerShell>
 
       {/* Post confirm */}
-      <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("transfers.post")}</AlertDialogTitle>
-            <AlertDialogDescription>{t("transfers.post_confirm")}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={saving}>{t("actions.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={doPost} disabled={saving}>
-              {saving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-              {t("actions.post")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={confirm}
+        onOpenChange={setConfirm}
+        title={t("transfers.post")}
+        description={t("transfers.post_confirm")}
+        confirmTone="primary"
+        confirmLabel={t("actions.post")}
+        onConfirm={doPost}
+        loading={saving}
+      />
     </>
   );
 }
