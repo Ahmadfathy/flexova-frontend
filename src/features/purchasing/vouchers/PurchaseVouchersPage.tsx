@@ -10,6 +10,7 @@ import { EmptyState }    from "@/components/patterns/EmptyState";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { EntityCell }    from "@/components/patterns/DataTable";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }   from "@/components/ui/button";
@@ -471,11 +472,7 @@ export function PurchaseVouchersPage() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs text-muted-foreground">{t("vouchers.date_label")} *</Label>
-                <Input
-                  type="date"
-                  value={form.date}
-                  onChange={e => set("date", e.target.value)}
-                />
+                <DatePicker value={form.date} onChange={val => set("date", val)} />
               </div>
             </div>
 

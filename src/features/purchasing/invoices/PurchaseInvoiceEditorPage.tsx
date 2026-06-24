@@ -11,6 +11,7 @@ import { PageSection }   from "@/components/patterns/PageSection";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
@@ -483,10 +484,9 @@ export function PurchaseInvoiceEditorPage() {
               <Label className="text-xs text-muted-foreground">
                 {t("editor.date_label")} *
               </Label>
-              <Input
-                type="date"
+              <DatePicker
                 value={header.date}
-                onChange={e => setHeader(h => ({ ...h, date: e.target.value }))}
+                onChange={val => setHeader(h => ({ ...h, date: val }))}
               />
             </div>
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
 import { ModalShell } from "@/components/patterns/ModalShell";
+import { DatePicker } from "@/components/patterns/DatePicker";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -125,10 +126,9 @@ export function NewStocktakeDialog({ open, onOpenChange, data }: NewStocktakeDia
           {/* Date */}
           <div className="space-y-1.5">
             <Label className="text-sm font-medium">{t("stocktakes.form_date")}</Label>
-            <Input
-              type="date"
+            <DatePicker
               value={form.date}
-              onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+              onChange={val => setForm(f => ({ ...f, date: val }))}
             />
           </div>
 

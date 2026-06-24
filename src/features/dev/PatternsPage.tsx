@@ -26,7 +26,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Alert, type AlertVariant } from "@/components/ui/alert";
 import { Button, type ButtonTone } from "@/components/ui/button";
 
-import { Input }   from "@/components/ui/input";
+import { Input }      from "@/components/ui/input";
+import { DatePicker } from "@/components/patterns/DatePicker";
+import { TimePicker } from "@/components/patterns/TimePicker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
@@ -63,6 +65,8 @@ export function PatternsPage() {
   const { lang } = useAppearance();
   const [saving, setSaving] = useState(false);
   const [alertClosed, setAlertClosed] = useState(false);
+  const [demoDate, setDemoDate]       = useState("2025-06-15");
+  const [demoTime, setDemoTime]       = useState("09:30");
 
   /* DataTable columns */
   const cols: Column<Member>[] = [
@@ -506,6 +510,38 @@ export function PatternsPage() {
               </button>
             </p>
           )}
+        </div>
+      </PageSection>
+
+      {/* ── DatePicker / TimePicker ──────────────────────────── */}
+      <PageSection title="DatePicker / TimePicker" subtitle="ISO string API · Arabic locale · RTL-aware">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">DatePicker</p>
+            <DatePicker value={demoDate} onChange={setDemoDate} />
+            <p className="text-xs text-muted-foreground tabular-nums">{demoDate || "—"}</p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">DatePicker — empty</p>
+            <DatePicker />
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">DatePicker — disabled</p>
+            <DatePicker value={demoDate} disabled />
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">DatePicker — with min/max</p>
+            <DatePicker value={demoDate} onChange={setDemoDate} min="2025-01-01" max="2025-12-31" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">TimePicker</p>
+            <TimePicker value={demoTime} onChange={setDemoTime} />
+            <p className="text-xs text-muted-foreground tabular-nums">{demoTime}</p>
+          </div>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">TimePicker — disabled</p>
+            <TimePicker value={demoTime} disabled />
+          </div>
         </div>
       </PageSection>
     </div>

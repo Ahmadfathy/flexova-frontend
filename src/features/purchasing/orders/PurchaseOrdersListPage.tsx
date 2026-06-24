@@ -15,6 +15,7 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { EntityCell }    from "@/components/patterns/DataTable";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
@@ -392,17 +393,15 @@ function CreatePoDialog({
 
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">{t("orders.col_date")} *</Label>
-              <Input type="date" value={form.date} onChange={e => set("date", e.target.value)} />
+              <DatePicker value={form.date} onChange={val => set("date", val)} />
             </div>
 
             <div className="space-y-1.5">
               <Label className="text-xs text-muted-foreground">{t("orders.delivery_label")} *</Label>
-              <Input
-                type="date"
+              <DatePicker
                 value={form.expected_delivery}
                 min={form.date}
-                onChange={e => set("expected_delivery", e.target.value)}
-                className={cn(!form.expected_delivery && "border-muted-foreground/40")}
+                onChange={val => set("expected_delivery", val)}
               />
             </div>
 

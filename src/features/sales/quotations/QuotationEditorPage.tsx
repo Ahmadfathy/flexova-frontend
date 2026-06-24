@@ -9,6 +9,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
@@ -389,10 +390,9 @@ export function QuotationEditorPage() {
                 {readonly ? (
                   <p className="text-sm">{formatDate(draft.date)}</p>
                 ) : (
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={draft.date}
-                    onChange={e => setDraft(d => ({ ...d, date: e.target.value }))}
+                    onChange={val => setDraft(d => ({ ...d, date: val }))}
                   />
                 )}
               </div>
@@ -402,10 +402,9 @@ export function QuotationEditorPage() {
                 {readonly ? (
                   <p className="text-sm">{formatDate(draft.valid_until)}</p>
                 ) : (
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={draft.valid_until}
-                    onChange={e => setDraft(d => ({ ...d, valid_until: e.target.value }))}
+                    onChange={val => setDraft(d => ({ ...d, valid_until: val }))}
                   />
                 )}
               </div>

@@ -19,6 +19,7 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 import { EntityCell }    from "@/components/patterns/DataTable";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
@@ -587,18 +588,16 @@ export function PurchasesListPage() {
           </Select>
 
           {/* Date range */}
-          <Input
-            type="date"
+          <DatePicker
             value={filters.dateFrom}
-            onChange={e => setFilter("dateFrom", e.target.value)}
-            className="h-8 w-auto text-sm"
+            onChange={val => setFilter("dateFrom", val)}
+            className="h-8 w-40 text-sm"
             aria-label={t("statement.date_from")}
           />
-          <Input
-            type="date"
+          <DatePicker
             value={filters.dateTo}
-            onChange={e => setFilter("dateTo", e.target.value)}
-            className="h-8 w-auto text-sm"
+            onChange={val => setFilter("dateTo", val)}
+            className="h-8 w-40 text-sm"
             aria-label={t("statement.date_to")}
           />
         </div>

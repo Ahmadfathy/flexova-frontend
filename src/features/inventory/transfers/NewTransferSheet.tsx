@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { DatePicker }  from "@/components/patterns/DatePicker";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -214,11 +215,7 @@ export function NewTransferSheet({ open, onOpenChange, data }: NewTransferSheetP
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium">{t("transfers.date_label")}</Label>
-                <Input
-                  type="date"
-                  value={form.date}
-                  onChange={e => setField("date", e.target.value)}
-                />
+                <DatePicker value={form.date} onChange={val => setField("date", val)} />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium">{t("transfers.note_label")}</Label>

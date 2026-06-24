@@ -17,6 +17,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
@@ -461,18 +462,16 @@ export function SupplierCardPage() {
                   </SelectContent>
                 </Select>
 
-                <Input
-                  type="date"
+                <DatePicker
                   value={dateFrom}
-                  onChange={e => setDateFrom(e.target.value)}
-                  className="h-7 w-auto text-xs"
+                  onChange={setDateFrom}
+                  className="h-7 w-36 text-xs"
                   aria-label={t("statement.date_from")}
                 />
-                <Input
-                  type="date"
+                <DatePicker
                   value={dateTo}
-                  onChange={e => setDateTo(e.target.value)}
-                  className="h-7 w-auto text-xs"
+                  onChange={setDateTo}
+                  className="h-7 w-36 text-xs"
                   aria-label={t("statement.date_to")}
                 />
               </div>

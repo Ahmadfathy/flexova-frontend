@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
+import { DatePicker }  from "@/components/patterns/DatePicker";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -181,11 +182,7 @@ export function NewAdjustmentSheet({ open, onOpenChange, data }: NewAdjustmentSh
 
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium">{t("adjustments.date_label")}</Label>
-                <Input
-                  type="date"
-                  value={form.date}
-                  onChange={e => setField("date", e.target.value)}
-                />
+                <DatePicker value={form.date} onChange={val => setField("date", val)} />
               </div>
             </div>
 

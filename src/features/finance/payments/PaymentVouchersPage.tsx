@@ -10,6 +10,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { EntityCell }    from "@/components/patterns/DataTable";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
@@ -93,7 +94,7 @@ function CreateDialog({
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("payments.date_label")} *</Label>
-          <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+          <DatePicker value={date} onChange={setDate} />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("payments.amount_label")} *</Label>

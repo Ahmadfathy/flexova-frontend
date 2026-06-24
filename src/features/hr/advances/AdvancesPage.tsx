@@ -11,6 +11,7 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { EntityCell }    from "@/components/patterns/DataTable";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
@@ -177,7 +178,7 @@ function CreateDialog({
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("advances.form_date")} *</Label>
-          <Input type="date" value={date} onChange={e => setDate(e.target.value)} dir="ltr" />
+          <DatePicker value={date} onChange={setDate} />
         </div>
         {type === "loan" && (
           <div className="space-y-1.5">

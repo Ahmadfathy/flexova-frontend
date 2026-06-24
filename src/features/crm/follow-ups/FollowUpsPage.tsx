@@ -14,7 +14,8 @@ import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
 import { Label }   from "@/components/ui/label";
 import { Badge }   from "@/components/ui/badge";
-import { ModalShell } from "@/components/patterns/ModalShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
+import { DatePicker }  from "@/components/patterns/DatePicker";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -98,7 +99,7 @@ function CreateDialog({
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("follow_ups.form_due")} *</Label>
-          <Input type="date" value={due} onChange={e => setDue(e.target.value)} dir="ltr" />
+          <DatePicker value={due} onChange={setDue} />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("follow_ups.form_owner")}</Label>

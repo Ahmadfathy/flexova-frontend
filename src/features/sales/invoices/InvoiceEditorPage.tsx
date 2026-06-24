@@ -12,6 +12,7 @@ import { PageSection }   from "@/components/patterns/PageSection";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }     from "@/components/ui/button";
 import { Input }      from "@/components/ui/input";
@@ -598,7 +599,7 @@ export function InvoiceEditorPage() {
   const trnRef       = useRef<HTMLInputElement>(null);
   const customerRef  = useRef<HTMLButtonElement>(null);
   const warehouseRef = useRef<HTMLButtonElement>(null);
-  const dateRef      = useRef<HTMLInputElement>(null);
+  const dateRef      = useRef<HTMLButtonElement>(null);
   const lineAddRef   = useRef<HTMLButtonElement>(null);
 
   // ── Defaults on data load ──────────────────────────────────────
@@ -885,14 +886,11 @@ export function InvoiceEditorPage() {
             <label className="text-sm font-medium" htmlFor="inv-date">
               {t("editor.date")} <span className="text-danger" aria-hidden>*</span>
             </label>
-            <Input
+            <DatePicker
               id="inv-date"
               ref={dateRef}
-              type="date"
               value={draft.date}
-              onChange={e => setDraft(d => ({ ...d, date: e.target.value }))}
-              className="tabular-nums"
-              dir="ltr"
+              onChange={val => setDraft(d => ({ ...d, date: val }))}
             />
           </div>
 

@@ -11,7 +11,8 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 
-import { ModalShell } from "@/components/patterns/ModalShell";
+import { ModalShell }  from "@/components/patterns/ModalShell";
+import { TimePicker }  from "@/components/patterns/TimePicker";
 
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
@@ -93,7 +94,7 @@ function NewScheduleDialog({
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">{t("scheduling.form_time")}</Label>
-            <Input type="time" value={time} onChange={e => setTime(e.target.value)} dir="ltr" />
+            <TimePicker value={time} onChange={setTime} />
           </div>
         </div>
         <div className="space-y-1.5">

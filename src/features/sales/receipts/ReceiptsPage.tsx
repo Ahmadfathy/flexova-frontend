@@ -8,6 +8,7 @@ import { EmptyState }    from "@/components/patterns/EmptyState";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
@@ -208,11 +209,7 @@ function NewReceiptSheet({ open, onOpenChange, data }: NewReceiptSheetProps) {
           {/* Date */}
           <div className="space-y-2">
             <Label>{t("receipt.date")}</Label>
-            <Input
-              type="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
-            />
+            <DatePicker value={date} onChange={setDate} />
           </div>
 
           {/* Notes */}
