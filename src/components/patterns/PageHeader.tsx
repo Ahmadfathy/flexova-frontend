@@ -1,12 +1,13 @@
 import { cn } from "@/lib/utils";
 import { Breadcrumb } from "./Breadcrumb";
 import { useBreadcrumb } from "@/hooks/useBreadcrumb";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
   actions?: React.ReactNode;
-  /** Page-level alert/banner rendered between the breadcrumb and the title. */
+  /** Page-level alert/banner rendered AFTER the title, before page content. */
   alert?: React.ReactNode;
   className?: string;
   /**
@@ -29,12 +30,13 @@ export function PageHeader({
 }: PageHeaderProps) {
   const segments = useBreadcrumb({ dynamicLabel: crumbLabel, dynamicLoading: crumbLoading });
 
+  useDocumentTitle(title);
+
   return (
     <div className={cn("mb-6", className)}>
       {segments.length > 0 && (
         <Breadcrumb segments={segments} className="mb-2" />
       )}
-      {alert && <div className="mb-4">{alert}</div>}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-xl font-semibold">{title}</h1>
@@ -46,6 +48,7 @@ export function PageHeader({
           <div className="flex items-center gap-2 shrink-0">{actions}</div>
         )}
       </div>
+      {alert && <div className="mt-4">{alert}</div>}
     </div>
   );
 }
