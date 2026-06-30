@@ -329,8 +329,6 @@ export function QuotationEditorPage() {
 
   return (
     <div className="flex flex-col gap-6 min-h-screen">
-      {isOffline && <OfflineBanner />}
-
       <PageHeader
         title={pageTitle}
         actions={
@@ -347,6 +345,7 @@ export function QuotationEditorPage() {
             </Button>
           </div>
         }
+        alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
       <div className="flex gap-6 flex-1 items-start px-0">

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Breadcrumb as ShadBreadcrumb,
   BreadcrumbList,
@@ -34,8 +35,8 @@ export function Breadcrumb({ segments, className }: BreadcrumbProps) {
   const hasTail   = segments.length > 1;
 
   return (
-    <ShadBreadcrumb className={className}>
-      <BreadcrumbList className="gap-1 sm:gap-1.5 text-xs flex-nowrap overflow-hidden whitespace-nowrap">
+    <ShadBreadcrumb className={cn("overflow-hidden min-w-0", className)}>
+      <BreadcrumbList className="gap-1 sm:gap-1.5 text-xs flex-nowrap overflow-hidden whitespace-nowrap w-full min-w-0">
 
         {/* First — always visible */}
         <BreadcrumbItem>

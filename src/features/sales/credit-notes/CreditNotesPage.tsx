@@ -259,8 +259,6 @@ export function CreditNotesPage() {
 
   return (
     <div className="space-y-6">
-      {isOffline && <OfflineBanner />}
-
       <PageHeader
         title={t("credit.title")}
         actions={
@@ -271,6 +269,7 @@ export function CreditNotesPage() {
             </Button>
           )
         }
+        alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
       <PageSection padded={false}>

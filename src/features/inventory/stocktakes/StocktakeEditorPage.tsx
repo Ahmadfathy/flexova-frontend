@@ -292,21 +292,20 @@ export function StocktakeEditorPage() {
             )}
           </div>
         }
+        alert={!isApproved ? (
+          stocktake.mode === "freeze" ? (
+            <div className="flex items-start gap-3 rounded border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
+              <Snowflake className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+              <span className="text-destructive">{t("stocktakes.freeze_banner")}</span>
+            </div>
+          ) : (
+            <div className="flex items-start gap-3 rounded border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
+              <Activity className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+              <span className="text-warning">{t("stocktakes.live_note")}</span>
+            </div>
+          )
+        ) : undefined}
       />
-
-      {/* Mode banner */}
-      {stocktake.mode === "freeze" && !isApproved && (
-        <div className="mx-0 flex items-start gap-3 rounded border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
-          <Snowflake className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
-          <span className="text-destructive">{t("stocktakes.freeze_banner")}</span>
-        </div>
-      )}
-      {stocktake.mode === "live" && !isApproved && (
-        <div className="mx-0 flex items-start gap-3 rounded border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
-          <Activity className="h-4 w-4 text-warning mt-0.5 shrink-0" />
-          <span className="text-warning">{t("stocktakes.live_note")}</span>
-        </div>
-      )}
 
       {/* Barcode scan bar */}
       {!isApproved && (

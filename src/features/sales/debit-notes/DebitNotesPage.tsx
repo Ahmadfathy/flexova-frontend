@@ -192,8 +192,6 @@ export function DebitNotesPage() {
 
   return (
     <div className="space-y-6">
-      {isOffline && <OfflineBanner />}
-
       <PageHeader
         title={t("debit.title")}
         actions={
@@ -204,6 +202,7 @@ export function DebitNotesPage() {
             </Button>
           )
         }
+        alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
       <PageSection padded={false}>

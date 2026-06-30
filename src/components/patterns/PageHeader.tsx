@@ -6,6 +6,8 @@ interface PageHeaderProps {
   title: string;
   subtitle?: string;
   actions?: React.ReactNode;
+  /** Page-level alert/banner rendered between the breadcrumb and the title. */
+  alert?: React.ReactNode;
   className?: string;
   /**
    * Resolved label for a dynamic leaf segment (e.g. an item or invoice name).
@@ -20,6 +22,7 @@ export function PageHeader({
   title,
   subtitle,
   actions,
+  alert,
   className,
   crumbLabel,
   crumbLoading,
@@ -29,8 +32,9 @@ export function PageHeader({
   return (
     <div className={cn("mb-6", className)}>
       {segments.length > 0 && (
-        <Breadcrumb segments={segments} className="mb-1.5" />
+        <Breadcrumb segments={segments} className="mb-2" />
       )}
+      {alert && <div className="mb-4">{alert}</div>}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-xl font-semibold">{title}</h1>

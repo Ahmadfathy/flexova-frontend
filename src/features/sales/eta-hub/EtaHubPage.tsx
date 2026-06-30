@@ -266,11 +266,10 @@ export function EtaHubPage() {
   // ── Render ───────────────────────────────────────────────────
   return (
     <div className="space-y-6 p-6">
-      {isOffline && <OfflineBanner />}
-
       {/* ── Header with env badge ──────────────────────────────── */}
       <PageHeader
         title={t("eta_hub.title")}
+        alert={isOffline ? <OfflineBanner /> : undefined}
         actions={
           <div className="flex items-center gap-2">
             {isSandbox && (

@@ -824,9 +824,6 @@ export function ItemsListPage() {
 
   return (
     <div className="flex flex-col gap-4 pb-20">
-      {/* ── Offline banner ── */}
-      {isOffline && <OfflineBanner message={t("offline.banner")} />}
-
       {/* ── Page header ── */}
       <PageHeader
         title={t("items.title")}
@@ -836,6 +833,7 @@ export function ItemsListPage() {
             : undefined
         }
         actions={pageActions}
+        alert={isOffline ? <OfflineBanner message={t("offline.banner")} /> : undefined}
       />
 
       {/* ── Card: toolbar + content + pagination ── */}

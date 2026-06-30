@@ -92,8 +92,6 @@ export function QuotationsPage() {
 
   return (
     <div className="space-y-6">
-      {isOffline && <OfflineBanner />}
-
       <PageHeader
         title={t("quote.title")}
         actions={
@@ -104,6 +102,7 @@ export function QuotationsPage() {
             </Button>
           )
         }
+        alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
       {/* Filters */}

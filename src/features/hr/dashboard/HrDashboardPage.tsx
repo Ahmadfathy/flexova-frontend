@@ -60,16 +60,20 @@ export function HrDashboardPage() {
             </Button>
           ) : undefined
         }
+        alert={
+          (isOffline || !kpis.payroll_run_this_month) ? (
+            <div className="space-y-2">
+              {isOffline && <OfflineBanner />}
+              {!kpis.payroll_run_this_month && (
+                <div className="mx-4 flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  {t("dashboard.payroll_alert")}
+                </div>
+              )}
+            </div>
+          ) : undefined
+        }
       />
-
-      {isOffline && <OfflineBanner />}
-
-      {!kpis.payroll_run_this_month && (
-        <div className="mx-4 flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          {t("dashboard.payroll_alert")}
-        </div>
-      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 px-4">
         <KpiCard

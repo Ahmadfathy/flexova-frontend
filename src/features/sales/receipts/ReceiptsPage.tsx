@@ -291,8 +291,6 @@ export function ReceiptsPage() {
 
   return (
     <div className="space-y-6">
-      {isOffline && <OfflineBanner />}
-
       <PageHeader
         title={t("receipt.title")}
         actions={
@@ -303,6 +301,7 @@ export function ReceiptsPage() {
             </Button>
           )
         }
+        alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
       {/* Search */}

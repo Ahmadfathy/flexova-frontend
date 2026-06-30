@@ -810,8 +810,6 @@ export function InvoiceEditorPage() {
   // ── Editor ─────────────────────────────────────────────────────
   return (
     <div className="space-y-4 pb-8">
-      {isOffline && <OfflineBanner />}
-
       <PageHeader
         title={t("editor.title_new")}
         crumbLabel={t("editor.title_new")}
@@ -823,6 +821,7 @@ export function InvoiceEditorPage() {
             t={t}
           />
         }
+        alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
       {/* ── Zone 1 — Header ─────────────────────────────────────── */}

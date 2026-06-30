@@ -79,20 +79,21 @@ export function LowStockPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {totalCount > 0 && (
-        <div className="mx-4 mt-2 flex items-start gap-3 rounded border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
-          <PackageOpen className="h-4 w-4 text-warning mt-0.5 shrink-0" />
-          <span className="text-warning">
-            {t("low_stock.count", { n: totalCount })}
-            {" "}
-            {lang === "ar"
-              ? "وصلت إلى الحد الأدنى للطلب"
-              : "have reached the reorder level"}
-          </span>
-        </div>
-      )}
-
-      <PageHeader title={t("low_stock.title")} />
+      <PageHeader
+        title={t("low_stock.title")}
+        alert={totalCount > 0 ? (
+          <div className="mx-4 flex items-start gap-3 rounded border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
+            <PackageOpen className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+            <span className="text-warning">
+              {t("low_stock.count", { n: totalCount })}
+              {" "}
+              {lang === "ar"
+                ? "وصلت إلى الحد الأدنى للطلب"
+                : "have reached the reorder level"}
+            </span>
+          </div>
+        ) : undefined}
+      />
 
       <PageSection padded={false}>
         {showSkeleton && <LsSkeleton />}

@@ -135,25 +135,28 @@ export function EtaSettingsPage() {
   // ── Render ───────────────────────────────────────────────────
   return (
     <div className="space-y-6 p-6">
-      {isOffline && <OfflineBanner />}
-
-      {/* Sandbox warning strip */}
-      {isSandbox && (
-        <div className="flex items-start gap-3 rounded border border-warning/40 bg-warning/5 px-4 py-3 text-sm text-warning">
-          <AlertTriangle className="size-4 mt-0.5 shrink-0" />
-          <span>{t("settings.env_sandbox_note")}</span>
-        </div>
-      )}
-
-      {/* Production confirmation strip */}
-      {!isSandbox && (
-        <div className="flex items-start gap-3 rounded border border-success/40 bg-success/5 px-4 py-3 text-sm text-success">
-          <CheckCircle2 className="size-4 mt-0.5 shrink-0" />
-          <span>{t("settings.production_note")}</span>
-        </div>
-      )}
-
-      <PageHeader title={t("settings.title")} />
+      <PageHeader
+        title={t("settings.title")}
+        alert={
+          <div className="space-y-2">
+            {isOffline && <OfflineBanner />}
+            {/* Sandbox warning strip */}
+            {isSandbox && (
+              <div className="flex items-start gap-3 rounded border border-warning/40 bg-warning/5 px-4 py-3 text-sm text-warning">
+                <AlertTriangle className="size-4 mt-0.5 shrink-0" />
+                <span>{t("settings.env_sandbox_note")}</span>
+              </div>
+            )}
+            {/* Production confirmation strip */}
+            {!isSandbox && (
+              <div className="flex items-start gap-3 rounded border border-success/40 bg-success/5 px-4 py-3 text-sm text-success">
+                <CheckCircle2 className="size-4 mt-0.5 shrink-0" />
+                <span>{t("settings.production_note")}</span>
+              </div>
+            )}
+          </div>
+        }
+      />
 
       {/* ── Business details ───────────────────────────────────── */}
       <PageSection
