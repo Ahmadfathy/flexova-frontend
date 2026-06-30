@@ -334,9 +334,9 @@ export function StocktakeEditorPage() {
               {[
                 { key: "name",    label: t("columns.name"),           cls: "font-semibold" },
                 { key: "code",    label: t("columns.code"),           cls: "font-semibold hidden sm:table-cell" },
-                { key: "book",    label: t("stocktakes.book"),        cls: "font-semibold text-end" },
-                { key: "actual",  label: t("stocktakes.actual"),      cls: "font-semibold text-end" },
-                { key: "diff",    label: t("stocktakes.diff"),        cls: "font-semibold text-end" },
+                { key: "book",    label: t("stocktakes.book"),        cls: "font-semibold text-start" },
+                { key: "actual",  label: t("stocktakes.actual"),      cls: "font-semibold text-start" },
+                { key: "diff",    label: t("stocktakes.diff"),        cls: "font-semibold text-start" },
               ].map(col => (
                 <TableHead
                   key={col.key}

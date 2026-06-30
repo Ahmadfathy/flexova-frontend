@@ -3,47 +3,14 @@ import { Users, Wallet, TrendingUp, AlertCircle, Clock, CheckCircle2 } from "luc
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
+import { KpiCard }       from "@/components/patterns/KpiCard";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
 import { useHrData } from "../data/useHrData";
-
-// ── KPI card ──────────────────────────────────────────────────────
-
-function KpiCard({
-  icon: Icon, label, value, sub, accent,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string | number;
-  sub?: string;
-  accent?: "danger" | "warning" | "success";
-}) {
-  return (
-    <div className="rounded-sm bg-card shadow-sm p-5 space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
-        <div className={cn(
-          "h-9 w-9 rounded flex items-center justify-center",
-          accent === "danger"  && "bg-danger/10 text-danger",
-          accent === "warning" && "bg-warning/10 text-warning",
-          accent === "success" && "bg-success/10 text-success",
-          !accent              && "bg-muted text-muted-foreground",
-        )}>
-          <Icon className="h-5 w-5" />
-        </div>
-      </div>
-      <div>
-        <p className="text-2xl font-bold tabular-nums">{value}</p>
-        {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
-      </div>
-    </div>
-  );
-}
 
 // ── Main page ─────────────────────────────────────────────────────
 
@@ -61,7 +28,7 @@ export function HrDashboardPage() {
             <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <Skeleton className="h-4 w-28" />
-                <Skeleton className="h-9 w-9 rounded-lg" />
+                <Skeleton className="h-9 w-9 rounded" />
               </div>
               <Skeleton className="h-8 w-20" />
             </div>
@@ -108,7 +75,7 @@ export function HrDashboardPage() {
         <KpiCard
           icon={Users}
           label={t("dashboard.headcount")}
-          value={kpis.headcount}
+          value={String(kpis.headcount)}
         />
         <KpiCard
           icon={Wallet}
@@ -119,25 +86,25 @@ export function HrDashboardPage() {
           icon={AlertCircle}
           label={t("dashboard.advances_out")}
           value={formatMoney(kpis.outstanding_advances, lang)}
-          accent={kpis.outstanding_advances > 0 ? "warning" : undefined}
+          tone={kpis.outstanding_advances > 0 ? "warning" : undefined}
         />
         <KpiCard
           icon={TrendingUp}
           label={t("dashboard.commissions")}
           value={formatMoney(kpis.accrued_commissions, lang)}
-          accent="success"
+          tone="success"
         />
         <KpiCard
           icon={Clock}
           label={t("dashboard.absences")}
-          value={kpis.absences_today}
-          accent={kpis.absences_today > 0 ? "danger" : undefined}
+          value={String(kpis.absences_today)}
+          tone={kpis.absences_today > 0 ? "danger" : undefined}
         />
         <KpiCard
           icon={kpis.payroll_run_this_month ? CheckCircle2 : AlertCircle}
           label={kpis.payroll_run_this_month ? t("dashboard.payroll_done") : t("dashboard.payroll_pending")}
           value={kpis.payroll_run_this_month ? "✓" : "—"}
-          accent={kpis.payroll_run_this_month ? "success" : "warning"}
+          tone={kpis.payroll_run_this_month ? "success" : "warning"}
         />
       </div>
 

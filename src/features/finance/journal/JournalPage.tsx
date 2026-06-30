@@ -196,38 +196,38 @@ function EntryLines({
     <TableRow className="bg-muted/20 hover:bg-muted/20">
       <TableCell colSpan={8} className="p-0 border-0">
         <div className="px-8 pb-3">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-start text-xs font-medium text-muted-foreground py-1.5 pe-4">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-border hover:bg-transparent">
+                <TableHead className="text-start text-xs font-medium text-muted-foreground py-1.5 pe-4 h-auto">
                   {t("journal.lines_account")}
-                </th>
-                <th className="text-start text-xs font-medium text-muted-foreground py-1.5">
+                </TableHead>
+                <TableHead className="text-start text-xs font-medium text-muted-foreground py-1.5 h-auto">
                   {t("journal.lines_memo")}
-                </th>
-                <th className="text-start text-xs font-medium text-muted-foreground py-1.5 w-32">
+                </TableHead>
+                <TableHead className="text-start text-xs font-medium text-muted-foreground py-1.5 w-32 h-auto">
                   {t("journal.lines_dr")}
-                </th>
-                <th className="text-start text-xs font-medium text-muted-foreground py-1.5 w-32">
+                </TableHead>
+                <TableHead className="text-start text-xs font-medium text-muted-foreground py-1.5 w-32 h-auto">
                   {t("journal.lines_cr")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {entry.lines.map((line, i) => (
-                <tr key={i} className="border-b border-border/50 last:border-0">
-                  <td className="py-1.5 pe-4 font-mono text-xs text-muted-foreground">{line.account}</td>
-                  <td className="py-1.5 text-muted-foreground">{line.memo}</td>
-                  <td className="py-1.5 text-start tabular-nums">
+                <TableRow key={i} className="border-b border-border/50 last:border-0 hover:bg-transparent">
+                  <TableCell className="py-1.5 pe-4 font-mono text-xs text-muted-foreground">{line.account}</TableCell>
+                  <TableCell className="py-1.5 text-muted-foreground">{line.memo}</TableCell>
+                  <TableCell className="py-1.5 text-start tabular-nums">
                     {line.dr > 0 ? formatMoney(line.dr, lang) : "—"}
-                  </td>
-                  <td className="py-1.5 text-start tabular-nums">
+                  </TableCell>
+                  <TableCell className="py-1.5 text-start tabular-nums">
                     {line.cr > 0 ? formatMoney(line.cr, lang) : "—"}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </TableCell>
     </TableRow>

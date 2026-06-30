@@ -107,7 +107,7 @@ function EditorSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="space-y-1.5">
             <Skeleton className="h-3 w-20" />
-            <Skeleton className="h-10 w-full rounded-md" />
+            <Skeleton className="h-10 w-full rounded" />
           </div>
         ))}
       </div>
@@ -698,28 +698,28 @@ export function PurchaseInvoiceEditorPage() {
                               {t("editor.distribute_hint")}
                             </div>
                             <div className="p-2">
-                              <table className="w-full text-xs">
-                                <thead>
-                                  <tr className="text-muted-foreground">
-                                    <th className="text-start py-1 font-normal">{t("editor.dist_col_item")}</th>
-                                    <th className="text-start py-1 font-normal">{t("editor.dist_col_share")}</th>
-                                    <th className="text-start py-1 font-normal">{t("editor.dist_col_eff")}</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
+                              <Table className="text-xs">
+                                <TableHeader>
+                                  <TableRow className="hover:bg-transparent border-0">
+                                    <TableHead className="h-auto py-1 px-0 pe-2 text-start font-normal text-muted-foreground">{t("editor.dist_col_item")}</TableHead>
+                                    <TableHead className="h-auto py-1 px-0 pe-2 text-start font-normal text-muted-foreground">{t("editor.dist_col_share")}</TableHead>
+                                    <TableHead className="h-auto py-1 px-0 text-start font-normal text-muted-foreground">{t("editor.dist_col_eff")}</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
                                   {distributionRows.map((row, i) => (
-                                    <tr key={i} className="border-t border-border/40">
-                                      <td className="py-1 pe-2 truncate max-w-[120px]">{row.name}</td>
-                                      <td className="py-1 text-start tabular-nums">
+                                    <TableRow key={i} className="border-t border-border/40 hover:bg-transparent">
+                                      <TableCell className="py-1 px-0 pe-2 truncate max-w-[120px]">{row.name}</TableCell>
+                                      <TableCell className="py-1 px-0 pe-2 text-start tabular-nums">
                                         +{formatMoney(row.share, lang)}
-                                      </td>
-                                      <td className="py-1 text-start tabular-nums">
+                                      </TableCell>
+                                      <TableCell className="py-1 px-0 text-start tabular-nums">
                                         {formatMoney(row.effPrice, lang)}
-                                      </td>
-                                    </tr>
+                                      </TableCell>
+                                    </TableRow>
                                   ))}
-                                </tbody>
-                              </table>
+                                </TableBody>
+                              </Table>
                             </div>
                           </PopoverContent>
                         </Popover>

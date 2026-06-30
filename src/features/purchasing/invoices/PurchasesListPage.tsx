@@ -73,7 +73,7 @@ function ListSkeleton() {
         >
           <Skeleton className="h-3.5 w-24 shrink-0" />
           <Skeleton className="h-3.5 w-20 shrink-0" />
-          <Skeleton className="h-8 w-8 rounded-md shrink-0" />
+          <Skeleton className="h-8 w-8 rounded shrink-0" />
           <Skeleton className="h-3.5 w-32" />
           <Skeleton className="h-3.5 w-20 shrink-0 hidden sm:block" />
           <Skeleton className="h-3.5 w-24 shrink-0 ms-auto" />
@@ -659,12 +659,11 @@ export function PurchasesListPage() {
                             key={header.id}
                             className={cn(
                               "h-11 py-0 px-4 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground whitespace-nowrap",
-                              isEnd && "text-end",
                               isSortable && "cursor-pointer select-none hover:text-foreground"
                             )}
                             onClick={isSortable ? col.getToggleSortingHandler() : undefined}
                           >
-                            <span className={cn("inline-flex items-center gap-1", isEnd && "flex-row-reverse")}>
+                            <span className="inline-flex items-center gap-1">
                               {flexRender(header.column.columnDef.header, header.getContext())}
                               {isSortable && (
                                 col.getIsSorted() === "asc"
@@ -693,7 +692,7 @@ export function PurchasesListPage() {
                           key={cell.id}
                           className={cn(
                             "px-4 py-3",
-                            cell.column.id === "total" && "text-end"
+                            cell.column.id === "total" && "text-start tabular-nums"
                           )}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -121,10 +121,10 @@ export function LowStockPage() {
                   {[
                     { key: "item",      label: t("columns.name"),      cls: "" },
                     { key: "warehouse", label: t("columns.warehouse"),  cls: "hidden sm:table-cell" },
-                    { key: "balance",   label: t("columns.balance"),    cls: "text-end" },
-                    { key: "reorder",   label: t("columns.reorder"),    cls: "hidden md:table-cell text-end" },
-                    { key: "shortfall", label: t("columns.shortfall"),  cls: "text-end" },
-                    { key: "suggested", label: t("columns.suggested"),  cls: "hidden lg:table-cell text-end" },
+                    { key: "balance",   label: t("columns.balance"),    cls: "text-start" },
+                    { key: "reorder",   label: t("columns.reorder"),    cls: "hidden md:table-cell text-start" },
+                    { key: "shortfall", label: t("columns.shortfall"),  cls: "text-start" },
+                    { key: "suggested", label: t("columns.suggested"),  cls: "hidden lg:table-cell text-start" },
                     { key: "action",    label: "",                      cls: "w-10" },
                   ].map((col) => (
                     <TableHead

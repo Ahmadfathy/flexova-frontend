@@ -3,6 +3,7 @@ import { TrendingUp, TrendingDown, Wallet, Users, Store, Receipt } from "lucide-
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
+import { KpiCard }       from "@/components/patterns/KpiCard";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
@@ -11,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 import { formatMoney } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import { useFinanceData } from "../data/useFinanceData";
 
 function KpiSkeleton() {
@@ -24,48 +24,6 @@ function KpiSkeleton() {
         </Card>
       ))}
     </div>
-  );
-}
-
-function KpiCard({
-  label,
-  value,
-  lang,
-  icon: Icon,
-  trend,
-  accent,
-}: {
-  label: string;
-  value: number;
-  lang: "ar" | "en";
-  icon: React.FC<{ className?: string }>;
-  trend?: "up" | "down" | "neutral";
-  accent?: "success" | "danger" | "neutral";
-}) {
-  const color = accent === "success"
-    ? "text-success"
-    : accent === "danger"
-      ? "text-danger"
-      : "text-foreground";
-  return (
-    <Card className="p-0">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground mb-1 truncate">{label}</p>
-            <p className={cn("text-xl font-bold tabular-nums", color)}>
-              {formatMoney(value, lang)}
-            </p>
-          </div>
-          <div className={cn(
-            "rounded p-2 shrink-0",
-            accent === "success" ? "bg-success/10" : accent === "danger" ? "bg-danger/10" : "bg-muted",
-          )}>
-            <Icon className={cn("h-5 w-5", color)} />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   );
 }
 
@@ -103,46 +61,38 @@ export function FinanceDashboardPage() {
       {/* KPI grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <KpiCard
-          label={t("dashboard.kpi_liquidity")}
-          value={kpis.liquidity}
-          lang={lang}
           icon={Wallet}
-          accent="success"
+          label={t("dashboard.kpi_liquidity")}
+          value={formatMoney(kpis.liquidity, lang)}
+          tone="success"
         />
         <KpiCard
-          label={t("dashboard.kpi_cashflow")}
-          value={kpis.net_cashflow_today}
-          lang={lang}
           icon={kpis.net_cashflow_today >= 0 ? TrendingUp : TrendingDown}
-          accent={kpis.net_cashflow_today >= 0 ? "success" : "danger"}
+          label={t("dashboard.kpi_cashflow")}
+          value={formatMoney(kpis.net_cashflow_today, lang)}
+          tone={kpis.net_cashflow_today >= 0 ? "success" : "danger"}
         />
         <KpiCard
-          label={t("dashboard.kpi_ar")}
-          value={kpis.ar_total}
-          lang={lang}
           icon={Users}
-          accent="neutral"
+          label={t("dashboard.kpi_ar")}
+          value={formatMoney(kpis.ar_total, lang)}
         />
         <KpiCard
-          label={t("dashboard.kpi_ap")}
-          value={kpis.ap_total}
-          lang={lang}
           icon={Store}
-          accent="danger"
+          label={t("dashboard.kpi_ap")}
+          value={formatMoney(kpis.ap_total, lang)}
+          tone="danger"
         />
         <KpiCard
-          label={t("dashboard.kpi_expenses")}
-          value={kpis.monthly_expenses}
-          lang={lang}
           icon={Receipt}
-          accent="neutral"
+          label={t("dashboard.kpi_expenses")}
+          value={formatMoney(kpis.monthly_expenses, lang)}
         />
         <KpiCard
-          label={t("dashboard.kpi_profit")}
-          value={kpis.estimated_profit}
-          lang={lang}
           icon={kpis.estimated_profit >= 0 ? TrendingUp : TrendingDown}
-          accent={kpis.estimated_profit >= 0 ? "success" : "danger"}
+          label={t("dashboard.kpi_profit")}
+          value={formatMoney(kpis.estimated_profit, lang)}
+          tone={kpis.estimated_profit >= 0 ? "success" : "danger"}
         />
       </div>
 

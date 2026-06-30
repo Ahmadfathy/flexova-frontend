@@ -279,7 +279,7 @@ export function ExpensesPage() {
                   {["col_date","col_category","col_memo","col_treasury","col_attachment","col_amount"].map(k => (
                     <TableHead key={k} className={cn(
                       "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                      k === "col_amount" && "text-end",
+                      k === "col_amount" && "text-start",
                     )}>
                       {t(`expenses.${k}` as Parameters<typeof t>[0])}
                     </TableHead>

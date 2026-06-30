@@ -165,7 +165,7 @@ function HeaderZoneSkeleton() {
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="space-y-1.5">
           <Skeleton className="h-3 w-20" />
-          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className="h-10 w-full rounded" />
         </div>
       ))}
     </div>
@@ -183,14 +183,14 @@ function GridSkeleton() {
       {[1, 2, 3].map(i => (
         <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-border last:border-0"
              style={{ opacity: 1 - i * 0.25 }}>
-          <Skeleton className="h-8 w-36 rounded-md" />
-          <Skeleton className="h-8 flex-1 rounded-md" />
-          <Skeleton className="h-8 w-16 rounded-md" />
-          <Skeleton className="h-8 w-20 rounded-md" />
-          <Skeleton className="h-8 w-20 rounded-md" />
-          <Skeleton className="h-8 w-16 rounded-md" />
-          <Skeleton className="h-8 w-24 rounded-md" />
-          <Skeleton className="h-8 w-20 rounded-md" />
+          <Skeleton className="h-8 w-36 rounded" />
+          <Skeleton className="h-8 flex-1 rounded" />
+          <Skeleton className="h-8 w-16 rounded" />
+          <Skeleton className="h-8 w-20 rounded" />
+          <Skeleton className="h-8 w-20 rounded" />
+          <Skeleton className="h-8 w-16 rounded" />
+          <Skeleton className="h-8 w-24 rounded" />
+          <Skeleton className="h-8 w-20 rounded" />
         </div>
       ))}
     </div>
@@ -952,7 +952,7 @@ export function InvoiceEditorPage() {
               rows={2}
               value={draft.notes}
               onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))}
-              className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full resize-none rounded border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
         </div>

@@ -13,6 +13,7 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Badge }  from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card }   from "@/components/ui/card";
 import { cn }     from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
 import { useReportsData, type DashWidget } from "../data/useReportsData";
@@ -28,8 +29,8 @@ function KpiWidget({ w, lang, t }: {
   const up = (w.delta_pct ?? 0) >= 0;
 
   return (
-    <div
-      className={cn("rounded-sm bg-card shadow-sm p-5 space-y-3", w.drill && "cursor-pointer transition-colors hover:bg-muted/30")}
+    <Card
+      className={cn("p-5 space-y-3", w.drill && "cursor-pointer transition-colors hover:bg-muted/30")}
       onClick={() => w.drill && navigate(w.drill)}
     >
       <div className="flex items-center justify-between gap-2">
@@ -52,7 +53,7 @@ function KpiWidget({ w, lang, t }: {
             : t("dashboard.delta_down", { n: Math.abs(w.delta_pct) })}
         </p>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -63,7 +64,7 @@ function CashflowWidget({ w, t }: {
   t: ReturnType<typeof useTranslation<"reports">>["t"];
 }) {
   return (
-    <div className="rounded-sm bg-card shadow-sm p-5 col-span-full lg:col-span-2">
+    <Card className="p-5 col-span-full lg:col-span-2">
       <p className="text-xs font-medium text-muted-foreground mb-4">{w.title_ar}</p>
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={w.series} barCategoryGap="30%">
@@ -75,7 +76,7 @@ function CashflowWidget({ w, t }: {
           <Bar dataKey="out" name={t("dashboard.cashflow_out")} fill="var(--color-danger, #ef4444)"  radius={[4,4,0,0]} />
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </Card>
   );
 }
 
@@ -83,7 +84,7 @@ function CashflowWidget({ w, t }: {
 
 function ListWidget({ w, lang }: { w: DashWidget; lang: "ar" | "en" }) {
   return (
-    <div className="rounded-sm bg-card shadow-sm p-5">
+    <Card className="p-5">
       <p className="text-xs font-medium text-muted-foreground mb-3">{w.title_ar}</p>
       <div className="space-y-2">
         {(w.items ?? []).map((item, i) => (
@@ -93,7 +94,7 @@ function ListWidget({ w, lang }: { w: DashWidget; lang: "ar" | "en" }) {
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
 

@@ -125,7 +125,7 @@ export function TreasuriesPage() {
         <PageSection padded={false}>
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center gap-4 px-4 py-3 border-b border-border">
-              <Skeleton className="h-8 w-8 rounded-lg" />
+              <Skeleton className="h-8 w-8 rounded" />
               <Skeleton className="h-4 w-40" />
               <Skeleton className="h-4 w-24 ms-auto" />
             </div>

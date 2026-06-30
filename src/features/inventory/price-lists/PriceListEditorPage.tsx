@@ -218,8 +218,8 @@ export function PriceListEditorPage() {
               {[
                 { key: "code",    label: t("columns.code"),                cls: "font-semibold" },
                 { key: "name",    label: t("columns.name"),                cls: "font-semibold" },
-                { key: "default", label: t("price_lists.default_price"),   cls: "font-semibold text-end hidden md:table-cell" },
-                { key: "price",   label: t("price_lists.set_price"),       cls: "font-semibold text-end" },
+                { key: "default", label: t("price_lists.default_price"),   cls: "font-semibold text-start hidden md:table-cell" },
+                { key: "price",   label: t("price_lists.set_price"),       cls: "font-semibold text-start" },
               ].map(col => (
                 <TableHead
                   key={col.key}

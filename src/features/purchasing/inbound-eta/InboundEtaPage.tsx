@@ -40,12 +40,12 @@ function PageSkeleton() {
     <div className="space-y-4">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-xl" />
+          <Skeleton key={i} className="h-28 rounded" />
         ))}
       </div>
       <div className="space-y-2 p-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full rounded-md" />
+          <Skeleton key={i} className="h-12 w-full rounded" />
         ))}
       </div>
     </div>

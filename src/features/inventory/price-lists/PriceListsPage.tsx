@@ -156,7 +156,7 @@ export function PriceListsPage() {
                   {[
                     { key: "name",         label: t("columns.name"),         cls: "font-semibold" },
                     { key: "currency",     label: t("columns.currency"),     cls: "font-semibold hidden sm:table-cell" },
-                    { key: "priced_items", label: t("columns.priced_items"), cls: "font-semibold hidden md:table-cell text-end" },
+                    { key: "priced_items", label: t("columns.priced_items"), cls: "font-semibold hidden md:table-cell text-start" },
                     { key: "status",       label: t("columns.status"),       cls: "font-semibold" },
                     { key: "actions",      label: "",                        cls: "w-10" },
                   ].map(col => (

@@ -132,7 +132,7 @@ export function AdjustmentsPage() {
                     { key: "date",      label: t("columns.date"),      cls: "hidden md:table-cell" },
                     { key: "warehouse", label: t("columns.warehouse"),  cls: "" },
                     { key: "reason",    label: t("columns.reason"),    cls: "hidden sm:table-cell" },
-                    { key: "net_diff",  label: t("columns.net_diff"),  cls: "text-end" },
+                    { key: "net_diff",  label: t("columns.net_diff"),  cls: "text-start" },
                     { key: "note",      label: t("columns.note"),      cls: "hidden lg:table-cell" },
                     { key: "actions",   label: "",                     cls: "w-10" },
                   ].map((col) => (

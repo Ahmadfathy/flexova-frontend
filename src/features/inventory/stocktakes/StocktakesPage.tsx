@@ -150,8 +150,8 @@ export function StocktakesPage() {
                     { key: "date",     label: t("columns.date"),      cls: "hidden md:table-cell" },
                     { key: "mode",     label: t("columns.mode"),      cls: "hidden sm:table-cell" },
                     { key: "status",   label: t("columns.status"),    cls: "" },
-                    { key: "items",    label: t("columns.items_count"),cls: "hidden lg:table-cell text-end" },
-                    { key: "net_diff", label: t("columns.net_diff"),  cls: "hidden lg:table-cell text-end" },
+                    { key: "items",    label: t("columns.items_count"),cls: "hidden lg:table-cell text-start" },
+                    { key: "net_diff", label: t("columns.net_diff"),  cls: "hidden lg:table-cell text-start" },
                     { key: "actions",  label: "",                     cls: "w-10" },
                   ].map((col) => (
                     <TableHead

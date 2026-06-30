@@ -227,7 +227,7 @@ export function NewAdjustmentSheet({ open, onOpenChange, data }: NewAdjustmentSh
                   const newBal  = balance !== null && !isNaN(qty) ? balance + qty : null;
 
                   return (
-                    <div key={line._key} className="rounded-lg border border-border p-3 space-y-2">
+                    <div key={line._key} className="rounded border border-border p-3 space-y-2">
                       {/* Item */}
                       <Select
                         value={line.item_id}

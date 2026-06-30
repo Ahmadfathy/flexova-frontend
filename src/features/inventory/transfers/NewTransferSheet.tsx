@@ -240,7 +240,7 @@ export function NewTransferSheet({ open, onOpenChange, data }: NewTransferSheetP
                   const qtyErr  = errors[`li${i}_qty`];
 
                   return (
-                    <div key={line._key} className="rounded-lg border border-border p-3 space-y-2">
+                    <div key={line._key} className="rounded border border-border p-3 space-y-2">
                       {/* Item */}
                       <Select
                         value={line.item_id}

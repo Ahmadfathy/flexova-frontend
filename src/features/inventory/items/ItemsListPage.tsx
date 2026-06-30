@@ -980,7 +980,7 @@ export function ItemsListPage() {
                             key={header.id}
                             className={cn(
                               "h-10 py-2 px-3 text-start text-xs font-semibold text-muted-foreground whitespace-nowrap select-none",
-                              isNumeric && "text-end",
+                              isNumeric && "text-start",
                               isSortable && "cursor-pointer hover:text-foreground",
                               isHiddenOnMd && "hidden lg:table-cell",
                               header.column.id === "select" && "w-14 px-0 ps-4 pe-2",
@@ -1019,7 +1019,7 @@ export function ItemsListPage() {
                             key={cell.id}
                             className={cn(
                               "px-3 py-2.5 align-middle",
-                              isNumeric && "text-end tabular-nums",
+                              isNumeric && "text-start tabular-nums",
                               isHiddenMd && "hidden lg:table-cell",
                               cell.column.id === "select" && "w-14 px-0 ps-4 pe-2",
                               cell.column.id === "thumb"  && "w-12",

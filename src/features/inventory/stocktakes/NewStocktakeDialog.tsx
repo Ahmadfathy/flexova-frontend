@@ -146,7 +146,7 @@ export function NewStocktakeDialog({ open, onOpenChange, data }: NewStocktakeDia
                   <label
                     key={mode}
                     className={cn(
-                      "flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors",
+                      "flex items-start gap-3 rounded border p-3 cursor-pointer transition-colors",
                       form.mode === mode
                         ? "border-primary bg-primary/5"
                         : "border-border hover:bg-muted/40"

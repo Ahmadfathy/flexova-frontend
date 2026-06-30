@@ -203,34 +203,34 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
                 <p className="text-sm text-muted-foreground">
                   {t("import_wizard.download_hint")}
                 </p>
-                <div className="overflow-x-auto">
-                  <table className="text-xs border-collapse w-full">
-                    <thead>
-                      <tr className="bg-muted/50">
+                <div className="overflow-x-auto rounded-sm border border-border">
+                  <Table className="text-xs">
+                    <TableHeader className="bg-muted/50">
+                      <TableRow className="hover:bg-muted/50">
                         {columns.map(col => (
-                          <th
+                          <TableHead
                             key={col.key}
-                            className="border border-border px-2 py-1 text-start font-semibold whitespace-nowrap"
+                            className="h-auto px-2 py-1 text-start text-xs font-semibold whitespace-nowrap border-e border-border last:border-e-0"
                           >
                             {lang === "ar" ? col.label_ar : col.label_en}
                             {col.required && <span className="text-destructive ms-1">*</span>}
-                          </th>
+                          </TableHead>
                         ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow className="hover:bg-transparent">
                         {columns.map(col => (
-                          <td
+                          <TableCell
                             key={col.key}
-                            className="border border-border px-2 py-1 text-muted-foreground italic"
+                            className="px-2 py-1 text-muted-foreground italic border-e border-border last:border-e-0"
                           >
                             ...
-                          </td>
+                          </TableCell>
                         ))}
-                      </tr>
-                    </tbody>
-                  </table>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
                 <Button variant="outline" size="sm">
                   <Download className="h-4 w-4 me-1.5" />

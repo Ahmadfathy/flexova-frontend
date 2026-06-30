@@ -351,7 +351,7 @@ export function SupplierCardPage() {
 
                 {/* Balance block */}
                 <div className={cn(
-                  "rounded px-4 py-3 text-end border",
+                  "rounded px-4 py-3 text-start border",
                   supplier.balance > 0
                     ? "bg-warning-tint border-warning/20"
                     : "bg-muted/50 border-border"
@@ -363,7 +363,7 @@ export function SupplierCardPage() {
                   )}>
                     {formatMoney(supplier.balance, lang)}
                   </p>
-                  <div className="flex items-center gap-1 mt-0.5 justify-end">
+                  <div className="flex items-center gap-1 mt-0.5 justify-start">
                     <Info className="h-3 w-3 text-muted-foreground" />
                     <p className="text-xs text-muted-foreground">{t("card.balance_note")}</p>
                   </div>
@@ -498,12 +498,11 @@ export function SupplierCardPage() {
                             key={header.id}
                             className={cn(
                               "h-9 py-0 px-4 text-xs font-semibold text-muted-foreground whitespace-nowrap",
-                              isEnd ? "text-end" : "text-start",
                               isSortable && "cursor-pointer select-none hover:text-foreground"
                             )}
                             onClick={isSortable ? col.getToggleSortingHandler() : undefined}
                           >
-                            <span className={cn("inline-flex items-center gap-1", isEnd && "flex-row-reverse")}>
+                            <span className="inline-flex items-center gap-1">
                               {flexRender(header.column.columnDef.header, header.getContext())}
                               {isSortable && (
                                 col.getIsSorted() === "asc"
@@ -531,7 +530,7 @@ export function SupplierCardPage() {
                           key={cell.id}
                           className={cn(
                             "px-4 py-3",
-                            ["debit", "credit", "running"].includes(cell.column.id) && "text-end"
+                            ["debit", "credit", "running"].includes(cell.column.id) && "text-start tabular-nums"
                           )}
                         >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}

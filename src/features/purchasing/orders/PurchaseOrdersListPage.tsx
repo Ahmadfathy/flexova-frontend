@@ -708,7 +708,7 @@ export function PurchaseOrdersListPage() {
                       ].map(k => (
                         <TableHead key={k} className={cn(
                           "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                          k === "col_total" && "text-end",
+                          k === "col_total" && "text-start",
                         )}>
                           {t(`orders.${k}` as Parameters<typeof t>[0])}
                         </TableHead>
