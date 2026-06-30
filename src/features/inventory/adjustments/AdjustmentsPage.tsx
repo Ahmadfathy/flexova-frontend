@@ -182,7 +182,7 @@ export function AdjustmentsPage() {
                       </TableCell>
 
                       {/* Net diff value */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm">
                         <span className={cn(
                           "font-medium",
                           diffPos ? "text-success" : "text-destructive"

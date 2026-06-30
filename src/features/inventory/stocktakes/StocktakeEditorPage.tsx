@@ -296,13 +296,13 @@ export function StocktakeEditorPage() {
 
       {/* Mode banner */}
       {stocktake.mode === "freeze" && !isApproved && (
-        <div className="mx-0 flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
+        <div className="mx-0 flex items-start gap-3 rounded border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm">
           <Snowflake className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
           <span className="text-destructive">{t("stocktakes.freeze_banner")}</span>
         </div>
       )}
       {stocktake.mode === "live" && !isApproved && (
-        <div className="mx-0 flex items-start gap-3 rounded-lg border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
+        <div className="mx-0 flex items-start gap-3 rounded border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
           <Activity className="h-4 w-4 text-warning mt-0.5 shrink-0" />
           <span className="text-warning">{t("stocktakes.live_note")}</span>
         </div>
@@ -378,12 +378,12 @@ export function StocktakeEditorPage() {
                   </TableCell>
 
                   {/* Book qty */}
-                  <TableCell className="px-3 py-2 text-end tabular-nums text-sm text-muted-foreground">
+                  <TableCell className="px-3 py-2 text-start tabular-nums text-sm text-muted-foreground">
                     {formatNumber(line.book_qty)}
                   </TableCell>
 
                   {/* Actual qty — editable */}
-                  <TableCell className="px-3 py-2 text-end">
+                  <TableCell className="px-3 py-2">
                     {isApproved ? (
                       <span className="tabular-nums text-sm">{formatNumber(actual)}</span>
                     ) : (
@@ -399,13 +399,13 @@ export function StocktakeEditorPage() {
                             setCounts(c => ({ ...c, [line.item_id]: v }));
                           }
                         }}
-                        className="w-24 ms-auto text-end tabular-nums h-8 text-sm"
+                        className="w-24 text-start tabular-nums h-8 text-sm"
                       />
                     )}
                   </TableCell>
 
                   {/* Diff */}
-                  <TableCell className="px-3 py-2 text-end tabular-nums text-sm">
+                  <TableCell className="px-3 py-2 text-start tabular-nums text-sm">
                     <span className={cn(
                       "font-medium",
                       diff > 0

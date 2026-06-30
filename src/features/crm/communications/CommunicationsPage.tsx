@@ -128,7 +128,7 @@ function SendDialog({
             <Separator />
             <div className="space-y-1.5">
               <p className="text-xs font-medium text-muted-foreground">{t("communications.form_preview")}</p>
-              <div className="rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 p-3 text-sm text-foreground leading-relaxed">
+              <div className="rounded bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 p-3 text-sm text-foreground leading-relaxed">
                 {selectedTmpl.body_ar}
               </div>
             </div>

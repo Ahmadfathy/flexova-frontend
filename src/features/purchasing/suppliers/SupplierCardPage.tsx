@@ -117,7 +117,7 @@ function buildStatement(
 function CardSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-border p-5 space-y-4">
+      <div className="rounded border border-border p-5 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
             <Skeleton className="h-5 w-48" />
@@ -134,7 +134,7 @@ function CardSkeleton() {
           ))}
         </div>
       </div>
-      <div className="rounded-xl border border-border p-5">
+      <div className="rounded border border-border p-5">
         <Skeleton className="h-4 w-28 mb-4" />
         <div className="space-y-2">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -351,7 +351,7 @@ export function SupplierCardPage() {
 
                 {/* Balance block */}
                 <div className={cn(
-                  "rounded-lg px-4 py-3 text-end border",
+                  "rounded px-4 py-3 text-end border",
                   supplier.balance > 0
                     ? "bg-warning-tint border-warning/20"
                     : "bg-muted/50 border-border"

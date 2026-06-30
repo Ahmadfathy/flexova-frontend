@@ -149,7 +149,7 @@ export function BranchesPage() {
                     {(["col_name","col_code","col_actions"] as const).map(k => (
                       <TableHead key={k} className={[
                         "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                        k === "col_actions" ? "text-end" : "",
+                        "",
                       ].join(" ")}>
                         {t(`branches.${k}`)}
                       </TableHead>
@@ -161,7 +161,7 @@ export function BranchesPage() {
                     <TableRow key={b.id} className="border-b border-border last:border-0">
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-md bg-muted flex items-center justify-center">
+                          <div className="h-7 w-7 rounded bg-muted flex items-center justify-center">
                             <GitBranch className="h-3.5 w-3.5 text-muted-foreground" />
                           </div>
                           <div>
@@ -171,7 +171,7 @@ export function BranchesPage() {
                         </div>
                       </TableCell>
                       <TableCell className="font-mono text-sm">{b.code}</TableCell>
-                      <TableCell className="text-end">
+                      <TableCell>
                         {can("admin.branch.manage") && (
                           <Button
                             size="sm"

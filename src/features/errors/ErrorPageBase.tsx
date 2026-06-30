@@ -20,7 +20,7 @@ export function ErrorPageBase({
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
       <div className="text-center max-w-sm space-y-6">
         <div className="flex justify-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-muted">
+          <div className="flex h-20 w-20 items-center justify-center rounded bg-muted">
             <Icon className="h-10 w-10 text-muted-foreground" strokeWidth={1.5} />
           </div>
         </div>

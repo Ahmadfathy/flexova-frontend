@@ -59,7 +59,7 @@ import {
 
 function ListSkeleton() {
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div className="rounded border border-border overflow-hidden">
       <div className="flex gap-3 px-4 py-3 border-b border-border bg-muted/30">
         {[80, 72, 160, 96, 88, 72, 72, 72, 32].map((w, i) => (
           <Skeleton key={i} className="h-3.5 rounded shrink-0" style={{ width: w }} />

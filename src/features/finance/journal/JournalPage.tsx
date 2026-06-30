@@ -99,8 +99,8 @@ function CreateDialog({
                 <TableRow className="bg-muted/30">
                   <TableHead className="text-xs w-28">{t("journal.form_account")}</TableHead>
                   <TableHead className="text-xs">{t("journal.lines_memo")}</TableHead>
-                  <TableHead className="text-xs w-28 text-end">{t("journal.form_dr")}</TableHead>
-                  <TableHead className="text-xs w-28 text-end">{t("journal.form_cr")}</TableHead>
+                  <TableHead className="text-xs w-28">{t("journal.form_dr")}</TableHead>
+                  <TableHead className="text-xs w-28">{t("journal.form_cr")}</TableHead>
                   <TableHead className="w-8" />
                 </TableRow>
               </TableHeader>
@@ -126,7 +126,7 @@ function CreateDialog({
                     <TableCell className="p-1">
                       <Input
                         type="number" min={0} step="0.01"
-                        className="h-8 text-xs tabular-nums text-end"
+                        className="h-8 text-xs tabular-nums text-start"
                         value={line.dr}
                         onChange={e => setLines(prev => prev.map(l => l._key === line._key ? { ...l, dr: e.target.value, cr: e.target.value ? "" : l.cr } : l))}
                         placeholder="0.00"
@@ -135,7 +135,7 @@ function CreateDialog({
                     <TableCell className="p-1">
                       <Input
                         type="number" min={0} step="0.01"
-                        className="h-8 text-xs tabular-nums text-end"
+                        className="h-8 text-xs tabular-nums text-start"
                         value={line.cr}
                         onChange={e => setLines(prev => prev.map(l => l._key === line._key ? { ...l, cr: e.target.value, dr: e.target.value ? "" : l.dr } : l))}
                         placeholder="0.00"
@@ -205,10 +205,10 @@ function EntryLines({
                 <th className="text-start text-xs font-medium text-muted-foreground py-1.5">
                   {t("journal.lines_memo")}
                 </th>
-                <th className="text-end text-xs font-medium text-muted-foreground py-1.5 w-32">
+                <th className="text-start text-xs font-medium text-muted-foreground py-1.5 w-32">
                   {t("journal.lines_dr")}
                 </th>
-                <th className="text-end text-xs font-medium text-muted-foreground py-1.5 w-32">
+                <th className="text-start text-xs font-medium text-muted-foreground py-1.5 w-32">
                   {t("journal.lines_cr")}
                 </th>
               </tr>
@@ -218,10 +218,10 @@ function EntryLines({
                 <tr key={i} className="border-b border-border/50 last:border-0">
                   <td className="py-1.5 pe-4 font-mono text-xs text-muted-foreground">{line.account}</td>
                   <td className="py-1.5 text-muted-foreground">{line.memo}</td>
-                  <td className="py-1.5 text-end tabular-nums">
+                  <td className="py-1.5 text-start tabular-nums">
                     {line.dr > 0 ? formatMoney(line.dr, lang) : "—"}
                   </td>
-                  <td className="py-1.5 text-end tabular-nums">
+                  <td className="py-1.5 text-start tabular-nums">
                     {line.cr > 0 ? formatMoney(line.cr, lang) : "—"}
                   </td>
                 </tr>
@@ -363,8 +363,7 @@ export function JournalPage() {
                   {["col_number","col_date","col_type","col_memo","col_source","col_amount","col_balanced"].map(k => (
                     <TableHead key={k} className={cn(
                       "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                      k === "col_amount" && "text-end",
-                    )}>
+                            )}>
                       {t(`journal.${k}` as Parameters<typeof t>[0])}
                     </TableHead>
                   ))}
@@ -404,7 +403,7 @@ export function JournalPage() {
                         <TableCell className="text-sm text-muted-foreground font-mono text-xs">
                           {entry.source_ref ?? "—"}
                         </TableCell>
-                        <TableCell className="text-end tabular-nums font-medium">
+                        <TableCell className="text-start tabular-nums font-medium">
                           {formatMoney(entry.total_dr, lang)}
                         </TableCell>
                         <TableCell>

@@ -207,12 +207,12 @@ export function PurchaseInvoiceViewPage() {
                 <TableHeader>
                   <TableRow className="bg-muted/30">
                     <TableHead className="text-xs">{t("view.col_item")}</TableHead>
-                    <TableHead className="text-xs w-20 text-end">{t("view.col_qty")}</TableHead>
+                    <TableHead className="text-xs w-20">{t("view.col_qty")}</TableHead>
                     <TableHead className="text-xs w-24">{t("view.col_uom")}</TableHead>
-                    <TableHead className="text-xs w-28 text-end">{t("view.col_price")}</TableHead>
-                    <TableHead className="text-xs w-24 text-end">{t("view.col_discount")}</TableHead>
+                    <TableHead className="text-xs w-28">{t("view.col_price")}</TableHead>
+                    <TableHead className="text-xs w-24">{t("view.col_discount")}</TableHead>
                     <TableHead className="text-xs w-32">{t("view.col_tax")}</TableHead>
-                    <TableHead className="text-xs w-28 text-end">{t("view.col_total")}</TableHead>
+                    <TableHead className="text-xs w-28">{t("view.col_total")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -227,7 +227,7 @@ export function PurchaseInvoiceViewPage() {
                             ? (lang === "ar" ? item.name_ar : item.name_en)
                             : line.item_id}
                         </TableCell>
-                        <TableCell className="text-sm text-end tabular-nums">
+                        <TableCell className="text-sm text-start tabular-nums">
                           {line.qty}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
@@ -235,10 +235,10 @@ export function PurchaseInvoiceViewPage() {
                             ? (lang === "ar" ? uom.name_ar : uom.name_en)
                             : line.uom_id}
                         </TableCell>
-                        <TableCell className="text-sm text-end tabular-nums">
+                        <TableCell className="text-sm text-start tabular-nums">
                           {formatMoney(line.purchase_price, lang)}
                         </TableCell>
-                        <TableCell className="text-sm text-end tabular-nums text-muted-foreground">
+                        <TableCell className="text-sm text-start tabular-nums text-muted-foreground">
                           {line.line_discount > 0
                             ? `−${formatMoney(line.line_discount, lang)}`
                             : "—"}
@@ -246,7 +246,7 @@ export function PurchaseInvoiceViewPage() {
                         <TableCell className="text-xs text-muted-foreground">
                           {tt ? (lang === "ar" ? tt.name_ar : tt.name_en) : line.tax_type_id}
                         </TableCell>
-                        <TableCell className="text-sm text-end tabular-nums font-medium">
+                        <TableCell className="text-sm text-start tabular-nums font-medium">
                           {formatMoney(line.line_total, lang)}
                         </TableCell>
                       </TableRow>

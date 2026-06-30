@@ -21,7 +21,7 @@ export interface Column<T> {
   header: string;
   cell: (row: T) => React.ReactNode;
   sortable?: boolean;
-  /** Right-aligns the column and applies tabular-nums */
+  /** Applies tabular-nums for digit alignment */
   numeric?: boolean;
   className?: string;
 }
@@ -69,7 +69,6 @@ export function DataTable<T>({
               key={col.key}
               className={cn(
                 "h-11 py-0 px-4 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground whitespace-nowrap",
-                col.numeric && "text-end",
                 col.sortable && "cursor-pointer select-none hover:text-foreground",
                 col.className
               )}
@@ -103,7 +102,7 @@ export function DataTable<T>({
                 key={col.key}
                 className={cn(
                   "px-4 py-3.5",
-                  col.numeric && "text-end tabular-nums num",
+                  col.numeric && "tabular-nums num",
                   col.className
                 )}
               >

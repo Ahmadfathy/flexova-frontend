@@ -305,7 +305,7 @@ export function PurchaseVouchersPage() {
                   <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("vouchers.col_invoice")}
                   </TableHead>
-                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("vouchers.col_amount")}
                   </TableHead>
                   <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -358,7 +358,7 @@ export function PurchaseVouchersPage() {
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="text-end tabular-nums font-semibold">
+                      <TableCell className="text-start tabular-nums font-semibold">
                         {formatMoney(v.amount, lang)}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
@@ -460,7 +460,7 @@ export function PurchaseVouchersPage() {
                 <Label className="text-xs text-muted-foreground">{t("vouchers.amount_label")} *</Label>
                 <Input
                   type="number" min={0.01} step="0.01"
-                  className={cn("tabular-nums text-end", amountError && "border-danger")}
+                  className={cn("tabular-nums text-start", amountError && "border-danger")}
                   value={form.amount}
                   onChange={e => set("amount", e.target.value)}
                 />

@@ -139,7 +139,7 @@ export function EtaSettingsPage() {
 
       {/* Sandbox warning strip */}
       {isSandbox && (
-        <div className="flex items-start gap-3 rounded-lg border border-warning/40 bg-warning/5 px-4 py-3 text-sm text-warning">
+        <div className="flex items-start gap-3 rounded border border-warning/40 bg-warning/5 px-4 py-3 text-sm text-warning">
           <AlertTriangle className="size-4 mt-0.5 shrink-0" />
           <span>{t("settings.env_sandbox_note")}</span>
         </div>
@@ -147,7 +147,7 @@ export function EtaSettingsPage() {
 
       {/* Production confirmation strip */}
       {!isSandbox && (
-        <div className="flex items-start gap-3 rounded-lg border border-success/40 bg-success/5 px-4 py-3 text-sm text-success">
+        <div className="flex items-start gap-3 rounded border border-success/40 bg-success/5 px-4 py-3 text-sm text-success">
           <CheckCircle2 className="size-4 mt-0.5 shrink-0" />
           <span>{t("settings.production_note")}</span>
         </div>
@@ -208,7 +208,7 @@ export function EtaSettingsPage() {
           {/* Toggle row */}
           <div className="flex items-center gap-4">
             <div className={cn(
-              "flex-1 rounded-lg border px-4 py-3 text-center text-sm font-medium transition-colors",
+              "flex-1 rounded border px-4 py-3 text-center text-sm font-medium transition-colors",
               isSandbox
                 ? "border-warning/60 bg-warning/10 text-warning"
                 : "border-border bg-muted/30 text-muted-foreground",
@@ -225,7 +225,7 @@ export function EtaSettingsPage() {
             <ArrowRight className="size-4 text-muted-foreground shrink-0" />
 
             <div className={cn(
-              "flex-1 rounded-lg border px-4 py-3 text-center text-sm font-medium transition-colors",
+              "flex-1 rounded border px-4 py-3 text-center text-sm font-medium transition-colors",
               !isSandbox
                 ? "border-success/60 bg-success/10 text-success"
                 : "border-border bg-muted/30 text-muted-foreground",
@@ -276,7 +276,7 @@ export function EtaSettingsPage() {
       >
         <div className="flex items-center gap-4">
           <div className={cn(
-            "rounded-lg p-3",
+            "rounded p-3",
             settings.eseal.configured
               ? "bg-success/10 text-success"
               : "bg-destructive/10 text-destructive",
@@ -314,7 +314,7 @@ export function EtaSettingsPage() {
               <TableRow>
                 <TableHead className="ps-4">{t("settings.numbering_branch")}</TableHead>
                 <TableHead>{t("settings.numbering_prefix")}</TableHead>
-                <TableHead className="text-end pe-4">{t("settings.numbering_next")}</TableHead>
+                <TableHead className="pe-4">{t("settings.numbering_next")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -322,7 +322,7 @@ export function EtaSettingsPage() {
                 <TableRow key={row.id}>
                   <TableCell className="ps-4 text-sm font-medium">{row.name}</TableCell>
                   <TableCell className="font-mono text-sm" dir="ltr">{row.prefix}</TableCell>
-                  <TableCell className="tabular-nums text-sm text-end pe-4" dir="ltr">
+                  <TableCell className="tabular-nums text-sm pe-4" dir="ltr">
                     {row.next.toLocaleString()}
                   </TableCell>
                 </TableRow>
@@ -336,7 +336,7 @@ export function EtaSettingsPage() {
       {settings.send_behavior && (
         <PageSection title={t("settings.section_send")}>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border px-4 py-3 space-y-1">
+            <div className="rounded border px-4 py-3 space-y-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 {t("settings.send_b2b")}
               </p>
@@ -345,7 +345,7 @@ export function EtaSettingsPage() {
                 {settings.send_behavior.b2b}
               </p>
             </div>
-            <div className="rounded-lg border px-4 py-3 space-y-1">
+            <div className="rounded border px-4 py-3 space-y-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 {t("settings.send_b2c")}
               </p>

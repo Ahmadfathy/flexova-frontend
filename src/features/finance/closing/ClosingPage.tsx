@@ -120,7 +120,7 @@ export function ClosingPage() {
                           </Badge>
                         ) : "—"}
                       </TableCell>
-                      <TableCell className="text-end">
+                      <TableCell>
                         {isClosed ? (
                           <Button
                             size="sm"

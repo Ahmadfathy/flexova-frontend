@@ -587,7 +587,7 @@ export function InvoicesListPage() {
 
       {/* Bulk action bar */}
       {hasSelection && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg border border-border">
+        <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded border border-border">
           <span className="text-sm font-medium text-muted-foreground">
             {t("list.selected", { n: selectedRows.length })}
           </span>
@@ -660,7 +660,6 @@ export function InvoicesListPage() {
                         key={header.id}
                         className={cn(
                           "h-11 py-0 px-4 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground whitespace-nowrap",
-                          header.id === "total" && "text-end",
                           isSortable && "cursor-pointer select-none hover:text-foreground"
                         )}
                         onClick={isSortable ? col.getToggleSortingHandler() : undefined}
@@ -694,7 +693,6 @@ export function InvoicesListPage() {
                       key={cell.id}
                       className={cn(
                         "px-4 py-3",
-                        cell.column.id === "total" && "text-end"
                       )}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

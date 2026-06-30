@@ -158,7 +158,7 @@ function NewCreditNoteSheet({ open, onOpenChange, defaultSourceId }: NewCreditNo
                     <TableRow>
                       <TableHead className="text-start">{t("editor.col_item")}</TableHead>
                       <TableHead className="text-start">{t("credit.qty_label")}</TableHead>
-                      <TableHead className="text-end">{t("credit.value")}</TableHead>
+                      <TableHead className="text-start">{t("credit.value")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -191,7 +191,7 @@ function NewCreditNoteSheet({ open, onOpenChange, defaultSourceId }: NewCreditNo
                               className="h-8 text-center tabular-nums"
                             />
                           </TableCell>
-                          <TableCell className="py-2 text-end tabular-nums text-sm">
+                          <TableCell className="py-2 text-start tabular-nums text-sm">
                             {formatMoney(q * line.price * 1.14, lang)}
                           </TableCell>
                         </TableRow>
@@ -218,7 +218,7 @@ function NewCreditNoteSheet({ open, onOpenChange, defaultSourceId }: NewCreditNo
           </div>
 
           {/* ETA note */}
-          <p className="text-xs text-muted-foreground flex items-start gap-1 border rounded-md p-2 bg-muted/30">
+          <p className="text-xs text-muted-foreground flex items-start gap-1 border rounded p-2 bg-muted/30">
             <Info className="size-3 mt-0.5 shrink-0" />
             {t("credit.note_eta")}
           </p>
@@ -288,7 +288,7 @@ export function CreditNotesPage() {
                 <TableHead className="text-start">{t("credit.col_date")}</TableHead>
                 <TableHead className="text-start">{t("credit.col_source")}</TableHead>
                 <TableHead className="text-start">{t("credit.col_customer")}</TableHead>
-                <TableHead className="text-end">{t("credit.col_value")}</TableHead>
+                <TableHead className="text-start">{t("credit.col_value")}</TableHead>
                 <TableHead className="text-start">{t("credit.col_eta")}</TableHead>
               </TableRow>
             </TableHeader>
@@ -307,7 +307,7 @@ export function CreditNotesPage() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-sm">{customerName(cn.customer_id)}</TableCell>
-                  <TableCell className="text-end tabular-nums text-sm font-medium">
+                  <TableCell className="text-start tabular-nums text-sm font-medium">
                     {formatMoney(cn.totals.value, lang)}
                   </TableCell>
                   <TableCell>

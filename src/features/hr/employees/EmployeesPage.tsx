@@ -126,7 +126,7 @@ function EmployeeSheet({
 
           {/* Flag */}
           {emp._flag === "missing_attendance" && (
-            <div className="flex items-center gap-2 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
+            <div className="flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
               <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
               {t("employees.flag_missing_att")}
             </div>
@@ -218,7 +218,7 @@ function CreateDialog({
             <Input
               type="number" min={0} value={base}
               onChange={e => setBase(e.target.value)}
-              className="tabular-nums text-end"
+              className="tabular-nums text-start"
               placeholder="0"
             />
           </div>
@@ -353,7 +353,6 @@ export function EmployeesPage() {
                     {["col_name","col_type","col_title","col_base","col_advance"].map(k => (
                       <TableHead key={k} className={cn(
                         "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                        (k === "col_base" || k === "col_advance") && "text-end",
                       )}>
                         {t(`employees.${k}` as Parameters<typeof t>[0])}
                       </TableHead>
@@ -380,10 +379,10 @@ export function EmployeesPage() {
                         </TableCell>
                         <TableCell><TypeBadge type={emp.employment_type} t={t} /></TableCell>
                         <TableCell className="text-sm text-muted-foreground">{emp.title}</TableCell>
-                        <TableCell className="text-end tabular-nums text-sm font-medium">
+                        <TableCell className="text-start tabular-nums text-sm font-medium">
                           {formatMoney(base, lang)}
                         </TableCell>
-                        <TableCell className="text-end tabular-nums text-sm">
+                        <TableCell className="text-start tabular-nums text-sm">
                           {emp.advance_balance > 0 ? (
                             <span className="text-warning font-medium">{formatMoney(emp.advance_balance, lang)}</span>
                           ) : (

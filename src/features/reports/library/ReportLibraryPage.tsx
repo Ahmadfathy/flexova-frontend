@@ -145,7 +145,7 @@ export function ReportLibraryPage() {
         <PageHeader title={t("library.title")} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border p-5 space-y-3">
+            <div key={i} className="rounded border border-border p-5 space-y-3">
               <Skeleton className="h-4 w-40" />
               <Skeleton className="h-3.5 w-20 rounded-full" />
               <Skeleton className="h-8 w-24 rounded" />

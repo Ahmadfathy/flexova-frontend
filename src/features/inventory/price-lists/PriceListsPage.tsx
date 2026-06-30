@@ -198,7 +198,7 @@ export function PriceListsPage() {
                     </TableCell>
 
                     {/* Priced items */}
-                    <TableCell className="px-3 py-3 text-end tabular-nums text-sm hidden md:table-cell">
+                    <TableCell className="px-3 py-3 text-start tabular-nums text-sm hidden md:table-cell">
                       {formatNumber(pl.priced_items)}
                     </TableCell>
 

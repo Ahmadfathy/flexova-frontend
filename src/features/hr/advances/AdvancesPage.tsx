@@ -63,11 +63,11 @@ function AdvanceSheet({
       {adv && (
         <div className="space-y-5">
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-border p-3">
+            <div className="rounded border border-border p-3">
               <p className="text-xs text-muted-foreground mb-1">{t("advances.col_amount")}</p>
               <p className="text-lg font-bold tabular-nums">{formatMoney(adv.amount, lang)}</p>
             </div>
-            <div className="rounded-lg border border-border p-3">
+            <div className="rounded border border-border p-3">
               <p className="text-xs text-muted-foreground mb-1">{t("advances.col_remaining")}</p>
               <p className={cn("text-lg font-bold tabular-nums", adv.remaining > 0 ? "text-danger" : "text-success")}>
                 {formatMoney(adv.remaining, lang)}
@@ -174,7 +174,7 @@ function CreateDialog({
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("advances.form_amount")} *</Label>
-          <Input type="number" min={0} value={amount} onChange={e => setAmount(e.target.value)} className="tabular-nums text-end" placeholder="0" />
+          <Input type="number" min={0} value={amount} onChange={e => setAmount(e.target.value)} className="tabular-nums text-start" placeholder="0" />
         </div>
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">{t("advances.form_date")} *</Label>
@@ -183,7 +183,7 @@ function CreateDialog({
         {type === "loan" && (
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">{t("advances.form_installment")}</Label>
-            <Input type="number" min={0} value={installment} onChange={e => setInst(e.target.value)} className="tabular-nums text-end" placeholder="0" />
+            <Input type="number" min={0} value={installment} onChange={e => setInst(e.target.value)} className="tabular-nums text-start" placeholder="0" />
           </div>
         )}
       </div>
@@ -316,7 +316,6 @@ export function AdvancesPage() {
                     {["col_employee","col_type","col_granted","col_amount","col_remaining","col_status"].map(k => (
                       <TableHead key={k} className={cn(
                         "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                        (k === "col_amount" || k === "col_remaining") && "text-end",
                       )}>
                         {t(`advances.${k}` as Parameters<typeof t>[0])}
                       </TableHead>
@@ -343,10 +342,10 @@ export function AdvancesPage() {
                         <TableCell className="text-sm text-muted-foreground tabular-nums">
                           {formatDate(adv.granted)}
                         </TableCell>
-                        <TableCell className="text-end tabular-nums text-sm font-medium">
+                        <TableCell className="text-start tabular-nums text-sm font-medium">
                           {formatMoney(adv.amount, lang)}
                         </TableCell>
-                        <TableCell className="text-end tabular-nums text-sm">
+                        <TableCell className="text-start tabular-nums text-sm">
                           <span className={cn(adv.remaining > 0 ? "text-danger font-medium" : "text-success")}>
                             {formatMoney(adv.remaining, lang)}
                           </span>

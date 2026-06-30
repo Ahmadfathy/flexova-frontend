@@ -98,7 +98,7 @@ export function HrDashboardPage() {
       {isOffline && <OfflineBanner />}
 
       {!kpis.payroll_run_this_month && (
-        <div className="mx-4 flex items-center gap-2 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
+        <div className="mx-4 flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {t("dashboard.payroll_alert")}
         </div>

@@ -29,7 +29,7 @@ function BrandLogo() {
 
   return (
     <div className="flex items-center gap-2.5">
-      <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
+      <div className="h-10 w-10 rounded bg-primary flex items-center justify-center shrink-0">
         <span className="text-primary-foreground font-bold text-lg leading-none">
           {name.charAt(0).toUpperCase()}
         </span>

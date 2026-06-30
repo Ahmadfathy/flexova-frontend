@@ -43,7 +43,7 @@ function SegmentCard({
 
   return (
     <div className={cn(
-      "rounded-xl border border-border border-s-4 p-5 space-y-2",
+      "rounded border border-border border-s-4 p-5 space-y-2",
       accent,
     )}>
       <div className="flex items-start justify-between gap-2">
@@ -131,7 +131,7 @@ export function SegmentsPage() {
         <PageHeader title={t("segments.title")} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border p-5 space-y-2">
+            <div key={i} className="rounded border border-border p-5 space-y-2">
               <Skeleton className="h-5 w-28" />
               <Skeleton className="h-10 w-16" />
               <Skeleton className="h-3.5 w-20" />

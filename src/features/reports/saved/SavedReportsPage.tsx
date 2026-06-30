@@ -41,7 +41,7 @@ export function SavedReportsPage() {
         <PageHeader title={t("saved.title")} />
         <div className="space-y-3 px-4">
           {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border p-5 space-y-2">
+            <div key={i} className="rounded border border-border p-5 space-y-2">
               <Skeleton className="h-4 w-48" />
               <Skeleton className="h-3.5 w-64" />
             </div>

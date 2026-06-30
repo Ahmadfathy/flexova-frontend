@@ -102,7 +102,7 @@ function CreateDialog({
             type="number" min={0.01} step="0.01"
             value={amount}
             onChange={e => setAmount(e.target.value)}
-            className="tabular-nums text-end"
+            className="tabular-nums text-start"
             placeholder="0.00"
           />
         </div>
@@ -270,8 +270,7 @@ export function PaymentVouchersPage() {
                   {["col_number","col_date","col_supplier","col_treasury","col_invoices","col_amount","col_memo"].map(k => (
                     <TableHead key={k} className={cn(
                       "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                      k === "col_amount" && "text-end",
-                    )}>
+                            )}>
                       {t(`payments.${k}` as Parameters<typeof t>[0])}
                     </TableHead>
                   ))}
@@ -315,7 +314,7 @@ export function PaymentVouchersPage() {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="text-end tabular-nums font-medium">
+                      <TableCell className="text-start tabular-nums font-medium">
                         {formatMoney(pv.amount, lang)}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{pv.memo ?? "—"}</TableCell>

@@ -150,7 +150,7 @@ export function ReconciliationPage() {
                   <TableRow className="bg-muted/30 hover:bg-muted/30">
                     <TableHead className="text-xs">{t("reconciliation.col_date")}</TableHead>
                     <TableHead className="text-xs">{t("reconciliation.col_desc")}</TableHead>
-                    <TableHead className="text-xs text-end">{t("reconciliation.col_amount")}</TableHead>
+                    <TableHead className="text-xs">{t("reconciliation.col_amount")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -160,7 +160,7 @@ export function ReconciliationPage() {
                         {formatDate(item.date)}
                       </TableCell>
                       <TableCell className="text-sm">{item.desc}</TableCell>
-                      <TableCell className="text-end tabular-nums font-medium text-danger">
+                      <TableCell className="text-start tabular-nums font-medium text-danger">
                         {formatMoney(item.amount, lang)}
                       </TableCell>
                     </TableRow>
@@ -185,7 +185,7 @@ export function ReconciliationPage() {
                   <TableRow className="bg-muted/30 hover:bg-muted/30">
                     <TableHead className="text-xs">{t("reconciliation.col_date")}</TableHead>
                     <TableHead className="text-xs">{t("reconciliation.col_desc")}</TableHead>
-                    <TableHead className="text-xs text-end">{t("reconciliation.col_amount")}</TableHead>
+                    <TableHead className="text-xs">{t("reconciliation.col_amount")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -195,7 +195,7 @@ export function ReconciliationPage() {
                         {formatDate(item.date)}
                       </TableCell>
                       <TableCell className="text-sm">{item.desc}</TableCell>
-                      <TableCell className="text-end tabular-nums font-medium text-warning">
+                      <TableCell className="text-start tabular-nums font-medium text-warning">
                         {formatMoney(item.amount, lang)}
                       </TableCell>
                     </TableRow>

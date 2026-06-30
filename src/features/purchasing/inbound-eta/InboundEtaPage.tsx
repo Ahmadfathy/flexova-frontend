@@ -249,10 +249,10 @@ export function InboundEtaPage() {
                       <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         {t("inbound_eta.col_supplier")}
                       </TableHead>
-                      <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                      <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         {t("inbound_eta.col_value")}
                       </TableHead>
-                      <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                      <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                         {t("inbound_eta.col_tax")}
                       </TableHead>
                       <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -300,12 +300,12 @@ export function InboundEtaPage() {
                           </TableCell>
 
                           {/* Value */}
-                          <TableCell className="text-end tabular-nums font-medium">
+                          <TableCell className="text-start tabular-nums font-medium">
                             {formatMoney(e.value, lang)}
                           </TableCell>
 
                           {/* Tax */}
-                          <TableCell className="text-end tabular-nums text-muted-foreground text-sm">
+                          <TableCell className="text-start tabular-nums text-muted-foreground text-sm">
                             {formatMoney(e.tax, lang)}
                           </TableCell>
 

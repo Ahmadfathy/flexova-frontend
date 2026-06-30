@@ -117,16 +117,16 @@ export function TrialBalancePage() {
                 <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("trial_balance.col_name")}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("trial_balance.col_opening")}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("trial_balance.col_dr")}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("trial_balance.col_cr")}
                 </TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t("trial_balance.col_closing")}
                 </TableHead>
               </TableRow>
@@ -140,23 +140,23 @@ export function TrialBalancePage() {
                   <TableRow key={row.account} className="border-b border-border last:border-0">
                     <TableCell className="font-mono text-xs text-muted-foreground">{row.account}</TableCell>
                     <TableCell className="text-sm">{name}</TableCell>
-                    <TableCell className="text-end tabular-nums text-sm text-muted-foreground">
+                    <TableCell className="text-start tabular-nums text-sm text-muted-foreground">
                       {formatMoney(row.opening, lang)}
                     </TableCell>
                     <TableCell className={cn(
-                      "text-end tabular-nums text-sm",
+                      "text-start tabular-nums text-sm",
                       row.dr > 0 ? "font-medium" : "text-muted-foreground",
                     )}>
                       {row.dr > 0 ? formatMoney(row.dr, lang) : "—"}
                     </TableCell>
                     <TableCell className={cn(
-                      "text-end tabular-nums text-sm",
+                      "text-start tabular-nums text-sm",
                       row.cr > 0 ? "font-medium" : "text-muted-foreground",
                     )}>
                       {row.cr > 0 ? formatMoney(row.cr, lang) : "—"}
                     </TableCell>
                     <TableCell className={cn(
-                      "text-end tabular-nums font-semibold text-sm",
+                      "text-start tabular-nums font-semibold text-sm",
                       row.closing < 0 ? "text-danger" : "",
                     )}>
                       {formatMoney(row.closing, lang)}
@@ -170,15 +170,15 @@ export function TrialBalancePage() {
                 <TableCell colSpan={2} className="font-semibold text-sm">
                   {t("trial_balance.totals")}
                 </TableCell>
-                <TableCell className="text-end tabular-nums font-semibold" />
-                <TableCell className="text-end tabular-nums font-semibold">
+                <TableCell className="text-start tabular-nums font-semibold" />
+                <TableCell className="text-start tabular-nums font-semibold">
                   {formatMoney(totals.dr, lang)}
                 </TableCell>
-                <TableCell className="text-end tabular-nums font-semibold">
+                <TableCell className="text-start tabular-nums font-semibold">
                   {formatMoney(totals.cr, lang)}
                 </TableCell>
                 <TableCell className={cn(
-                  "text-end tabular-nums font-bold",
+                  "text-start tabular-nums font-bold",
                   totals.balanced ? "text-success" : "text-danger",
                 )}>
                   {totals.balanced ? "✓" : `Δ ${formatMoney(Math.abs(totals.dr - totals.cr), lang)}`}

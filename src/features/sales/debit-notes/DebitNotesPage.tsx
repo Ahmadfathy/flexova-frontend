@@ -153,7 +153,7 @@ function NewDebitNoteSheet({ open, onOpenChange }: NewDebitNoteSheetProps) {
             />
           </div>
 
-          <p className="text-xs text-muted-foreground flex items-start gap-1 border rounded-md p-2 bg-muted/30">
+          <p className="text-xs text-muted-foreground flex items-start gap-1 border rounded p-2 bg-muted/30">
             <Info className="size-3 mt-0.5 shrink-0" />
             {t("debit.note_eta")}
           </p>
@@ -221,7 +221,7 @@ export function DebitNotesPage() {
                 <TableHead className="text-start">{t("debit.col_date")}</TableHead>
                 <TableHead className="text-start">{t("debit.col_source")}</TableHead>
                 <TableHead className="text-start">{t("debit.col_customer")}</TableHead>
-                <TableHead className="text-end">{t("debit.col_value")}</TableHead>
+                <TableHead className="text-start">{t("debit.col_value")}</TableHead>
                 <TableHead className="text-start">{t("debit.col_eta")}</TableHead>
               </TableRow>
             </TableHeader>
@@ -240,7 +240,7 @@ export function DebitNotesPage() {
                     </Link>
                   </TableCell>
                   <TableCell className="text-sm">{customerName(dn.customer_id)}</TableCell>
-                  <TableCell className="text-end tabular-nums text-sm font-medium">
+                  <TableCell className="text-start tabular-nums text-sm font-medium">
                     {formatMoney(dn.totals.value, lang)}
                   </TableCell>
                   <TableCell>

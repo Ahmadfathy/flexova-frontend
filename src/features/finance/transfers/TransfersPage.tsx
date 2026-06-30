@@ -120,7 +120,7 @@ function CreateDialog({
             type="number" min={0.01} step="0.01"
             value={amount}
             onChange={e => setAmount(e.target.value)}
-            className="tabular-nums text-end"
+            className="tabular-nums text-start"
             placeholder="0.00"
           />
         </div>
@@ -218,8 +218,7 @@ export function TransfersPage() {
                   {["col_number","col_date","col_from","col_to","col_amount","col_memo"].map(k => (
                     <TableHead key={k} className={cn(
                       "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                      k === "col_amount" && "text-end",
-                    )}>
+                            )}>
                       {t(`transfers.${k}` as Parameters<typeof t>[0])}
                     </TableHead>
                   ))}
@@ -246,7 +245,7 @@ export function TransfersPage() {
                         <ArrowIcon className="h-3.5 w-3.5 text-muted-foreground" />
                       </TableCell>
                       <TableCell className="text-sm font-medium">{toName}</TableCell>
-                      <TableCell className="text-end tabular-nums font-medium">
+                      <TableCell className="text-start tabular-nums font-medium">
                         {formatMoney(tf.amount, lang)}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{tf.memo ?? "—"}</TableCell>

@@ -260,7 +260,7 @@ export function PriceListEditorPage() {
                   </TableCell>
 
                   {/* Default price + diff */}
-                  <TableCell className="px-3 py-2 text-end tabular-nums text-sm text-muted-foreground hidden md:table-cell">
+                  <TableCell className="px-3 py-2 text-start tabular-nums text-sm text-muted-foreground hidden md:table-cell">
                     {defPrice !== undefined ? formatMoney(defPrice, lang) : "—"}
                     {diffNum !== null && diffNum !== 0 && (
                       <span className={cn(
@@ -273,14 +273,14 @@ export function PriceListEditorPage() {
                   </TableCell>
 
                   {/* Editable price */}
-                  <TableCell className="px-3 py-2 text-end">
+                  <TableCell className="px-3 py-2">
                     <Input
                       type="number"
                       min={0}
                       step={0.01}
                       value={rawPrice}
                       onChange={e => setPrices(p => ({ ...p, [item.id]: e.target.value }))}
-                      className="w-28 ms-auto text-end tabular-nums h-8 text-sm"
+                      className="w-28 text-start tabular-nums h-8 text-sm"
                       placeholder="—"
                     />
                   </TableCell>

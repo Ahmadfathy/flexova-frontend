@@ -82,7 +82,7 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   return (
     <div className="flex items-start justify-between gap-4 py-2 border-b border-border last:border-0">
       <span className="text-sm text-muted-foreground shrink-0">{label}</span>
-      <span className="text-sm font-medium text-end">{children}</span>
+      <span className="text-sm font-medium text-start">{children}</span>
     </div>
   );
 }
@@ -137,7 +137,7 @@ function RejectionBanner({
   const { t } = useTranslation("sales");
   const reason = lang === "ar" ? reasonAr : reasonEn;
   return (
-    <div className="flex items-start gap-3 px-4 py-3 bg-danger-tint text-danger-text rounded-lg border border-danger/20">
+    <div className="flex items-start gap-3 px-4 py-3 bg-danger-tint text-danger-text rounded border border-danger/20">
       <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-sm">{t("issued.rejection_title")}</p>
@@ -180,7 +180,7 @@ function QrBlock({ url }: { url: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-muted/30 hover:bg-muted/60 transition-colors group"
+      className="flex flex-col items-center gap-2 p-3 rounded border border-border bg-muted/30 hover:bg-muted/60 transition-colors group"
     >
       <QrCode className="h-12 w-12 text-muted-foreground group-hover:text-foreground transition-colors" />
       <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -224,7 +224,7 @@ function FixResendSheet({
       size="md"
     >
       <div className="space-y-4">
-        <div className="p-4 rounded-lg bg-muted/40 border border-border space-y-2">
+        <div className="p-4 rounded bg-muted/40 border border-border space-y-2">
           <p className="text-xs text-muted-foreground font-mono">
             {invoice.eta.offending_field ?? "unknown"}
           </p>
@@ -373,7 +373,7 @@ export function IssuedInvoicePage() {
 
       {/* B2C queued near-expiry warning */}
       {isQueued && invoice.eta.window_remaining_hours !== undefined && invoice.eta.window_remaining_hours <= 12 && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-warning-tint text-warning-text rounded-lg border border-warning/20">
+        <div className="flex items-center gap-2 px-4 py-2 bg-warning-tint text-warning-text rounded border border-warning/20">
           <Clock className="h-4 w-4 shrink-0" />
           <span className="text-sm font-medium">
             {t("issued.queued_deadline", { h: invoice.eta.window_remaining_hours })}
@@ -383,7 +383,7 @@ export function IssuedInvoicePage() {
 
       {/* No-edit notice for accepted invoices */}
       {isValid && (
-        <div className="flex items-start gap-2 px-4 py-2 bg-muted rounded-lg border border-border text-sm text-muted-foreground">
+        <div className="flex items-start gap-2 px-4 py-2 bg-muted rounded border border-border text-sm text-muted-foreground">
           <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-success" />
           <span>{t("issued.no_edit")}</span>
         </div>
@@ -437,13 +437,13 @@ export function IssuedInvoicePage() {
                   <TableHead className="h-9 py-0 px-2 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground hidden sm:table-cell">
                     {t("editor.col_desc")}
                   </TableHead>
-                  <TableHead className="h-9 py-0 px-2 text-end text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="h-9 py-0 px-2 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("editor.col_qty")}
                   </TableHead>
-                  <TableHead className="h-9 py-0 px-2 text-end text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="h-9 py-0 px-2 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("editor.col_price")}
                   </TableHead>
-                  <TableHead className="h-9 py-0 px-2 text-end text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <TableHead className="h-9 py-0 px-2 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("editor.col_total")}
                   </TableHead>
                 </TableRow>
@@ -464,13 +464,13 @@ export function IssuedInvoicePage() {
                       <TableCell className="px-2 py-2.5 text-sm text-muted-foreground hidden sm:table-cell">
                         {line.description}
                       </TableCell>
-                      <TableCell className="px-2 py-2.5 text-sm text-end tabular-nums">
+                      <TableCell className="px-2 py-2.5 text-sm text-start tabular-nums">
                         {line.qty} {uomLabel}
                       </TableCell>
-                      <TableCell className="px-2 py-2.5 text-sm text-end tabular-nums">
+                      <TableCell className="px-2 py-2.5 text-sm text-start tabular-nums">
                         {formatMoney(line.price, lang)}
                       </TableCell>
-                      <TableCell className="px-2 py-2.5 text-sm text-end tabular-nums font-medium">
+                      <TableCell className="px-2 py-2.5 text-sm text-start tabular-nums font-medium">
                         {formatMoney(line.line_total, lang)}
                       </TableCell>
                     </TableRow>

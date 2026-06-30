@@ -285,7 +285,7 @@ export function PurchaseReturnsPage() {
                   <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("returns.col_reason")}
                   </TableHead>
-                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("returns.col_value")}
                   </TableHead>
                   <TableHead className="w-8" />
@@ -335,7 +335,7 @@ export function PurchaseReturnsPage() {
                       <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
                         {reasonText}
                       </TableCell>
-                      <TableCell className="text-end tabular-nums font-semibold">
+                      <TableCell className="text-start tabular-nums font-semibold">
                         {formatMoney(r.totals.value, lang)}
                       </TableCell>
                       <TableCell className="w-8">
@@ -424,10 +424,10 @@ export function PurchaseReturnsPage() {
                   <TableHeader>
                     <TableRow className="bg-muted/30">
                       <TableHead className="text-xs">{t("returns.col_item")}</TableHead>
-                      <TableHead className="text-xs w-28 text-end">{t("returns.col_price")}</TableHead>
-                      <TableHead className="text-xs w-20 text-end">{t("returns.col_max")}</TableHead>
-                      <TableHead className="text-xs w-24 text-end">{t("returns.col_qty")}</TableHead>
-                      <TableHead className="text-xs w-28 text-end">{t("returns.col_total")}</TableHead>
+                      <TableHead className="text-xs w-28">{t("returns.col_price")}</TableHead>
+                      <TableHead className="text-xs w-20">{t("returns.col_max")}</TableHead>
+                      <TableHead className="text-xs w-24">{t("returns.col_qty")}</TableHead>
+                      <TableHead className="text-xs w-28">{t("returns.col_total")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -444,17 +444,17 @@ export function PurchaseReturnsPage() {
                             {name}
                             <span className="ms-1 text-xs text-muted-foreground">{uomName}</span>
                           </TableCell>
-                          <TableCell className="text-sm text-end tabular-nums text-muted-foreground">
+                          <TableCell className="text-sm text-start tabular-nums text-muted-foreground">
                             {formatMoney(l.price, lang)}
                           </TableCell>
-                          <TableCell className="text-sm text-end tabular-nums text-muted-foreground">
+                          <TableCell className="text-sm text-start tabular-nums text-muted-foreground">
                             {l.max_qty}
                           </TableCell>
                           <TableCell className="p-1">
                             <Input
                               type="number" min={0} max={l.max_qty} step="any"
                               className={cn(
-                                "h-8 text-xs tabular-nums text-end",
+                                "h-8 text-xs tabular-nums text-start",
                                 qtyOver && "border-danger",
                               )}
                               value={l.qty}
@@ -464,7 +464,7 @@ export function PurchaseReturnsPage() {
                             />
                           </TableCell>
                           <TableCell className={cn(
-                            "text-sm text-end tabular-nums font-medium",
+                            "text-sm text-start tabular-nums font-medium",
                             qty > 0 ? "text-foreground" : "text-muted-foreground",
                           )}>
                             {formatMoney(lineTotal(l), lang)}

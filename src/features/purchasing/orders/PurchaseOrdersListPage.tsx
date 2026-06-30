@@ -170,7 +170,7 @@ function PoDetailSheet({
         </div>
 
         {po.from === "lowstock" && (
-          <div className="flex items-center gap-2 rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning mb-4">
+          <div className="flex items-center gap-2 rounded bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning mb-4">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {t("orders.from_lowstock")}
           </div>
@@ -192,9 +192,9 @@ function PoDetailSheet({
             <TableHeader>
               <TableRow className="bg-muted/30">
                 <TableHead className="text-xs">{t("orders.col_item")}</TableHead>
-                <TableHead className="text-xs w-20 text-end">{t("orders.col_price")}</TableHead>
-                <TableHead className="text-xs w-20 text-end">{t("orders.col_ordered")}</TableHead>
-                <TableHead className="text-xs w-20 text-end">{t("orders.col_received")}</TableHead>
+                <TableHead className="text-xs w-20">{t("orders.col_price")}</TableHead>
+                <TableHead className="text-xs w-20">{t("orders.col_ordered")}</TableHead>
+                <TableHead className="text-xs w-20">{t("orders.col_received")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -210,14 +210,14 @@ function PoDetailSheet({
                       {name}
                       <span className="ms-1 text-xs text-muted-foreground">{uomName}</span>
                     </TableCell>
-                    <TableCell className="text-sm text-end tabular-nums text-muted-foreground">
+                    <TableCell className="text-sm text-start tabular-nums text-muted-foreground">
                       {formatMoney(line.price, lang)}
                     </TableCell>
-                    <TableCell className="text-sm text-end tabular-nums">
+                    <TableCell className="text-sm text-start tabular-nums">
                       {line.qty_ordered}
                     </TableCell>
                     <TableCell className={cn(
-                      "text-sm text-end tabular-nums font-medium",
+                      "text-sm text-start tabular-nums font-medium",
                       line.qty_received >= line.qty_ordered
                         ? "text-success"
                         : line.qty_received > 0
@@ -430,8 +430,8 @@ function CreatePoDialog({
                   <TableHead className="text-xs">{t("orders.col_item")}</TableHead>
                   <TableHead className="text-xs w-24">{t("orders.col_uom")}</TableHead>
                   <TableHead className="text-xs w-20">{t("orders.col_qty")}</TableHead>
-                  <TableHead className="text-xs w-28 text-end">{t("orders.col_price")}</TableHead>
-                  <TableHead className="text-xs w-28 text-end">{t("orders.col_line_total")}</TableHead>
+                  <TableHead className="text-xs w-28">{t("orders.col_price")}</TableHead>
+                  <TableHead className="text-xs w-28">{t("orders.col_line_total")}</TableHead>
                   <TableHead className="w-8" />
                 </TableRow>
               </TableHeader>
@@ -492,7 +492,7 @@ function CreatePoDialog({
                       <TableCell className="p-1">
                         <Input
                           type="number" min={0.001} step="any"
-                          className="h-8 text-xs tabular-nums text-end"
+                          className="h-8 text-xs tabular-nums text-start"
                           value={line.qty}
                           onChange={e => setLines(prev => prev.map(l => l._key === line._key ? { ...l, qty: e.target.value } : l))}
                         />
@@ -500,12 +500,12 @@ function CreatePoDialog({
                       <TableCell className="p-1">
                         <Input
                           type="number" min={0} step="0.01"
-                          className="h-8 text-xs tabular-nums text-end"
+                          className="h-8 text-xs tabular-nums text-start"
                           value={line.price}
                           onChange={e => setLines(prev => prev.map(l => l._key === line._key ? { ...l, price: e.target.value } : l))}
                         />
                       </TableCell>
-                      <TableCell className="text-sm text-end tabular-nums font-medium pe-3">
+                      <TableCell className="text-sm text-start tabular-nums font-medium pe-3">
                         {formatMoney(lineTotal, lang)}
                       </TableCell>
                       <TableCell className="p-1 w-8">
@@ -754,7 +754,7 @@ export function PurchaseOrdersListPage() {
                           <TableCell className="text-sm text-muted-foreground tabular-nums whitespace-nowrap">
                             {formatDate(po.expected_delivery)}
                           </TableCell>
-                          <TableCell className="text-end tabular-nums font-medium">
+                          <TableCell className="text-start tabular-nums font-medium">
                             {formatMoney(po.totals.grand_total, lang)}
                           </TableCell>
                           <TableCell>

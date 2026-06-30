@@ -116,7 +116,7 @@ function CreateDialog({
             type="number" min={0.01} step="0.01"
             value={amount}
             onChange={e => setAmount(e.target.value)}
-            className="tabular-nums text-end"
+            className="tabular-nums text-start"
             placeholder="0.00"
           />
         </div>
@@ -313,7 +313,7 @@ export function ExpensesPage() {
                           : <span className="text-xs text-muted-foreground">{t("expenses.no_attachment")}</span>
                         }
                       </TableCell>
-                      <TableCell className="text-end tabular-nums font-medium">
+                      <TableCell className="text-start tabular-nums font-medium">
                         {formatMoney(exp.amount, lang)}
                       </TableCell>
                     </TableRow>
@@ -324,7 +324,7 @@ export function ExpensesPage() {
                   <TableCell colSpan={5} className="text-sm font-semibold">
                     {lang === "ar" ? "الإجمالي" : "Total"}
                   </TableCell>
-                  <TableCell className="text-end tabular-nums font-bold">
+                  <TableCell className="text-start tabular-nums font-bold">
                     {formatMoney(totalAmount, lang)}
                   </TableCell>
                 </TableRow>

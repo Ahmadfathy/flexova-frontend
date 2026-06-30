@@ -295,7 +295,7 @@ export function UsersPage() {
                           />
                         </TableCell>
                         {/* Actions */}
-                        <TableCell className="text-end">
+                        <TableCell className="text-start">
                           {can("admin.user.manage") && !u.is_last_admin && (
                             <Button
                               size="sm"

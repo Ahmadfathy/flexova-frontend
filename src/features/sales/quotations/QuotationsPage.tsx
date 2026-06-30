@@ -151,7 +151,7 @@ export function QuotationsPage() {
                 <TableHead className="text-start">{t("quote.col_number")}</TableHead>
                 <TableHead className="text-start">{t("quote.col_date")}</TableHead>
                 <TableHead className="text-start">{t("quote.col_customer")}</TableHead>
-                <TableHead className="text-end">{t("quote.col_total")}</TableHead>
+                <TableHead className="text-start">{t("quote.col_total")}</TableHead>
                 <TableHead className="text-start">{t("quote.col_status")}</TableHead>
                 <TableHead className="text-start">{t("quote.col_valid_until")}</TableHead>
                 <TableHead className="w-10" />
@@ -167,7 +167,7 @@ export function QuotationsPage() {
                   <TableCell className="font-mono text-sm" dir="ltr">{qt.number}</TableCell>
                   <TableCell className="text-sm">{formatDate(qt.date)}</TableCell>
                   <TableCell className="text-sm">{customerName(qt.customer_id)}</TableCell>
-                  <TableCell className="text-end tabular-nums text-sm font-medium">
+                  <TableCell className="text-start tabular-nums text-sm font-medium">
                     {formatMoney(qt.totals.grand_total, lang)}
                   </TableCell>
                   <TableCell>

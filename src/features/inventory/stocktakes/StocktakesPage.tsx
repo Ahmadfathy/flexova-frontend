@@ -209,12 +209,12 @@ export function StocktakesPage() {
                       </TableCell>
 
                       {/* Items count */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm hidden lg:table-cell">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm hidden lg:table-cell">
                         {formatNumber(st.items_count)}
                       </TableCell>
 
                       {/* Net diff */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm hidden lg:table-cell">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm hidden lg:table-cell">
                         <span className={cn(
                           "font-medium",
                           diffPos ? "text-success" : "text-destructive"

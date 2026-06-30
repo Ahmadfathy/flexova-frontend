@@ -284,7 +284,7 @@ export function SupplierFormModal({ open, onOpenChange, supplier, onSaved }: Sup
           </div>
 
           {/* Balance note */}
-          <div className="flex items-start gap-2 rounded-lg bg-muted/50 px-3 py-2.5 text-xs text-muted-foreground">
+          <div className="flex items-start gap-2 rounded bg-muted/50 px-3 py-2.5 text-xs text-muted-foreground">
             <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
             <span>{t("form.balance_note")}</span>
           </div>

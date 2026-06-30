@@ -19,11 +19,11 @@ function OptionCard({
     <button
       onClick={onClick}
       className={cn(
-        "flex flex-col gap-2 p-3 rounded-lg border-2 text-start transition-all hover:border-brand/50",
+        "flex flex-col gap-2 p-3 rounded border-2 text-start transition-all hover:border-brand/50",
         selected ? "border-brand bg-brand-tint" : "border-border bg-card hover:bg-background"
       )}
     >
-      <div className="w-full h-20 rounded-md overflow-hidden bg-background border border-border">
+      <div className="w-full h-20 rounded overflow-hidden bg-background border border-border">
         {preview}
       </div>
       <div>
@@ -294,7 +294,7 @@ export function AppearanceSettings() {
           <div>
             <p className="text-xs text-muted-foreground mb-2">{t("appearance.logo")}</p>
             <div className="flex items-center gap-3">
-              <div className="h-14 w-14 rounded-md border border-border bg-background flex items-center justify-center overflow-hidden shrink-0">
+              <div className="h-14 w-14 rounded border border-border bg-background flex items-center justify-center overflow-hidden shrink-0">
                 {branding.logoUrl
                   ? <img src={branding.logoUrl} alt="logo" className="h-full w-full object-contain" />
                   : <span className="text-2xl font-bold text-brand select-none">F</span>

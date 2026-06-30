@@ -195,7 +195,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
           {step === "step_download" && (
             <div className="space-y-6">
               {/* Download template */}
-              <div className="rounded-lg border border-border p-4 space-y-3">
+              <div className="rounded border border-border p-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <FileSpreadsheet className="h-5 w-5 text-primary shrink-0" />
                   <span className="text-sm font-semibold">{t("import_wizard.download_tpl")}</span>
@@ -243,7 +243,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
                 <span className="text-sm font-semibold block">{t("import_wizard.step_upload")}</span>
 
                 {file ? (
-                  <div className="flex items-center gap-3 rounded-lg border border-primary/40 bg-primary/5 px-4 py-3">
+                  <div className="flex items-center gap-3 rounded border border-primary/40 bg-primary/5 px-4 py-3">
                     <FileSpreadsheet className="h-5 w-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{file.name}</p>
@@ -263,7 +263,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
                 ) : (
                   <div
                     className={cn(
-                      "rounded-lg border-2 border-dashed px-6 py-10 text-center cursor-pointer transition-colors",
+                      "rounded border-2 border-dashed px-6 py-10 text-center cursor-pointer transition-colors",
                       dragging
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50 hover:bg-muted/30"
@@ -300,14 +300,14 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
             <div className="space-y-4">
               {/* Summary badges */}
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 px-3 py-2">
+                <div className="flex items-center gap-2 rounded border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 px-3 py-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
                     {t("import_wizard.valid", { n: sampleResult.valid })}
                   </span>
                 </div>
                 {sampleErrors.length > 0 && (
-                  <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
+                  <div className="flex items-center gap-2 rounded border border-destructive/20 bg-destructive/5 px-3 py-2">
                     <XCircle className="h-4 w-4 text-destructive shrink-0" />
                     <span className="text-sm font-medium text-destructive">
                       {t("import_wizard.errors", { n: sampleErrors.length })}
@@ -338,7 +338,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
 
               {/* Valid rows preview */}
               {tab === "valid" && (
-                <div className="rounded-lg border border-border overflow-hidden">
+                <div className="rounded border border-border overflow-hidden">
                   <Table>
                     <TableHeader className="bg-muted/40">
                       <TableRow className="hover:bg-transparent">
@@ -381,7 +381,7 @@ export function ImportDrawer({ open, onOpenChange, data }: ImportDrawerProps) {
 
               {/* Error rows */}
               {tab === "errors" && (
-                <div className="rounded-lg border border-border overflow-hidden">
+                <div className="rounded border border-border overflow-hidden">
                   <Table>
                     <TableHeader className="bg-muted/40">
                       <TableRow className="hover:bg-transparent">

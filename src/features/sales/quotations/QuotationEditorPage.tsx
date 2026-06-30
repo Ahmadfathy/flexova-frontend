@@ -161,11 +161,11 @@ function LineRow({
           <Input
             type="number" min={0} step={0.01} value={line.price}
             onChange={e => onChange({ ...line, price: Math.max(0, +e.target.value) })}
-            className="h-8 text-end tabular-nums w-28"
+            className="h-8 text-start tabular-nums w-28"
           />
         )}
       </TableCell>
-      <TableCell className="py-2 text-end tabular-nums text-sm font-medium w-32">
+      <TableCell className="py-2 text-start tabular-nums text-sm font-medium w-32">
         {formatMoney(lineTotal, lang)}
       </TableCell>
       {!readonly && (
@@ -433,7 +433,7 @@ export function QuotationEditorPage() {
                   <TableHead className="text-start">{t("editor.col_qty")}</TableHead>
                   <TableHead className="text-start">{t("editor.col_uom")}</TableHead>
                   <TableHead className="text-start">{t("editor.col_price")}</TableHead>
-                  <TableHead className="text-end">{t("editor.col_total")}</TableHead>
+                  <TableHead className="text-start">{t("editor.col_total")}</TableHead>
                   {!readonly && <TableHead className="w-10" />}
                 </TableRow>
               </TableHeader>
@@ -492,7 +492,7 @@ export function QuotationEditorPage() {
           </PageSection>
 
           {/* No-ETA notice */}
-          <div className="border rounded-lg p-3 flex items-start gap-2 text-xs text-muted-foreground bg-muted/30">
+          <div className="border rounded p-3 flex items-start gap-2 text-xs text-muted-foreground bg-muted/30">
             <Info className="size-3 mt-0.5 shrink-0" />
             {t("quote.no_eta")}
           </div>

@@ -172,7 +172,7 @@ function LineRow({
       <TableCell className="w-20 p-1">
         <Input
           type="number" min={0.001} step="any"
-          className="h-8 text-xs tabular-nums text-end"
+          className="h-8 text-xs tabular-nums text-start"
           value={line.qty}
           onChange={e => onUpdate(line._key, "qty", e.target.value)}
         />
@@ -202,7 +202,7 @@ function LineRow({
       <TableCell className="w-28 p-1">
         <Input
           type="number" min={0} step="0.01"
-          className="h-8 text-xs tabular-nums text-end"
+          className="h-8 text-xs tabular-nums text-start"
           value={line.purchase_price}
           onChange={e => onUpdate(line._key, "purchase_price", e.target.value)}
         />
@@ -212,7 +212,7 @@ function LineRow({
       <TableCell className="w-24 p-1">
         <Input
           type="number" min={0} step="0.01"
-          className="h-8 text-xs tabular-nums text-end"
+          className="h-8 text-xs tabular-nums text-start"
           value={line.line_discount}
           onChange={e => onUpdate(line._key, "line_discount", e.target.value)}
         />
@@ -241,7 +241,7 @@ function LineRow({
       </TableCell>
 
       {/* Line net */}
-      <TableCell className="w-28 text-end tabular-nums text-sm font-medium p-1">
+      <TableCell className="w-28 text-start tabular-nums text-sm font-medium p-1">
         <div>{formatMoney(net, lang)}</div>
         {dist > 0 && (
           <div className="text-[10px] text-muted-foreground">
@@ -445,7 +445,7 @@ export function PurchaseInvoiceEditorPage() {
         {isOffline && <OfflineBanner />}
 
         {fromLowstock && (
-          <div className="mx-6 flex items-center gap-2 rounded-md bg-brand/10 border border-brand/20 px-4 py-2 text-sm text-brand">
+          <div className="mx-6 flex items-center gap-2 rounded bg-brand/10 border border-brand/20 px-4 py-2 text-sm text-brand">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {t("editor.from_lowstock")}
           </div>
@@ -609,10 +609,10 @@ export function PurchaseInvoiceEditorPage() {
                       <TableHead className="text-xs">{t("editor.col_item")}</TableHead>
                       <TableHead className="text-xs w-20">{t("editor.col_qty")}</TableHead>
                       <TableHead className="text-xs w-24">{t("editor.col_uom")}</TableHead>
-                      <TableHead className="text-xs w-28 text-end">{t("editor.col_price")}</TableHead>
-                      <TableHead className="text-xs w-24 text-end">{t("editor.col_discount")}</TableHead>
+                      <TableHead className="text-xs w-28">{t("editor.col_price")}</TableHead>
+                      <TableHead className="text-xs w-24">{t("editor.col_discount")}</TableHead>
                       <TableHead className="text-xs w-32">{t("editor.col_tax")}</TableHead>
-                      <TableHead className="text-xs w-28 text-end">{t("editor.col_total")}</TableHead>
+                      <TableHead className="text-xs w-28">{t("editor.col_total")}</TableHead>
                       <TableHead className="w-8" />
                     </TableRow>
                   </TableHeader>
@@ -702,18 +702,18 @@ export function PurchaseInvoiceEditorPage() {
                                 <thead>
                                   <tr className="text-muted-foreground">
                                     <th className="text-start py-1 font-normal">{t("editor.dist_col_item")}</th>
-                                    <th className="text-end py-1 font-normal">{t("editor.dist_col_share")}</th>
-                                    <th className="text-end py-1 font-normal">{t("editor.dist_col_eff")}</th>
+                                    <th className="text-start py-1 font-normal">{t("editor.dist_col_share")}</th>
+                                    <th className="text-start py-1 font-normal">{t("editor.dist_col_eff")}</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   {distributionRows.map((row, i) => (
                                     <tr key={i} className="border-t border-border/40">
                                       <td className="py-1 pe-2 truncate max-w-[120px]">{row.name}</td>
-                                      <td className="py-1 text-end tabular-nums">
+                                      <td className="py-1 text-start tabular-nums">
                                         +{formatMoney(row.share, lang)}
                                       </td>
-                                      <td className="py-1 text-end tabular-nums">
+                                      <td className="py-1 text-start tabular-nums">
                                         {formatMoney(row.effPrice, lang)}
                                       </td>
                                     </tr>
@@ -727,7 +727,7 @@ export function PurchaseInvoiceEditorPage() {
                     </div>
                     <Input
                       type="number" min={0} step="0.01"
-                      className="h-8 text-sm tabular-nums text-end"
+                      className="h-8 text-sm tabular-nums text-start"
                       value={additionalCosts}
                       onChange={e => setAdditionalCosts(e.target.value)}
                     />

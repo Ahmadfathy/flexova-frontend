@@ -332,7 +332,7 @@ export function EtaHubPage() {
             <div
               key={i}
               className={cn(
-                "flex items-start gap-3 rounded-lg border px-4 py-3 text-sm",
+                "flex items-start gap-3 rounded border px-4 py-3 text-sm",
                 alert.level === "danger"
                   ? "border-destructive/40 bg-destructive/5 text-destructive"
                   : alert.level === "warning"
@@ -356,7 +356,7 @@ export function EtaHubPage() {
         actions={
           <div className="flex items-center gap-2 flex-wrap">
             {/* B2B / B2C / All tabs */}
-            <div className="flex rounded-md border border-border overflow-hidden text-xs">
+            <div className="flex rounded border border-border overflow-hidden text-xs">
               {(["all", "b2b", "b2c"] as const).map(tab => (
                 <button
                   key={tab}
@@ -623,7 +623,7 @@ export function EtaHubPage() {
         >
           <div className="flex items-start gap-4">
             <div className={cn(
-              "flex items-center justify-center rounded-lg p-3",
+              "flex items-center justify-center rounded p-3",
               settings.eseal.configured
                 ? "bg-success/10 text-success"
                 : "bg-destructive/10 text-destructive",

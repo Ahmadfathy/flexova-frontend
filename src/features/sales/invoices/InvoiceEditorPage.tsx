@@ -266,7 +266,7 @@ function LineRow({ line, idx, data, lang, t, onUpdate, onSelectItem, onRemove, h
           type="number"
           min={0.001}
           step="any"
-          className="h-8 text-xs tabular-nums text-end"
+          className="h-8 text-xs tabular-nums text-start"
           value={line.qty}
           onChange={e => onUpdate(line._key, "qty", parseFloat(e.target.value) || 0)}
         />
@@ -299,7 +299,7 @@ function LineRow({ line, idx, data, lang, t, onUpdate, onSelectItem, onRemove, h
             min={0}
             step="0.01"
             className={cn(
-              "h-8 text-xs tabular-nums text-end pe-1",
+              "h-8 text-xs tabular-nums text-start pe-1",
               line.price_overridden && "border-warning text-warning-text"
             )}
             value={line.price}
@@ -324,7 +324,7 @@ function LineRow({ line, idx, data, lang, t, onUpdate, onSelectItem, onRemove, h
           type="number"
           min={0}
           step="0.01"
-          className="h-8 text-xs tabular-nums text-end"
+          className="h-8 text-xs tabular-nums text-start"
           value={line.line_discount}
           onChange={e => onUpdate(line._key, "line_discount", parseFloat(e.target.value) || 0)}
         />
@@ -353,7 +353,7 @@ function LineRow({ line, idx, data, lang, t, onUpdate, onSelectItem, onRemove, h
       </TableCell>
 
       {/* Line total */}
-      <TableCell className="w-28 text-end tabular-nums text-sm font-medium">
+      <TableCell className="w-28 text-start tabular-nums text-sm font-medium">
         {formatMoney(lineNet, lang)}
       </TableCell>
 
@@ -438,7 +438,7 @@ function ReadinessPanel({
     <div className="space-y-3">
       {/* Readiness status */}
       {canSubmit ? (
-        <div className="flex items-start gap-2 rounded-lg bg-success-tint text-success-text px-3 py-2.5">
+        <div className="flex items-start gap-2 rounded bg-success-tint text-success-text px-3 py-2.5">
           <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0" />
           <div className="space-y-0.5">
             <p className="text-sm font-medium">{t("readiness.ready")}</p>
@@ -453,7 +453,7 @@ function ReadinessPanel({
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-muted/20 overflow-hidden">
+        <div className="rounded border border-border bg-muted/20 overflow-hidden">
           <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-muted/40">
             <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
             <p className="text-xs font-semibold text-foreground">{t("readiness.title")}</p>
@@ -919,7 +919,7 @@ export function InvoiceEditorPage() {
           {/* Branch (readonly, derived) */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-muted-foreground">{t("editor.branch")}</label>
-            <div className="h-10 px-3 flex items-center rounded-md border border-input bg-muted/30 text-sm text-muted-foreground">
+            <div className="h-10 px-3 flex items-center rounded border border-input bg-muted/30 text-sm text-muted-foreground">
               {branchName}
             </div>
           </div>
@@ -996,12 +996,12 @@ export function InvoiceEditorPage() {
                   <TableRow className="bg-muted/30 hover:bg-muted/30">
                     <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_item")}</TableHead>
                     <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_desc")}</TableHead>
-                    <TableHead className="text-end font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_qty")}</TableHead>
+                    <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_qty")}</TableHead>
                     <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_uom")}</TableHead>
-                    <TableHead className="text-end font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_price")}</TableHead>
-                    <TableHead className="text-end font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_discount")}</TableHead>
+                    <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_price")}</TableHead>
+                    <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_discount")}</TableHead>
                     <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_tax")}</TableHead>
-                    <TableHead className="text-end font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_total")}</TableHead>
+                    <TableHead className="text-start font-semibold uppercase tracking-wider text-[10px]">{t("editor.col_total")}</TableHead>
                     <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>

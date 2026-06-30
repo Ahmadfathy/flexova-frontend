@@ -80,7 +80,7 @@ export function LowStockPage() {
   return (
     <div className="flex flex-col gap-4">
       {totalCount > 0 && (
-        <div className="mx-4 mt-2 flex items-start gap-3 rounded-lg border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
+        <div className="mx-4 mt-2 flex items-start gap-3 rounded border border-warning/30 bg-warning/5 px-4 py-3 text-sm">
           <PackageOpen className="h-4 w-4 text-warning mt-0.5 shrink-0" />
           <span className="text-warning">
             {t("low_stock.count", { n: totalCount })}
@@ -173,19 +173,19 @@ export function LowStockPage() {
                       </TableCell>
 
                       {/* Balance */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm">
                         <span className="text-destructive font-medium">
                           {formatNumber(row.balance)}
                         </span>
                       </TableCell>
 
                       {/* Reorder level */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm text-muted-foreground hidden md:table-cell">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm text-muted-foreground hidden md:table-cell">
                         {formatNumber(row.reorder_level)}
                       </TableCell>
 
                       {/* Shortfall */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm">
                         <Badge
                           variant={urgency === "high" ? "destructive" : "secondary"}
                           className="text-xs tabular-nums"
@@ -195,7 +195,7 @@ export function LowStockPage() {
                       </TableCell>
 
                       {/* Suggested qty */}
-                      <TableCell className="px-3 py-3 text-end tabular-nums text-sm text-muted-foreground hidden lg:table-cell">
+                      <TableCell className="px-3 py-3 text-start tabular-nums text-sm text-muted-foreground hidden lg:table-cell">
                         {formatNumber(row.suggested_qty)}
                       </TableCell>
 

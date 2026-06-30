@@ -122,7 +122,7 @@ function CustomerSheet({
         <div className="space-y-5">
           {/* AR balance + credit */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-border p-3">
+            <div className="rounded border border-border p-3">
               <p className="text-xs text-muted-foreground mb-1">{t("card.ar_balance")}</p>
               <p className={cn(
                 "text-lg font-bold tabular-nums",
@@ -136,7 +136,7 @@ function CustomerSheet({
                 </p>
               )}
             </div>
-            <div className="rounded-lg border border-border p-3">
+            <div className="rounded border border-border p-3">
               <p className="text-xs text-muted-foreground mb-1">{t("card.credit_limit")}</p>
               {customer.credit_limit > 0 ? (
                 <>
@@ -319,7 +319,7 @@ function CreateDialog({
             type="number" min={0} step="100"
             value={limit}
             onChange={e => setLimit(e.target.value)}
-            className="tabular-nums text-end"
+            className="tabular-nums text-start"
             placeholder="0"
           />
         </div>
@@ -484,7 +484,6 @@ export function CustomersListPage() {
                       {["col_name","col_type","col_phone","col_segment","col_balance","col_last_activity"].map(k => (
                         <TableHead key={k} className={cn(
                           "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                          k === "col_balance" && "text-end",
                         )}>
                           {t(`list.${k}` as Parameters<typeof t>[0])}
                         </TableHead>
@@ -532,8 +531,8 @@ export function CustomersListPage() {
                               ))}
                             </div>
                           </TableCell>
-                          <TableCell className="text-end">
-                            <div className="flex flex-col items-end gap-0.5">
+                          <TableCell>
+                            <div className="flex flex-col items-start gap-0.5">
                               <span className={cn(
                                 "tabular-nums font-medium text-sm",
                                 c.ar_balance > 0 ? "text-danger" : "text-muted-foreground",

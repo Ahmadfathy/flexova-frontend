@@ -187,7 +187,7 @@ export function TreasuriesPage() {
                   <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("treasuries.col_account_no")}
                   </TableHead>
-                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground text-end">
+                  <TableHead className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {t("treasuries.col_balance")}
                   </TableHead>
                 </TableRow>
@@ -201,7 +201,7 @@ export function TreasuriesPage() {
                     <TableRow key={tr.id} className="border-b border-border last:border-0">
                       <TableCell>
                         <div className="flex items-center gap-2.5">
-                          <div className="rounded-lg bg-muted p-1.5">
+                          <div className="rounded bg-muted p-1.5">
                             <Icon className="h-4 w-4 text-muted-foreground" />
                           </div>
                           <span className="font-medium text-sm">{name}</span>
@@ -215,7 +215,7 @@ export function TreasuriesPage() {
                       <TableCell className="text-sm text-muted-foreground font-mono" dir="ltr">
                         {tr.account_no ?? "—"}
                       </TableCell>
-                      <TableCell className="text-end tabular-nums font-semibold">
+                      <TableCell className="text-start tabular-nums font-semibold">
                         {formatMoney(tr.balance, lang)}
                       </TableCell>
                     </TableRow>
@@ -226,7 +226,7 @@ export function TreasuriesPage() {
                   <TableCell colSpan={3} className="text-sm">
                     {t("treasuries.total_balance")}
                   </TableCell>
-                  <TableCell className="text-end tabular-nums text-success font-bold">
+                  <TableCell className="text-start tabular-nums text-success font-bold">
                     {formatMoney(totalBalance, lang)}
                   </TableCell>
                 </TableRow>

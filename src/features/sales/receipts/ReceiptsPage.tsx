@@ -223,7 +223,7 @@ function NewReceiptSheet({ open, onOpenChange, data }: NewReceiptSheetProps) {
           </div>
 
           {/* Independence notice */}
-          <p className="text-xs text-muted-foreground flex items-start gap-1 border rounded-md p-2 bg-muted/30">
+          <p className="text-xs text-muted-foreground flex items-start gap-1 border rounded p-2 bg-muted/30">
             <Info className="size-3 mt-0.5 shrink-0" />
             {t("receipt.note")}
           </p>
@@ -336,7 +336,7 @@ export function ReceiptsPage() {
                 <TableHead className="text-start">{t("receipt.col_date")}</TableHead>
                 <TableHead className="text-start">{t("receipt.col_customer")}</TableHead>
                 <TableHead className="text-start">{t("receipt.col_invoice")}</TableHead>
-                <TableHead className="text-end">{t("receipt.col_amount")}</TableHead>
+                <TableHead className="text-start">{t("receipt.col_amount")}</TableHead>
                 <TableHead className="text-start">{t("receipt.col_method")}</TableHead>
                 <TableHead className="text-start">{t("receipt.col_treasury")}</TableHead>
               </TableRow>
@@ -352,7 +352,7 @@ export function ReceiptsPage() {
                       {invoiceNumber(rcv.invoice_id)}
                     </span>
                   </TableCell>
-                  <TableCell className="text-end tabular-nums text-sm font-semibold">
+                  <TableCell className="text-start tabular-nums text-sm font-semibold">
                     {formatMoney(rcv.amount, lang)}
                   </TableCell>
                   <TableCell className="text-sm">{methodName(rcv.method)}</TableCell>

@@ -247,7 +247,7 @@ function WhFormDialog({ open, mode, warehouse, lang, t, onClose }: WhFormDialogP
         </div>
 
         {/* Status */}
-        <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+        <div className="flex items-center justify-between rounded border border-border px-3 py-2.5">
           <div>
             <p className="text-sm font-medium">{t("warehouses.form_status")}</p>
             <p className="text-xs text-muted-foreground">
@@ -261,7 +261,7 @@ function WhFormDialog({ open, mode, warehouse, lang, t, onClose }: WhFormDialogP
         </div>
 
         {/* Default */}
-        <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+        <div className="flex items-center justify-between rounded border border-border px-3 py-2.5">
           <div>
             <p className="text-sm font-medium">{t("warehouses.form_is_default")}</p>
             <p className="text-xs text-muted-foreground">
@@ -365,7 +365,7 @@ export function WarehousesPage() {
                     { key: "branch",      label: t("columns.branch"),      cls: "hidden md:table-cell" },
                     { key: "type",        label: t("columns.type"),        cls: "hidden sm:table-cell" },
                     { key: "status",      label: t("columns.status"),      cls: "" },
-                    { key: "stock_value", label: t("columns.stock_value"), cls: "text-end hidden lg:table-cell" },
+                    { key: "stock_value", label: t("columns.stock_value"), cls: "text-start hidden lg:table-cell" },
                     { key: "actions",     label: "",                       cls: "w-10" },
                   ].map((col) => (
                     <TableHead
@@ -429,7 +429,7 @@ export function WarehousesPage() {
                     </TableCell>
 
                     {/* Stock value */}
-                    <TableCell className="px-3 py-3 text-end tabular-nums text-sm hidden lg:table-cell">
+                    <TableCell className="px-3 py-3 text-start tabular-nums text-sm hidden lg:table-cell">
                       <span className="font-medium">{formatMoney(wh.stock_value, lang)}</span>
                     </TableCell>
 

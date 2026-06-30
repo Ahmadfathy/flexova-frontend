@@ -74,7 +74,7 @@ function PayrollSheet({
             <div className="space-y-2">
               <p className="text-xs font-medium text-muted-foreground">{t("payroll.warnings_title")}</p>
               {run.warnings!.map((w, i) => (
-                <div key={i} className="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2.5 text-xs text-warning">
+                <div key={i} className="flex items-start gap-2 rounded border border-warning/40 bg-warning/10 px-3 py-2.5 text-xs text-warning">
                   <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                   {lang === "ar" ? w.text_ar : w.text_en}
                 </div>
@@ -93,7 +93,6 @@ function PayrollSheet({
                       {["lines_employee","lines_gross","lines_deductions","lines_net"].map(k => (
                         <TableHead key={k} className={cn(
                           "text-xs font-semibold uppercase text-muted-foreground py-2",
-                          k !== "lines_employee" && "text-end",
                         )}>
                           {t(`payroll.${k}` as Parameters<typeof t>[0])}
                         </TableHead>
@@ -104,24 +103,24 @@ function PayrollSheet({
                     {run.lines.map(line => (
                       <TableRow key={line.employee_id} className="border-b border-border last:border-0">
                         <TableCell className="text-sm">{empName(line.employee_id)}</TableCell>
-                        <TableCell className="text-end tabular-nums text-sm">{formatMoney(line.gross, lang)}</TableCell>
-                        <TableCell className="text-end tabular-nums text-sm">
+                        <TableCell className="text-start tabular-nums text-sm">{formatMoney(line.gross, lang)}</TableCell>
+                        <TableCell className="text-start tabular-nums text-sm">
                           {line.deductions > 0
                             ? <span className="text-danger">-{formatMoney(line.deductions, lang)}</span>
                             : <span className="text-muted-foreground">—</span>}
                         </TableCell>
-                        <TableCell className="text-end tabular-nums text-sm font-medium">{formatMoney(line.net, lang)}</TableCell>
+                        <TableCell className="text-start tabular-nums text-sm font-medium">{formatMoney(line.net, lang)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                   <TableFooter>
                     <TableRow className="bg-muted/30 font-semibold">
                       <TableCell className="text-xs">{lang === "ar" ? "الإجمالي" : "Total"}</TableCell>
-                      <TableCell className="text-end tabular-nums text-xs">{formatMoney(totalGross, lang)}</TableCell>
-                      <TableCell className="text-end tabular-nums text-xs text-danger">
+                      <TableCell className="text-start tabular-nums text-xs">{formatMoney(totalGross, lang)}</TableCell>
+                      <TableCell className="text-start tabular-nums text-xs text-danger">
                         {totalDeductions > 0 ? `-${formatMoney(totalDeductions, lang)}` : "—"}
                       </TableCell>
-                      <TableCell className="text-end tabular-nums text-xs">{formatMoney(totalNet, lang)}</TableCell>
+                      <TableCell className="text-start tabular-nums text-xs">{formatMoney(totalNet, lang)}</TableCell>
                     </TableRow>
                   </TableFooter>
                 </Table>
@@ -308,8 +307,6 @@ export function PayrollPage() {
                     {["col_number","col_period","col_status","col_total","col_actions"].map(k => (
                       <TableHead key={k} className={cn(
                         "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                        k === "col_total" && "text-end",
-                        k === "col_actions" && "text-end",
                       )}>
                         {t(`payroll.${k}` as Parameters<typeof t>[0])}
                       </TableHead>
@@ -339,10 +336,10 @@ export function PayrollPage() {
                             {hasWarnings && <AlertTriangle className="h-3.5 w-3.5 text-warning" />}
                           </div>
                         </TableCell>
-                        <TableCell className="text-end tabular-nums text-sm font-medium">
+                        <TableCell className="text-start tabular-nums text-sm font-medium">
                           {run.total_net !== null ? formatMoney(run.total_net, lang) : "—"}
                         </TableCell>
-                        <TableCell className="text-end">
+                        <TableCell className="text-start">
                           {!isPosted && (
                             <Button
                               size="sm"

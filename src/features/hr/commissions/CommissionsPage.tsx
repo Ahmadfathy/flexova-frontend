@@ -118,7 +118,6 @@ export function CommissionsPage() {
                   {["col_employee","col_period","col_rule","col_base","col_commission"].map(k => (
                     <TableHead key={k} className={cn(
                       "text-xs font-semibold uppercase tracking-wide text-muted-foreground",
-                      (k === "col_base" || k === "col_commission") && "text-end",
                     )}>
                       {t(`commissions.${k}` as Parameters<typeof t>[0])}
                     </TableHead>
@@ -154,10 +153,10 @@ export function CommissionsPage() {
                           {item.period}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">{ruleName(item.rule_id)}</TableCell>
-                        <TableCell className="text-end tabular-nums text-sm">
+                        <TableCell className="text-start tabular-nums text-sm">
                           {formatMoney(item.base_amount, lang)}
                         </TableCell>
-                        <TableCell className="text-end tabular-nums text-sm font-semibold text-success">
+                        <TableCell className="text-start tabular-nums text-sm font-semibold text-success">
                           {formatMoney(item.commission, lang)}
                         </TableCell>
                       </TableRow>
@@ -172,10 +171,10 @@ export function CommissionsPage() {
                           <TableCell className="text-xs text-muted-foreground">
                             {src.note ?? ""}
                           </TableCell>
-                          <TableCell className="text-end tabular-nums text-xs text-muted-foreground">
+                          <TableCell className="text-start tabular-nums text-xs text-muted-foreground">
                             {formatMoney(src.collected, lang)}
                           </TableCell>
-                          <TableCell className="text-end tabular-nums text-xs text-success">
+                          <TableCell className="text-start tabular-nums text-xs text-success">
                             {src.collected > 0 ? formatMoney(src.collected * 0.025, lang) : "—"}
                           </TableCell>
                         </TableRow>
