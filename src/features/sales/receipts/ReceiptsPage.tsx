@@ -245,6 +245,22 @@ export function ReceiptsPage() {
 
   const { data, loading, error, isOffline, reload } = useSalesData();
 
+  const receipts: Receipt[] = data?.receipts  ?? [];
+  const customers = data?.customers  ?? [];
+  const invoices  = data?.invoices   ?? [];
+  const payMethods  = data?.paymentMethods ?? [];
+  const treasuries  = data?.treasuries ?? [];
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    if (!q) return receipts;
+    return receipts.filter(r => {
+      const cust = customers.find(c => c.id === r.customer_id);
+      const name = lang === "ar" ? cust?.name_ar : cust?.name_en;
+      return r.number.toLowerCase().includes(q) || name?.toLowerCase().includes(q);
+    });
+  }, [receipts, search, customers, lang]);
+
   if (loading) return (
     <div className="space-y-4 py-6">
       <Skeleton className="h-8 w-48" />
@@ -253,12 +269,6 @@ export function ReceiptsPage() {
   );
 
   if (error) return <ErrorState description={error} onRetry={reload} />;
-
-  const receipts: Receipt[] = data?.receipts  ?? [];
-  const customers = data?.customers  ?? [];
-  const invoices  = data?.invoices   ?? [];
-  const payMethods  = data?.paymentMethods ?? [];
-  const treasuries  = data?.treasuries ?? [];
 
   function customerName(id: string) {
     const c = customers.find(c => c.id === id);
@@ -278,16 +288,6 @@ export function ReceiptsPage() {
     const tr = treasuries.find(tr => tr.id === id);
     return lang === "ar" ? tr?.name_ar : tr?.name_en;
   }
-
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    if (!q) return receipts;
-    return receipts.filter(r => {
-      const cust = customers.find(c => c.id === r.customer_id);
-      const name = lang === "ar" ? cust?.name_ar : cust?.name_en;
-      return r.number.toLowerCase().includes(q) || name?.toLowerCase().includes(q);
-    });
-  }, [receipts, search, customers, lang]);
 
   return (
     <div className="space-y-6">
