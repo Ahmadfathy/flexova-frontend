@@ -504,126 +504,127 @@ export function PurchasesListPage() {
 
       {isOffline && <OfflineBanner />}
 
-      {/* Toolbar */}
-      <div className="space-y-2">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input
-            value={filters.search}
-            onChange={e => setFilter("search", e.target.value)}
-            placeholder={t("invoices.search_placeholder")}
-            className="ps-9"
-          />
-        </div>
-
-        {/* Filters row */}
-        <div className="flex flex-wrap gap-2">
-          {/* Supplier filter */}
-          <Select
-            value={filters.supplier || "__all__"}
-            onValueChange={v => setFilter("supplier", v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
-              <SelectValue placeholder={t("invoices.all_suppliers")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("invoices.all_suppliers")}</SelectItem>
-              {(data?.suppliers ?? []).map(s => (
-                <SelectItem key={s.id} value={s.id}>
-                  {lang === "ar" ? s.name_ar : s.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Receipt status — INDEPENDENT */}
-          <Select
-            value={filters.receiptStatus || "__all__"}
-            onValueChange={v => setFilter("receiptStatus", v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-8 w-auto min-w-44 text-sm">
-              <SelectValue placeholder={t("invoices.all_receipt")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("invoices.all_receipt")}</SelectItem>
-              <SelectItem value="pending">{t("receipt.pending")}</SelectItem>
-              <SelectItem value="partially_received">{t("receipt.partial")}</SelectItem>
-              <SelectItem value="completed">{t("receipt.completed")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Payment status — INDEPENDENT */}
-          <Select
-            value={filters.paymentStatus || "__all__"}
-            onValueChange={v => setFilter("paymentStatus", v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
-              <SelectValue placeholder={t("invoices.all_payment")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("invoices.all_payment")}</SelectItem>
-              <SelectItem value="paid">{t("pay.paid")}</SelectItem>
-              <SelectItem value="partial">{t("pay.partial")}</SelectItem>
-              <SelectItem value="credit">{t("pay.credit")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Inbound ETA status — INDEPENDENT */}
-          <Select
-            value={filters.inboundStatus || "__all__"}
-            onValueChange={v => setFilter("inboundStatus", v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
-              <SelectValue placeholder={t("invoices.all_inbound")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("invoices.all_inbound")}</SelectItem>
-              <SelectItem value="accepted">{t("inbound.accepted")}</SelectItem>
-              <SelectItem value="pending">{t("inbound.pending")}</SelectItem>
-              <SelectItem value="rejected">{t("inbound.rejected")}</SelectItem>
-              <SelectItem value="unmatched">{t("inbound.unmatched")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Date range */}
-          <DatePicker
-            value={filters.dateFrom}
-            onChange={val => setFilter("dateFrom", val)}
-            className="h-8 w-40 text-sm"
-            aria-label={t("statement.date_from")}
-          />
-          <DatePicker
-            value={filters.dateTo}
-            onChange={val => setFilter("dateTo", val)}
-            className="h-8 w-40 text-sm"
-            aria-label={t("statement.date_to")}
-          />
-        </div>
-
-        {/* Active filter chips */}
-        {activeChips.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 items-center">
-            {activeChips.map(chip => (
-              <Badge
-                key={chip.key}
-                variant="secondary"
-                className="gap-1 pe-1 cursor-pointer"
-                onClick={chip.clear}
-              >
-                {chip.label}
-                <X className="h-3 w-3" />
-              </Badge>
-            ))}
-            <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={clearFilters}>
-              {t("invoices.clear_filters")}
-            </Button>
-          </div>
-        )}
-      </div>
-
       {/* Table area */}
       <PageSection padded={false}>
+
+        {/* Toolbar — search + filters + date range + chips; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border space-y-3">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
+              value={filters.search}
+              onChange={e => setFilter("search", e.target.value)}
+              placeholder={t("invoices.search_placeholder")}
+              className="ps-9"
+            />
+          </div>
+
+          {/* Filters row */}
+          <div className="flex flex-wrap gap-2">
+            {/* Supplier filter */}
+            <Select
+              value={filters.supplier || "__all__"}
+              onValueChange={v => setFilter("supplier", v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
+                <SelectValue placeholder={t("invoices.all_suppliers")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("invoices.all_suppliers")}</SelectItem>
+                {(data?.suppliers ?? []).map(s => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {lang === "ar" ? s.name_ar : s.name_en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Receipt status — INDEPENDENT */}
+            <Select
+              value={filters.receiptStatus || "__all__"}
+              onValueChange={v => setFilter("receiptStatus", v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-44 text-sm">
+                <SelectValue placeholder={t("invoices.all_receipt")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("invoices.all_receipt")}</SelectItem>
+                <SelectItem value="pending">{t("receipt.pending")}</SelectItem>
+                <SelectItem value="partially_received">{t("receipt.partial")}</SelectItem>
+                <SelectItem value="completed">{t("receipt.completed")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Payment status — INDEPENDENT */}
+            <Select
+              value={filters.paymentStatus || "__all__"}
+              onValueChange={v => setFilter("paymentStatus", v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
+                <SelectValue placeholder={t("invoices.all_payment")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("invoices.all_payment")}</SelectItem>
+                <SelectItem value="paid">{t("pay.paid")}</SelectItem>
+                <SelectItem value="partial">{t("pay.partial")}</SelectItem>
+                <SelectItem value="credit">{t("pay.credit")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Inbound ETA status — INDEPENDENT */}
+            <Select
+              value={filters.inboundStatus || "__all__"}
+              onValueChange={v => setFilter("inboundStatus", v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
+                <SelectValue placeholder={t("invoices.all_inbound")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("invoices.all_inbound")}</SelectItem>
+                <SelectItem value="accepted">{t("inbound.accepted")}</SelectItem>
+                <SelectItem value="pending">{t("inbound.pending")}</SelectItem>
+                <SelectItem value="rejected">{t("inbound.rejected")}</SelectItem>
+                <SelectItem value="unmatched">{t("inbound.unmatched")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Date range */}
+            <DatePicker
+              value={filters.dateFrom}
+              onChange={val => setFilter("dateFrom", val)}
+              className="h-8 w-40 text-sm"
+              aria-label={t("statement.date_from")}
+            />
+            <DatePicker
+              value={filters.dateTo}
+              onChange={val => setFilter("dateTo", val)}
+              className="h-8 w-40 text-sm"
+              aria-label={t("statement.date_to")}
+            />
+          </div>
+
+          {/* Active filter chips */}
+          {activeChips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 items-center">
+              {activeChips.map(chip => (
+                <Badge
+                  key={chip.key}
+                  variant="secondary"
+                  className="gap-1 pe-1 cursor-pointer"
+                  onClick={chip.clear}
+                >
+                  {chip.label}
+                  <X className="h-3 w-3" />
+                </Badge>
+              ))}
+              <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={clearFilters}>
+                {t("invoices.clear_filters")}
+              </Button>
+            </div>
+          )}
+        </div>
+
         {loading ? (
           <ListSkeleton />
         ) : error ? (

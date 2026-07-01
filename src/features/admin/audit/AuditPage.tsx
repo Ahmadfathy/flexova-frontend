@@ -81,20 +81,21 @@ export function AuditPage() {
 
       {isOffline && <OfflineBanner />}
 
-      {/* Filter */}
-      <div>
-        <Select value={filter} onValueChange={v => setFilter(v as "all" | "sensitive")}>
-          <SelectTrigger className="h-9 w-auto min-w-44">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("audit.filter_all")}</SelectItem>
-            <SelectItem value="sensitive">{t("audit.filter_sensitive")}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
       <PageSection padded={false}>
+
+        {/* Toolbar — sensitivity filter; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border">
+          <Select value={filter} onValueChange={v => setFilter(v as "all" | "sensitive")}>
+            <SelectTrigger className="h-9 w-auto min-w-44">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("audit.filter_all")}</SelectItem>
+              <SelectItem value="sensitive">{t("audit.filter_sensitive")}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {filtered.length === 0 ? (
           <EmptyState icon={List} title={t("audit.no_entries")} description={t("audit.empty_sub")} />
         ) : (

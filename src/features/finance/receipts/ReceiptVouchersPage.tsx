@@ -221,32 +221,34 @@ export function ReceiptVouchersPage() {
 
         {isOffline && <OfflineBanner />}
 
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-44">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("receipts.search_placeholder")}
-              className="ps-9"
-            />
-          </div>
-          <Select value={trFilter || "__all__"} onValueChange={v => setTr(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-40">
-              <SelectValue placeholder={t("receipts.all_treasuries")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("receipts.all_treasuries")}</SelectItem>
-              {(data?.treasuries ?? []).map(tr => (
-                <SelectItem key={tr.id} value={tr.id}>
-                  {lang === "ar" ? tr.name_ar : tr.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         <PageSection padded={false}>
+
+          {/* Toolbar — search + treasury filter; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-44">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder={t("receipts.search_placeholder")}
+                className="ps-9"
+              />
+            </div>
+            <Select value={trFilter || "__all__"} onValueChange={v => setTr(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-40">
+                <SelectValue placeholder={t("receipts.all_treasuries")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("receipts.all_treasuries")}</SelectItem>
+                {(data?.treasuries ?? []).map(tr => (
+                  <SelectItem key={tr.id} value={tr.id}>
+                    {lang === "ar" ? tr.name_ar : tr.name_en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {allVouchers.length === 0 ? (
             <EmptyState
               icon={HandCoins}

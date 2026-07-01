@@ -305,30 +305,32 @@ export function EmployeesPage() {
 
         {isOffline && <OfflineBanner />}
 
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("employees.search_ph")}
-              className="ps-9"
-            />
-          </div>
-          <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-36">
-              <SelectValue placeholder={t("employees.all_types")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("employees.all_types")}</SelectItem>
-              <SelectItem value="monthly">{t("employees.type_monthly")}</SelectItem>
-              <SelectItem value="daily">{t("employees.type_daily")}</SelectItem>
-              <SelectItem value="commission">{t("employees.type_commission")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         <PageSection padded={false}>
+
+          {/* Toolbar — search + type filter; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-48">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder={t("employees.search_ph")}
+                className="ps-9"
+              />
+            </div>
+            <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-36">
+                <SelectValue placeholder={t("employees.all_types")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("employees.all_types")}</SelectItem>
+                <SelectItem value="monthly">{t("employees.type_monthly")}</SelectItem>
+                <SelectItem value="daily">{t("employees.type_daily")}</SelectItem>
+                <SelectItem value="commission">{t("employees.type_commission")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {employees.length === 0 ? (
             <EmptyState
               icon={Users}

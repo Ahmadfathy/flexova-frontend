@@ -304,18 +304,21 @@ export function ReceiptsPage() {
         alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-        <Input
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder={t("receipt.search_placeholder")}
-          className="ps-9"
-        />
-      </div>
-
       <PageSection padded={false}>
+
+        {/* Toolbar — search; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border">
+          <div className="relative max-w-sm">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            <Input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder={t("receipt.search_placeholder")}
+              className="ps-9"
+            />
+          </div>
+        </div>
+
         {receipts.length === 0 ? (
           <EmptyState
             icon={Wallet}

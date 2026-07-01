@@ -193,36 +193,37 @@ export function InboundEtaPage() {
           />
         </div>
 
-        {/* Toolbar */}
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("inbound_eta.search_placeholder")}
-              className="ps-9"
-            />
-          </div>
-          <Select
-            value={statusFilter || "__all__"}
-            onValueChange={v => setStatus(v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-10 w-auto min-w-44">
-              <SelectValue placeholder={t("inbound_eta.all_statuses")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("inbound_eta.all_statuses")}</SelectItem>
-              <SelectItem value="pending">{t("inbound.pending")}</SelectItem>
-              <SelectItem value="accepted">{t("inbound.accepted")}</SelectItem>
-              <SelectItem value="rejected">{t("inbound.rejected")}</SelectItem>
-              <SelectItem value="unmatched">{t("inbound.unmatched")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Table */}
         <PageSection padded={false}>
+
+          {/* Toolbar — search + status filter; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-48">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder={t("inbound_eta.search_placeholder")}
+                className="ps-9"
+              />
+            </div>
+            <Select
+              value={statusFilter || "__all__"}
+              onValueChange={v => setStatus(v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-10 w-auto min-w-44">
+                <SelectValue placeholder={t("inbound_eta.all_statuses")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("inbound_eta.all_statuses")}</SelectItem>
+                <SelectItem value="pending">{t("inbound.pending")}</SelectItem>
+                <SelectItem value="accepted">{t("inbound.accepted")}</SelectItem>
+                <SelectItem value="rejected">{t("inbound.rejected")}</SelectItem>
+                <SelectItem value="unmatched">{t("inbound.unmatched")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {allRecords.length === 0 ? (
             <EmptyState
               icon={FileText}

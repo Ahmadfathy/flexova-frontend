@@ -319,29 +319,31 @@ export function JournalPage() {
 
         {isOffline && <OfflineBanner />}
 
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-44">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("journal.search_ph")}
-              className="ps-9"
-            />
-          </div>
-          <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-36">
-              <SelectValue placeholder={t("journal.all_types")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("journal.all_types")}</SelectItem>
-              <SelectItem value="auto">{t("journal.type_auto")}</SelectItem>
-              <SelectItem value="manual">{t("journal.type_manual")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         <PageSection padded={false}>
+
+          {/* Toolbar — search + type filter; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-44">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder={t("journal.search_ph")}
+                className="ps-9"
+              />
+            </div>
+            <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-36">
+                <SelectValue placeholder={t("journal.all_types")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("journal.all_types")}</SelectItem>
+                <SelectItem value="auto">{t("journal.type_auto")}</SelectItem>
+                <SelectItem value="manual">{t("journal.type_manual")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {allEntries.length === 0 ? (
             <EmptyState
               icon={BookOpen}

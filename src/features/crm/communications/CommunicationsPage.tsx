@@ -228,35 +228,36 @@ export function CommunicationsPage() {
 
         {isOffline && <OfflineBanner />}
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2">
-          <Select value={channelFilter || "__all__"} onValueChange={v => setChannel(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-36">
-              <SelectValue placeholder={t("communications.all_channels")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("communications.all_channels")}</SelectItem>
-              <SelectItem value="whatsapp">{t("communications.channel_whatsapp")}</SelectItem>
-              <SelectItem value="call">{t("communications.channel_call")}</SelectItem>
-              <SelectItem value="email">{t("communications.channel_email")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={custFilter || "__all__"} onValueChange={v => setCust(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-44">
-              <SelectValue placeholder={t("communications.all_customers")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("communications.all_customers")}</SelectItem>
-              {customers.map(c => (
-                <SelectItem key={c.id} value={c.id}>
-                  {lang === "ar" ? c.name_ar : c.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         <PageSection padded={false}>
+
+          {/* Toolbar — channel + customer filters; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <Select value={channelFilter || "__all__"} onValueChange={v => setChannel(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-36">
+                <SelectValue placeholder={t("communications.all_channels")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("communications.all_channels")}</SelectItem>
+                <SelectItem value="whatsapp">{t("communications.channel_whatsapp")}</SelectItem>
+                <SelectItem value="call">{t("communications.channel_call")}</SelectItem>
+                <SelectItem value="email">{t("communications.channel_email")}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={custFilter || "__all__"} onValueChange={v => setCust(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-44">
+                <SelectValue placeholder={t("communications.all_customers")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("communications.all_customers")}</SelectItem>
+                {customers.map(c => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {lang === "ar" ? c.name_ar : c.name_en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {total === 0 ? (
             <EmptyState
               icon={MessagesSquare}

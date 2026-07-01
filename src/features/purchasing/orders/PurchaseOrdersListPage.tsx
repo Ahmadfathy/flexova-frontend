@@ -632,53 +632,54 @@ export function PurchaseOrdersListPage() {
 
         {isOffline && <OfflineBanner />}
 
-        {/* Toolbar */}
-        <div className="flex flex-wrap gap-2">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("orders.search_placeholder")}
-              className="ps-9"
-            />
-          </div>
-          <Select
-            value={supplierFilter || "__all__"}
-            onValueChange={v => setSupplier(v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-10 w-auto min-w-40">
-              <SelectValue placeholder={t("orders.all_suppliers")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("orders.all_suppliers")}</SelectItem>
-              {(data?.suppliers ?? []).map(s => (
-                <SelectItem key={s.id} value={s.id}>
-                  {lang === "ar" ? s.name_ar : s.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={statusFilter || "__all__"}
-            onValueChange={v => setStatus(v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-10 w-auto min-w-44">
-              <SelectValue placeholder={t("orders.all_statuses")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("orders.all_statuses")}</SelectItem>
-              <SelectItem value="draft">{t("orders.status_draft")}</SelectItem>
-              <SelectItem value="sent">{t("orders.status_sent")}</SelectItem>
-              <SelectItem value="partially_received">{t("orders.status_partially_received")}</SelectItem>
-              <SelectItem value="completed">{t("orders.status_completed")}</SelectItem>
-              <SelectItem value="cancelled">{t("orders.status_cancelled")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Table */}
         <PageSection padded={false}>
+
+          {/* Toolbar — search + supplier + status filters; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-48">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder={t("orders.search_placeholder")}
+                className="ps-9"
+              />
+            </div>
+            <Select
+              value={supplierFilter || "__all__"}
+              onValueChange={v => setSupplier(v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-10 w-auto min-w-40">
+                <SelectValue placeholder={t("orders.all_suppliers")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("orders.all_suppliers")}</SelectItem>
+                {(data?.suppliers ?? []).map(s => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {lang === "ar" ? s.name_ar : s.name_en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={statusFilter || "__all__"}
+              onValueChange={v => setStatus(v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-10 w-auto min-w-44">
+                <SelectValue placeholder={t("orders.all_statuses")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("orders.all_statuses")}</SelectItem>
+                <SelectItem value="draft">{t("orders.status_draft")}</SelectItem>
+                <SelectItem value="sent">{t("orders.status_sent")}</SelectItem>
+                <SelectItem value="partially_received">{t("orders.status_partially_received")}</SelectItem>
+                <SelectItem value="completed">{t("orders.status_completed")}</SelectItem>
+                <SelectItem value="cancelled">{t("orders.status_cancelled")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {allOrders.length === 0 ? (
             <EmptyState
               icon={Package}

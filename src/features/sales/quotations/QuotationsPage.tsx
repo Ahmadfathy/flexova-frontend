@@ -106,33 +106,34 @@ export function QuotationsPage() {
         alert={isOffline ? <OfflineBanner /> : undefined}
       />
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-52">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-          <Input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder={t("quote.search_placeholder")}
-            className="ps-9"
-          />
-        </div>
-        <Select value={statusFil} onValueChange={setStatusFil}>
-          <SelectTrigger className="w-44">
-            <SelectValue placeholder={t("quote.all_statuses")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("quote.all_statuses")}</SelectItem>
-            {statuses.map(s => (
-              <SelectItem key={s} value={s}>
-                {t(`quote.status_${s}`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       <PageSection padded={false}>
+
+        {/* Toolbar — search + status filter; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-52">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            <Input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder={t("quote.search_placeholder")}
+              className="ps-9"
+            />
+          </div>
+          <Select value={statusFil} onValueChange={setStatusFil}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder={t("quote.all_statuses")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("quote.all_statuses")}</SelectItem>
+              {statuses.map(s => (
+                <SelectItem key={s} value={s}>
+                  {t(`quote.status_${s}`)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {quotations.length === 0 ? (
           <EmptyState
             icon={FileQuestion}

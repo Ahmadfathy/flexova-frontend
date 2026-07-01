@@ -418,82 +418,83 @@ export function SuppliersListPage() {
 
       {isOffline && <OfflineBanner />}
 
-      {/* Toolbar */}
-      <div className="space-y-2">
-        <div className="relative">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input
-            value={filters.search}
-            onChange={e => setFilter("search", e.target.value)}
-            placeholder={t("suppliers.search_placeholder")}
-            className="ps-9"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Select
-            value={filters.category || "__all__"}
-            onValueChange={v => setFilter("category", v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
-              <SelectValue placeholder={t("suppliers.all_categories")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("suppliers.all_categories")}</SelectItem>
-              <SelectItem value="local">{t("category.local")}</SelectItem>
-              <SelectItem value="imported">{t("category.imported")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={filters.status || "__all__"}
-            onValueChange={v => setFilter("status", v === "__all__" ? "" : v)}
-          >
-            <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
-              <SelectValue placeholder={t("suppliers.all_statuses")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("suppliers.all_statuses")}</SelectItem>
-              <SelectItem value="active">{t("status.active")}</SelectItem>
-              <SelectItem value="suspended">{t("status.suspended")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <div className="flex items-center gap-2 ms-1">
-            <Switch
-              id="with-balance"
-              checked={filters.withBalance}
-              onCheckedChange={v => setFilter("withBalance", v)}
-              className="h-4 w-8 [&>span]:h-3 [&>span]:w-3"
-            />
-            <Label htmlFor="with-balance" className="text-sm cursor-pointer">
-              {t("suppliers.with_balance")}
-            </Label>
-          </div>
-        </div>
-
-        {activeChips.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 items-center">
-            {activeChips.map(chip => (
-              <Badge
-                key={chip.key}
-                variant="secondary"
-                className="gap-1 pe-1 cursor-pointer"
-                onClick={chip.clear}
-              >
-                {chip.label}
-                <X className="h-3 w-3" />
-              </Badge>
-            ))}
-            <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={clearFilters}>
-              {t("suppliers.clear_filters")}
-            </Button>
-          </div>
-        )}
-      </div>
-
       {/* Table area */}
       <PageSection padded={false}>
+
+        {/* Toolbar — search + filters + chips; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border space-y-3">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
+              value={filters.search}
+              onChange={e => setFilter("search", e.target.value)}
+              placeholder={t("suppliers.search_placeholder")}
+              className="ps-9"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Select
+              value={filters.category || "__all__"}
+              onValueChange={v => setFilter("category", v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
+                <SelectValue placeholder={t("suppliers.all_categories")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("suppliers.all_categories")}</SelectItem>
+                <SelectItem value="local">{t("category.local")}</SelectItem>
+                <SelectItem value="imported">{t("category.imported")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filters.status || "__all__"}
+              onValueChange={v => setFilter("status", v === "__all__" ? "" : v)}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
+                <SelectValue placeholder={t("suppliers.all_statuses")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("suppliers.all_statuses")}</SelectItem>
+                <SelectItem value="active">{t("status.active")}</SelectItem>
+                <SelectItem value="suspended">{t("status.suspended")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex items-center gap-2 ms-1">
+              <Switch
+                id="with-balance"
+                checked={filters.withBalance}
+                onCheckedChange={v => setFilter("withBalance", v)}
+                className="h-4 w-8 [&>span]:h-3 [&>span]:w-3"
+              />
+              <Label htmlFor="with-balance" className="text-sm cursor-pointer">
+                {t("suppliers.with_balance")}
+              </Label>
+            </div>
+          </div>
+
+          {activeChips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 items-center">
+              {activeChips.map(chip => (
+                <Badge
+                  key={chip.key}
+                  variant="secondary"
+                  className="gap-1 pe-1 cursor-pointer"
+                  onClick={chip.clear}
+                >
+                  {chip.label}
+                  <X className="h-3 w-3" />
+                </Badge>
+              ))}
+              <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={clearFilters}>
+                {t("suppliers.clear_filters")}
+              </Button>
+            </div>
+          )}
+        </div>
+
         {loading ? (
           <SuppliersSkeleton />
         ) : error ? (

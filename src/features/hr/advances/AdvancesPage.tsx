@@ -268,30 +268,32 @@ export function AdvancesPage() {
 
         {isOffline && <OfflineBanner />}
 
-        <div className="flex flex-wrap gap-2">
-          <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-32">
-              <SelectValue placeholder={t("advances.all_types")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("advances.all_types")}</SelectItem>
-              <SelectItem value="advance">{t("advances.type_advance")}</SelectItem>
-              <SelectItem value="loan">{t("advances.type_loan")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={statusFilter || "__all__"} onValueChange={v => setStatus(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-36">
-              <SelectValue placeholder={t("advances.all_statuses")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("advances.all_statuses")}</SelectItem>
-              <SelectItem value="outstanding">{t("advances.status_outstanding")}</SelectItem>
-              <SelectItem value="settled">{t("advances.status_settled")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         <PageSection padded={false}>
+
+          {/* Toolbar — type + status filters; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2">
+            <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-32">
+                <SelectValue placeholder={t("advances.all_types")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("advances.all_types")}</SelectItem>
+                <SelectItem value="advance">{t("advances.type_advance")}</SelectItem>
+                <SelectItem value="loan">{t("advances.type_loan")}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter || "__all__"} onValueChange={v => setStatus(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-36">
+                <SelectValue placeholder={t("advances.all_statuses")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("advances.all_statuses")}</SelectItem>
+                <SelectItem value="outstanding">{t("advances.status_outstanding")}</SelectItem>
+                <SelectItem value="settled">{t("advances.status_settled")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {advances.length === 0 ? (
             <EmptyState
               icon={Wallet}

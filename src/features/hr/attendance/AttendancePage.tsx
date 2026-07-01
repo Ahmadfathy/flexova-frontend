@@ -87,24 +87,25 @@ export function AttendancePage() {
 
       {isOffline && <OfflineBanner />}
 
-      {/* Period selector */}
-      <div className="flex items-center gap-3">
-        <Label className="text-sm text-muted-foreground shrink-0">{t("attendance.period_label")}:</Label>
-        <Select value={period} onValueChange={setPeriod}>
-          <SelectTrigger className="h-9 w-36">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {PERIODS.map(p => (
-              <SelectItem key={p} value={p}>
-                <span dir="ltr">{p}</span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       <PageSection padded={false}>
+
+        {/* Toolbar — period selector; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border flex items-center gap-3">
+          <Label className="text-sm text-muted-foreground shrink-0">{t("attendance.period_label")}:</Label>
+          <Select value={period} onValueChange={setPeriod}>
+            <SelectTrigger className="h-9 w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PERIODS.map(p => (
+                <SelectItem key={p} value={p}>
+                  <span dir="ltr">{p}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {summary.length === 0 ? (
           <EmptyState title={t("attendance.no_data")} />
         ) : (

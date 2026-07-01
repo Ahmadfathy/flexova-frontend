@@ -417,47 +417,48 @@ export function CustomersListPage() {
 
         {isOffline && <OfflineBanner />}
 
-        {/* Toolbar */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder={t("list.search_ph")}
-              className="ps-9"
-            />
-          </div>
-          <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-36">
-              <SelectValue placeholder={t("list.all_types")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("list.all_types")}</SelectItem>
-              <SelectItem value="company">{t("list.type_company")}</SelectItem>
-              <SelectItem value="individual">{t("list.type_individual")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={segFilter || "__all__"} onValueChange={v => setSegFilter(v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-10 w-auto min-w-40">
-              <SelectValue placeholder={t("list.all_segments")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("list.all_segments")}</SelectItem>
-              {(data?.segments ?? []).map(s => (
-                <SelectItem key={s.id} value={s.id}>
-                  {lang === "ar" ? s.name_ar : s.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-            <Switch checked={balanceOnly} onCheckedChange={setBalOnly} />
-            {t("list.with_balance")}
-          </label>
-        </div>
-
         <PageSection padded={false}>
+
+          {/* Toolbar — search + type + segment filters + balance toggle; lives inside the card, above the table */}
+          <div className="px-6 py-6 border-b border-border flex flex-wrap gap-2 items-center">
+            <div className="relative flex-1 min-w-48">
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder={t("list.search_ph")}
+                className="ps-9"
+              />
+            </div>
+            <Select value={typeFilter || "__all__"} onValueChange={v => setTypeFilter(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-36">
+                <SelectValue placeholder={t("list.all_types")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("list.all_types")}</SelectItem>
+                <SelectItem value="company">{t("list.type_company")}</SelectItem>
+                <SelectItem value="individual">{t("list.type_individual")}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={segFilter || "__all__"} onValueChange={v => setSegFilter(v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-10 w-auto min-w-40">
+                <SelectValue placeholder={t("list.all_segments")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("list.all_segments")}</SelectItem>
+                {(data?.segments ?? []).map(s => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {lang === "ar" ? s.name_ar : s.name_en}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+              <Switch checked={balanceOnly} onCheckedChange={setBalOnly} />
+              {t("list.with_balance")}
+            </label>
+          </div>
+
           {allCustomers.length === 0 ? (
             <EmptyState
               icon={Users}

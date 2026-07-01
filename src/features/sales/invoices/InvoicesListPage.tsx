@@ -468,118 +468,6 @@ export function InvoicesListPage() {
       {/* Offline banner */}
       {isOffline && <OfflineBanner />}
 
-      {/* Toolbar */}
-      <div className="space-y-2">
-        {/* Row 1: search */}
-        <div className="relative">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input
-            value={filters.search}
-            onChange={e => setFilter("search", e.target.value)}
-            placeholder={t("list.search_placeholder")}
-            className="ps-9"
-          />
-        </div>
-
-        {/* Row 2: filter selects + date range */}
-        <div className="flex flex-wrap gap-2">
-          {/* Payment status filter — INDEPENDENT */}
-          <Select value={filters.paymentStatus || "__all__"} onValueChange={v => setFilter("paymentStatus", v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
-              <SelectValue placeholder={t("list.all_payment")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("list.all_payment")}</SelectItem>
-              <SelectItem value="paid">{t("pay.paid")}</SelectItem>
-              <SelectItem value="partial">{t("pay.partial")}</SelectItem>
-              <SelectItem value="credit">{t("pay.credit")}</SelectItem>
-              <SelectItem value="returned">{t("pay.returned")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* ETA status filter — INDEPENDENT */}
-          <Select value={filters.etaStatus || "__all__"} onValueChange={v => setFilter("etaStatus", v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-8 w-auto min-w-44 text-sm">
-              <SelectValue placeholder={t("list.all_eta")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("list.all_eta")}</SelectItem>
-              <SelectItem value="draft">{t("eta.draft")}</SelectItem>
-              <SelectItem value="unsent">{t("eta.unsent")}</SelectItem>
-              <SelectItem value="queued">{t("eta.queued")}</SelectItem>
-              <SelectItem value="clearing">{t("eta.clearing")}</SelectItem>
-              <SelectItem value="valid">{t("eta.valid")}</SelectItem>
-              <SelectItem value="rejected">{t("eta.rejected")}</SelectItem>
-              <SelectItem value="cancelled">{t("eta.cancelled")}</SelectItem>
-              <SelectItem value="buyer_rejected">{t("eta.buyer_rejected")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Branch filter */}
-          {(data?.branches ?? []).length > 0 && (
-            <Select value={filters.branch || "__all__"} onValueChange={v => setFilter("branch", v === "__all__" ? "" : v)}>
-              <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
-                <SelectValue placeholder={t("list.all_branches")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all__">{t("list.all_branches")}</SelectItem>
-                {(data?.branches ?? []).map(b => (
-                  <SelectItem key={b.id} value={b.id}>
-                    {lang === "ar" ? b.name_ar : b.name_en}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Channel filter */}
-          <Select value={filters.channel || "__all__"} onValueChange={v => setFilter("channel", v === "__all__" ? "" : v)}>
-            <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
-              <SelectValue placeholder={t("list.all_channels")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">{t("list.all_channels")}</SelectItem>
-              <SelectItem value="e-invoice">{t("list.channel_b2b")}</SelectItem>
-              <SelectItem value="e-receipt">{t("list.channel_b2c")}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Date range */}
-          <DatePicker
-            value={filters.dateFrom}
-            onChange={val => setFilter("dateFrom", val)}
-            className="h-8 w-40 text-sm"
-            aria-label="from date"
-          />
-          <DatePicker
-            value={filters.dateTo}
-            onChange={val => setFilter("dateTo", val)}
-            className="h-8 w-40 text-sm"
-            aria-label="to date"
-          />
-        </div>
-
-        {/* Active filter chips */}
-        {activeChips.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 items-center">
-            {activeChips.map(chip => (
-              <Badge
-                key={chip.key}
-                variant="secondary"
-                className="gap-1 pe-1 cursor-pointer"
-                onClick={chip.clear}
-              >
-                {chip.label}
-                <X className="h-3 w-3" />
-              </Badge>
-            ))}
-            <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={clearFilters}>
-              {t("list.clear_filters")}
-            </Button>
-          </div>
-        )}
-      </div>
-
       {/* Bulk action bar */}
       {hasSelection && (
         <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded border border-border">
@@ -627,6 +515,119 @@ export function InvoicesListPage() {
 
       {/* Table area */}
       <PageSection padded={false}>
+
+        {/* Toolbar — search + filters + date range + chips; lives inside the card, above the table */}
+        <div className="px-6 py-6 border-b border-border space-y-3">
+          {/* Row 1: search */}
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
+              value={filters.search}
+              onChange={e => setFilter("search", e.target.value)}
+              placeholder={t("list.search_placeholder")}
+              className="ps-9"
+            />
+          </div>
+
+          {/* Row 2: filter selects + date range */}
+          <div className="flex flex-wrap gap-2">
+            {/* Payment status filter — INDEPENDENT */}
+            <Select value={filters.paymentStatus || "__all__"} onValueChange={v => setFilter("paymentStatus", v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-8 w-auto min-w-40 text-sm">
+                <SelectValue placeholder={t("list.all_payment")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("list.all_payment")}</SelectItem>
+                <SelectItem value="paid">{t("pay.paid")}</SelectItem>
+                <SelectItem value="partial">{t("pay.partial")}</SelectItem>
+                <SelectItem value="credit">{t("pay.credit")}</SelectItem>
+                <SelectItem value="returned">{t("pay.returned")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* ETA status filter — INDEPENDENT */}
+            <Select value={filters.etaStatus || "__all__"} onValueChange={v => setFilter("etaStatus", v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-8 w-auto min-w-44 text-sm">
+                <SelectValue placeholder={t("list.all_eta")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("list.all_eta")}</SelectItem>
+                <SelectItem value="draft">{t("eta.draft")}</SelectItem>
+                <SelectItem value="unsent">{t("eta.unsent")}</SelectItem>
+                <SelectItem value="queued">{t("eta.queued")}</SelectItem>
+                <SelectItem value="clearing">{t("eta.clearing")}</SelectItem>
+                <SelectItem value="valid">{t("eta.valid")}</SelectItem>
+                <SelectItem value="rejected">{t("eta.rejected")}</SelectItem>
+                <SelectItem value="cancelled">{t("eta.cancelled")}</SelectItem>
+                <SelectItem value="buyer_rejected">{t("eta.buyer_rejected")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Branch filter */}
+            {(data?.branches ?? []).length > 0 && (
+              <Select value={filters.branch || "__all__"} onValueChange={v => setFilter("branch", v === "__all__" ? "" : v)}>
+                <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
+                  <SelectValue placeholder={t("list.all_branches")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">{t("list.all_branches")}</SelectItem>
+                  {(data?.branches ?? []).map(b => (
+                    <SelectItem key={b.id} value={b.id}>
+                      {lang === "ar" ? b.name_ar : b.name_en}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Channel filter */}
+            <Select value={filters.channel || "__all__"} onValueChange={v => setFilter("channel", v === "__all__" ? "" : v)}>
+              <SelectTrigger className="h-8 w-auto min-w-36 text-sm">
+                <SelectValue placeholder={t("list.all_channels")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">{t("list.all_channels")}</SelectItem>
+                <SelectItem value="e-invoice">{t("list.channel_b2b")}</SelectItem>
+                <SelectItem value="e-receipt">{t("list.channel_b2c")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Date range */}
+            <DatePicker
+              value={filters.dateFrom}
+              onChange={val => setFilter("dateFrom", val)}
+              className="h-8 w-40 text-sm"
+              aria-label="from date"
+            />
+            <DatePicker
+              value={filters.dateTo}
+              onChange={val => setFilter("dateTo", val)}
+              className="h-8 w-40 text-sm"
+              aria-label="to date"
+            />
+          </div>
+
+          {/* Active filter chips */}
+          {activeChips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 items-center">
+              {activeChips.map(chip => (
+                <Badge
+                  key={chip.key}
+                  variant="secondary"
+                  className="gap-1 pe-1 cursor-pointer"
+                  onClick={chip.clear}
+                >
+                  {chip.label}
+                  <X className="h-3 w-3" />
+                </Badge>
+              ))}
+              <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={clearFilters}>
+                {t("list.clear_filters")}
+              </Button>
+            </div>
+          )}
+        </div>
+
         {loading ? (
           <InvoicesSkeleton />
         ) : error ? (
