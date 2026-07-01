@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, MessageCircle, Phone, Mail, Loader2, MessagesSquare } from "lucide-react";
 
@@ -156,11 +157,12 @@ export function CommunicationsPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
 
   const [channelFilter, setChannel] = useState("");
   const [custFilter, setCust]       = useState("");
-  const [sendOpen, setSendOpen]     = useState(false);
+  const [sendOpen, setSendOpen]     = useState(searchParams.get("new") === "1");
 
   const customers = useMemo(
     () => (data?.customers ?? []).filter(c => !c.is_walkin),

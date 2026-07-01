@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Calendar, Pause, Play, Mail, MessageCircle } from "lucide-react";
 
@@ -179,10 +180,11 @@ export function SchedulingPage() {
   const { t, i18n } = useTranslation("reports");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useReportsData();
 
   const [paused, setPaused]       = useState<Set<string>>(() => new Set());
-  const [newOpen, setNewOpen]     = useState(false);
+  const [newOpen, setNewOpen]     = useState(searchParams.get("new") === "1");
 
   const schedules = data?.schedules ?? [];
 

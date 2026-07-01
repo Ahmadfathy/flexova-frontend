@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -72,6 +72,7 @@ export function PriceListsPage() {
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate     = useNavigate();
   const can          = useCan();
+  const [searchParams] = useSearchParams();
 
   const { data, loading, error, reload } = useItems();
 
@@ -94,6 +95,11 @@ export function PriceListsPage() {
     setFormErr("");
     setDialogOpen(true);
   }
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") openCreate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   async function handleSave() {
     if (!form.name_ar.trim()) { setFormErr(t("price_lists.form_name_req")); return; }

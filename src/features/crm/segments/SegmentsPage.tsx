@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Users, Loader2 } from "lucide-react";
 
@@ -119,9 +120,10 @@ export function SegmentsPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
 
-  const [createOpen, setCreate] = useState(false);
+  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
 
   const segments = data?.segments ?? [];
 

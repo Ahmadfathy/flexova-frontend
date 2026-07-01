@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Loader2, Wallet } from "lucide-react";
 
@@ -197,12 +198,13 @@ export function AdvancesPage() {
   const { t, i18n } = useTranslation("hr");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useHrData();
 
   const [typeFilter, setTypeFilter]   = useState("");
   const [statusFilter, setStatus]     = useState("");
   const [selected, setSelected]       = useState<Advance | null>(null);
-  const [createOpen, setCreate]       = useState(false);
+  const [createOpen, setCreate]       = useState(searchParams.get("new") === "1");
 
   const advances   = data?.advances  ?? [];
   const employees  = data?.employees ?? [];

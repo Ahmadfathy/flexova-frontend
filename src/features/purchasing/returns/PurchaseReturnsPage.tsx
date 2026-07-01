@@ -81,11 +81,13 @@ export function PurchaseReturnsPage() {
   const [returnLines, setReturnLines]   = useState<ReturnLine[]>([]);
   const [saving, setSaving]             = useState(false);
 
-  // ── Auto-open from ?source= param ────────────────────────────
+  // ── Auto-open from ?source= or ?new=1 params ─────────────────
   useEffect(() => {
     const source = searchParams.get("source");
     if (source && data) {
       setSourceId(source);
+      setDialogOpen(true);
+    } else if (searchParams.get("new") === "1") {
       setDialogOpen(true);
     }
   }, [searchParams, data]);

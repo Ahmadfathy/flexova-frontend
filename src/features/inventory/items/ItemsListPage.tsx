@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   useReactTable,
   getCoreRowModel,
@@ -487,10 +487,11 @@ export function ItemsListPage() {
   const lang           = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate       = useNavigate();
   const can            = useCan();
+  const [searchParams] = useSearchParams();
 
   const { data, loading, error, isOffline, reload } = useItems();
 
-  const [quickAddOpen, setQuickAddOpen]   = useState(false);
+  const [quickAddOpen, setQuickAddOpen]   = useState(searchParams.get("new") === "1");
   const [importOpen,   setImportOpen]     = useState(false);
   const [search, setSearch]               = useState("");
   const [debouncedSearch, setDebounced]   = useState("");

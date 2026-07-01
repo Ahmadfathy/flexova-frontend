@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Plus, Download, Search, Building2, User, AlertTriangle,
@@ -334,6 +335,7 @@ export function CustomersListPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
 
   const [search, setSearch]         = useState("");
@@ -341,7 +343,7 @@ export function CustomersListPage() {
   const [segFilter, setSegFilter]   = useState("");
   const [balanceOnly, setBalOnly]   = useState(false);
   const [selected, setSelected]     = useState<CrmCustomer | null>(null);
-  const [createOpen, setCreate]     = useState(false);
+  const [createOpen, setCreate]     = useState(searchParams.get("new") === "1");
 
   const allCustomers = (data?.customers ?? []).filter(c => !c.is_walkin);
 

@@ -87,11 +87,15 @@ export function PurchaseVouchersPage() {
   const [form, setForm]               = useState<VoucherForm>(emptyForm());
   const [saving, setSaving]           = useState(false);
 
-  // ── Auto-open from ?invoice= or ?supplier= params ─────────────
+  // ── Auto-open from ?invoice=, ?supplier=, or ?new=1 params ────
   useEffect(() => {
     const invoiceId  = searchParams.get("invoice");
     const supplierId = searchParams.get("supplier");
     if (!data) return;
+    if (searchParams.get("new") === "1") {
+      setDialogOpen(true);
+      return;
+    }
     if (invoiceId || supplierId) {
       const inv = invoiceId ? data.purchaseInvoices.find(i => i.id === invoiceId) : null;
       const newForm = emptyForm();

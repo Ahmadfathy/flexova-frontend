@@ -237,7 +237,7 @@ export function CreditNotesPage() {
   const [searchParams] = useSearchParams();
   const preSource = searchParams.get("source") ?? "";
 
-  const [sheetOpen, setSheetOpen] = useState(!!preSource);
+  const [sheetOpen, setSheetOpen] = useState(!!preSource || searchParams.get("new") === "1");
   const { data, loading, error, isOffline, reload } = useSalesData();
 
   if (loading) return (

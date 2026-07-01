@@ -1,5 +1,6 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -230,6 +231,7 @@ export function CategoriesPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
+  const [searchParams] = useSearchParams();
 
   const { data, loading, error, reload } = useItems();
 
@@ -287,6 +289,11 @@ export function CategoriesPage() {
   function openAdd() {
     setCatDialog({ open: true, mode: "add" });
   }
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") openAdd();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
   function openEdit(cat: InventoryCategory) {
     setCatDialog({ open: true, mode: "edit", category: cat });
   }

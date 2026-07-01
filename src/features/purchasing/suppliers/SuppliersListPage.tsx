@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   useReactTable,
   getCoreRowModel,
@@ -177,12 +177,13 @@ export function SuppliersListPage() {
   const lang          = (i18n.language?.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const navigate      = useNavigate();
   const can           = useCan();
+  const [searchParams] = useSearchParams();
 
   const { data, loading, error, isOffline, reload } = usePurchasingData();
 
   const [filters,     setFilters]     = useState<SupplierFilters>(EMPTY_FILTERS);
   const [sorting,     setSorting]     = useState<SortingState>([]);
-  const [modalOpen,   setModalOpen]   = useState(false);
+  const [modalOpen,   setModalOpen]   = useState(searchParams.get("new") === "1");
   const [editTarget,  setEditTarget]  = useState<Supplier | null>(null);
 
   const setFilter = useCallback(

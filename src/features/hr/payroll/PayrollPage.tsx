@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, AlertTriangle, CheckCircle2, Loader2, FileText } from "lucide-react";
 
@@ -229,10 +230,11 @@ export function PayrollPage() {
   const { t, i18n } = useTranslation("hr");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useHrData();
 
   const [selected, setSelected] = useState<PayrollRun | null>(null);
-  const [runOpen, setRunOpen]   = useState(false);
+  const [runOpen, setRunOpen]   = useState(searchParams.get("new") === "1");
   const [postedIds, setPosted]  = useState<Set<string>>(() => new Set());
 
   const runs     = data?.payrollRuns ?? [];

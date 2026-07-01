@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { Search, ChevronDown, ChevronRight, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -157,10 +158,11 @@ export function CoaPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
 
   const [search, setSearch]       = useState("");
-  const [createOpen, setCreate]   = useState(false);
+  const [createOpen, setCreate]   = useState(searchParams.get("new") === "1");
   // expanded state — roots start expanded
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(["1","2","3","4","5"]));
 

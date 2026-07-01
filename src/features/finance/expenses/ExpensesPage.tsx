@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Download, Search, Paperclip, Loader2, ReceiptText } from "lucide-react";
 
@@ -133,12 +134,13 @@ export function ExpensesPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
 
   const [search, setSearch]     = useState("");
   const [catFilter, setCat]     = useState("");
   const [trFilter, setTr]       = useState("");
-  const [createOpen, setCreate] = useState(false);
+  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
 
   const allExpenses = data?.expenses ?? [];
 

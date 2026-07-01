@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Pencil, GitBranch } from "lucide-react";
 
@@ -81,10 +82,11 @@ export function BranchesPage() {
   const { t, i18n } = useTranslation("admin");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useAdminData();
 
   const [editing, setEditing] = useState<Branch | null>(null);
-  const [newOpen, setNew]     = useState(false);
+  const [newOpen, setNew]     = useState(searchParams.get("new") === "1");
 
   const branches = data?.branches ?? [];
 

@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Search, AlertTriangle, Loader2, Users } from "lucide-react";
 
@@ -234,12 +235,13 @@ export function EmployeesPage() {
   const { t, i18n } = useTranslation("hr");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useHrData();
 
   const [search, setSearch]         = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [selected, setSelected]     = useState<Employee | null>(null);
-  const [createOpen, setCreate]     = useState(false);
+  const [createOpen, setCreate]     = useState(searchParams.get("new") === "1");
 
   const employees = data?.employees ?? [];
 

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, CheckCircle2, AlertCircle, Clock, CalendarClock, Loader2 } from "lucide-react";
 
@@ -149,10 +150,11 @@ export function FollowUpsPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
 
   const [doneIds, setDoneIds]   = useState<Set<string>>(() => new Set());
-  const [createOpen, setCreate] = useState(false);
+  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
 
   const openFollowUps = useMemo(
     () => (data?.followUps ?? []).filter(f => f.status === "open" && !doneIds.has(f.id)),

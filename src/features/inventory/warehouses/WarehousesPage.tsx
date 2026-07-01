@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -285,6 +286,7 @@ export function WarehousesPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
+  const [searchParams] = useSearchParams();
 
   const { data, loading, error, reload } = useItems();
 
@@ -305,6 +307,11 @@ export function WarehousesPage() {
   }>({ open: false });
 
   const openAdd   = () => setWhDialog({ open: true, mode: "add" });
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") openAdd();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
   const openEdit  = (wh: InventoryWarehouse) => setWhDialog({ open: true, mode: "edit", warehouse: wh });
   const openDelete = (wh: InventoryWarehouse) => setDeleteDialog({ open: true, warehouse: wh });
 

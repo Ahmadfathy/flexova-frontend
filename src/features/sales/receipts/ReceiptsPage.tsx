@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
@@ -239,9 +240,10 @@ export function ReceiptsPage() {
   const lang = i18n.language as "ar" | "en";
   const can = useCan();
   const canCreate = can("collect");
+  const [searchParams] = useSearchParams();
 
   const [search, setSearch]       = useState("");
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(searchParams.get("new") === "1");
 
   const { data, loading, error, isOffline, reload } = useSalesData();
 

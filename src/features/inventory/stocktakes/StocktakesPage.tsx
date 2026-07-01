@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -73,8 +73,9 @@ export function StocktakesPage() {
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate     = useNavigate();
   const can          = useCan();
+  const [searchParams] = useSearchParams();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(searchParams.get("new") === "1");
 
   const { data, loading, error, reload } = useItems();
 

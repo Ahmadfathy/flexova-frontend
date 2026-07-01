@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Banknote, Building2, Smartphone, Loader2 } from "lucide-react";
 
@@ -113,8 +114,9 @@ export function TreasuriesPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
+  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
-  const [createOpen, setCreateOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(searchParams.get("new") === "1");
 
   const totalBalance = (data?.treasuries ?? []).reduce((s, tr) => s + tr.balance, 0);
 
