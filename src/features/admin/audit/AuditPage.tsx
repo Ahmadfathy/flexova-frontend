@@ -76,7 +76,7 @@ export function AuditPage() {
     <div className="space-y-4 pb-6">
       <PageHeader
         title={t("audit.title")}
-        subtitle={t("audit.count", { n: filtered.length })}
+        count={t("audit.count", { n: filtered.length })}
       />
 
       {isOffline && <OfflineBanner />}

@@ -95,7 +95,7 @@ export function TransfersPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title={t("transfers.title")}
-        subtitle={totalCount > 0 ? t("transfers.count", { n: totalCount }) : undefined}
+        count={totalCount > 0 ? t("transfers.count", { n: totalCount }) : undefined}
         actions={pageActions}
       />
 

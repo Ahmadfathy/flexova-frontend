@@ -255,7 +255,7 @@ export function AdvancesPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("advances.title")}
-          subtitle={t("advances.count", { n: advances.length })}
+          count={t("advances.count", { n: advances.length })}
           actions={
             can("hr.advance.create") ? (
               <Button size="sm" onClick={() => setCreate(true)}>

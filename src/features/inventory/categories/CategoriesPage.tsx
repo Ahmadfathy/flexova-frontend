@@ -504,7 +504,7 @@ export function CategoriesPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title={t("categories.title")}
-        subtitle={totalCount > 0 ? t("categories.count", { n: totalCount }) : undefined}
+        count={totalCount > 0 ? t("categories.count", { n: totalCount }) : undefined}
         actions={pageActions}
       />
 

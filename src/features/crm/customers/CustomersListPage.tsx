@@ -398,7 +398,7 @@ export function CustomersListPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("list.title")}
-          subtitle={t("list.count", { n: allCustomers.length })}
+          count={t("list.count", { n: allCustomers.length })}
           actions={
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline">

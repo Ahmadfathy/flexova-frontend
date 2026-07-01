@@ -201,7 +201,7 @@ export function UsersPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("users.title")}
-          subtitle={t("users.count", { n: users.length })}
+          count={t("users.count", { n: users.length })}
           actions={
             can("admin.user.manage") ? (
               <Button size="sm" onClick={() => setInvite(true)}>

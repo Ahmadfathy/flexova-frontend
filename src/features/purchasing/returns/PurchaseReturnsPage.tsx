@@ -200,7 +200,7 @@ export function PurchaseReturnsPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("returns.title")}
-          subtitle={allReturns.length > 0 ? t("returns.count", { n: allReturns.length }) : undefined}
+          count={allReturns.length > 0 ? t("returns.count", { n: allReturns.length }) : undefined}
           actions={
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline">

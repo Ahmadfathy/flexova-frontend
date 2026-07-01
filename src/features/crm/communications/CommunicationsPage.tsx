@@ -215,7 +215,7 @@ export function CommunicationsPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("communications.title")}
-          subtitle={t("communications.count", { n: total })}
+          count={t("communications.count", { n: total })}
           actions={
             can("crm.communication.create") ? (
               <Button size="sm" onClick={() => setSendOpen(true)}>

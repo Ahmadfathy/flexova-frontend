@@ -1,13 +1,20 @@
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "./Breadcrumb";
 import { useBreadcrumb } from "@/hooks/useBreadcrumb";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface PageHeaderProps {
   title: string;
+  /** Free-text line under the title (non-count context, e.g. a record name). */
   subtitle?: string;
+  /** Record count — rendered as a brand-tint pill next to the title. */
+  count?: string | number;
+  /** Unit label paired with `count` (e.g. count=1, countLabel="تسوية" → "1 تسوية"). */
+  countLabel?: string;
+  /** End-side action buttons. */
   actions?: React.ReactNode;
-  /** Page-level alert/banner — renders AFTER the header row, before content. */
+  /** Page-level alert/banner — renders AFTER the header block, before content. */
   alert?: React.ReactNode;
   className?: string;
   /**
@@ -22,6 +29,8 @@ interface PageHeaderProps {
 export function PageHeader({
   title,
   subtitle,
+  count,
+  countLabel,
   actions,
   alert,
   className,
@@ -35,32 +44,36 @@ export function PageHeader({
   return (
     <div className={cn("mb-6", className)}>
       {/*
-       * Single header row:
-       *   Logical START (right in RTL) — page title + optional actions
-       *   Logical END   (left  in RTL) — breadcrumb (ms-auto pushes it to the end,
-       *                                  even when it wraps to a second line on xs)
+       * Two-side header block:
+       *   START (right in RTL) — vertical stack: title + count pill, then breadcrumb below
+       *   END   (left  in RTL) — action buttons
        */}
-      <div className="flex items-center flex-wrap gap-x-4 gap-y-1.5">
-        {/* START: title + subtitle + actions */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div>
+      <div className="flex items-start justify-between gap-4">
+        {/* START: title row, then breadcrumb */}
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-xl font-semibold">{title}</h1>
-            {subtitle && (
-              <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
+            {count != null && (
+              <Badge className="border-transparent bg-brand-tint text-brand-text rounded">
+                {countLabel ? `${count} ${countLabel}` : count}
+              </Badge>
             )}
           </div>
-          {actions && (
-            <div className="flex items-center gap-2 shrink-0">{actions}</div>
+          {subtitle && (
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
+          )}
+          {segments.length > 0 && (
+            <Breadcrumb segments={segments} className="min-w-0" />
           )}
         </div>
 
-        {/* END: breadcrumb — single line, truncates before wrapping */}
-        {segments.length > 0 && (
-          <Breadcrumb segments={segments} className="ms-auto min-w-0" />
+        {/* END: actions */}
+        {actions && (
+          <div className="flex items-center gap-2 shrink-0">{actions}</div>
         )}
       </div>
 
-      {/* Alert: after the header row, before content */}
+      {/* Alert: after the header block, before content */}
       {alert && <div className="mt-4">{alert}</div>}
     </div>
   );

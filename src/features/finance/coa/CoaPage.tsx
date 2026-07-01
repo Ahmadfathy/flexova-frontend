@@ -256,7 +256,7 @@ export function CoaPage() {
     <div className="space-y-4 pb-6">
       <PageHeader
         title={t("coa.title")}
-        subtitle={t("coa.count", { n: accounts.filter(a => a.type === "account").length })}
+        count={t("coa.count", { n: accounts.filter(a => a.type === "account").length })}
         actions={
           can("finance.coa.create") ? (
             <Button size="sm" onClick={() => setCreate(true)}>

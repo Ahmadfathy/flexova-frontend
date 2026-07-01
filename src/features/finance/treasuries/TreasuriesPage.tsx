@@ -151,7 +151,7 @@ export function TreasuriesPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("treasuries.title")}
-          subtitle={t("treasuries.count", { n: treasuries.length })}
+          count={t("treasuries.count", { n: treasuries.length })}
           actions={
             can("finance.treasury.create") ? (
               <Button size="sm" onClick={() => setCreateOpen(true)}>

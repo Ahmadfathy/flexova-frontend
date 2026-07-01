@@ -223,7 +223,7 @@ export function PurchaseVouchersPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("vouchers.title")}
-          subtitle={allVouchers.length > 0 ? t("vouchers.count", { n: allVouchers.length }) : undefined}
+          count={allVouchers.length > 0 ? t("vouchers.count", { n: allVouchers.length }) : undefined}
           actions={
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline">

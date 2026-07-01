@@ -292,7 +292,7 @@ export function EmployeesPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("employees.title")}
-          subtitle={t("employees.count", { n: employees.length })}
+          count={t("employees.count", { n: employees.length })}
           actions={
             can("hr.employee.create") ? (
               <Button size="sm" onClick={() => setCreate(true)}>

@@ -825,7 +825,7 @@ export function ItemsListPage() {
       {/* ── Page header ── */}
       <PageHeader
         title={t("items.title")}
-        subtitle={
+        count={
           data && totalCount > 0
             ? t("items.count", { n: formatNumber(totalCount) })
             : undefined

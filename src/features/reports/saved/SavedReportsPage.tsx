@@ -64,7 +64,7 @@ export function SavedReportsPage() {
     <div className="space-y-4 pb-6">
       <PageHeader
         title={t("saved.title")}
-        subtitle={t("saved.count", { n: visible.length })}
+        count={t("saved.count", { n: visible.length })}
       />
 
       {isOffline && <OfflineBanner />}

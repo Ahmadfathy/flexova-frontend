@@ -188,7 +188,7 @@ export function TransfersPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("transfers.title")}
-          subtitle={t("transfers.count", { n: allTransfers.length })}
+          count={t("transfers.count", { n: allTransfers.length })}
           actions={
             can("finance.transfer.create") ? (
               <Button size="sm" onClick={() => setCreate(true)}>

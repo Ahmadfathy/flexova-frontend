@@ -327,7 +327,7 @@ export function WarehousesPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title={t("warehouses.title")}
-        subtitle={totalCount > 0 ? t("warehouses.count", { n: totalCount }) : undefined}
+        count={totalCount > 0 ? t("warehouses.count", { n: totalCount }) : undefined}
         actions={pageActions}
       />
 

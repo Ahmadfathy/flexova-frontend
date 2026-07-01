@@ -202,7 +202,7 @@ export function ReceiptVouchersPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("receipts.title")}
-          subtitle={t("receipts.count", { n: allVouchers.length })}
+          count={t("receipts.count", { n: allVouchers.length })}
           actions={
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline">

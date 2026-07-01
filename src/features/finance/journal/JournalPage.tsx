@@ -306,7 +306,7 @@ export function JournalPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("journal.title")}
-          subtitle={t("journal.count", { n: allEntries.length })}
+          count={t("journal.count", { n: allEntries.length })}
           actions={
             can("finance.journal.create") ? (
               <Button size="sm" onClick={() => setCreate(true)}>

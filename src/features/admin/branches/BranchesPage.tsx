@@ -118,7 +118,7 @@ export function BranchesPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("branches.title")}
-          subtitle={t("branches.count", { n: branches.length })}
+          count={t("branches.count", { n: branches.length })}
           actions={
             can("admin.branch.manage") ? (
               <Button size="sm" onClick={() => setNew(true)}>

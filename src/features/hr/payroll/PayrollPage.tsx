@@ -276,7 +276,7 @@ export function PayrollPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("payroll.title")}
-          subtitle={t("payroll.count", { n: runs.length })}
+          count={t("payroll.count", { n: runs.length })}
           actions={
             can("hr.payroll.run") ? (
               <Button size="sm" onClick={() => setRunOpen(true)}>

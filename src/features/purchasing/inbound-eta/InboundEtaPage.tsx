@@ -158,7 +158,7 @@ export function InboundEtaPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("inbound_eta.title")}
-          subtitle={allRecords.length > 0 ? t("inbound_eta.count", { n: allRecords.length }) : undefined}
+          count={allRecords.length > 0 ? t("inbound_eta.count", { n: allRecords.length }) : undefined}
           actions={
             <Button size="sm" variant="outline">
               <Download className="h-4 w-4 me-1.5" />

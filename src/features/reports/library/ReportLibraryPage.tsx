@@ -170,7 +170,7 @@ export function ReportLibraryPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("library.title")}
-          subtitle={t("library.count", { n: reports.length })}
+          count={t("library.count", { n: reports.length })}
         />
 
         {isOffline && <OfflineBanner />}

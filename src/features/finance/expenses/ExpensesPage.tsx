@@ -197,7 +197,7 @@ export function ExpensesPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("expenses.title")}
-          subtitle={t("expenses.count", { n: allExpenses.length })}
+          count={t("expenses.count", { n: allExpenses.length })}
           actions={
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline">

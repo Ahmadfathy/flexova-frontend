@@ -212,7 +212,7 @@ export function FollowUpsPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("follow_ups.title")}
-          subtitle={totalOpen > 0 ? t("follow_ups.count", { n: totalOpen }) : undefined}
+          count={totalOpen > 0 ? t("follow_ups.count", { n: totalOpen }) : undefined}
           actions={
             can("crm.followup.create") ? (
               <Button size="sm" onClick={() => setCreate(true)}>

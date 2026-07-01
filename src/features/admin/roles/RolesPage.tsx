@@ -179,7 +179,7 @@ export function RolesPage() {
     <div className="space-y-4 pb-6">
       <PageHeader
         title={t("roles.title")}
-        subtitle={t("roles.count", { n: roles.length })}
+        count={t("roles.count", { n: roles.length })}
       />
 
       {isOffline && <OfflineBanner />}

@@ -225,7 +225,7 @@ export function SchedulingPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("scheduling.title")}
-          subtitle={t("scheduling.count", { n: schedules.length })}
+          count={t("scheduling.count", { n: schedules.length })}
           actions={
             can("reports.schedules.create") ? (
               <Button size="sm" onClick={() => setNewOpen(true)}>

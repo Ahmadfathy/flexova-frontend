@@ -121,7 +121,7 @@ export function PriceListsPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         title={t("price_lists.title")}
-        subtitle={totalCount > 0 ? t("price_lists.count", { n: totalCount }) : undefined}
+        count={totalCount > 0 ? t("price_lists.count", { n: totalCount }) : undefined}
         actions={pageActions}
       />
 

@@ -475,7 +475,7 @@ export function PurchasesListPage() {
     <div className="space-y-4 pb-6">
       <PageHeader
         title={t("invoices.title")}
-        subtitle={allInvoices.length > 0 ? t("invoices.count", { n: allInvoices.length }) : undefined}
+        count={allInvoices.length > 0 ? t("invoices.count", { n: allInvoices.length }) : undefined}
         actions={
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline">

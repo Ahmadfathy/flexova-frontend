@@ -613,7 +613,7 @@ export function PurchaseOrdersListPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("orders.title")}
-          subtitle={allOrders.length > 0 ? t("orders.count", { n: allOrders.length }) : undefined}
+          count={allOrders.length > 0 ? t("orders.count", { n: allOrders.length }) : undefined}
           actions={
             <div className="flex items-center gap-2">
               <Button size="sm" variant="outline">

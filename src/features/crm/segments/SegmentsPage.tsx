@@ -156,7 +156,7 @@ export function SegmentsPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("segments.title")}
-          subtitle={t("segments.count", { n: segments.length })}
+          count={t("segments.count", { n: segments.length })}
           actions={
             can("crm.segment.create") ? (
               <Button size="sm" onClick={() => setCreate(true)}>
