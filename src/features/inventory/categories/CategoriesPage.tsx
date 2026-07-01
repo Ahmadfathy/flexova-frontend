@@ -6,6 +6,7 @@ import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState }  from "@/components/patterns/EmptyState";
 import { ErrorState }  from "@/components/patterns/ErrorState";
 import { Skeleton }    from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
@@ -17,12 +18,13 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import {
   Plus, Search, Layers, MoreVertical, ChevronRight, ChevronDown, Loader2, X,
+  Pencil, FolderPlus, Trash2,
 } from "lucide-react";
 
 import { cn }       from "@/lib/utils";
@@ -366,21 +368,22 @@ export function CategoriesPage() {
                   <MoreVertical className="h-3.5 w-3.5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => openEdit(cat)}>
+              <RowActionsContent>
+                <RowActionItem icon={Pencil} onClick={() => openEdit(cat)}>
                   {t("actions.edit")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => openAddChild(cat.id)}>
+                </RowActionItem>
+                <RowActionItem icon={FolderPlus} onClick={() => openAddChild(cat.id)}>
                   {t("actions.add_child")}
-                </DropdownMenuItem>
+                </RowActionItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
+                <RowActionItem
+                  icon={Trash2}
+                  destructive
                   onClick={() => openDelete(cat)}
                 >
                   {t("actions.delete")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
+                </RowActionItem>
+              </RowActionsContent>
             </DropdownMenu>
           )}
         </div>
@@ -419,18 +422,19 @@ export function CategoriesPage() {
                 <MoreVertical className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => openEdit(cat)}>
+            <RowActionsContent>
+              <RowActionItem icon={Pencil} onClick={() => openEdit(cat)}>
                 {t("actions.edit")}
-              </DropdownMenuItem>
+              </RowActionItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
+              <RowActionItem
+                icon={Trash2}
+                destructive
                 onClick={() => openDelete(cat)}
               >
                 {t("actions.delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+              </RowActionItem>
+            </RowActionsContent>
           </DropdownMenu>
         )}
       </div>
@@ -470,23 +474,24 @@ export function CategoriesPage() {
                 <MoreVertical className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => openEdit(cat)}>
+            <RowActionsContent>
+              <RowActionItem icon={Pencil} onClick={() => openEdit(cat)}>
                 {t("actions.edit")}
-              </DropdownMenuItem>
+              </RowActionItem>
               {!isChild && (
-                <DropdownMenuItem onClick={() => openAddChild(cat.id)}>
+                <RowActionItem icon={FolderPlus} onClick={() => openAddChild(cat.id)}>
                   {t("actions.add_child")}
-                </DropdownMenuItem>
+                </RowActionItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
+              <RowActionItem
+                icon={Trash2}
+                destructive
                 onClick={() => openDelete(cat)}
               >
                 {t("actions.delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+              </RowActionItem>
+            </RowActionsContent>
           </DropdownMenu>
         )}
       </div>

@@ -7,17 +7,18 @@ import { EmptyState }  from "@/components/patterns/EmptyState";
 import { ErrorState }  from "@/components/patterns/ErrorState";
 import { StatusPill }  from "@/components/patterns/StatusPill";
 import { Skeleton }    from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, ArrowRightLeft, MoreVertical, ArrowRight } from "lucide-react";
+import { Plus, ArrowRightLeft, MoreVertical, ArrowRight, Pencil, Download } from "lucide-react";
 
 import { cn }       from "@/lib/utils";
 import { useCan }   from "@/lib/permissions";
@@ -206,10 +207,10 @@ export function TransfersPage() {
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>{t("actions.edit")}</DropdownMenuItem>
-                            <DropdownMenuItem>{t("actions.export")}</DropdownMenuItem>
-                          </DropdownMenuContent>
+                          <RowActionsContent>
+                            <RowActionItem icon={Pencil}>{t("actions.edit")}</RowActionItem>
+                            <RowActionItem icon={Download}>{t("actions.export")}</RowActionItem>
+                          </RowActionsContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>

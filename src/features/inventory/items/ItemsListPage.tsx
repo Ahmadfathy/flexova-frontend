@@ -35,18 +35,19 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 // Icons
 import {
   Plus, Upload, Download, MoreVertical, Package, X,
   SlidersHorizontal, Search, ChevronUp, ChevronDown, ChevronsUpDown,
-  Printer,
+  Printer, Pencil, History, Copy, Ban, CheckCircle2, Trash2,
 } from "lucide-react";
 
 // Lib
@@ -165,32 +166,29 @@ function RowActions({
   return (
     <>
       {can("inventory.item.edit") && (
-        <DropdownMenuItem onClick={() => onNavigate(`/inventory/items/${item.id}`)}>
+        <RowActionItem icon={Pencil} onClick={() => onNavigate(`/inventory/items/${item.id}`)}>
           {t("actions.edit")}
-        </DropdownMenuItem>
+        </RowActionItem>
       )}
-      <DropdownMenuItem onClick={() => {}}>{t("actions.ledger")}</DropdownMenuItem>
+      <RowActionItem icon={History} onClick={() => {}}>{t("actions.ledger")}</RowActionItem>
       {can("inventory.item.create") && (
-        <DropdownMenuItem onClick={() => {}}>{t("actions.duplicate")}</DropdownMenuItem>
+        <RowActionItem icon={Copy} onClick={() => {}}>{t("actions.duplicate")}</RowActionItem>
       )}
       {can("inventory.item.suspend") && (
         <>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => {}}>
+          <RowActionItem icon={isActive ? Ban : CheckCircle2} onClick={() => {}}>
             {isActive ? t("actions.suspend") : t("actions.activate")}
-          </DropdownMenuItem>
+          </RowActionItem>
         </>
       )}
-      <DropdownMenuItem onClick={() => {}}>{t("actions.print_barcode")}</DropdownMenuItem>
+      <RowActionItem icon={Printer} onClick={() => {}}>{t("actions.print_barcode")}</RowActionItem>
       {can("inventory.item.delete") && (
         <>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
-            onClick={() => {}}
-          >
+          <RowActionItem icon={Trash2} destructive onClick={() => {}}>
             {t("actions.delete")}
-          </DropdownMenuItem>
+          </RowActionItem>
         </>
       )}
     </>
@@ -272,9 +270,9 @@ function ItemCard({
             <MoreVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <RowActionsContent>
           <RowActions item={item} can={can} t={t} onNavigate={onNavigate} />
-        </DropdownMenuContent>
+        </RowActionsContent>
       </DropdownMenu>
     </div>
   );
@@ -763,9 +761,9 @@ export function ItemsListPage() {
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <RowActionsContent>
             <RowActions item={row.original} can={can} t={t} onNavigate={navigate} />
-          </DropdownMenuContent>
+          </RowActionsContent>
         </DropdownMenu>
       ),
     }),

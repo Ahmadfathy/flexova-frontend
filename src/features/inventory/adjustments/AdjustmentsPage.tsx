@@ -6,6 +6,7 @@ import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState }  from "@/components/patterns/EmptyState";
 import { ErrorState }  from "@/components/patterns/ErrorState";
 import { Skeleton }    from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
 import { Badge }  from "@/components/ui/badge";
@@ -13,11 +14,11 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, SlidersHorizontal, MoreVertical } from "lucide-react";
+import { Plus, SlidersHorizontal, MoreVertical, Pencil, Download } from "lucide-react";
 
 import { formatMoney } from "@/lib/format";
 import { cn }          from "@/lib/utils";
@@ -204,10 +205,10 @@ export function AdjustmentsPage() {
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>{t("actions.edit")}</DropdownMenuItem>
-                            <DropdownMenuItem>{t("actions.export")}</DropdownMenuItem>
-                          </DropdownMenuContent>
+                          <RowActionsContent>
+                            <RowActionItem icon={Pencil}>{t("actions.edit")}</RowActionItem>
+                            <RowActionItem icon={Download}>{t("actions.export")}</RowActionItem>
+                          </RowActionsContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>

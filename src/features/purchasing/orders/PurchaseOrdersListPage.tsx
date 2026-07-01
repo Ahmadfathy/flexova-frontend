@@ -13,7 +13,7 @@ import { EmptyState }    from "@/components/patterns/EmptyState";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
-import { EntityCell }    from "@/components/patterns/DataTable";
+import { EntityCell, RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 import { DatePicker }    from "@/components/patterns/DatePicker";
 
@@ -31,7 +31,7 @@ import {
 import { DrawerShell } from "@/components/patterns/DrawerShell";
 import { ModalShell }  from "@/components/patterns/ModalShell";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import { formatMoney, formatDate } from "@/lib/format";
@@ -777,22 +777,19 @@ export function PurchaseOrdersListPage() {
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setSelectedPo(po)}>
-                                  <FileText className="h-4 w-4 me-2" />
+                              <RowActionsContent>
+                                <RowActionItem icon={FileText} onClick={() => setSelectedPo(po)}>
                                   {t("orders.action_view")}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => toast.info(t("orders.action_print"))}>
-                                  <Printer className="h-4 w-4 me-2" />
+                                </RowActionItem>
+                                <RowActionItem icon={Printer} onClick={() => toast.info(t("orders.action_print"))}>
                                   {t("orders.action_print")}
-                                </DropdownMenuItem>
+                                </RowActionItem>
                                 {po.status === "sent" && can("purchasing.receipt.create") && (
-                                  <DropdownMenuItem onClick={() => toast.info(t("orders.action_receive"))}>
-                                    <Truck className="h-4 w-4 me-2" />
+                                  <RowActionItem icon={Truck} onClick={() => toast.info(t("orders.action_receive"))}>
                                     {t("orders.action_receive")}
-                                  </DropdownMenuItem>
+                                  </RowActionItem>
                                 )}
-                              </DropdownMenuContent>
+                              </RowActionsContent>
                             </DropdownMenu>
                           </TableCell>
                         </TableRow>

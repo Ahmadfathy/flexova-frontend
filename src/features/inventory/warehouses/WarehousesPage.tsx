@@ -7,6 +7,7 @@ import { EmptyState }  from "@/components/patterns/EmptyState";
 import { ErrorState }  from "@/components/patterns/ErrorState";
 import { StatusPill }  from "@/components/patterns/StatusPill";
 import { Skeleton }    from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
@@ -21,11 +22,11 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, Warehouse, MoreVertical, Star, Loader2 } from "lucide-react";
+import { Plus, Warehouse, MoreVertical, Star, Loader2, Pencil, Eye, Trash2 } from "lucide-react";
 
 import { formatMoney } from "@/lib/format";
 import { cn }          from "@/lib/utils";
@@ -441,25 +442,26 @@ export function WarehousesPage() {
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <RowActionsContent>
                           {can("inventory.warehouse.manage") && (
-                            <DropdownMenuItem onClick={() => openEdit(wh)}>
+                            <RowActionItem icon={Pencil} onClick={() => openEdit(wh)}>
                               {t("actions.edit")}
-                            </DropdownMenuItem>
+                            </RowActionItem>
                           )}
-                          <DropdownMenuItem>{t("actions.view_items")}</DropdownMenuItem>
+                          <RowActionItem icon={Eye}>{t("actions.view_items")}</RowActionItem>
                           {can("inventory.warehouse.manage") && (
                             <>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
+                              <RowActionItem
+                                icon={Trash2}
+                                destructive
                                 onClick={() => openDelete(wh)}
                               >
                                 {t("actions.delete")}
-                              </DropdownMenuItem>
+                              </RowActionItem>
                             </>
                           )}
-                        </DropdownMenuContent>
+                        </RowActionsContent>
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>

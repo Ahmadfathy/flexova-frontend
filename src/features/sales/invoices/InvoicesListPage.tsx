@@ -19,7 +19,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { EntityCell }    from "@/components/patterns/DataTable";
+import { EntityCell, RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
@@ -33,7 +33,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -191,53 +191,48 @@ function InvoiceActions({
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem onClick={e => { e.stopPropagation(); onView(); }}>
-          <Eye className="h-4 w-4 me-2" />
+      <RowActionsContent>
+        <RowActionItem icon={Eye} onClick={e => { e.stopPropagation(); onView(); }}>
           {t("list.action_view")}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={e => { e.stopPropagation(); toast.info(t("list.action_print")); }}>
-          <Printer className="h-4 w-4 me-2" />
+        </RowActionItem>
+        <RowActionItem icon={Printer} onClick={e => { e.stopPropagation(); toast.info(t("list.action_print")); }}>
           {t("list.action_print")}
-        </DropdownMenuItem>
+        </RowActionItem>
 
         {canCollect && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={e => { e.stopPropagation(); onView(); }}>
-              <Wallet className="h-4 w-4 me-2" />
+            <RowActionItem icon={Wallet} onClick={e => { e.stopPropagation(); onView(); }}>
               {t("list.action_collect")}
-            </DropdownMenuItem>
+            </RowActionItem>
           </>
         )}
 
         {canReturn && (
-          <DropdownMenuItem onClick={e => e.stopPropagation()}>
-            <RotateCcw className="h-4 w-4 me-2" />
+          <RowActionItem icon={RotateCcw} onClick={e => e.stopPropagation()}>
             {t("list.action_return")}
-          </DropdownMenuItem>
+          </RowActionItem>
         )}
 
         {canResend && (
-          <DropdownMenuItem onClick={e => e.stopPropagation()}>
-            <RefreshCw className="h-4 w-4 me-2" />
+          <RowActionItem icon={RefreshCw} onClick={e => e.stopPropagation()}>
             {t("list.action_resend")}
-          </DropdownMenuItem>
+          </RowActionItem>
         )}
 
         {canCancel && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
+            <RowActionItem
+              icon={Ban}
+              destructive
               onClick={e => e.stopPropagation()}
             >
-              <Ban className="h-4 w-4 me-2" />
               {t("list.action_cancel")}
-            </DropdownMenuItem>
+            </RowActionItem>
           </>
         )}
-      </DropdownMenuContent>
+      </RowActionsContent>
     </DropdownMenu>
   );
 }

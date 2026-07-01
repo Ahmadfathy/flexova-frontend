@@ -10,6 +10,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
@@ -20,7 +21,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -185,28 +186,25 @@ export function QuotationsPage() {
                           <MoreVertical className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => nav(`/sales/quotations/${qt.id}`)}>
-                          <Eye className="size-4 me-2" />
+                      <RowActionsContent>
+                        <RowActionItem icon={Eye} onClick={() => nav(`/sales/quotations/${qt.id}`)}>
                           {t("quote.action_view")}
-                        </DropdownMenuItem>
+                        </RowActionItem>
                         {canConvert && qt.status === "accepted" && (
                           <>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => {
+                            <RowActionItem icon={ArrowRightLeft} onClick={() => {
                               toast.success(t("quote.converted"));
                               nav("/sales/invoices/new");
                             }}>
-                              <ArrowRightLeft className="size-4 me-2" />
                               {t("quote.action_convert")}
-                            </DropdownMenuItem>
+                            </RowActionItem>
                           </>
                         )}
-                        <DropdownMenuItem onClick={() => toast.success(t("quote.saved_draft"))}>
-                          <Copy className="size-4 me-2" />
+                        <RowActionItem icon={Copy} onClick={() => toast.success(t("quote.saved_draft"))}>
                           {t("quote.action_duplicate")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
+                        </RowActionItem>
+                      </RowActionsContent>
                     </DropdownMenu>
                   </TableCell>
                 </TableRow>

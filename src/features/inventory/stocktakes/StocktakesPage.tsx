@@ -8,6 +8,7 @@ import { EmptyState }  from "@/components/patterns/EmptyState";
 import { ErrorState }  from "@/components/patterns/ErrorState";
 import { StatusPill }  from "@/components/patterns/StatusPill";
 import { Skeleton }    from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
 import { Badge }  from "@/components/ui/badge";
@@ -15,11 +16,11 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, ClipboardList, MoreVertical } from "lucide-react";
+import { Plus, ClipboardList, MoreVertical, Pencil, Download } from "lucide-react";
 
 import { formatNumber } from "@/lib/format";
 import { cn }           from "@/lib/utils";
@@ -231,10 +232,10 @@ export function StocktakesPage() {
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>{t("actions.edit")}</DropdownMenuItem>
-                            <DropdownMenuItem>{t("actions.export")}</DropdownMenuItem>
-                          </DropdownMenuContent>
+                          <RowActionsContent>
+                            <RowActionItem icon={Pencil}>{t("actions.edit")}</RowActionItem>
+                            <RowActionItem icon={Download}>{t("actions.export")}</RowActionItem>
+                          </RowActionsContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>

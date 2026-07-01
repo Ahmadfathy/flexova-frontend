@@ -17,7 +17,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { EntityCell }    from "@/components/patterns/DataTable";
+import { EntityCell, RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
@@ -29,7 +29,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
@@ -38,7 +38,7 @@ import { Label }  from "@/components/ui/label";
 import {
   Plus, Download, MoreVertical, X, Eye, Wallet,
   Building2, Search, ChevronUp, ChevronDown, ChevronsUpDown,
-  AlertTriangle,
+  AlertTriangle, Pencil, Ban, CheckCircle2,
 } from "lucide-react";
 
 import { formatMoney } from "@/lib/format";
@@ -322,43 +322,45 @@ export function SuppliersListPage() {
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem
+            <RowActionsContent>
+              <RowActionItem
+                icon={Eye}
                 onClick={e => { e.stopPropagation(); navigate(`/purchasing/suppliers/${s.id}`); }}
               >
-                <Eye className="h-4 w-4 me-2" />
                 {t("actions.view")}
-              </DropdownMenuItem>
+              </RowActionItem>
               {can("purchasing.supplier.manage") && (
-                <DropdownMenuItem
+                <RowActionItem
+                  icon={Pencil}
                   onClick={e => { e.stopPropagation(); setEditTarget(s); setModalOpen(true); }}
                 >
                   {t("actions.edit")}
-                </DropdownMenuItem>
+                </RowActionItem>
               )}
               {canPayThis && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
+                  <RowActionItem
+                    icon={Wallet}
                     onClick={e => { e.stopPropagation(); navigate(`/purchasing/vouchers/new?supplier=${s.id}`); }}
                   >
-                    <Wallet className="h-4 w-4 me-2" />
                     {t("actions.pay")}
-                  </DropdownMenuItem>
+                  </RowActionItem>
                 </>
               )}
               {can("purchasing.supplier.manage") && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
+                  <RowActionItem
+                    icon={s.status === "active" ? Ban : CheckCircle2}
                     onClick={e => e.stopPropagation()}
-                    className={s.status === "active" ? "text-destructive focus:text-destructive" : ""}
+                    destructive={s.status === "active"}
                   >
                     {s.status === "active" ? t("actions.suspend") : t("actions.activate")}
-                  </DropdownMenuItem>
+                  </RowActionItem>
                 </>
               )}
-            </DropdownMenuContent>
+            </RowActionsContent>
           </DropdownMenu>
         );
       },

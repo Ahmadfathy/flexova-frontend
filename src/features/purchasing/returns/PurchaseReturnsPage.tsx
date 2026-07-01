@@ -11,7 +11,7 @@ import { PageSection }   from "@/components/patterns/PageSection";
 import { EmptyState }    from "@/components/patterns/EmptyState";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
-import { EntityCell }    from "@/components/patterns/DataTable";
+import { EntityCell, RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }    from "@/components/ui/button";
@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 import { ModalShell } from "@/components/patterns/ModalShell";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import { formatMoney, formatDate } from "@/lib/format";
@@ -345,12 +345,11 @@ export function PurchaseReturnsPage() {
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => toast.info(t("returns.action_print"))}>
-                              <Printer className="h-4 w-4 me-2" />
+                          <RowActionsContent>
+                            <RowActionItem icon={Printer} onClick={() => toast.info(t("returns.action_print"))}>
                               {t("returns.action_print")}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
+                            </RowActionItem>
+                          </RowActionsContent>
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>

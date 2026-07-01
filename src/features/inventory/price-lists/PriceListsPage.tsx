@@ -8,6 +8,7 @@ import { EmptyState }  from "@/components/patterns/EmptyState";
 import { ErrorState }  from "@/components/patterns/ErrorState";
 import { StatusPill }  from "@/components/patterns/StatusPill";
 import { Skeleton }    from "@/components/patterns/Skeletons";
+import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
@@ -19,11 +20,11 @@ import {
 import { ModalShell }    from "@/components/patterns/ModalShell";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, Tag, MoreVertical, Loader2 } from "lucide-react";
+import { Plus, Tag, MoreVertical, Loader2, Eye, Pencil, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { formatNumber } from "@/lib/format";
@@ -221,30 +222,32 @@ export function PriceListsPage() {
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
+                        <RowActionsContent>
+                          <RowActionItem
+                            icon={Eye}
                             onClick={() => navigate(`/inventory/price-lists/${pl.id}`)}
                           >
                             {t("price_lists.view_prices")}
-                          </DropdownMenuItem>
+                          </RowActionItem>
                           {can("inventory.pricelist.manage") && (
-                            <DropdownMenuItem>{t("actions.edit")}</DropdownMenuItem>
+                            <RowActionItem icon={Pencil}>{t("actions.edit")}</RowActionItem>
                           )}
                           {can("inventory.pricelist.manage") && !pl.is_default && (
-                            <DropdownMenuItem>{t("actions.set_default")}</DropdownMenuItem>
+                            <RowActionItem icon={Star}>{t("actions.set_default")}</RowActionItem>
                           )}
                           {can("inventory.pricelist.manage") && !pl.is_default && (
                             <>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                className="text-destructive focus:text-destructive"
+                              <RowActionItem
+                                icon={Trash2}
+                                destructive
                                 onClick={() => setDeleteTarget(pl.id)}
                               >
                                 {t("actions.delete")}
-                              </DropdownMenuItem>
+                              </RowActionItem>
                             </>
                           )}
-                        </DropdownMenuContent>
+                        </RowActionsContent>
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>

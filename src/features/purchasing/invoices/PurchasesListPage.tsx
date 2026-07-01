@@ -18,7 +18,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { EntityCell }    from "@/components/patterns/DataTable";
+import { EntityCell, RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }   from "@/components/ui/button";
@@ -31,13 +31,13 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import {
   Plus, Download, MoreVertical, X, Eye, Wallet,
-  RotateCcw, Search, FileText, Printer,
+  RotateCcw, Search, FileText, Printer, Link2,
   ChevronUp, ChevronDown, ChevronsUpDown,
 } from "lucide-react";
 
@@ -191,51 +191,50 @@ function InvoiceActions({
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44">
-        <DropdownMenuItem onClick={e => { e.stopPropagation(); onView(); }}>
-          <Eye className="h-4 w-4 me-2" />
+      <RowActionsContent>
+        <RowActionItem icon={Eye} onClick={e => { e.stopPropagation(); onView(); }}>
           {t("invoices.action_view")}
-        </DropdownMenuItem>
-        <DropdownMenuItem
+        </RowActionItem>
+        <RowActionItem
+          icon={Printer}
           onClick={e => { e.stopPropagation(); toast.info(t("invoices.action_print")); }}
         >
-          <Printer className="h-4 w-4 me-2" />
           {t("invoices.action_print")}
-        </DropdownMenuItem>
+        </RowActionItem>
 
         {canReturn && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
+            <RowActionItem
+              icon={RotateCcw}
               onClick={e => { e.stopPropagation(); onNavigate(`/purchasing/returns/new?source=${inv.id}`); }}
             >
-              <RotateCcw className="h-4 w-4 me-2" />
               {t("invoices.action_return")}
-            </DropdownMenuItem>
+            </RowActionItem>
           </>
         )}
 
         {canPay && (
-          <DropdownMenuItem
+          <RowActionItem
+            icon={Wallet}
             onClick={e => {
               e.stopPropagation();
               onNavigate(`/purchasing/vouchers/new?supplier=${inv.supplier_id}&invoice=${inv.id}`);
             }}
           >
-            <Wallet className="h-4 w-4 me-2" />
             {t("invoices.action_pay")}
-          </DropdownMenuItem>
+          </RowActionItem>
         )}
 
         {canMatch && (
           <>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={e => { e.stopPropagation(); toast.info(t("invoices.action_match")); }}>
+            <RowActionItem icon={Link2} onClick={e => { e.stopPropagation(); toast.info(t("invoices.action_match")); }}>
               {t("invoices.action_match")}
-            </DropdownMenuItem>
+            </RowActionItem>
           </>
         )}
-      </DropdownMenuContent>
+      </RowActionsContent>
     </DropdownMenu>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronsUpDown, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { TableSkeleton } from "./Skeletons";
 import { EmptyState } from "./EmptyState";
 import { ErrorState } from "./ErrorState";
@@ -192,3 +193,47 @@ export function ActionCell({ actions }: { actions: ActionItem[] }) {
     </span>
   );
 }
+
+/* ─────────────────────────────────────────────────────────────
+   RowActionsContent / RowActionItem — unified ⋮ row-actions
+   dropdown: wider min-width, comfortable padding, leading icon
+   ───────────────────────────────────────────────────────────── */
+export const RowActionsContent = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuContent>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuContent>
+>(({ className, align = "end", ...props }, ref) => (
+  <DropdownMenuContent
+    ref={ref}
+    align={align}
+    className={cn("min-w-44 p-1.5", className)}
+    {...props}
+  />
+));
+RowActionsContent.displayName = "RowActionsContent";
+
+export interface RowActionItemProps
+  extends React.ComponentPropsWithoutRef<typeof DropdownMenuItem> {
+  /** Leading lucide icon expressing the action */
+  icon: LucideIcon;
+  /** Danger tone for destructive actions (delete, cancel, void, ...) */
+  destructive?: boolean;
+}
+
+export const RowActionItem = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuItem>,
+  RowActionItemProps
+>(({ icon: Icon, destructive, className, children, ...props }, ref) => (
+  <DropdownMenuItem
+    ref={ref}
+    className={cn(
+      "gap-2 px-3 py-2 text-start",
+      destructive && "text-danger focus:text-danger focus:bg-danger-tint",
+      className
+    )}
+    {...props}
+  >
+    <Icon className="h-4 w-4 shrink-0" />
+    <span className="min-w-0 truncate">{children}</span>
+  </DropdownMenuItem>
+));
+RowActionItem.displayName = "RowActionItem";
