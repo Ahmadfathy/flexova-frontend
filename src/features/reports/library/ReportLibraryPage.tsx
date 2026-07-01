@@ -143,7 +143,7 @@ export function ReportLibraryPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("library.title")} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="rounded border border-border p-5 space-y-3">
               <Skeleton className="h-4 w-40" />
@@ -175,7 +175,7 @@ export function ReportLibraryPage() {
 
         {isOffline && <OfflineBanner />}
 
-        <div className="flex flex-wrap gap-2 px-4">
+        <div className="flex flex-wrap gap-2">
           <div className="relative flex-1 min-w-48">
             <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
@@ -203,7 +203,7 @@ export function ReportLibraryPage() {
             <EmptyState icon={BookOpen} title={t("library.title")} description="" />
           </PageSection>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map(rep => (
               <div key={rep.id} className="rounded-sm bg-card shadow-sm p-5 space-y-3 flex flex-col">
                 <div className="flex items-start justify-between gap-2">

@@ -444,7 +444,7 @@ export function PurchaseInvoiceEditorPage() {
             <div className="space-y-2">
               {isOffline && <OfflineBanner />}
               {fromLowstock && (
-                <div className="mx-6 flex items-center gap-2 rounded bg-brand/10 border border-brand/20 px-4 py-2 text-sm text-brand">
+                <div className="flex items-center gap-2 rounded bg-brand/10 border border-brand/20 px-4 py-2 text-sm text-brand">
                   <AlertCircle className="h-4 w-4 shrink-0" />
                   {t("editor.from_lowstock")}
                 </div>

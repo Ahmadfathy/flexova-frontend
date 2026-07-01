@@ -23,7 +23,7 @@ export function HrDashboardPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("dashboard.title")} />
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <div className="flex items-center justify-between">
@@ -65,7 +65,7 @@ export function HrDashboardPage() {
             <div className="space-y-2">
               {isOffline && <OfflineBanner />}
               {!kpis.payroll_run_this_month && (
-                <div className="mx-4 flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
+                <div className="flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">
                   <AlertCircle className="h-4 w-4 shrink-0" />
                   {t("dashboard.payroll_alert")}
                 </div>
@@ -75,7 +75,7 @@ export function HrDashboardPage() {
         }
       />
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <KpiCard
           icon={Users}
           label={t("dashboard.headcount")}

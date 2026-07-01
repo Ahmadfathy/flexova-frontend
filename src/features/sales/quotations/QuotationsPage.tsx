@@ -82,7 +82,7 @@ export function QuotationsPage() {
   const statuses: QuotationStatus[] = ["draft", "sent", "accepted", "rejected", "expired"];
 
   if (loading) return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4 py-6">
       <Skeleton className="h-8 w-48" />
       <Skeleton className="h-64 w-full" />
     </div>

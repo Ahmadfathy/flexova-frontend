@@ -82,7 +82,7 @@ export function AuditPage() {
       {isOffline && <OfflineBanner />}
 
       {/* Filter */}
-      <div className="px-4">
+      <div>
         <Select value={filter} onValueChange={v => setFilter(v as "all" | "sensitive")}>
           <SelectTrigger className="h-9 w-auto min-w-44">
             <SelectValue />

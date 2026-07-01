@@ -67,7 +67,7 @@ export function SecurityPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("security.title")} />
-        <div className="space-y-3 px-4">
+        <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded border border-border p-5 space-y-3">
               <Skeleton className="h-4 w-36" />

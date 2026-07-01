@@ -400,7 +400,7 @@ export function JournalPage() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-sm">{entry.memo}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground font-mono text-xs">
+                        <TableCell className="text-sm text-muted-foreground font-mono">
                           {entry.source_ref ?? "—"}
                         </TableCell>
                         <TableCell className="text-start tabular-nums font-medium">

@@ -24,7 +24,7 @@ export function ZReportPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("z_report.title")} />
-        <div className="grid grid-cols-2 gap-4 px-4">
+        <div className="grid grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="rounded border border-border p-5 space-y-2">
               <Skeleton className="h-3.5 w-24" />
@@ -68,7 +68,7 @@ export function ZReportPage() {
       {isOffline && <OfflineBanner />}
 
       {/* Shift info */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { label: "shift_label",   value: z.shift_id },
           { label: "cashier_label", value: z.cashier },
@@ -83,7 +83,7 @@ export function ZReportPage() {
       </div>
 
       {/* Sales total */}
-      <div className="px-4">
+      <div>
         <div className="rounded border border-primary/30 bg-primary/5 p-5 flex items-center justify-between">
           <p className="text-sm font-semibold">{t("z_report.sales_total")}</p>
           <p className="text-2xl font-bold tabular-nums">{formatMoney(z.sales_total, lang)}</p>

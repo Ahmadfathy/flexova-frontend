@@ -151,7 +151,7 @@ export function RolesPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("roles.title")} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <Skeleton className="h-4 w-32" />
@@ -189,7 +189,7 @@ export function RolesPage() {
           <EmptyState icon={ShieldCheck} title={t("roles.no_roles")} description={t("roles.empty_sub")} />
         </PageSection>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {roles.map(r => (
             <RoleCard key={r.id} role={r} catalog={catalog} lang={lang} t={t} />
           ))}

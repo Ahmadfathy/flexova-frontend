@@ -309,7 +309,7 @@ export function QuotationEditorPage() {
   // ── States ─────────────────────────────────────────────────────
 
   if (loading) return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 py-6">
       <Skeleton className="h-8 w-60" />
       <Skeleton className="h-96 w-full" />
     </div>

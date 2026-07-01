@@ -109,7 +109,7 @@ export function ReportsDashboardPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("dashboard.title")} />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="rounded-sm bg-card shadow-sm p-5 space-y-3">
               <Skeleton className="h-3.5 w-28" />
@@ -158,14 +158,14 @@ export function ReportsDashboardPage() {
 
       {/* KPI grid */}
       {kpis.length > 0 && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {kpis.map(w => <KpiWidget key={w.id} w={w} lang={lang} t={t} />)}
         </div>
       )}
 
       {/* Charts + lists */}
       {(charts.length > 0 || lists.length > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {charts.map(w => <CashflowWidget key={w.id} w={w} t={t} />)}
           {lists.map(w => <ListWidget key={w.id} w={w} lang={lang} />)}
         </div>

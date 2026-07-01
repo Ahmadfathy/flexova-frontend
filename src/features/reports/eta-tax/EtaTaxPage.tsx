@@ -103,7 +103,7 @@ export function EtaTaxPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("eta_tax.title")} />
-        <div className="space-y-3 px-4">
+        <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded-sm bg-card shadow-sm p-4 space-y-2">
               <Skeleton className="h-4 w-32" />
@@ -149,7 +149,7 @@ export function EtaTaxPage() {
       {isOffline && <OfflineBanner />}
 
       {/* VAT return summary */}
-      <div className="px-4">
+      <div>
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
           {t("eta_tax.vat_title")}
         </p>

@@ -129,7 +129,7 @@ export function SegmentsPage() {
     return (
       <div className="space-y-4">
         <PageHeader title={t("segments.title")} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="rounded border border-border p-5 space-y-2">
               <Skeleton className="h-5 w-28" />
@@ -181,7 +181,7 @@ export function SegmentsPage() {
             />
           </PageSection>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {segments.map((seg, i) => (
               <SegmentCard key={seg.id} segment={seg} index={i} lang={lang} t={t} />
             ))}

@@ -69,7 +69,7 @@ function StatRow({
 
 function StatSkeleton() {
   return (
-    <div className="space-y-3 p-4">
+    <div className="space-y-3 py-4">
       {Array.from({ length: 10 }).map((_, i) => (
         <div key={i} className="flex justify-between" style={{ paddingInlineStart: (i % 3) * 16 }}>
           <Skeleton className="h-3.5 w-40" />
