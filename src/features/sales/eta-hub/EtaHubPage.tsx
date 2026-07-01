@@ -224,7 +224,7 @@ export function EtaHubPage() {
 
   // ── Loading / error ───────────────────────────────────────────
   if (loading) return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <Skeleton className="h-8 w-64" />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-28" />)}
@@ -265,7 +265,7 @@ export function EtaHubPage() {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       {/* ── Header with env badge ──────────────────────────────── */}
       <PageHeader
         title={t("eta_hub.title")}

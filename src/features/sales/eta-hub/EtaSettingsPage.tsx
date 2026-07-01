@@ -53,7 +53,7 @@ export function EtaSettingsPage() {
 
   // ── Loading / error ───────────────────────────────────────────
   if (loading) return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <Skeleton className="h-8 w-64" />
       <Skeleton className="h-40 w-full" />
       <Skeleton className="h-40 w-full" />
@@ -65,7 +65,7 @@ export function EtaSettingsPage() {
 
   const canEdit = can("eta.settings");
   if (!canEdit) return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <PageHeader title={t("settings.title")} />
       <div className="flex flex-col items-center gap-4 py-20 text-center">
         <Lock className="size-10 text-muted-foreground/40" />
@@ -134,7 +134,7 @@ export function EtaSettingsPage() {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <PageHeader
         title={t("settings.title")}
         alert={
