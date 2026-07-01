@@ -1,6 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -32,6 +31,7 @@ import { Plus, Warehouse, MoreVertical, Star, Loader2, Pencil, Eye, Trash2 } fro
 import { formatMoney } from "@/lib/format";
 import { cn }          from "@/lib/utils";
 import { useCan }      from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useItems }    from "../items/useItems";
 import type { InventoryWarehouse } from "../items/types";
 
@@ -286,7 +286,7 @@ export function WarehousesPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
-  const [searchParams] = useSearchParams();
+  const openCreate   = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, reload } = useItems();
 
@@ -306,12 +306,6 @@ export function WarehousesPage() {
     warehouse?: InventoryWarehouse;
   }>({ open: false });
 
-  const openAdd   = () => setWhDialog({ open: true, mode: "add" });
-
-  useEffect(() => {
-    if (searchParams.get("new") === "1") openAdd();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
   const openEdit  = (wh: InventoryWarehouse) => setWhDialog({ open: true, mode: "edit", warehouse: wh });
   const openDelete = (wh: InventoryWarehouse) => setDeleteDialog({ open: true, warehouse: wh });
 
@@ -324,7 +318,7 @@ export function WarehousesPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.warehouse.manage") ? (
-    <Button size="sm" onClick={openAdd}>
+    <Button size="sm" onClick={() => openCreate("new_warehouse")}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("warehouses.new")}
     </Button>
@@ -355,7 +349,7 @@ export function WarehousesPage() {
               description={t("warehouses.empty_sub")}
               action={
                 can("inventory.warehouse.manage")
-                  ? { label: t("warehouses.new"), onClick: openAdd }
+                  ? { label: t("warehouses.new"), onClick: () => openCreate("new_warehouse") }
                   : undefined
               }
             />

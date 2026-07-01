@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Calendar, Pause, Play, Mail, MessageCircle } from "lucide-react";
 
@@ -12,18 +11,11 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 
-import { ModalShell }  from "@/components/patterns/ModalShell";
-import { TimePicker }  from "@/components/patterns/TimePicker";
-
 import { Button } from "@/components/ui/button";
-import { Input }  from "@/components/ui/input";
-import { Label }  from "@/components/ui/label";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 
 import { formatDate } from "@/lib/format";
 import { useCan }     from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useReportsData, type Schedule } from "../data/useReportsData";
 
 // ── Channel icon ──────────────────────────────────────────────────
@@ -31,86 +23,6 @@ import { useReportsData, type Schedule } from "../data/useReportsData";
 function ChannelIcon({ channel }: { channel: string }) {
   if (channel === "whatsapp") return <MessageCircle className="h-3.5 w-3.5 text-[#25d366]" />;
   return <Mail className="h-3.5 w-3.5 text-muted-foreground" />;
-}
-
-// ── New schedule dialog ───────────────────────────────────────────
-
-function NewScheduleDialog({
-  open, onClose, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"reports">>["t"];
-}) {
-  const [name, setName]       = useState("");
-  const [target, setTarget]   = useState("");
-  const [cadence, setCadence] = useState<string>("");
-  const [time, setTime]       = useState("08:00");
-  const [channel, setChannel] = useState<string>("");
-
-  function handleSave() {
-    onClose();
-    setName(""); setTarget(""); setCadence(""); setTime("08:00"); setChannel("");
-    toast.success(t("scheduling.saved_toast"));
-  }
-
-  const valid = name.trim() && target.trim() && cadence && channel;
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("scheduling.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!valid} onClick={handleSave}>
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("scheduling.form_name")} *</Label>
-          <Input value={name} onChange={e => setName(e.target.value)} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("scheduling.form_target")} *</Label>
-          <Input value={target} onChange={e => setTarget(e.target.value)} />
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("scheduling.form_cadence")} *</Label>
-            <Select value={cadence} onValueChange={setCadence}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="daily">{t("scheduling.cadence_daily")}</SelectItem>
-                <SelectItem value="weekly">{t("scheduling.cadence_weekly")}</SelectItem>
-                <SelectItem value="monthly">{t("scheduling.cadence_monthly")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("scheduling.form_time")}</Label>
-            <TimePicker value={time} onChange={setTime} />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("scheduling.form_channel")} *</Label>
-          <Select value={channel} onValueChange={setChannel}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="whatsapp">{t("scheduling.channel_whatsapp")}</SelectItem>
-              <SelectItem value="email">{t("scheduling.channel_email")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </ModalShell>
-  );
 }
 
 // ── Schedule card ─────────────────────────────────────────────────
@@ -180,11 +92,10 @@ export function SchedulingPage() {
   const { t, i18n } = useTranslation("reports");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useReportsData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [paused, setPaused]       = useState<Set<string>>(() => new Set());
-  const [newOpen, setNewOpen]     = useState(searchParams.get("new") === "1");
 
   const schedules = data?.schedules ?? [];
 
@@ -230,7 +141,7 @@ export function SchedulingPage() {
           count={t("scheduling.count", { n: schedules.length })}
           actions={
             can("reports.schedules.create") ? (
-              <Button size="sm" onClick={() => setNewOpen(true)}>
+              <Button size="sm" onClick={() => openCreate("new_schedule")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("scheduling.new")}
               </Button>
@@ -247,7 +158,7 @@ export function SchedulingPage() {
               title={t("scheduling.no_schedules")}
               description={t("scheduling.empty_sub")}
               action={can("reports.schedules.create")
-                ? { label: t("scheduling.new"), onClick: () => setNewOpen(true) }
+                ? { label: t("scheduling.new"), onClick: () => openCreate("new_schedule") }
                 : undefined}
             />
           </PageSection>
@@ -266,13 +177,6 @@ export function SchedulingPage() {
           </div>
         )}
       </div>
-
-      <NewScheduleDialog
-        open={newOpen}
-        onClose={() => setNewOpen(false)}
-        lang={lang}
-        t={t}
-      />
     </>
   );
 }

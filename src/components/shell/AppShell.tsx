@@ -3,6 +3,7 @@ import { useAppearance } from "@/stores/appearance";
 import { Sidebar } from "./Sidebar";
 import { SidebarSplit } from "./SidebarSplit";
 import { Topbar } from "./Topbar";
+import { GlobalCreateModals } from "./GlobalCreateModals";
 
 export function AppShell() {
   const { layout } = useAppearance();
@@ -18,6 +19,9 @@ export function AppShell() {
       <main className="[grid-area:main] overflow-auto p-6 bg-background">
         <Outlet />
       </main>
+      {/* Global create dispatcher — mounts the active create modal/drawer
+          over whatever page is showing, so it never forces navigation. */}
+      <GlobalCreateModals />
     </div>
   );
 }

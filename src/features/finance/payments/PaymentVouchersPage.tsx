@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Plus, Download, Search, Loader2, CreditCard } from "lucide-react";
+import { Plus, Download, Search, CreditCard } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -11,11 +9,9 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { EntityCell }    from "@/components/patterns/DataTable";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import { Badge }     from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -23,124 +19,22 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ModalShell } from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useFinanceData } from "../data/useFinanceData";
-
-function today() { return new Date().toISOString().split("T")[0]; }
-
-function CreateDialog({
-  open, onClose, data, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  data: ReturnType<typeof useFinanceData>["data"];
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"finance">>["t"];
-}) {
-  const [supplierId, setSupp] = useState("");
-  const [date, setDate]       = useState(today());
-  const [amount, setAmount]   = useState("");
-  const [treasuryId, setTr]   = useState("");
-  const [memo, setMemo]       = useState("");
-  const [saving, setSaving]   = useState(false);
-
-  const isValid = supplierId && date && parseFloat(amount) > 0 && treasuryId;
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("payments.saved_toast"));
-  }
-
-  if (!data) return null;
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("payments.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("payments.supplier_label")} *</Label>
-          <Select value={supplierId} onValueChange={setSupp}>
-            <SelectTrigger className={cn(!supplierId && "border-muted-foreground/40")}>
-              <SelectValue placeholder={t("payments.supplier_ph")} />
-            </SelectTrigger>
-            <SelectContent>
-              {data.suppliers.map(s => (
-                <SelectItem key={s.id} value={s.id}>
-                  {lang === "ar" ? s.name_ar : s.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("payments.date_label")} *</Label>
-          <DatePicker value={date} onChange={setDate} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("payments.amount_label")} *</Label>
-          <Input
-            type="number" min={0.01} step="0.01"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            className="tabular-nums text-start"
-            placeholder="0.00"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("payments.treasury_label")} *</Label>
-          <Select value={treasuryId} onValueChange={setTr}>
-            <SelectTrigger className={cn(!treasuryId && "border-muted-foreground/40")}>
-              <SelectValue placeholder={t("payments.treasury_ph")} />
-            </SelectTrigger>
-            <SelectContent>
-              {data.treasuries.map(tr => (
-                <SelectItem key={tr.id} value={tr.id}>
-                  {lang === "ar" ? tr.name_ar : tr.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("payments.memo_label")}</Label>
-          <Input value={memo} onChange={e => setMemo(e.target.value)} />
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
 
 export function PaymentVouchersPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [search, setSearch]     = useState("");
   const [trFilter, setTr]       = useState("");
-  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
 
   const allVouchers = data?.paymentVouchers ?? [];
 
@@ -212,7 +106,7 @@ export function PaymentVouchersPage() {
                 {t("payments.export")}
               </Button>
               {can("finance.payment.create") && (
-                <Button size="sm" onClick={() => setCreate(true)}>
+                <Button size="sm" onClick={() => openCreate("new_payment_voucher")}>
                   <Plus className="h-4 w-4 me-1.5" />
                   {t("payments.new")}
                 </Button>
@@ -257,7 +151,7 @@ export function PaymentVouchersPage() {
               title={t("payments.no_payments")}
               description={t("payments.empty_sub")}
               action={can("finance.payment.create")
-                ? { label: t("payments.new"), onClick: () => setCreate(true) }
+                ? { label: t("payments.new"), onClick: () => openCreate("new_payment_voucher") }
                 : undefined}
             />
           ) : filtered.length === 0 ? (
@@ -330,14 +224,6 @@ export function PaymentVouchersPage() {
           )}
         </PageSection>
       </div>
-
-      <CreateDialog
-        open={createOpen}
-        onClose={() => setCreate(false)}
-        data={data}
-        lang={lang}
-        t={t}
-      />
     </>
   );
 }

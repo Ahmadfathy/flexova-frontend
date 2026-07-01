@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { Search, ChevronDown, ChevronRight, Plus, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { Search, ChevronDown, ChevronRight, Plus } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -12,129 +10,13 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
-import { Label }   from "@/components/ui/label";
 import { Badge }   from "@/components/ui/badge";
-import { ModalShell } from "@/components/patterns/ModalShell";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useFinanceData, type CoaAccount } from "../data/useFinanceData";
-
-// ── Create dialog ──────────────────────────────────────────────────
-
-function CreateCoaDialog({
-  open, onClose, accounts, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  accounts: CoaAccount[];
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"finance">>["t"];
-}) {
-  const [code, setCode]       = useState("");
-  const [nameAr, setNameAr]   = useState("");
-  const [nameEn, setNameEn]   = useState("");
-  const [parent, setParent]   = useState("");
-  const [type, setType]       = useState<"group" | "account">("account");
-  const [saving, setSaving]   = useState(false);
-
-  const codeTaken = code.trim() !== "" && accounts.some(a => a.code === code.trim());
-  const isValid   = code.trim() && nameAr.trim() && nameEn.trim() && !codeTaken;
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    // reset form
-    setCode(""); setNameAr(""); setNameEn(""); setParent(""); setType("account");
-    onClose();
-    toast.success(t("coa.saved_toast"));
-  }
-
-  // Only show accounts that can be parents (roots and groups)
-  const parentOptions = accounts.filter(a => a.type === "root" || a.type === "group");
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("coa.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("coa.form_code")} *</Label>
-          <Input
-            value={code}
-            onChange={e => setCode(e.target.value)}
-            placeholder={lang === "ar" ? "مثال: 1105" : "e.g. 1105"}
-            dir="ltr"
-            className={cn(codeTaken && "border-danger")}
-          />
-          {codeTaken && (
-            <p className="text-xs text-danger">{t("coa.form_code_taken")}</p>
-          )}
-          {!codeTaken && (
-            <p className="text-xs text-muted-foreground">{t("coa.form_code_hint")}</p>
-          )}
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("coa.form_name_ar")} *</Label>
-          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("coa.form_name_en")} *</Label>
-          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("coa.form_type")} *</Label>
-          <Select value={type} onValueChange={v => setType(v as "group" | "account")}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="group">{t("coa.type_group")}</SelectItem>
-              <SelectItem value="account">{t("coa.type_account")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("coa.form_parent")}</Label>
-          <Select value={parent || "__none__"} onValueChange={v => setParent(v === "__none__" ? "" : v)}>
-            <SelectTrigger>
-              <SelectValue placeholder={t("coa.form_parent_ph")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__none__">{t("coa.form_parent_ph")}</SelectItem>
-              {parentOptions.map(a => (
-                <SelectItem key={a.code} value={a.code}>
-                  <span className="font-mono text-xs me-2 text-muted-foreground">{a.code}</span>
-                  {lang === "ar" ? a.name_ar : a.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
 
 // Root code → accent colour
 function rootAccent(code: string) {
@@ -158,11 +40,10 @@ export function CoaPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [search, setSearch]       = useState("");
-  const [createOpen, setCreate]   = useState(searchParams.get("new") === "1");
   // expanded state — roots start expanded
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(["1","2","3","4","5"]));
 
@@ -261,7 +142,7 @@ export function CoaPage() {
         count={t("coa.count", { n: accounts.filter(a => a.type === "account").length })}
         actions={
           can("finance.coa.create") ? (
-            <Button size="sm" onClick={() => setCreate(true)}>
+            <Button size="sm" onClick={() => openCreate("new_account")}>
               <Plus className="h-4 w-4 me-1.5" />
               {t("coa.new")}
             </Button>
@@ -354,14 +235,6 @@ export function CoaPage() {
           })}
         </div>
       </PageSection>
-
-      <CreateCoaDialog
-        open={createOpen}
-        onClose={() => setCreate(false)}
-        accounts={accounts}
-        lang={lang}
-        t={t}
-      />
     </div>
   );
 }

@@ -13,8 +13,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MENU, type MenuItem } from "@/config/menu";
 import { QUICK_ADD, type QuickAddAction } from "@/config/quickAdd";
+import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 
-const can = (_permission?: string): boolean => true;
 const isModuleEnabled = (_flag?: string): boolean => true;
 
 interface QuickAddGroup {
@@ -22,9 +23,9 @@ interface QuickAddGroup {
   actions: QuickAddAction[];
 }
 
-function useQuickAddGroups(): QuickAddGroup[] {
+function useQuickAddGroups(can: ReturnType<typeof useCan>): QuickAddGroup[] {
   const allowed = QUICK_ADD.filter(
-    a => can(a.permission) && isModuleEnabled(a.moduleFlag)
+    a => can(a.permission ?? "") && isModuleEnabled(a.moduleFlag)
   );
   return MENU
     .map(m => ({ module: m, actions: allowed.filter(a => a.group === m.key) }))
@@ -34,8 +35,10 @@ function useQuickAddGroups(): QuickAddGroup[] {
 export function QuickAdd() {
   const { t } = useTranslation("shell");
   const navigate = useNavigate();
+  const can = useCan();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
   const [open, setOpen] = useState(false);
-  const groups = useQuickAddGroups();
+  const groups = useQuickAddGroups(can);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -53,11 +56,15 @@ export function QuickAdd() {
   }, []);
 
   const handleAction = useCallback(
-    (route: string) => {
+    (action: QuickAddAction) => {
       setOpen(false);
-      navigate(route);
+      if (action.method === "page") {
+        navigate(action.route!);
+      } else {
+        openCreate(action.key);
+      }
     },
-    [navigate]
+    [navigate, openCreate]
   );
 
   return (
@@ -105,7 +112,7 @@ export function QuickAdd() {
                   {actions.map(action => (
                     <DropdownMenuItem
                       key={action.key}
-                      onClick={() => handleAction(action.route)}
+                      onClick={() => handleAction(action)}
                       className="h-8 px-2 gap-2 text-sm text-muted-foreground cursor-pointer"
                     >
                       <action.icon className="h-3.5 w-3.5 shrink-0 opacity-60" />

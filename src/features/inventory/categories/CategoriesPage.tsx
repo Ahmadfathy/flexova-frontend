@@ -1,6 +1,5 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -30,6 +29,7 @@ import {
 
 import { cn }       from "@/lib/utils";
 import { useCan }   from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useItems } from "../items/useItems";
 import type { InventoryCategory } from "../items/types";
 
@@ -231,7 +231,7 @@ export function CategoriesPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
-  const [searchParams] = useSearchParams();
+  const openCreate   = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, reload } = useItems();
 
@@ -286,14 +286,6 @@ export function CategoriesPage() {
   const [catDialog, setCatDialog] = useState<CatDialog>({ open: false, mode: "add" });
   const [deleteDialog, setDeleteDialog] = useState<DeleteDialog>({ open: false });
 
-  function openAdd() {
-    setCatDialog({ open: true, mode: "add" });
-  }
-
-  useEffect(() => {
-    if (searchParams.get("new") === "1") openAdd();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
   function openEdit(cat: InventoryCategory) {
     setCatDialog({ open: true, mode: "edit", category: cat });
   }
@@ -318,7 +310,7 @@ export function CategoriesPage() {
   const showTree     = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.category.manage") ? (
-    <Button size="sm" onClick={openAdd}>
+    <Button size="sm" onClick={() => openCreate("new_category")}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("categories.new")}
     </Button>
@@ -556,7 +548,7 @@ export function CategoriesPage() {
               description={t("categories.empty_sub")}
               action={
                 can("inventory.category.manage")
-                  ? { label: t("categories.new"), onClick: openAdd }
+                  ? { label: t("categories.new"), onClick: () => openCreate("new_category") }
                   : undefined
               }
             />

@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Plus, Search, AlertTriangle, Loader2, Users } from "lucide-react";
+import { Plus, Search, AlertTriangle, Users } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -14,8 +12,6 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
-import { Badge }     from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -24,11 +20,11 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
-import { ModalShell }  from "@/components/patterns/ModalShell";
 
-import { formatMoney, formatDate } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useHrData, type Employee } from "../data/useHrData";
 
 // ── Employment type badge ─────────────────────────────────────────
@@ -138,110 +134,18 @@ function EmployeeSheet({
   );
 }
 
-// ── Create dialog ─────────────────────────────────────────────────
-
-function CreateDialog({
-  open, onClose, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"hr">>["t"];
-}) {
-  const [empType, setEmpType] = useState<Employee["employment_type"]>("monthly");
-  const [nameAr, setNameAr]   = useState("");
-  const [nameEn, setNameEn]   = useState("");
-  const [phone, setPhone]     = useState("");
-  const [title, setTitle]     = useState("");
-  const [base, setBase]       = useState("");
-  const [saving, setSaving]   = useState(false);
-
-  const isValid = nameAr.trim() && nameEn.trim() && title.trim();
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("employees.saved_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("employees.form_title_new")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("employees.form_name_ar")} *</Label>
-          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("employees.form_name_en")} *</Label>
-          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("employees.form_title_f")} *</Label>
-          <Input value={title} onChange={e => setTitle(e.target.value)} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("employees.form_phone")}</Label>
-          <Input value={phone} onChange={e => setPhone(e.target.value)} dir="ltr" type="tel" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("employees.form_emp_type")} *</Label>
-          <Select value={empType} onValueChange={v => setEmpType(v as Employee["employment_type"])}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="monthly">{t("employees.type_monthly")}</SelectItem>
-              <SelectItem value="daily">{t("employees.type_daily")}</SelectItem>
-              <SelectItem value="commission">{t("employees.type_commission")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        {empType !== "commission" && (
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">
-              {empType === "daily" ? t("employees.form_day_rate") : t("employees.form_base")}
-            </Label>
-            <Input
-              type="number" min={0} value={base}
-              onChange={e => setBase(e.target.value)}
-              className="tabular-nums text-start"
-              placeholder="0"
-            />
-          </div>
-        )}
-      </div>
-    </ModalShell>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────
 
 export function EmployeesPage() {
   const { t, i18n } = useTranslation("hr");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useHrData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [search, setSearch]         = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [selected, setSelected]     = useState<Employee | null>(null);
-  const [createOpen, setCreate]     = useState(searchParams.get("new") === "1");
 
   const employees = data?.employees ?? [];
 
@@ -297,7 +201,7 @@ export function EmployeesPage() {
           count={t("employees.count", { n: employees.length })}
           actions={
             can("hr.employee.create") ? (
-              <Button size="sm" onClick={() => setCreate(true)}>
+              <Button size="sm" onClick={() => openCreate("new_employee")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("employees.new")}
               </Button>
@@ -339,7 +243,7 @@ export function EmployeesPage() {
               title={t("employees.no_employees")}
               description={t("employees.empty_sub")}
               action={can("hr.employee.create")
-                ? { label: t("employees.new"), onClick: () => setCreate(true) }
+                ? { label: t("employees.new"), onClick: () => openCreate("new_employee") }
                 : undefined}
             />
           ) : filtered.length === 0 ? (
@@ -423,7 +327,6 @@ export function EmployeesPage() {
       </div>
 
       <EmployeeSheet emp={selected} open={selected !== null} onClose={() => setSelected(null)} lang={lang} t={t} />
-      <CreateDialog open={createOpen} onClose={() => setCreate(false)} lang={lang} t={t} />
     </>
   );
 }

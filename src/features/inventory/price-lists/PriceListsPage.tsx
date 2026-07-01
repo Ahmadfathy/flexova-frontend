@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -11,25 +11,23 @@ import { Skeleton }    from "@/components/patterns/Skeletons";
 import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 
 import { Button } from "@/components/ui/button";
-import { Input }  from "@/components/ui/input";
-import { Label }  from "@/components/ui/label";
 import { Badge }  from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { ModalShell }    from "@/components/patterns/ModalShell";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import {
   DropdownMenu,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Plus, Tag, MoreVertical, Loader2, Eye, Pencil, Star, Trash2 } from "lucide-react";
+import { Plus, Tag, MoreVertical, Eye, Pencil, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { formatNumber } from "@/lib/format";
 import { cn }           from "@/lib/utils";
 import { useCan }       from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useItems }     from "../items/useItems";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
@@ -60,11 +58,6 @@ function PlSkeleton() {
   );
 }
 
-/* ─── Form state ─────────────────────────────────────────────── */
-
-interface PlForm { name_ar: string; name_en: string; }
-const EMPTY_FORM: PlForm = { name_ar: "", name_en: "" };
-
 /* ─── Main page ─────────────────────────────────────────────── */
 
 export function PriceListsPage() {
@@ -72,43 +65,19 @@ export function PriceListsPage() {
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate     = useNavigate();
   const can          = useCan();
-  const [searchParams] = useSearchParams();
+  const openCreate   = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, reload } = useItems();
 
   const priceLists = data?.price_lists ?? [];
   const totalCount = priceLists.length;
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm]             = useState<PlForm>(EMPTY_FORM);
-  const [formErr, setFormErr]       = useState("");
-  const [formSaving, setFormSaving] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const showSkeleton = loading && !data;
   const showError    = !!error;
   const isEmpty      = !showSkeleton && !showError && totalCount === 0;
   const showTable    = !showSkeleton && !showError && !isEmpty;
-
-  function openCreate() {
-    setForm(EMPTY_FORM);
-    setFormErr("");
-    setDialogOpen(true);
-  }
-
-  useEffect(() => {
-    if (searchParams.get("new") === "1") openCreate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
-
-  async function handleSave() {
-    if (!form.name_ar.trim()) { setFormErr(t("price_lists.form_name_req")); return; }
-    setFormSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setFormSaving(false);
-    setDialogOpen(false);
-    toast.success(lang === "ar" ? "تمت الإضافة" : "Price list created");
-  }
 
   async function handleDelete(_id: string) {
     await new Promise(r => setTimeout(r, 400));
@@ -117,7 +86,7 @@ export function PriceListsPage() {
   }
 
   const pageActions = can("inventory.pricelist.manage") ? (
-    <Button size="sm" onClick={openCreate}>
+    <Button size="sm" onClick={() => openCreate("new_price_list")}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("price_lists.new")}
     </Button>
@@ -148,7 +117,7 @@ export function PriceListsPage() {
               description={t("price_lists.empty_sub")}
               action={
                 can("inventory.pricelist.manage")
-                  ? { label: t("price_lists.new"), onClick: openCreate }
+                  ? { label: t("price_lists.new"), onClick: () => openCreate("new_price_list") }
                   : undefined
               }
             />
@@ -269,53 +238,6 @@ export function PriceListsPage() {
           </>
         )}
       </PageSection>
-
-      {/* ── Create price list dialog ──────────────────────────── */}
-      <ModalShell
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        title={t("price_lists.new_form_title")}
-        description={t("price_lists.new")}
-        size="sm"
-        footer={
-          <>
-            <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={formSaving}>
-              {t("actions.cancel")}
-            </Button>
-            <Button onClick={handleSave} disabled={formSaving}>
-              {formSaving && <Loader2 className="h-4 w-4 me-1.5 animate-spin" />}
-              {t("actions.save")}
-            </Button>
-          </>
-        }
-      >
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <Label>{t("price_lists.form_name")} (AR) *</Label>
-            <Input
-              value={form.name_ar}
-              onChange={e => { setForm(f => ({ ...f, name_ar: e.target.value })); setFormErr(""); }}
-              placeholder={lang === "ar" ? "اسم القائمة بالعربي" : "Arabic name"}
-              className={cn(formErr && "border-destructive")}
-              dir="rtl"
-            />
-            {formErr && <p className="text-xs text-destructive">{formErr}</p>}
-          </div>
-          <div className="space-y-1.5">
-            <Label>{t("price_lists.form_name")} (EN)</Label>
-            <Input
-              value={form.name_en}
-              onChange={e => setForm(f => ({ ...f, name_en: e.target.value }))}
-              placeholder="English name"
-              dir="ltr"
-            />
-          </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{t("price_lists.form_currency")}:</span>
-            <span className="font-mono font-medium text-foreground">EGP</span>
-          </div>
-        </div>
-      </ModalShell>
 
       {/* ── Delete confirm ────────────────────────────────────── */}
       <ConfirmDialog

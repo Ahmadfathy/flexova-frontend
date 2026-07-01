@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Plus, Loader2, Wallet } from "lucide-react";
+import { Plus, Wallet } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -12,11 +10,8 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { EntityCell }    from "@/components/patterns/DataTable";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
-import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import { Badge }     from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -25,11 +20,11 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
-import { ModalShell }  from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useHrData, type Advance } from "../data/useHrData";
 
 // ── Advance detail sheet ──────────────────────────────────────────
@@ -104,107 +99,18 @@ function AdvanceSheet({
   );
 }
 
-// ── Create dialog ─────────────────────────────────────────────────
-
-function CreateDialog({
-  employees, open, onClose, lang, t,
-}: {
-  employees: { id: string; name_ar: string; name_en: string }[];
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"hr">>["t"];
-}) {
-  const [empId, setEmpId]       = useState("");
-  const [type, setType]         = useState<Advance["type"]>("advance");
-  const [amount, setAmount]     = useState("");
-  const [date, setDate]         = useState("");
-  const [installment, setInst]  = useState("");
-  const [saving, setSaving]     = useState(false);
-
-  const isValid = empId && amount && date;
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("advances.saved_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("advances.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("advances.form_employee")} *</Label>
-          <Select value={empId} onValueChange={setEmpId}>
-            <SelectTrigger><SelectValue placeholder={t("advances.form_employee_ph")} /></SelectTrigger>
-            <SelectContent>
-              {employees.map(e => (
-                <SelectItem key={e.id} value={e.id}>
-                  {lang === "ar" ? e.name_ar : e.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("advances.form_type")} *</Label>
-          <Select value={type} onValueChange={v => setType(v as Advance["type"])}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="advance">{t("advances.type_advance")}</SelectItem>
-              <SelectItem value="loan">{t("advances.type_loan")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("advances.form_amount")} *</Label>
-          <Input type="number" min={0} value={amount} onChange={e => setAmount(e.target.value)} className="tabular-nums text-start" placeholder="0" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("advances.form_date")} *</Label>
-          <DatePicker value={date} onChange={setDate} />
-        </div>
-        {type === "loan" && (
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("advances.form_installment")}</Label>
-            <Input type="number" min={0} value={installment} onChange={e => setInst(e.target.value)} className="tabular-nums text-start" placeholder="0" />
-          </div>
-        )}
-      </div>
-    </ModalShell>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────
 
 export function AdvancesPage() {
   const { t, i18n } = useTranslation("hr");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useHrData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [typeFilter, setTypeFilter]   = useState("");
   const [statusFilter, setStatus]     = useState("");
   const [selected, setSelected]       = useState<Advance | null>(null);
-  const [createOpen, setCreate]       = useState(searchParams.get("new") === "1");
 
   const advances   = data?.advances  ?? [];
   const employees  = data?.employees ?? [];
@@ -260,7 +166,7 @@ export function AdvancesPage() {
           count={t("advances.count", { n: advances.length })}
           actions={
             can("hr.advance.create") ? (
-              <Button size="sm" onClick={() => setCreate(true)}>
+              <Button size="sm" onClick={() => openCreate("new_advance")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("advances.new")}
               </Button>
@@ -302,7 +208,7 @@ export function AdvancesPage() {
               title={t("advances.no_advances")}
               description={t("advances.empty_sub")}
               action={can("hr.advance.create")
-                ? { label: t("advances.new"), onClick: () => setCreate(true) }
+                ? { label: t("advances.new"), onClick: () => openCreate("new_advance") }
                 : undefined}
             />
           ) : filtered.length === 0 ? (
@@ -371,7 +277,6 @@ export function AdvancesPage() {
       </div>
 
       <AdvanceSheet adv={selected} empName={selectedName} open={selected !== null} onClose={() => setSelected(null)} lang={lang} t={t} />
-      <CreateDialog employees={employees} open={createOpen} onClose={() => setCreate(false)} lang={lang} t={t} />
     </>
   );
 }

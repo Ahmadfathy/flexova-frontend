@@ -1,8 +1,6 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Plus, ArrowRight, ArrowLeft, Loader2, ArrowLeftRight } from "lucide-react";
+import { Plus, ArrowRight, ArrowLeft, ArrowLeftRight } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -10,141 +8,24 @@ import { EmptyState }    from "@/components/patterns/EmptyState";
 import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
-import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import { ModalShell } from "@/components/patterns/ModalShell";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useFinanceData } from "../data/useFinanceData";
-
-function today() { return new Date().toISOString().split("T")[0]; }
-
-function CreateDialog({
-  open, onClose, data, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  data: ReturnType<typeof useFinanceData>["data"];
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"finance">>["t"];
-}) {
-  const [from, setFrom]       = useState("");
-  const [to, setTo]           = useState("");
-  const [amount, setAmount]   = useState("");
-  const [date, setDate]       = useState(today());
-  const [memo, setMemo]       = useState("");
-  const [saving, setSaving]   = useState(false);
-
-  const sameError = from && to && from === to;
-  const isValid   = from && to && !sameError && parseFloat(amount) > 0 && date;
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("transfers.saved_toast"));
-  }
-
-  if (!data) return null;
-
-  const ArrowIcon = lang === "ar" ? ArrowLeft : ArrowRight;
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("transfers.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("transfers.from_label")} *</Label>
-          <Select value={from} onValueChange={setFrom}>
-            <SelectTrigger className={cn(!from && "border-muted-foreground/40")}>
-              <SelectValue placeholder={t("transfers.from_ph")} />
-            </SelectTrigger>
-            <SelectContent>
-              {data.treasuries.map(tr => (
-                <SelectItem key={tr.id} value={tr.id} disabled={tr.id === to}>
-                  {lang === "ar" ? tr.name_ar : tr.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex justify-center">
-          <ArrowIcon className="h-4 w-4 text-muted-foreground" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("transfers.to_label")} *</Label>
-          <Select value={to} onValueChange={setTo}>
-            <SelectTrigger className={cn(!to && "border-muted-foreground/40", sameError && "border-danger")}>
-              <SelectValue placeholder={t("transfers.to_ph")} />
-            </SelectTrigger>
-            <SelectContent>
-              {data.treasuries.map(tr => (
-                <SelectItem key={tr.id} value={tr.id} disabled={tr.id === from}>
-                  {lang === "ar" ? tr.name_ar : tr.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {sameError && (
-            <p className="text-xs text-danger">{t("transfers.same_treasury")}</p>
-          )}
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("transfers.amount_label")} *</Label>
-          <Input
-            type="number" min={0.01} step="0.01"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            className="tabular-nums text-start"
-            placeholder="0.00"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("transfers.date_label")} *</Label>
-          <DatePicker value={date} onChange={setDate} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("transfers.memo_label")}</Label>
-          <Input value={memo} onChange={e => setMemo(e.target.value)} />
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
 
 export function TransfersPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
-  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const allTransfers = data?.transfers ?? [];
 
@@ -193,7 +74,7 @@ export function TransfersPage() {
           count={t("transfers.count", { n: allTransfers.length })}
           actions={
             can("finance.transfer.create") ? (
-              <Button size="sm" onClick={() => setCreate(true)}>
+              <Button size="sm" onClick={() => openCreate("new_fin_transfer")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("transfers.new")}
               </Button>
@@ -210,7 +91,7 @@ export function TransfersPage() {
               title={t("transfers.no_transfers")}
               description={t("transfers.empty_sub")}
               action={can("finance.transfer.create")
-                ? { label: t("transfers.new"), onClick: () => setCreate(true) }
+                ? { label: t("transfers.new"), onClick: () => openCreate("new_fin_transfer") }
                 : undefined}
             />
           ) : (
@@ -259,14 +140,6 @@ export function TransfersPage() {
           )}
         </PageSection>
       </div>
-
-      <CreateDialog
-        open={createOpen}
-        onClose={() => setCreate(false)}
-        data={data}
-        lang={lang}
-        t={t}
-      />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   useReactTable,
   getCoreRowModel,
@@ -55,8 +55,8 @@ import { formatMoney, formatNumber } from "@/lib/format";
 import { cn }             from "@/lib/utils";
 import { useCan }         from "@/lib/permissions";
 import { useItems }       from "./useItems";
-import { QuickAddModal }  from "./QuickAddModal";
 import { ImportDrawer }   from "./ImportDrawer";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import type { InventoryItem, InventoryCategory, InventoryWarehouse, InventoryUom, ItemStatus, ItemFilters } from "./types";
 
 /* ─── Module-level helpers ──────────────────────────────────── */
@@ -487,11 +487,10 @@ export function ItemsListPage() {
   const lang           = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate       = useNavigate();
   const can            = useCan();
-  const [searchParams] = useSearchParams();
+  const openCreate     = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, isOffline, reload } = useItems();
 
-  const [quickAddOpen, setQuickAddOpen]   = useState(searchParams.get("new") === "1");
   const [importOpen,   setImportOpen]     = useState(false);
   const [search, setSearch]               = useState("");
   const [debouncedSearch, setDebounced]   = useState("");
@@ -797,7 +796,7 @@ export function ItemsListPage() {
   const pageActions = (
     <div className="flex items-center gap-2 flex-wrap justify-end">
       {can("inventory.item.create") && (
-        <Button size="sm" onClick={() => setQuickAddOpen(true)}>
+        <Button size="sm" onClick={() => openCreate("new_item")}>
           <Plus className="h-4 w-4 me-1.5" />
           {t("items.new")}
         </Button>
@@ -947,7 +946,7 @@ export function ItemsListPage() {
               description={t("items.empty_sub")}
               action={
                 can("inventory.item.create")
-                  ? { label: t("items.new"), onClick: () => setQuickAddOpen(true) }
+                  ? { label: t("items.new"), onClick: () => openCreate("new_item") }
                   : undefined
               }
             />
@@ -1078,13 +1077,6 @@ export function ItemsListPage() {
       {selectedCount > 0 && (
         <BulkBar count={selectedCount} can={can} t={t} onClear={clearSelection} />
       )}
-
-      {/* ── Quick-add item modal ─────────────────────────────── */}
-      <QuickAddModal
-        open={quickAddOpen}
-        onOpenChange={setQuickAddOpen}
-        data={data}
-      />
 
       {/* ── Import wizard drawer ──────────────────────────────── */}
       <ImportDrawer

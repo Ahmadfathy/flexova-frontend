@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Plus, Users, Loader2 } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -12,12 +9,10 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button } from "@/components/ui/button";
-import { Input }  from "@/components/ui/input";
-import { Label }  from "@/components/ui/label";
-import { ModalShell } from "@/components/patterns/ModalShell";
 
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useCrmData, type Segment } from "../data/useCrmData";
 
 // ── Segment card ──────────────────────────────────────────────────
@@ -59,71 +54,14 @@ function SegmentCard({
   );
 }
 
-// ── Create dialog ─────────────────────────────────────────────────
-
-function CreateDialog({
-  open, onClose, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"crm">>["t"];
-}) {
-  const [nameAr, setNameAr] = useState("");
-  const [nameEn, setNameEn] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const isValid = nameAr.trim() && nameEn.trim();
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("segments.saved_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("segments.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("segments.form_name_ar")} *</Label>
-          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("segments.form_name_en")} *</Label>
-          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────
 
 export function SegmentsPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
-
-  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const segments = data?.segments ?? [];
 
@@ -161,7 +99,7 @@ export function SegmentsPage() {
           count={t("segments.count", { n: segments.length })}
           actions={
             can("crm.segment.create") ? (
-              <Button size="sm" onClick={() => setCreate(true)}>
+              <Button size="sm" onClick={() => openCreate("new_segment")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("segments.new")}
               </Button>
@@ -178,7 +116,7 @@ export function SegmentsPage() {
               title={t("segments.no_segments")}
               description={t("segments.empty_sub")}
               action={can("crm.segment.create")
-                ? { label: t("segments.new"), onClick: () => setCreate(true) }
+                ? { label: t("segments.new"), onClick: () => openCreate("new_segment") }
                 : undefined}
             />
           </PageSection>
@@ -190,8 +128,6 @@ export function SegmentsPage() {
           </div>
         )}
       </div>
-
-      <CreateDialog open={createOpen} onClose={() => setCreate(false)} lang={lang} t={t} />
     </>
   );
 }

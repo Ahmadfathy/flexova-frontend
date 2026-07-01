@@ -1,10 +1,8 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
 import {
   Plus, Download, Search, Building2, User, AlertTriangle,
-  Phone, MapPin, Clock, Loader2, Users,
+  Phone, MapPin, Clock, Users,
 } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
@@ -17,7 +15,6 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import { Badge }     from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -27,12 +24,12 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
-import { ModalShell }  from "@/components/patterns/ModalShell";
 import { Switch } from "@/components/ui/switch";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useCrmData, type CrmCustomer } from "../data/useCrmData";
 
 // ── Aging bar ─────────────────────────────────────────────────────
@@ -240,110 +237,20 @@ function CustomerSheet({
   );
 }
 
-// ── Create dialog ─────────────────────────────────────────────────
-
-function CreateDialog({
-  open, onClose, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"crm">>["t"];
-}) {
-  const [type, setType]     = useState<"company" | "individual">("company");
-  const [nameAr, setNameAr] = useState("");
-  const [nameEn, setNameEn] = useState("");
-  const [phone, setPhone]   = useState("");
-  const [trn, setTrn]       = useState("");
-  const [limit, setLimit]   = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const isValid = nameAr.trim() && nameEn.trim();
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("list.saved_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("list.form_title_new")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("list.form_type")} *</Label>
-          <Select value={type} onValueChange={v => setType(v as "company" | "individual")}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="company">{t("list.type_company")}</SelectItem>
-              <SelectItem value="individual">{t("list.type_individual")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("list.form_name_ar")} *</Label>
-          <Input value={nameAr} onChange={e => setNameAr(e.target.value)} dir="rtl" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("list.form_name_en")} *</Label>
-          <Input value={nameEn} onChange={e => setNameEn(e.target.value)} dir="ltr" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("list.form_phone")}</Label>
-          <Input value={phone} onChange={e => setPhone(e.target.value)} dir="ltr" type="tel" />
-        </div>
-        {type === "company" && (
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("list.form_trn")}</Label>
-            <Input value={trn} onChange={e => setTrn(e.target.value)} dir="ltr" />
-          </div>
-        )}
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("list.form_credit_limit")}</Label>
-          <Input
-            type="number" min={0} step="100"
-            value={limit}
-            onChange={e => setLimit(e.target.value)}
-            className="tabular-nums text-start"
-            placeholder="0"
-          />
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────
 
 export function CustomersListPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [search, setSearch]         = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [segFilter, setSegFilter]   = useState("");
   const [balanceOnly, setBalOnly]   = useState(false);
   const [selected, setSelected]     = useState<CrmCustomer | null>(null);
-  const [createOpen, setCreate]     = useState(searchParams.get("new") === "1");
 
   const allCustomers = (data?.customers ?? []).filter(c => !c.is_walkin);
 
@@ -408,7 +315,7 @@ export function CustomersListPage() {
                 {t("list.export")}
               </Button>
               {can("crm.customer.create") && (
-                <Button size="sm" onClick={() => setCreate(true)}>
+                <Button size="sm" onClick={() => openCreate("new_customer")}>
                   <Plus className="h-4 w-4 me-1.5" />
                   {t("list.new")}
                 </Button>
@@ -467,7 +374,7 @@ export function CustomersListPage() {
               title={t("list.no_customers")}
               description={t("list.empty_sub")}
               action={can("crm.customer.create")
-                ? { label: t("list.new"), onClick: () => setCreate(true) }
+                ? { label: t("list.new"), onClick: () => openCreate("new_customer") }
                 : undefined}
             />
           ) : filtered.length === 0 ? (
@@ -608,7 +515,6 @@ export function CustomersListPage() {
         t={t}
       />
 
-      <CreateDialog open={createOpen} onClose={() => setCreate(false)} lang={lang} t={t} />
     </>
   );
 }

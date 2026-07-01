@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Plus, AlertTriangle, CheckCircle2, Loader2, FileText } from "lucide-react";
+import { Plus, AlertTriangle, CheckCircle2, FileText } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -13,18 +12,16 @@ import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }    from "@/components/ui/button";
-import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import {
   Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
-import { ModalShell }  from "@/components/patterns/ModalShell";
 
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useHrData, type PayrollRun } from "../data/useHrData";
 
 // ── Payroll detail sheet ──────────────────────────────────────────
@@ -172,69 +169,16 @@ function PayrollSheet({
   );
 }
 
-// ── Run dialog ────────────────────────────────────────────────────
-
-function RunDialog({
-  open, onClose, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"hr">>["t"];
-}) {
-  const [period, setPeriod] = useState("2026-06");
-  const [saving, setSaving] = useState(false);
-
-  async function handleRun() {
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 600));
-    setSaving(false);
-    onClose();
-    toast.success(t("payroll.run_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("payroll.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!period || saving} onClick={handleRun}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {t("payroll.new")}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("payroll.form_period")} *</Label>
-          <Input
-            value={period}
-            onChange={e => setPeriod(e.target.value)}
-            placeholder="YYYY-MM"
-            dir="ltr"
-          />
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────
 
 export function PayrollPage() {
   const { t, i18n } = useTranslation("hr");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useHrData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [selected, setSelected] = useState<PayrollRun | null>(null);
-  const [runOpen, setRunOpen]   = useState(searchParams.get("new") === "1");
   const [postedIds, setPosted]  = useState<Set<string>>(() => new Set());
 
   const runs     = data?.payrollRuns ?? [];
@@ -281,7 +225,7 @@ export function PayrollPage() {
           count={t("payroll.count", { n: runs.length })}
           actions={
             can("hr.payroll.run") ? (
-              <Button size="sm" onClick={() => setRunOpen(true)}>
+              <Button size="sm" onClick={() => openCreate("new_payroll_run")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("payroll.new")}
               </Button>
@@ -298,7 +242,7 @@ export function PayrollPage() {
               title={t("payroll.no_payroll")}
               description={t("payroll.empty_sub")}
               action={can("hr.payroll.run")
-                ? { label: t("payroll.new"), onClick: () => setRunOpen(true) }
+                ? { label: t("payroll.new"), onClick: () => openCreate("new_payroll_run") }
                 : undefined}
             />
           ) : (
@@ -372,7 +316,6 @@ export function PayrollPage() {
         lang={lang}
         t={t}
       />
-      <RunDialog open={runOpen} onClose={() => setRunOpen(false)} lang={lang} t={t} />
     </>
   );
 }

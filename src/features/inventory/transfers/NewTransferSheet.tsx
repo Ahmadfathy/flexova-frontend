@@ -15,7 +15,7 @@ import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 
 import { cn }     from "@/lib/utils";
-import type { InventoryFixture } from "../items/types";
+import { useItems } from "../items/useItems";
 
 /* ─── Types ──────────────────────────────────────────────────── */
 
@@ -53,14 +53,14 @@ function emptyForm(): TransferForm {
 interface NewTransferSheetProps {
   open:         boolean;
   onOpenChange: (v: boolean) => void;
-  data:         InventoryFixture | null;
 }
 
 /* ─── Component ──────────────────────────────────────────────── */
 
-export function NewTransferSheet({ open, onOpenChange, data }: NewTransferSheetProps) {
+export function NewTransferSheet({ open, onOpenChange }: NewTransferSheetProps) {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
+  const { data }     = useItems();
 
   const warehouses = data?.warehouses ?? [];
   const allItems   = (data?.items ?? []).filter(it => it.item_type === "stocked");

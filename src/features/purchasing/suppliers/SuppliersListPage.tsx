@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   useReactTable,
   getCoreRowModel,
@@ -44,6 +44,7 @@ import {
 import { formatMoney } from "@/lib/format";
 import { cn }          from "@/lib/utils";
 import { useCan }      from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { usePurchasingData, type Supplier } from "../data/usePurchasingData";
 import { SupplierFormModal } from "./SupplierFormModal";
 
@@ -177,13 +178,13 @@ export function SuppliersListPage() {
   const lang          = (i18n.language?.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const navigate      = useNavigate();
   const can           = useCan();
-  const [searchParams] = useSearchParams();
+  const openCreate    = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, isOffline, reload } = usePurchasingData();
 
   const [filters,     setFilters]     = useState<SupplierFilters>(EMPTY_FILTERS);
   const [sorting,     setSorting]     = useState<SortingState>([]);
-  const [modalOpen,   setModalOpen]   = useState(searchParams.get("new") === "1");
+  const [modalOpen,   setModalOpen]   = useState(false);
   const [editTarget,  setEditTarget]  = useState<Supplier | null>(null);
 
   const setFilter = useCallback(
@@ -393,8 +394,6 @@ export function SuppliersListPage() {
     clear: () => setFilter("withBalance", false),
   });
 
-  const openCreate = () => { setEditTarget(null); setModalOpen(true); };
-
   /* ── render ── */
   return (
     <div className="space-y-4 pb-6">
@@ -408,7 +407,7 @@ export function SuppliersListPage() {
               {t("suppliers.export")}
             </Button>
             {can("purchasing.supplier.manage") && (
-              <Button size="sm" onClick={openCreate}>
+              <Button size="sm" onClick={() => openCreate("new_supplier")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("suppliers.new")}
               </Button>
@@ -507,7 +506,7 @@ export function SuppliersListPage() {
             description={t("suppliers.empty_sub")}
             action={
               can("purchasing.supplier.manage")
-                ? { label: t("suppliers.new"), onClick: openCreate }
+                ? { label: t("suppliers.new"), onClick: () => openCreate("new_supplier") }
                 : undefined
             }
           />

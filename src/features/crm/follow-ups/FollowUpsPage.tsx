@@ -1,8 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Plus, CheckCircle2, AlertCircle, Clock, CalendarClock, Loader2 } from "lucide-react";
+import { Plus, CheckCircle2, AlertCircle, Clock, CalendarClock } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -12,18 +11,12 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }  from "@/components/ui/button";
-import { Input }   from "@/components/ui/input";
-import { Label }   from "@/components/ui/label";
 import { Badge }   from "@/components/ui/badge";
-import { ModalShell }  from "@/components/patterns/ModalShell";
-import { DatePicker }  from "@/components/patterns/DatePicker";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useCrmData, type FollowUp } from "../data/useCrmData";
 
 // ── Group config ──────────────────────────────────────────────────
@@ -33,83 +26,6 @@ const GROUPS = [
   { key: "due_today", icon: Clock,          className: "text-warning" },
   { key: "upcoming",  icon: CalendarClock,  className: "text-blue-500" },
 ] as const;
-
-// ── Create dialog ─────────────────────────────────────────────────
-
-function CreateDialog({
-  customers, open, onClose, lang, t,
-}: {
-  customers: { id: string; name_ar: string; name_en: string }[];
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"crm">>["t"];
-}) {
-  const [customerId, setCust] = useState("");
-  const [note, setNote]       = useState("");
-  const [due, setDue]         = useState("");
-  const [owner, setOwner]     = useState("");
-  const [saving, setSaving]   = useState(false);
-
-  const isValid = customerId && note.trim() && due;
-
-  async function handleSave() {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("follow_ups.saved_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("follow_ups.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!isValid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_customer")} *</Label>
-          <Select value={customerId} onValueChange={setCust}>
-            <SelectTrigger>
-              <SelectValue placeholder={t("follow_ups.form_customer_ph")} />
-            </SelectTrigger>
-            <SelectContent>
-              {customers.map(c => (
-                <SelectItem key={c.id} value={c.id}>
-                  {lang === "ar" ? c.name_ar : c.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_note")} *</Label>
-          <Input value={note} onChange={e => setNote(e.target.value)} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_due")} *</Label>
-          <DatePicker value={due} onChange={setDue} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("follow_ups.form_owner")}</Label>
-          <Input value={owner} onChange={e => setOwner(e.target.value)} />
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
 
 // ── Follow-up row ─────────────────────────────────────────────────
 
@@ -150,11 +66,10 @@ export function FollowUpsPage() {
   const { t, i18n } = useTranslation("crm");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useCrmData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [doneIds, setDoneIds]   = useState<Set<string>>(() => new Set());
-  const [createOpen, setCreate] = useState(searchParams.get("new") === "1");
 
   const openFollowUps = useMemo(
     () => (data?.followUps ?? []).filter(f => f.status === "open" && !doneIds.has(f.id)),
@@ -217,7 +132,7 @@ export function FollowUpsPage() {
           count={totalOpen > 0 ? t("follow_ups.count", { n: totalOpen }) : undefined}
           actions={
             can("crm.followup.create") ? (
-              <Button size="sm" onClick={() => setCreate(true)}>
+              <Button size="sm" onClick={() => openCreate("new_follow_up")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("follow_ups.new")}
               </Button>
@@ -234,7 +149,7 @@ export function FollowUpsPage() {
               title={t("follow_ups.no_followups")}
               description={t("follow_ups.empty_sub")}
               action={can("crm.followup.create")
-                ? { label: t("follow_ups.new"), onClick: () => setCreate(true) }
+                ? { label: t("follow_ups.new"), onClick: () => openCreate("new_follow_up") }
                 : undefined}
             />
           </PageSection>
@@ -269,14 +184,6 @@ export function FollowUpsPage() {
           })
         )}
       </div>
-
-      <CreateDialog
-        customers={customers}
-        open={createOpen}
-        onClose={() => setCreate(false)}
-        lang={lang}
-        t={t}
-      />
     </>
   );
 }

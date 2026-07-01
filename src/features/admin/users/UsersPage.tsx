@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Plus, Shield, ShieldOff, ShieldCheck, KeyRound,
-  UserCircle, GitBranch, Clock, Loader2,
+  UserCircle, GitBranch, Clock,
 } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
@@ -15,15 +14,7 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
-import { ModalShell } from "@/components/patterns/ModalShell";
-
 import { Button }   from "@/components/ui/button";
-import { Badge }    from "@/components/ui/badge";
-import { Input }    from "@/components/ui/input";
-import { Label }    from "@/components/ui/label";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/components/ui/tooltip";
@@ -33,91 +24,8 @@ import {
 
 import { formatDate } from "@/lib/format";
 import { useCan }     from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import { useAdminData, type AdminUser } from "../data/useAdminData";
-
-// ── Invite dialog ─────────────────────────────────────────────────
-
-function InviteDialog({
-  open, onClose, roles, branches, lang, t,
-}: {
-  open:     boolean;
-  onClose:  () => void;
-  roles:    { id: string; name_ar: string; name_en: string }[];
-  branches: { id: string; name_ar: string; name_en: string }[];
-  lang:     "ar" | "en";
-  t:        ReturnType<typeof useTranslation<"admin">>["t"];
-}) {
-  const [name,   setName]   = useState("");
-  const [login,  setLogin]  = useState("");
-  const [role,   setRole]   = useState("");
-  const [saving, setSaving] = useState(false);
-
-  async function handleSave() {
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    setName(""); setLogin(""); setRole("");
-    toast.success(t("users.invited_toast"));
-  }
-
-  const valid = name.trim() && login.trim() && role;
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("users.form_title")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!valid || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {t("users.invite")}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-3">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("users.form_name")} *</Label>
-          <Input value={name} onChange={e => setName(e.target.value)} />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("users.form_login")} *</Label>
-          <Input value={login} onChange={e => setLogin(e.target.value)} dir="ltr" />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("users.form_role")} *</Label>
-          <Select value={role} onValueChange={setRole}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {roles.map(r => (
-                <SelectItem key={r.id} value={r.id}>
-                  {lang === "ar" ? r.name_ar : r.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("users.form_branch")}</Label>
-          <Select>
-            <SelectTrigger><SelectValue placeholder={t("users.scope_all")} /></SelectTrigger>
-            <SelectContent>
-              {branches.map(b => (
-                <SelectItem key={b.id} value={b.id}>
-                  {lang === "ar" ? b.name_ar : b.name_en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </ModalShell>
-  );
-}
 
 // ── Main page ─────────────────────────────────────────────────────
 
@@ -125,12 +33,11 @@ export function UsersPage() {
   const { t, i18n } = useTranslation("admin");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useAdminData();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const [suspended, setSuspended] = useState<Set<string>>(() => new Set());
   const [activated, setActivated] = useState<Set<string>>(() => new Set());
-  const [inviteOpen, setInvite]   = useState(searchParams.get("new") === "1");
 
   const users   = data?.users        ?? [];
   const roles   = data?.roleTemplates ?? [];
@@ -206,7 +113,7 @@ export function UsersPage() {
           count={t("users.count", { n: users.length })}
           actions={
             can("admin.user.manage") ? (
-              <Button size="sm" onClick={() => setInvite(true)}>
+              <Button size="sm" onClick={() => openCreate("new_user")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("users.invite")}
               </Button>
@@ -223,7 +130,7 @@ export function UsersPage() {
               title={t("users.no_users")}
               description={t("users.empty_sub")}
               action={can("admin.user.manage")
-                ? { label: t("users.invite"), onClick: () => setInvite(true) }
+                ? { label: t("users.invite"), onClick: () => openCreate("new_user") }
                 : undefined}
             />
           ) : (
@@ -321,15 +228,6 @@ export function UsersPage() {
           )}
         </PageSection>
       </div>
-
-      <InviteDialog
-        open={inviteOpen}
-        onClose={() => setInvite(false)}
-        roles={roles}
-        branches={branches}
-        lang={lang}
-        t={t}
-      />
     </>
   );
 }

@@ -1,10 +1,9 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+﻿import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Plus, Download, Search, FileText, Printer, MoreVertical,
-  Truck, AlertCircle, Loader2, Package,
+  Truck, AlertCircle, Package,
 } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
@@ -15,11 +14,9 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { EntityCell, RowActionsContent, RowActionItem } from "@/components/patterns/DataTable";
 import { Skeleton }      from "@/components/patterns/Skeletons";
-import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button }    from "@/components/ui/button";
 import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import { Badge }     from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -29,7 +26,6 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { DrawerShell } from "@/components/patterns/DrawerShell";
-import { ModalShell }  from "@/components/patterns/ModalShell";
 import {
   DropdownMenu, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -37,25 +33,13 @@ import {
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 import {
   usePurchasingData,
   type PurchaseOrder,
-  type InventoryItem,
 } from "../data/usePurchasingData";
 import { poStatusPillVariant } from "../data/statusHelpers";
 
-// ── Helpers ───────────────────────────────────────────────────────
-
-function today(): string {
-  return new Date().toISOString().split("T")[0];
-}
-
-function newPoLine() {
-  return {
-    _key: `${Date.now()}-${Math.random()}`,
-    item_id: "", uom_id: "", qty: "1", price: "0",
-  };
-}
 
 // ── Skeleton ──────────────────────────────────────────────────────
 
@@ -279,277 +263,13 @@ function PoDetailSheet({
   );
 }
 
-// ── Create PO Dialog ──────────────────────────────────────────────
-
-interface PoForm {
-  supplier_id:       string;
-  date:              string;
-  expected_delivery: string;
-  warehouse_id:      string;
-}
-
-interface PoLine {
-  _key:    string;
-  item_id: string;
-  uom_id:  string;
-  qty:     string;
-  price:   string;
-}
-
-function CreatePoDialog({
-  open,
-  onClose,
-  data,
-  lang,
-  t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  data: ReturnType<typeof usePurchasingData>["data"];
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"purchasing">>["t"];
-}) {
-  const [form, setForm]   = useState<PoForm>({
-    supplier_id: "", date: today(), expected_delivery: "", warehouse_id: "",
-  });
-  const [lines, setLines] = useState<PoLine[]>([newPoLine()]);
-  const [saving, setSaving] = useState(false);
-
-  const set = useCallback(
-    <K extends keyof PoForm>(k: K, v: string) =>
-      setForm(prev => ({ ...prev, [k]: v })),
-    [],
-  );
-
-  function itemUomIds(item: InventoryItem) {
-    const ids = new Set([item.base_uom_id]);
-    item.units.forEach(u => ids.add(u.uom_id));
-    return Array.from(ids);
-  }
-
-  const subtotal = lines.reduce((s, l) => {
-    return s + (parseFloat(l.qty) || 0) * (parseFloat(l.price) || 0);
-  }, 0);
-
-  const hasLines = lines.some(l => l.item_id && (parseFloat(l.qty) || 0) > 0);
-  const isValid  = form.supplier_id && form.date && form.expected_delivery && form.warehouse_id && hasLines;
-
-  async function handleSave(send: boolean) {
-    if (!isValid) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 600));
-    setSaving(false);
-    onClose();
-    toast.success(send ? t("orders.sent_toast") : t("orders.saved_toast"));
-  }
-
-  if (!data) return null;
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("orders.form_title")}
-      size="lg"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{t("common:cancel", "Cancel")}</Button>
-          <Button
-            variant="outline"
-            disabled={!isValid || saving}
-            onClick={() => handleSave(false)}
-          >
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {t("orders.save_draft")}
-          </Button>
-          <Button
-            disabled={!isValid || saving}
-            onClick={() => handleSave(true)}
-          >
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {t("orders.send_po")}
-          </Button>
-        </>
-      }
-    >
-        <div className="space-y-4">
-          {/* Header fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="space-y-1.5 sm:col-span-2 lg:col-span-1">
-              <Label className="text-xs text-muted-foreground">{t("orders.supplier_label")} *</Label>
-              <Select value={form.supplier_id} onValueChange={v => set("supplier_id", v)}>
-                <SelectTrigger className={cn(!form.supplier_id && "border-muted-foreground/40")}>
-                  <SelectValue placeholder={t("orders.supplier_ph")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {data.suppliers.filter(s => s.status === "active").map(s => (
-                    <SelectItem key={s.id} value={s.id}>
-                      {lang === "ar" ? s.name_ar : s.name_en}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">{t("orders.col_date")} *</Label>
-              <DatePicker value={form.date} onChange={val => set("date", val)} />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">{t("orders.delivery_label")} *</Label>
-              <DatePicker
-                value={form.expected_delivery}
-                min={form.date}
-                onChange={val => set("expected_delivery", val)}
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">{t("orders.warehouse_label")} *</Label>
-              <Select value={form.warehouse_id} onValueChange={v => set("warehouse_id", v)}>
-                <SelectTrigger className={cn(!form.warehouse_id && "border-muted-foreground/40")}>
-                  <SelectValue placeholder="—" />
-                </SelectTrigger>
-                <SelectContent>
-                  {data.warehouses.map(w => (
-                    <SelectItem key={w.id} value={w.id}>
-                      {lang === "ar" ? w.name_ar : w.name_en}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Lines */}
-          <div className="rounded-sm overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/30">
-                  <TableHead className="text-xs">{t("orders.col_item")}</TableHead>
-                  <TableHead className="text-xs w-24">{t("orders.col_uom")}</TableHead>
-                  <TableHead className="text-xs w-20">{t("orders.col_qty")}</TableHead>
-                  <TableHead className="text-xs w-28">{t("orders.col_price")}</TableHead>
-                  <TableHead className="text-xs w-28">{t("orders.col_line_total")}</TableHead>
-                  <TableHead className="w-8" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {lines.map(line => {
-                  const item = line.item_id ? data.items.find(i => i.id === line.item_id) : null;
-                  const relevantUoms = item
-                    ? data.uoms.filter(u => itemUomIds(item).includes(u.id))
-                    : data.uoms;
-                  const lineTotal = (parseFloat(line.qty) || 0) * (parseFloat(line.price) || 0);
-                  return (
-                    <TableRow key={line._key}>
-                      <TableCell className="p-1">
-                        <Select
-                          value={line.item_id}
-                          onValueChange={itemId => {
-                            const it = data.items.find(i => i.id === itemId);
-                            setLines(prev => prev.map(l => l._key !== line._key ? l : {
-                              ...l,
-                              item_id: itemId,
-                              uom_id:  it?.base_uom_id ?? "",
-                              price:   String(it?.last_purchase_price ?? 0),
-                            }));
-                          }}
-                        >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue placeholder={t("editor.select_item")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {data.items
-                              .filter(i => i.status === "active" || i.id === line.item_id)
-                              .map(i => (
-                                <SelectItem key={i.id} value={i.id}>
-                                  {lang === "ar" ? i.name_ar : i.name_en}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell className="p-1">
-                        <Select
-                          value={line.uom_id}
-                          onValueChange={v => setLines(prev => prev.map(l => l._key === line._key ? { ...l, uom_id: v } : l))}
-                          disabled={!line.item_id}
-                        >
-                          <SelectTrigger className="h-8 text-xs">
-                            <SelectValue placeholder="—" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {relevantUoms.map(u => (
-                              <SelectItem key={u.id} value={u.id}>
-                                {lang === "ar" ? u.name_ar : u.name_en}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell className="p-1">
-                        <Input
-                          type="number" min={0.001} step="any"
-                          className="h-8 text-xs tabular-nums text-start"
-                          value={line.qty}
-                          onChange={e => setLines(prev => prev.map(l => l._key === line._key ? { ...l, qty: e.target.value } : l))}
-                        />
-                      </TableCell>
-                      <TableCell className="p-1">
-                        <Input
-                          type="number" min={0} step="0.01"
-                          className="h-8 text-xs tabular-nums text-start"
-                          value={line.price}
-                          onChange={e => setLines(prev => prev.map(l => l._key === line._key ? { ...l, price: e.target.value } : l))}
-                        />
-                      </TableCell>
-                      <TableCell className="text-sm text-start tabular-nums font-medium pe-3">
-                        {formatMoney(lineTotal, lang)}
-                      </TableCell>
-                      <TableCell className="p-1 w-8">
-                        <Button
-                          variant="ghost" size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-danger"
-                          onClick={() => setLines(prev => prev.filter(l => l._key !== line._key))}
-                          disabled={lines.length === 1}
-                        >
-                          ×
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-            <div className="flex items-center justify-between px-3 py-2 border-t border-border">
-              <Button
-                variant="ghost" size="sm"
-                className="gap-1.5 text-muted-foreground text-xs"
-                onClick={() => setLines(prev => [...prev, newPoLine()])}
-              >
-                <Plus className="h-3.5 w-3.5" />
-                {t("orders.add_item")}
-              </Button>
-              <span className="text-sm font-semibold tabular-nums">
-                {t("view.subtotal")}: {formatMoney(subtotal, lang)}
-              </span>
-            </div>
-          </div>
-        </div>
-    </ModalShell>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────
 
 export function PurchaseOrdersListPage() {
   const { t, i18n } = useTranslation("purchasing");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const can = useCan();
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, isOffline, reload } = usePurchasingData();
 
@@ -557,11 +277,6 @@ export function PurchaseOrdersListPage() {
   const [supplierFilter, setSupplier] = useState("");
   const [statusFilter, setStatus]     = useState("");
   const [selectedPo, setSelectedPo]   = useState<PurchaseOrder | null>(null);
-  const [createOpen, setCreateOpen]   = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get("new") === "1") setCreateOpen(true);
-  }, [searchParams]);
 
   const supplierMap = useMemo(
     () => Object.fromEntries((data?.suppliers ?? []).map(s => [s.id, s])),
@@ -621,7 +336,7 @@ export function PurchaseOrdersListPage() {
                 {t("orders.export")}
               </Button>
               {can("purchasing.order.create") && (
-                <Button size="sm" onClick={() => setCreateOpen(true)}>
+                <Button size="sm" onClick={() => openCreate("new_purchase_order")}>
                   <Plus className="h-4 w-4 me-1.5" />
                   {t("orders.new")}
                 </Button>
@@ -686,7 +401,7 @@ export function PurchaseOrdersListPage() {
               title={t("orders.no_orders")}
               description={t("orders.empty_sub")}
               action={can("purchasing.order.create")
-                ? { label: t("orders.new"), onClick: () => setCreateOpen(true) }
+                ? { label: t("orders.new"), onClick: () => openCreate("new_purchase_order") }
                 : undefined}
             />
           ) : filtered.length === 0 ? (
@@ -849,14 +564,6 @@ export function PurchaseOrdersListPage() {
         t={t}
       />
 
-      {/* Create dialog */}
-      <CreatePoDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        data={data}
-        lang={lang}
-        t={t}
-      />
     </>
   );
 }

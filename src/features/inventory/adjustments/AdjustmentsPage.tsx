@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -25,7 +23,7 @@ import { formatMoney } from "@/lib/format";
 import { cn }          from "@/lib/utils";
 import { useCan }      from "@/lib/permissions";
 import { useItems }    from "../items/useItems";
-import { NewAdjustmentSheet } from "./NewAdjustmentSheet";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -58,9 +56,7 @@ export function AdjustmentsPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
-  const [searchParams] = useSearchParams();
-
-  const [sheetOpen, setSheetOpen] = useState(searchParams.get("new") === "1");
+  const openCreate   = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, reload } = useItems();
 
@@ -87,7 +83,7 @@ export function AdjustmentsPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.adjustment.create") ? (
-    <Button size="sm" onClick={() => setSheetOpen(true)}>
+    <Button size="sm" onClick={() => openCreate("new_adjustment")}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("actions.new_adjustment")}
     </Button>
@@ -118,7 +114,7 @@ export function AdjustmentsPage() {
               description={t("adjustments.empty_sub")}
               action={
                 can("inventory.adjustment.create")
-                  ? { label: t("actions.new_adjustment"), onClick: () => setSheetOpen(true) }
+                  ? { label: t("actions.new_adjustment"), onClick: () => openCreate("new_adjustment") }
                   : undefined
               }
             />
@@ -227,8 +223,6 @@ export function AdjustmentsPage() {
           </>
         )}
       </PageSection>
-
-      <NewAdjustmentSheet open={sheetOpen} onOpenChange={setSheetOpen} data={data} />
     </div>
   );
 }

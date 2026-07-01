@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -26,7 +25,7 @@ import { formatNumber } from "@/lib/format";
 import { cn }           from "@/lib/utils";
 import { useCan }       from "@/lib/permissions";
 import { useItems }     from "../items/useItems";
-import { NewStocktakeDialog } from "./NewStocktakeDialog";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 
 /* ─── Status variant mapping ─────────────────────────────────── */
 
@@ -73,9 +72,7 @@ export function StocktakesPage() {
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate     = useNavigate();
   const can          = useCan();
-  const [searchParams] = useSearchParams();
-
-  const [dialogOpen, setDialogOpen] = useState(searchParams.get("new") === "1");
+  const openCreate   = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, reload } = useItems();
 
@@ -103,7 +100,7 @@ export function StocktakesPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.stocktake.create") ? (
-    <Button size="sm" onClick={() => setDialogOpen(true)}>
+    <Button size="sm" onClick={() => openCreate("new_stocktake")}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("actions.new_stocktake")}
     </Button>
@@ -134,7 +131,7 @@ export function StocktakesPage() {
               description={t("stocktakes.empty_sub")}
               action={
                 can("inventory.stocktake.create")
-                  ? { label: t("actions.new_stocktake"), onClick: () => setDialogOpen(true) }
+                  ? { label: t("actions.new_stocktake"), onClick: () => openCreate("new_stocktake") }
                   : undefined
               }
             />
@@ -253,8 +250,6 @@ export function StocktakesPage() {
           </>
         )}
       </PageSection>
-
-      <NewStocktakeDialog open={dialogOpen} onOpenChange={setDialogOpen} data={data} />
     </div>
   );
 }

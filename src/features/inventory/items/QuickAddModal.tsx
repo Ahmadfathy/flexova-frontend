@@ -13,7 +13,7 @@ import { Loader2 } from "lucide-react";
 
 import { cn }       from "@/lib/utils";
 import { useCan }   from "@/lib/permissions";
-import type { InventoryFixture } from "./types";
+import { useItems } from "./useItems";
 
 /* ─── Helpers ────────────────────────────────────────────────── */
 
@@ -26,13 +26,13 @@ function genSku(): string {
 interface QuickAddModalProps {
   open:          boolean;
   onOpenChange:  (open: boolean) => void;
-  data:          InventoryFixture | null;
 }
 
 /* ─── Component ──────────────────────────────────────────────── */
 
-export function QuickAddModal({ open, onOpenChange, data }: QuickAddModalProps) {
+export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
   const { t, i18n } = useTranslation("inventory");
+  const { data }     = useItems();
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
 

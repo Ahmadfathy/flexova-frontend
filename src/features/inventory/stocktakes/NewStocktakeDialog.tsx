@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
 import { ModalShell } from "@/components/patterns/ModalShell";
 import { DatePicker } from "@/components/patterns/DatePicker";
@@ -15,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Loader2, Snowflake, Activity } from "lucide-react";
 
 import { cn }     from "@/lib/utils";
-import type { InventoryFixture } from "../items/types";
+import { useItems } from "../items/useItems";
 
 /* ─── Helpers ────────────────────────────────────────────────── */
 
@@ -28,15 +27,15 @@ function todayIso(): string {
 interface NewStocktakeDialogProps {
   open:         boolean;
   onOpenChange: (v: boolean) => void;
-  data:         InventoryFixture | null;
 }
 
 /* ─── Component ──────────────────────────────────────────────── */
 
-export function NewStocktakeDialog({ open, onOpenChange, data }: NewStocktakeDialogProps) {
+export function NewStocktakeDialog({ open, onOpenChange }: NewStocktakeDialogProps) {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const navigate     = useNavigate();
+  const { data }     = useItems();
 
   const warehouses = data?.warehouses ?? [];
 

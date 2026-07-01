@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
 
 import { PageHeader }  from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -24,7 +22,7 @@ import { Plus, ArrowRightLeft, MoreVertical, ArrowRight, Pencil, Download } from
 import { cn }       from "@/lib/utils";
 import { useCan }   from "@/lib/permissions";
 import { useItems } from "../items/useItems";
-import { NewTransferSheet } from "./NewTransferSheet";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -58,9 +56,7 @@ export function TransfersPage() {
   const { t, i18n } = useTranslation("inventory");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
-  const [searchParams] = useSearchParams();
-
-  const [sheetOpen, setSheetOpen] = useState(searchParams.get("new") === "1");
+  const openCreate   = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, reload } = useItems();
 
@@ -87,7 +83,7 @@ export function TransfersPage() {
   const showTable    = !showSkeleton && !showError && !isEmpty;
 
   const pageActions = can("inventory.transfer.create") ? (
-    <Button size="sm" onClick={() => setSheetOpen(true)}>
+    <Button size="sm" onClick={() => openCreate("new_transfer")}>
       <Plus className="h-4 w-4 me-1.5" />
       {t("actions.new_transfer")}
     </Button>
@@ -118,7 +114,7 @@ export function TransfersPage() {
               description={t("transfers.empty_sub")}
               action={
                 can("inventory.transfer.create")
-                  ? { label: t("actions.new_transfer"), onClick: () => setSheetOpen(true) }
+                  ? { label: t("actions.new_transfer"), onClick: () => openCreate("new_transfer") }
                   : undefined
               }
             />
@@ -229,8 +225,6 @@ export function TransfersPage() {
           </>
         )}
       </PageSection>
-
-      <NewTransferSheet open={sheetOpen} onOpenChange={setSheetOpen} data={data} />
     </div>
   );
 }

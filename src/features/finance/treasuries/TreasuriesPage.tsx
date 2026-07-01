@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Plus, Banknote, Building2, Smartphone, Loader2 } from "lucide-react";
+import { Plus, Banknote, Building2, Smartphone } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";
@@ -12,21 +9,15 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Button }    from "@/components/ui/button";
-import { Input }     from "@/components/ui/input";
-import { Label }     from "@/components/ui/label";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { ModalShell } from "@/components/patterns/ModalShell";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
 import { formatMoney } from "@/lib/format";
-import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
-import { useFinanceData, type Treasury } from "../data/useFinanceData";
+import { useCreateDispatcher } from "@/stores/createDispatcher";
+import { useFinanceData } from "../data/useFinanceData";
 
 type TreasuryType = "cash" | "bank" | "wallet";
 
@@ -36,87 +27,12 @@ function typeIcon(type: TreasuryType) {
   return Banknote;
 }
 
-function CreateDialog({
-  open, onClose, lang, t,
-}: {
-  open: boolean;
-  onClose: () => void;
-  lang: "ar" | "en";
-  t: ReturnType<typeof useTranslation<"finance">>["t"];
-}) {
-  const [name, setName]       = useState("");
-  const [type, setType]       = useState<TreasuryType>("cash");
-  const [accountNo, setAccNo] = useState("");
-  const [saving, setSaving]   = useState(false);
-
-  async function handleSave() {
-    if (!name.trim()) return;
-    setSaving(true);
-    await new Promise(r => setTimeout(r, 500));
-    setSaving(false);
-    onClose();
-    toast.success(t("treasuries.saved_toast"));
-  }
-
-  return (
-    <ModalShell
-      open={open}
-      onOpenChange={o => !o && onClose()}
-      title={t("treasuries.form_title_new")}
-      size="sm"
-      footer={
-        <>
-          <Button variant="outline" onClick={onClose}>{lang === "ar" ? "إلغاء" : "Cancel"}</Button>
-          <Button disabled={!name.trim() || saving} onClick={handleSave}>
-            {saving && <Loader2 className="h-4 w-4 animate-spin me-1.5" />}
-            {lang === "ar" ? "حفظ" : "Save"}
-          </Button>
-        </>
-      }
-    >
-      <div className="space-y-4">
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("treasuries.form_name")} *</Label>
-          <Input
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder={lang === "ar" ? "مثل: خزينة المبيعات" : "e.g. Sales register"}
-          />
-        </div>
-        <div className="space-y-1.5">
-          <Label className="text-xs text-muted-foreground">{t("treasuries.form_type")} *</Label>
-          <Select value={type} onValueChange={v => setType(v as TreasuryType)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="cash">{t("treasuries.type_cash")}</SelectItem>
-              <SelectItem value="bank">{t("treasuries.type_bank")}</SelectItem>
-              <SelectItem value="wallet">{t("treasuries.type_wallet")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        {type === "bank" && (
-          <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">{t("treasuries.form_account_no")}</Label>
-            <Input
-              value={accountNo}
-              onChange={e => setAccNo(e.target.value)}
-              dir="ltr"
-              placeholder="XXXXXXXXXX"
-            />
-          </div>
-        )}
-      </div>
-    </ModalShell>
-  );
-}
-
 export function TreasuriesPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
   const can  = useCan();
-  const [searchParams] = useSearchParams();
   const { data, loading, error, isOffline, reload } = useFinanceData();
-  const [createOpen, setCreateOpen] = useState(searchParams.get("new") === "1");
+  const openCreate = useCreateDispatcher(s => s.openCreate);
 
   const totalBalance = (data?.treasuries ?? []).reduce((s, tr) => s + tr.balance, 0);
 
@@ -156,7 +72,7 @@ export function TreasuriesPage() {
           count={t("treasuries.count", { n: treasuries.length })}
           actions={
             can("finance.treasury.create") ? (
-              <Button size="sm" onClick={() => setCreateOpen(true)}>
+              <Button size="sm" onClick={() => openCreate("new_treasury")}>
                 <Plus className="h-4 w-4 me-1.5" />
                 {t("treasuries.new")}
               </Button>
@@ -173,7 +89,7 @@ export function TreasuriesPage() {
               title={t("treasuries.no_treasuries")}
               description={t("treasuries.empty_sub")}
               action={can("finance.treasury.create")
-                ? { label: t("treasuries.new"), onClick: () => setCreateOpen(true) }
+                ? { label: t("treasuries.new"), onClick: () => openCreate("new_treasury") }
                 : undefined}
             />
           ) : (
@@ -237,8 +153,6 @@ export function TreasuriesPage() {
           )}
         </PageSection>
       </div>
-
-      <CreateDialog open={createOpen} onClose={() => setCreateOpen(false)} lang={lang} t={t} />
     </>
   );
 }
