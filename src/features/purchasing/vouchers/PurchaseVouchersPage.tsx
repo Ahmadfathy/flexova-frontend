@@ -330,7 +330,7 @@ export function PurchaseVouchersPage() {
                       className="border-b border-border last:border-0 hover:bg-muted/30"
                     >
                       <TableCell>
-                        <span className="font-mono text-xs tabular-nums text-muted-foreground" dir="ltr">
+                        <span className="font-mono text-xs tabular-nums text-muted-foreground">
                           {v.number}
                         </span>
                       </TableCell>
@@ -348,13 +348,12 @@ export function PurchaseVouchersPage() {
                         {inv ? (
                           <button
                             className="font-mono text-xs text-brand hover:underline"
-                            dir="ltr"
                             onClick={() => navigate(`/purchasing/invoices/${v.invoice_id}`)}
                           >
                             {inv.number}
                           </button>
                         ) : (
-                          <span className="font-mono text-xs text-muted-foreground" dir="ltr">
+                          <span className="font-mono text-xs text-muted-foreground">
                             {v.invoice_id}
                           </span>
                         )}

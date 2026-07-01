@@ -227,13 +227,12 @@ export function DebitNotesPage() {
             <TableBody>
               {debitNotes.map(dn => (
                 <TableRow key={dn.id}>
-                  <TableCell className="font-mono text-sm" dir="ltr">{dn.number}</TableCell>
+                  <TableCell className="font-mono text-sm">{dn.number}</TableCell>
                   <TableCell className="text-sm">{formatDate(dn.date)}</TableCell>
                   <TableCell className="text-sm">
                     <Link
                       to={`/sales/invoices/${dn.source_invoice}`}
                       className="text-primary hover:underline font-mono text-xs"
-                      dir="ltr"
                     >
                       {dn.source_invoice}
                     </Link>

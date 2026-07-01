@@ -732,7 +732,7 @@ export function PurchaseOrdersListPage() {
                         >
                           <TableCell>
                             <div className="flex items-center gap-1.5">
-                              <span className="font-mono text-xs tabular-nums text-muted-foreground" dir="ltr">
+                              <span className="font-mono text-xs tabular-nums text-muted-foreground">
                                 {po.number}
                               </span>
                               {po.from === "lowstock" && (

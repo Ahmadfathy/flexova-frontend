@@ -212,7 +212,7 @@ export function TreasuriesPage() {
                           {t(typeKey)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground font-mono" dir="ltr">
+                      <TableCell className="text-sm text-muted-foreground font-mono">
                         {tr.account_no ?? "—"}
                       </TableCell>
                       <TableCell className="text-start tabular-nums font-semibold">

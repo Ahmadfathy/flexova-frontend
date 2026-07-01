@@ -287,10 +287,7 @@ export function InboundEtaPage() {
                         >
                           {/* UUID */}
                           <TableCell>
-                            <span
-                              className="font-mono text-xs text-muted-foreground"
-                              dir="ltr"
-                            >
+                            <span className="font-mono text-xs text-muted-foreground">
                               {e.uuid}
                             </span>
                           </TableCell>
@@ -337,7 +334,6 @@ export function InboundEtaPage() {
                             {matchedInvoice ? (
                               <button
                                 className="font-mono text-xs text-brand hover:underline"
-                                dir="ltr"
                                 onClick={() => navigate(`/purchasing/invoices/${e.matched_pi}`)}
                               >
                                 {matchedInvoice.number}

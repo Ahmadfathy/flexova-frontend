@@ -261,7 +261,7 @@ export function UsersPage() {
                           </div>
                         </TableCell>
                         {/* Login */}
-                        <TableCell className="font-mono text-xs text-muted-foreground" dir="ltr">
+                        <TableCell className="font-mono text-xs text-muted-foreground">
                           {u.login}
                         </TableCell>
                         {/* Role */}

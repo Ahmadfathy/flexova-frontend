@@ -386,7 +386,7 @@ export function JournalPage() {
                           <ChevronIcon className="h-4 w-4 text-muted-foreground" />
                         </TableCell>
                         <TableCell>
-                          <span className="font-mono text-xs text-muted-foreground" dir="ltr">
+                          <span className="font-mono text-xs text-muted-foreground">
                             {entry.number}
                           </span>
                         </TableCell>

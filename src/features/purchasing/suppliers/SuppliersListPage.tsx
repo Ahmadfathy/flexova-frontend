@@ -223,7 +223,7 @@ export function SuppliersListPage() {
       id: "code",
       header: () => t("col.code"),
       cell: info => (
-        <span className="font-mono text-xs tabular-nums text-muted-foreground" dir="ltr">
+        <span className="font-mono text-xs tabular-nums text-muted-foreground">
           {info.getValue()}
         </span>
       ),
@@ -265,8 +265,8 @@ export function SuppliersListPage() {
           );
         }
         return (
-          <span className="text-sm text-muted-foreground font-mono tabular-nums" dir="ltr">
-            {trn}
+          <span className="text-sm text-muted-foreground font-mono tabular-nums">
+            <bdi>{trn}</bdi>
           </span>
         );
       },

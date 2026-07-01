@@ -233,7 +233,7 @@ export function TransfersPage() {
                   return (
                     <TableRow key={tf.id} className="border-b border-border last:border-0">
                       <TableCell>
-                        <span className="font-mono text-xs text-muted-foreground" dir="ltr">
+                        <span className="font-mono text-xs text-muted-foreground">
                           {tf.number}
                         </span>
                       </TableCell>

@@ -326,7 +326,7 @@ export function PayrollPage() {
                         <TableCell>
                           <span className="font-mono text-sm">{run.number}</span>
                         </TableCell>
-                        <TableCell className="text-sm tabular-nums" dir="ltr">{run.period}</TableCell>
+                        <TableCell className="text-sm tabular-nums">{run.period}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <StatusPill

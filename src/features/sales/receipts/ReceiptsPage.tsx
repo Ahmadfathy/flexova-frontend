@@ -346,11 +346,11 @@ export function ReceiptsPage() {
             <TableBody>
               {filtered.map(rcv => (
                 <TableRow key={rcv.id}>
-                  <TableCell className="font-mono text-sm" dir="ltr">{rcv.number}</TableCell>
+                  <TableCell className="font-mono text-sm">{rcv.number}</TableCell>
                   <TableCell className="text-sm">{formatDate(rcv.date)}</TableCell>
                   <TableCell className="text-sm">{customerName(rcv.customer_id)}</TableCell>
                   <TableCell className="text-sm">
-                    <span className="font-mono text-xs" dir="ltr">
+                    <span className="font-mono text-xs">
                       {invoiceNumber(rcv.invoice_id)}
                     </span>
                   </TableCell>

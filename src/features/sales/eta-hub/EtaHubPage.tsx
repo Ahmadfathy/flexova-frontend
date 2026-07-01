@@ -483,7 +483,7 @@ export function EtaHubPage() {
                     )}
 
                     {/* Doc number */}
-                    <TableCell className="ps-4 font-mono text-sm tabular-nums" dir="ltr">
+                    <TableCell className="ps-4 font-mono text-sm tabular-nums">
                       {doc.number}
                     </TableCell>
 
@@ -527,11 +527,8 @@ export function EtaHubPage() {
                     {/* B2C window countdown */}
                     <TableCell>
                       {win ? (
-                        <span
-                          className={cn("tabular-nums text-sm", windowToneClass[win.tone])}
-                          dir="ltr"
-                        >
-                          {win.text}
+                        <span className={cn("tabular-nums text-sm", windowToneClass[win.tone])}>
+                          <bdi>{win.text}</bdi>
                         </span>
                       ) : (
                         <span className="text-muted-foreground text-xs">—</span>

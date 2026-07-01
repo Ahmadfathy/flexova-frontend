@@ -294,13 +294,12 @@ export function CreditNotesPage() {
             <TableBody>
               {creditNotes.map(cn => (
                 <TableRow key={cn.id} className="group">
-                  <TableCell className="font-mono text-sm" dir="ltr">{cn.number}</TableCell>
+                  <TableCell className="font-mono text-sm">{cn.number}</TableCell>
                   <TableCell className="text-sm">{formatDate(cn.date)}</TableCell>
                   <TableCell className="text-sm">
                     <Link
                       to={`/sales/invoices/${cn.source_invoice}`}
                       className="text-primary hover:underline font-mono text-xs"
-                      dir="ltr"
                     >
                       {cn.source_invoice}
                     </Link>

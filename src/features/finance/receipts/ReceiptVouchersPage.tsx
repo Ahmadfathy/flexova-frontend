@@ -291,7 +291,7 @@ export function ReceiptVouchersPage() {
                   return (
                     <TableRow key={rv.id} className="border-b border-border last:border-0">
                       <TableCell>
-                        <span className="font-mono text-xs text-muted-foreground" dir="ltr">
+                        <span className="font-mono text-xs text-muted-foreground">
                           {rv.number}
                         </span>
                       </TableCell>

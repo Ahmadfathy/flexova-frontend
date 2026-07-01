@@ -324,8 +324,8 @@ export function EtaSettingsPage() {
               {numberingRows.map(row => (
                 <TableRow key={row.id}>
                   <TableCell className="ps-4 text-sm font-medium">{row.name}</TableCell>
-                  <TableCell className="font-mono text-sm" dir="ltr">{row.prefix}</TableCell>
-                  <TableCell className="tabular-nums text-sm pe-4" dir="ltr">
+                  <TableCell className="font-mono text-sm">{row.prefix}</TableCell>
+                  <TableCell className="tabular-nums text-sm pe-4">
                     {row.next.toLocaleString()}
                   </TableCell>
                 </TableRow>

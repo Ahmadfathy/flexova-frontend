@@ -149,7 +149,7 @@ export function CommissionsPage() {
                         <TableCell>
                           <EntityCell name={name} avatarFallback={name.slice(0, 2)} />
                         </TableCell>
-                        <TableCell className="text-sm tabular-nums text-muted-foreground" dir="ltr">
+                        <TableCell className="text-sm tabular-nums text-muted-foreground">
                           {item.period}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">{ruleName(item.rule_id)}</TableCell>

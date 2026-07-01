@@ -318,7 +318,7 @@ export function InvoicesListPage() {
       id: "number",
       header: () => t("list.col_number"),
       cell: info => (
-        <span className="font-mono text-xs tabular-nums num" dir="ltr">
+        <span className="font-mono text-xs tabular-nums num">
           {info.getValue()}
         </span>
       ),

@@ -323,7 +323,7 @@ export function PurchasesListPage() {
       id: "number",
       header: () => t("invoices.col_number"),
       cell: info => (
-        <span className="font-mono text-xs tabular-nums text-muted-foreground" dir="ltr">
+        <span className="font-mono text-xs tabular-nums text-muted-foreground">
           {info.getValue()}
         </span>
       ),
@@ -362,7 +362,7 @@ export function PurchasesListPage() {
         const v = info.getValue();
         if (!v || v === "—") return <span className="text-muted-foreground text-sm">—</span>;
         return (
-          <span className="text-sm text-muted-foreground font-mono" dir="ltr">{v}</span>
+          <span className="text-sm text-muted-foreground font-mono">{v}</span>
         );
       },
     }),

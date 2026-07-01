@@ -523,7 +523,7 @@ export function CustomersListPage() {
                             </Badge>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {c.phone ? <span dir="ltr">{c.phone}</span> : "—"}
+                            {c.phone ? <bdi>{c.phone}</bdi> : "—"}
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-wrap gap-1">

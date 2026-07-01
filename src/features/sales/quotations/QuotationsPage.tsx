@@ -165,7 +165,7 @@ export function QuotationsPage() {
                   className="cursor-pointer"
                   onClick={() => nav(`/sales/quotations/${qt.id}`)}
                 >
-                  <TableCell className="font-mono text-sm" dir="ltr">{qt.number}</TableCell>
+                  <TableCell className="font-mono text-sm">{qt.number}</TableCell>
                   <TableCell className="text-sm">{formatDate(qt.date)}</TableCell>
                   <TableCell className="text-sm">{customerName(qt.customer_id)}</TableCell>
                   <TableCell className="text-start tabular-nums text-sm font-medium">
