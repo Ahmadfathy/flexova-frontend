@@ -60,10 +60,6 @@ export function TrialBalancePage() {
   const coaMap   = new Map(coa.map(a => [a.code, a]));
 
   const { rows, totals, period } = tb;
-  const currentPeriod = periods.find(p => p.id === period);
-  const periodLabel   = currentPeriod
-    ? `${currentPeriod.year}-${String(currentPeriod.month).padStart(2, "0")}`
-    : period;
 
   return (
     <div className="space-y-4 pb-6">
@@ -135,7 +131,6 @@ export function TrialBalancePage() {
               {rows.map(row => {
                 const account = coaMap.get(row.account);
                 const name    = account ? (lang === "ar" ? account.name_ar : account.name_en) : row.account;
-                const isCredit = ["2","3","4"].includes(row.account[0]);
                 return (
                   <TableRow key={row.account} className="border-b border-border last:border-0">
                     <TableCell className="font-mono text-xs text-muted-foreground">{row.account}</TableCell>

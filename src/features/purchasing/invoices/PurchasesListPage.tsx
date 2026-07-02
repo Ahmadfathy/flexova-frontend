@@ -653,7 +653,6 @@ export function PurchasesListPage() {
                       {hg.headers.map(header => {
                         const col = header.column;
                         const isSortable = col.getCanSort();
-                        const isEnd = header.id === "total";
                         return (
                           <TableHead
                             key={header.id}

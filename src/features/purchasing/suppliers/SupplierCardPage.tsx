@@ -20,7 +20,6 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 import { DatePicker }    from "@/components/patterns/DatePicker";
 
 import { Button } from "@/components/ui/button";
-import { Input }  from "@/components/ui/input";
 import { Badge }  from "@/components/ui/badge";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -492,7 +491,6 @@ export function SupplierCardPage() {
                       {hg.headers.map(header => {
                         const col = header.column;
                         const isSortable = col.getCanSort();
-                        const isEnd = ["debit", "credit", "running"].includes(header.id);
                         return (
                           <TableHead
                             key={header.id}

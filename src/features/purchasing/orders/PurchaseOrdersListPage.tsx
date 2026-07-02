@@ -68,9 +68,9 @@ function ListSkeleton() {
 // ── Receipt progress bar ──────────────────────────────────────────
 
 function ReceiptProgress({
-  ordered, received, lang,
+  ordered, received,
 }: {
-  ordered: number; received: number; lang: "ar" | "en";
+  ordered: number; received: number;
 }) {
   const pct = ordered > 0 ? Math.min(received / ordered, 1) : 0;
   return (
@@ -119,7 +119,7 @@ function PoDetailSheet({
   const totalOrdered  = po.lines.reduce((s, l) => s + l.qty_ordered,  0);
   const totalReceived = po.lines.reduce((s, l) => s + l.qty_received, 0);
 
-  const statusLabel = t(`orders.status_${po.status}` as Parameters<typeof t>[0], po.status);
+  const statusLabel = t(`orders.status_${po.status}`, { defaultValue: po.status });
 
   return (
     <DrawerShell
@@ -167,7 +167,7 @@ function PoDetailSheet({
           <p className="text-xs font-medium text-muted-foreground mb-2">
             {t("orders.receipt_progress")}
           </p>
-          <ReceiptProgress ordered={totalOrdered} received={totalReceived} lang={lang} />
+          <ReceiptProgress ordered={totalOrdered} received={totalReceived} />
         </div>
 
         {/* Lines table */}
@@ -436,7 +436,7 @@ export function PurchaseOrdersListPage() {
                     {filtered.map(po => {
                       const s = supplierMap[po.supplier_id];
                       const sName = s ? (lang === "ar" ? s.name_ar : s.name_en) : po.supplier_id;
-                      const statusLabel = t(`orders.status_${po.status}` as Parameters<typeof t>[0], po.status);
+                      const statusLabel = t(`orders.status_${po.status}`, { defaultValue: po.status });
                       const totalOrdered  = po.lines.reduce((acc, l) => acc + l.qty_ordered,  0);
                       const totalReceived = po.lines.reduce((acc, l) => acc + l.qty_received, 0);
                       return (
@@ -483,7 +483,6 @@ export function PurchaseOrdersListPage() {
                             <ReceiptProgress
                               ordered={totalOrdered}
                               received={totalReceived}
-                              lang={lang}
                             />
                           </TableCell>
                           <TableCell className="w-8" onClick={e => e.stopPropagation()}>
@@ -520,7 +519,7 @@ export function PurchaseOrdersListPage() {
                 {filtered.map(po => {
                   const s = supplierMap[po.supplier_id];
                   const sName = s ? (lang === "ar" ? s.name_ar : s.name_en) : po.supplier_id;
-                  const statusLabel = t(`orders.status_${po.status}` as Parameters<typeof t>[0], po.status);
+                  const statusLabel = t(`orders.status_${po.status}`, { defaultValue: po.status });
                   const totalOrdered  = po.lines.reduce((acc, l) => acc + l.qty_ordered,  0);
                   const totalReceived = po.lines.reduce((acc, l) => acc + l.qty_received, 0);
                   return (
@@ -543,7 +542,7 @@ export function PurchaseOrdersListPage() {
                       </div>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span>{formatDate(po.expected_delivery)}</span>
-                        <ReceiptProgress ordered={totalOrdered} received={totalReceived} lang={lang} />
+                        <ReceiptProgress ordered={totalOrdered} received={totalReceived} />
                       </div>
                     </div>
                   );

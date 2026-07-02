@@ -12,7 +12,6 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Badge }  from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card }   from "@/components/ui/card";
 import { cn }     from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
@@ -70,7 +69,7 @@ function CashflowWidget({ w, t }: {
         <BarChart data={w.series} barCategoryGap="30%">
           <XAxis dataKey="day" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
           <YAxis hide />
-          <Tooltip formatter={(v: number) => v.toLocaleString("ar-EG")} />
+          <Tooltip formatter={(v) => Number(v).toLocaleString("ar-EG")} />
           <Legend iconType="circle" iconSize={8} />
           <Bar dataKey="in"  name={t("dashboard.cashflow_in")}  fill="var(--color-success, #22c55e)" radius={[4,4,0,0]} />
           <Bar dataKey="out" name={t("dashboard.cashflow_out")} fill="var(--color-danger, #ef4444)"  radius={[4,4,0,0]} />

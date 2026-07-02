@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ShieldCheck, XCircle, Clock3, CheckCircle2 } from "lucide-react";
+import { XCircle, Clock3, CheckCircle2 } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";

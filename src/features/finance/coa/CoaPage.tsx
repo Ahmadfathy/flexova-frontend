@@ -74,7 +74,7 @@ export function CoaPage() {
     if (search) return true; // show all when searching
     if (account.parent === null) return true;
     // visible if all ancestors are expanded
-    let cur = account.parent;
+    let cur: string | null = account.parent;
     while (cur !== null) {
       if (!expanded.has(cur)) return false;
       cur = codeMap.get(cur)?.parent ?? null;

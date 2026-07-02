@@ -419,7 +419,6 @@ export function CustomersListPage() {
                               name={name}
                               sub={c.trn || c.national_id || undefined}
                               avatarFallback={name.slice(0, 2)}
-                              flag={c._flag}
                             />
                           </TableCell>
                           <TableCell>

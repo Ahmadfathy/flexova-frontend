@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ShieldCheck, KeyRound, Clock, MonitorSmartphone, Loader2 } from "lucide-react";
+import { Clock, MonitorSmartphone, Loader2 } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { PageSection }   from "@/components/patterns/PageSection";

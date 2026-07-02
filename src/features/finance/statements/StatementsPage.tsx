@@ -93,7 +93,6 @@ export function StatementsPage() {
 
     // Income statement
     const revenue       = sumRoot(coa, "4");
-    const cogs          = sumRoot(coa, "5100") + (coa.find(a => a.code === "5100")?.balance ?? 0) - (coa.find(a => a.code === "5100")?.balance ?? 0);
     const cogsAcc       = coa.find(a => a.code === "5100")?.balance ?? 0;
     const grossProfit   = revenue - cogsAcc;
     const opExpenses    = coa

@@ -128,7 +128,7 @@ function itemUomIds(item: InventoryItem): string[] {
 interface LineRowProps {
   line:     PILine;
   data:     PurchasingData;
-  lang:     string;
+  lang:     "ar" | "en";
   t:        ReturnType<typeof useTranslation>["t"];
   subtotal: number;
   addCosts: number;
@@ -437,9 +437,7 @@ export function PurchaseInvoiceEditorPage() {
       <div className="space-y-4 pb-6">
         <PageHeader
           title={t("editor.new_title")}
-          crumbs={[
-            { label: t("invoices.title"), href: "/purchasing/invoices" },
-          ]}
+          crumbLabel={t("editor.new_title")}
           alert={(isOffline || fromLowstock) ? (
             <div className="space-y-2">
               {isOffline && <OfflineBanner />}

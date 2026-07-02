@@ -199,7 +199,7 @@ export function UsersPage() {
                         {/* Status */}
                         <TableCell>
                           <StatusPill
-                            variant={susp ? "cancelled" : "approved"}
+                            variant={susp ? "inactive" : "approved"}
                             label={t(susp ? "users.status_suspended" : "users.status_active")}
                           />
                         </TableCell>

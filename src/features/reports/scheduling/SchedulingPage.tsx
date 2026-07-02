@@ -28,12 +28,11 @@ function ChannelIcon({ channel }: { channel: string }) {
 // ── Schedule card ─────────────────────────────────────────────────
 
 function ScheduleCard({
-  s, paused, onToggle, lang, t,
+  s, paused, onToggle, t,
 }: {
   s: Schedule;
   paused: boolean;
   onToggle: (id: string) => void;
-  lang: "ar" | "en";
   t: ReturnType<typeof useTranslation<"reports">>["t"];
 }) {
   const effective = paused ? "paused" : s.status;
@@ -89,8 +88,7 @@ function ScheduleCard({
 // ── Main page ─────────────────────────────────────────────────────
 
 export function SchedulingPage() {
-  const { t, i18n } = useTranslation("reports");
-  const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
+  const { t } = useTranslation("reports");
   const can  = useCan();
   const { data, loading, error, isOffline, reload } = useReportsData();
   const openCreate = useCreateDispatcher(s => s.openCreate);
@@ -170,7 +168,6 @@ export function SchedulingPage() {
                 s={s}
                 paused={paused.has(s.id) ? s.status === "active" : s.status === "paused"}
                 onToggle={handleToggle}
-                lang={lang}
                 t={t}
               />
             ))}

@@ -87,7 +87,7 @@ export function PurchaseInvoiceViewPage() {
       <div className="space-y-4">
         <PageHeader
           title={t("view.not_found")}
-          crumbs={[{ label: t("invoices.title"), href: "/purchasing/invoices" }]}
+          crumbLabel={t("view.not_found")}
         />
         <PageSection>
           <div className="py-12 text-center text-sm text-muted-foreground">
@@ -123,7 +123,7 @@ export function PurchaseInvoiceViewPage() {
     <div className="space-y-4 pb-6">
       <PageHeader
         title={invoice.number}
-        crumbs={[{ label: t("invoices.title"), href: "/purchasing/invoices" }]}
+        crumbLabel={invoice.number}
         actions={
           <div className="flex gap-2">
             <Button

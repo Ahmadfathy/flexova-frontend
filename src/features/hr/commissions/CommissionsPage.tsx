@@ -17,7 +17,7 @@ import {
 
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { useHrData, type CommissionAccrued } from "../data/useHrData";
+import { useHrData } from "../data/useHrData";
 
 export function CommissionsPage() {
   const { t, i18n } = useTranslation("hr");

@@ -9,7 +9,6 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 import { formatMoney } from "@/lib/format";
 import { useFinanceData } from "../data/useFinanceData";

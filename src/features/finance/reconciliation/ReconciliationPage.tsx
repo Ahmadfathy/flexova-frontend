@@ -8,8 +8,7 @@ import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton }      from "@/components/patterns/Skeletons";
 
 import { Badge }     from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -49,10 +48,6 @@ export function ReconciliationPage() {
       </div>
     );
   }
-
-  const recon = (data as any).trialBalance;   // using data directly
-  // Access raw reconciliation data from data
-  const rec   = (data as any)._raw_reconciliation ?? null;
 
   // Build reconciliation display from what we have in useFinanceData
   // The data hook doesn't expose bank_reconciliation directly — we'll compute display from known values

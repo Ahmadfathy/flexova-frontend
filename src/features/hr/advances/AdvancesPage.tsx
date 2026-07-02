@@ -262,7 +262,7 @@ export function AdvancesPage() {
                         </TableCell>
                         <TableCell>
                           <StatusPill
-                            variant={adv.status === "outstanding" ? "warning" : "success"}
+                            variant={adv.status === "outstanding" ? "pending" : "approved"}
                             label={t(adv.status === "outstanding" ? "advances.status_outstanding" : "advances.status_settled")}
                           />
                         </TableCell>

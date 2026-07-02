@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  Download, Search, CheckCircle2, XCircle, Clock, FileText, Loader2,
+  Download, Search, CheckCircle2, XCircle, Clock, FileText,
 } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
@@ -30,7 +30,7 @@ import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
-import { usePurchasingData, type InboundEtaStatus } from "../data/usePurchasingData";
+import { usePurchasingData } from "../data/usePurchasingData";
 import { inboundEtaPillVariant } from "../data/statusHelpers";
 
 // ── Skeleton ──────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export function InboundEtaPage() {
   }, [allRecords, search, statusFilter, supplierMap]);
 
   // ── Accept ────────────────────────────────────────────────────
-  const handleAccept = useCallback((uuid: string) => {
+  const handleAccept = useCallback(() => {
     toast.success(t("inbound_eta.accept_toast"));
   }, [t]);
 
@@ -353,7 +353,7 @@ export function InboundEtaPage() {
                                       size="sm"
                                       variant="ghost"
                                       className="h-7 px-2 text-xs gap-1 text-success hover:text-success hover:bg-success/10"
-                                      onClick={() => handleAccept(e.uuid)}
+                                      onClick={handleAccept}
                                     >
                                       <CheckCircle2 className="h-3.5 w-3.5" />
                                       {t("inbound_eta.action_accept")}
@@ -416,7 +416,7 @@ export function InboundEtaPage() {
                           <Button
                             size="sm" variant="outline"
                             className="flex-1 h-7 text-xs text-success border-success/30"
-                            onClick={() => handleAccept(e.uuid)}
+                            onClick={handleAccept}
                           >
                             {t("inbound_eta.action_accept")}
                           </Button>

@@ -523,7 +523,6 @@ export function SuppliersListPage() {
                       {hg.headers.map(header => {
                         const col = header.column;
                         const isSortable = col.getCanSort();
-                        const isEnd = header.id === "balance";
                         return (
                           <TableHead
                             key={header.id}

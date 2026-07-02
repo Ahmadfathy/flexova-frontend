@@ -4,7 +4,7 @@ import { Card as ShadCard } from "@/components/ui/card";
 
 export interface PageSectionProps {
   /** Section heading rendered in a `px-6 py-4 border-b` row. */
-  title?: string;
+  title?: React.ReactNode;
   /** Muted secondary line below the title. */
   subtitle?: string;
   /**

@@ -19,7 +19,6 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 
-import { useCan } from "@/lib/permissions";
 import { useFinanceData, type FiscalPeriod } from "../data/useFinanceData";
 
 function periodLabel(p: FiscalPeriod, lang: "ar" | "en") {
@@ -31,7 +30,6 @@ function periodLabel(p: FiscalPeriod, lang: "ar" | "en") {
 export function ClosingPage() {
   const { t, i18n } = useTranslation("finance");
   const lang = (i18n.language.startsWith("ar") ? "ar" : "en") as "ar" | "en";
-  const can  = useCan();
   const { data, loading, error, isOffline, reload } = useFinanceData();
 
   const [pendingPeriod, setPending] = useState<{ period: FiscalPeriod; action: "close" | "reopen" } | null>(null);
