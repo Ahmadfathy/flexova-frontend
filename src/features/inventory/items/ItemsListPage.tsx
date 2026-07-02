@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import {
   useReactTable,
   getCoreRowModel,
@@ -19,6 +18,7 @@ import { ErrorState }    from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { StatusPill }    from "@/components/patterns/StatusPill";
 import { Skeleton }      from "@/components/patterns/Skeletons";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 
 // UI primitives
 import { Button }    from "@/components/ui/button";
@@ -47,10 +47,11 @@ import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTabl
 import {
   Plus, Upload, Download, MoreVertical, Package, X,
   SlidersHorizontal, Search, ChevronUp, ChevronDown, ChevronsUpDown,
-  Printer, Pencil, History, Copy, Ban, CheckCircle2, Trash2,
+  Printer, Copy, Ban, CheckCircle2, Trash2,
 } from "lucide-react";
 
 // Lib
+import { toast } from "sonner";
 import { formatMoney, formatNumber } from "@/lib/format";
 import { cn }             from "@/lib/utils";
 import { useCan }         from "@/lib/permissions";
@@ -153,40 +154,40 @@ function RowActions({
   item,
   can,
   t,
-  onNavigate,
+  onDuplicate,
+  onToggleSuspend,
+  onPrintBarcode,
+  onDeleteRequest,
 }: {
   item: InventoryItem;
   can: (p: string) => boolean;
   t: ReturnType<typeof useTranslation>["t"];
-  onNavigate: (to: string) => void;
+  onDuplicate: (item: InventoryItem) => void;
+  onToggleSuspend: (item: InventoryItem) => void;
+  onPrintBarcode: (item: InventoryItem) => void;
+  onDeleteRequest: (item: InventoryItem) => void;
 }) {
   const status   = getEffectiveStatus(item);
   const isActive = status === "active" || status === "low-stock";
 
   return (
     <>
-      {can("inventory.item.edit") && (
-        <RowActionItem icon={Pencil} onClick={() => onNavigate(`/inventory/items/${item.id}`)}>
-          {t("actions.edit")}
-        </RowActionItem>
-      )}
-      <RowActionItem icon={History} onClick={() => {}}>{t("actions.ledger")}</RowActionItem>
       {can("inventory.item.create") && (
-        <RowActionItem icon={Copy} onClick={() => {}}>{t("actions.duplicate")}</RowActionItem>
+        <RowActionItem icon={Copy} onClick={() => onDuplicate(item)}>{t("actions.duplicate")}</RowActionItem>
       )}
       {can("inventory.item.suspend") && (
         <>
           <DropdownMenuSeparator />
-          <RowActionItem icon={isActive ? Ban : CheckCircle2} onClick={() => {}}>
+          <RowActionItem icon={isActive ? Ban : CheckCircle2} onClick={() => onToggleSuspend(item)}>
             {isActive ? t("actions.suspend") : t("actions.activate")}
           </RowActionItem>
         </>
       )}
-      <RowActionItem icon={Printer} onClick={() => {}}>{t("actions.print_barcode")}</RowActionItem>
+      <RowActionItem icon={Printer} onClick={() => onPrintBarcode(item)}>{t("actions.print_barcode")}</RowActionItem>
       {can("inventory.item.delete") && (
         <>
           <DropdownMenuSeparator />
-          <RowActionItem icon={Trash2} destructive onClick={() => {}}>
+          <RowActionItem icon={Trash2} destructive onClick={() => onDeleteRequest(item)}>
             {t("actions.delete")}
           </RowActionItem>
         </>
@@ -198,7 +199,8 @@ function RowActions({
 /* ─── Mobile ItemCard ───────────────────────────────────────── */
 
 function ItemCard({
-  item, selected, onToggle, lang, categoryMap, uomMap, can, t, onNavigate,
+  item, selected, onToggle, lang, categoryMap, uomMap, can, t,
+  onDuplicate, onToggleSuspend, onPrintBarcode, onDeleteRequest,
 }: {
   item: InventoryItem;
   selected: boolean;
@@ -208,7 +210,10 @@ function ItemCard({
   uomMap: Record<string, InventoryUom>;
   can: (p: string) => boolean;
   t: ReturnType<typeof useTranslation>["t"];
-  onNavigate: (to: string) => void;
+  onDuplicate: (item: InventoryItem) => void;
+  onToggleSuspend: (item: InventoryItem) => void;
+  onPrintBarcode: (item: InventoryItem) => void;
+  onDeleteRequest: (item: InventoryItem) => void;
 }) {
   const status  = getEffectiveStatus(item);
   const balance = getTotalBalance(item);
@@ -219,10 +224,9 @@ function ItemCard({
   return (
     <div
       className={cn(
-        "flex items-start gap-3 p-3 rounded-sm border border-border bg-card cursor-pointer transition-colors hover:bg-muted/40",
+        "flex items-start gap-3 p-3 rounded-sm border border-border bg-card transition-colors",
         selected && "bg-muted/50 border-primary/40"
       )}
-      onClick={() => onNavigate(`/inventory/items/${item.id}`)}
     >
       <Checkbox
         checked={selected}
@@ -271,7 +275,13 @@ function ItemCard({
           </Button>
         </DropdownMenuTrigger>
         <RowActionsContent>
-          <RowActions item={item} can={can} t={t} onNavigate={onNavigate} />
+          <RowActions
+            item={item} can={can} t={t}
+            onDuplicate={onDuplicate}
+            onToggleSuspend={onToggleSuspend}
+            onPrintBarcode={onPrintBarcode}
+            onDeleteRequest={onDeleteRequest}
+          />
         </RowActionsContent>
       </DropdownMenu>
     </div>
@@ -281,12 +291,17 @@ function ItemCard({
 /* ─── BulkBar ───────────────────────────────────────────────── */
 
 function BulkBar({
-  count, can, t, onClear,
+  count, can, t, onClear, onActivate, onSuspend, onPrintBarcode, onExport, onDeleteRequest,
 }: {
   count: number;
   can: (p: string) => boolean;
   t: ReturnType<typeof useTranslation>["t"];
   onClear: () => void;
+  onActivate: () => void;
+  onSuspend: () => void;
+  onPrintBarcode: () => void;
+  onExport: () => void;
+  onDeleteRequest: () => void;
 }) {
   return (
     <div className="fixed bottom-6 inset-x-0 flex justify-center z-50 pointer-events-none">
@@ -297,19 +312,19 @@ function BulkBar({
         <Separator orientation="vertical" className="h-4 mx-1" />
         {can("inventory.item.suspend") && (
           <>
-            <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={() => {}}>
+            <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={onActivate}>
               {t("actions.bulk_activate")}
             </Button>
-            <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={() => {}}>
+            <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={onSuspend}>
               {t("actions.bulk_suspend")}
             </Button>
           </>
         )}
-        <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={() => {}}>
+        <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={onPrintBarcode}>
           {t("actions.print_barcode")}
         </Button>
         {can("inventory.item.export") && (
-          <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={() => {}}>
+          <Button variant="ghost" size="sm" className="h-7 text-xs rounded-full px-3" onClick={onExport}>
             {t("actions.export_selected")}
           </Button>
         )}
@@ -317,7 +332,7 @@ function BulkBar({
           <Button
             variant="ghost" size="sm"
             className="h-7 text-xs rounded-full px-3 text-destructive hover:text-destructive"
-            onClick={() => {}}
+            onClick={onDeleteRequest}
           >
             {t("actions.delete")}
           </Button>
@@ -485,15 +500,16 @@ function SortIcon({ dir }: { dir: "asc" | "desc" | false }) {
 export function ItemsListPage() {
   const { t, i18n }   = useTranslation("inventory");
   const lang           = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
-  const navigate       = useNavigate();
   const can            = useCan();
   const openCreate     = useCreateDispatcher(s => s.openCreate);
 
-  const { data, loading, error, isOffline, reload } = useItems();
+  const { data, loading, error, isOffline, reload, mutate } = useItems();
 
   const [importOpen,   setImportOpen]     = useState(false);
   const [search, setSearch]               = useState("");
   const [debouncedSearch, setDebounced]   = useState("");
+  const [deleteTarget, setDeleteTarget]   = useState<InventoryItem | null>(null);
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
   const [filters, setFilters]             = useState<ItemFilters>(DEFAULT_FILTERS);
   const [sorting, setSorting]             = useState<SortingState>([]);
   const [rowSelection, setRowSelection]   = useState<RowSelectionState>({});
@@ -596,6 +612,77 @@ export function ItemsListPage() {
   }, []);
 
   const clearSelection = useCallback(() => setRowSelection({}), []);
+
+  const selectedIds = useMemo(
+    () => Object.keys(rowSelection).filter((id) => rowSelection[id]),
+    [rowSelection]
+  );
+
+  const handleDuplicate = useCallback((item: InventoryItem) => {
+    const copy: InventoryItem = {
+      ...item,
+      id: `${item.id}-copy-${Date.now()}`,
+      code: `${item.code}-COPY`,
+      name_ar: `${item.name_ar} (نسخة)`,
+      name_en: `${item.name_en} (Copy)`,
+    };
+    mutate((prev) => prev && { ...prev, items: [copy, ...prev.items] });
+    toast.success(t("items.duplicated_toast", { name: lang === "ar" ? item.name_ar : item.name_en }));
+  }, [mutate, t, lang]);
+
+  const handleToggleSuspend = useCallback((item: InventoryItem) => {
+    const nextStatus = item.status === "suspended" ? "active" : "suspended";
+    mutate((prev) => prev && {
+      ...prev,
+      items: prev.items.map((i) => i.id === item.id ? { ...i, status: nextStatus } : i),
+    });
+    toast.success(nextStatus === "suspended" ? t("items.suspended_toast") : t("items.activated_toast"));
+  }, [mutate, t]);
+
+  const handlePrintBarcode = useCallback((item: InventoryItem) => {
+    toast.success(t("items.barcode_print_toast", { code: item.code }));
+  }, [t]);
+
+  const confirmDelete = useCallback(() => {
+    if (!deleteTarget) return;
+    const removedName = lang === "ar" ? deleteTarget.name_ar : deleteTarget.name_en;
+    mutate((prev) => prev && { ...prev, items: prev.items.filter((i) => i.id !== deleteTarget.id) });
+    setDeleteTarget(null);
+    toast.success(t("items.deleted_toast", { name: removedName }));
+  }, [deleteTarget, mutate, t, lang]);
+
+  const handleBulkActivate = useCallback(() => {
+    mutate((prev) => prev && {
+      ...prev,
+      items: prev.items.map((i) => selectedIds.includes(i.id) ? { ...i, status: "active" } : i),
+    });
+    toast.success(t("items.bulk_activated_toast", { n: selectedIds.length }));
+    clearSelection();
+  }, [mutate, selectedIds, t, clearSelection]);
+
+  const handleBulkSuspend = useCallback(() => {
+    mutate((prev) => prev && {
+      ...prev,
+      items: prev.items.map((i) => selectedIds.includes(i.id) ? { ...i, status: "suspended" } : i),
+    });
+    toast.success(t("items.bulk_suspended_toast", { n: selectedIds.length }));
+    clearSelection();
+  }, [mutate, selectedIds, t, clearSelection]);
+
+  const handleBulkPrintBarcode = useCallback(() => {
+    toast.success(t("items.bulk_barcode_print_toast", { n: selectedIds.length }));
+  }, [selectedIds, t]);
+
+  const handleBulkExport = useCallback(() => {
+    toast.success(t("items.bulk_export_toast", { n: selectedIds.length }));
+  }, [selectedIds, t]);
+
+  const confirmBulkDelete = useCallback(() => {
+    mutate((prev) => prev && { ...prev, items: prev.items.filter((i) => !selectedIds.includes(i.id)) });
+    toast.success(t("items.bulk_deleted_toast", { n: selectedIds.length }));
+    setBulkDeleteOpen(false);
+    clearSelection();
+  }, [mutate, selectedIds, t, clearSelection]);
 
   // TanStack Table columns
   const columns = useMemo(() => [
@@ -762,13 +849,19 @@ export function ItemsListPage() {
             </Button>
           </DropdownMenuTrigger>
           <RowActionsContent>
-            <RowActions item={row.original} can={can} t={t} onNavigate={navigate} />
+            <RowActions
+              item={row.original} can={can} t={t}
+              onDuplicate={handleDuplicate}
+              onToggleSuspend={handleToggleSuspend}
+              onPrintBarcode={handlePrintBarcode}
+              onDeleteRequest={setDeleteTarget}
+            />
           </RowActionsContent>
         </DropdownMenu>
       ),
     }),
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [t, lang, categoryMap, uomMap, can, navigate]);
+  ], [t, lang, categoryMap, uomMap, can, handleDuplicate, handleToggleSuspend, handlePrintBarcode]);
 
   const table = useReactTable({
     data: filteredItems,
@@ -1003,8 +1096,7 @@ export function ItemsListPage() {
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() ? "selected" : undefined}
-                      className="cursor-pointer border-b border-border last:border-0"
-                      onClick={() => navigate(`/inventory/items/${row.original.id}`)}
+                      className="border-b border-border last:border-0"
                     >
                       {row.getVisibleCells().map((cell) => {
                         const isNumeric  = ["balance", "sale_price"].includes(cell.column.id);
@@ -1056,7 +1148,10 @@ export function ItemsListPage() {
                   uomMap={uomMap}
                   can={can}
                   t={t}
-                  onNavigate={navigate}
+                  onDuplicate={handleDuplicate}
+                  onToggleSuspend={handleToggleSuspend}
+                  onPrintBarcode={handlePrintBarcode}
+                  onDeleteRequest={setDeleteTarget}
                 />
               ))}
               {/* Mobile pagination note */}
@@ -1075,7 +1170,14 @@ export function ItemsListPage() {
 
       {/* ── Bulk action bar — fixed position, outside the card ── */}
       {selectedCount > 0 && (
-        <BulkBar count={selectedCount} can={can} t={t} onClear={clearSelection} />
+        <BulkBar
+          count={selectedCount} can={can} t={t} onClear={clearSelection}
+          onActivate={handleBulkActivate}
+          onSuspend={handleBulkSuspend}
+          onPrintBarcode={handleBulkPrintBarcode}
+          onExport={handleBulkExport}
+          onDeleteRequest={() => setBulkDeleteOpen(true)}
+        />
       )}
 
       {/* ── Import wizard drawer ──────────────────────────────── */}
@@ -1083,6 +1185,28 @@ export function ItemsListPage() {
         open={importOpen}
         onOpenChange={setImportOpen}
         data={data}
+      />
+
+      {/* ── Delete confirm (single row) ──────────────────────── */}
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(o) => !o && setDeleteTarget(null)}
+        title={t("items.delete_title")}
+        description={t("items.delete_desc")}
+        confirmTone="danger"
+        confirmLabel={t("actions.confirm_delete")}
+        onConfirm={confirmDelete}
+      />
+
+      {/* ── Delete confirm (bulk) ─────────────────────────────── */}
+      <ConfirmDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        title={t("items.bulk_delete_title", { n: selectedIds.length })}
+        description={t("items.delete_desc")}
+        confirmTone="danger"
+        confirmLabel={t("actions.confirm_delete")}
+        onConfirm={confirmBulkDelete}
       />
     </div>
   );

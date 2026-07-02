@@ -170,6 +170,7 @@ export interface ActionItem {
   label: string;
   onClick: () => void;
   variant?: "ghost" | "destructive";
+  disabled?: boolean;
 }
 
 export function ActionCell({ actions }: { actions: ActionItem[] }) {
@@ -180,8 +181,9 @@ export function ActionCell({ actions }: { actions: ActionItem[] }) {
           key={a.label}
           size="icon"
           variant="ghost"
+          disabled={a.disabled}
           className={cn(
-            "h-7 w-7",
+            "h-7 w-7 cursor-pointer disabled:cursor-not-allowed",
             a.variant === "destructive" && "hover:text-danger hover:bg-danger-tint"
           )}
           onClick={(e) => { e.stopPropagation(); a.onClick(); }}
@@ -226,7 +228,7 @@ export const RowActionItem = React.forwardRef<
   <DropdownMenuItem
     ref={ref}
     className={cn(
-      "gap-2 px-3 py-2 text-start",
+      "gap-2 px-3 py-2 text-start cursor-pointer data-[disabled]:cursor-not-allowed",
       destructive && "text-danger focus:text-danger focus:bg-danger-tint",
       className
     )}

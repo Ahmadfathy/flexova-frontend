@@ -20,7 +20,20 @@
     "no_results":       "No results for \"{{q}}\"",
     "no_results_empty": "No results for these filters",
     "cant_delete":      "Can't delete — item has recorded movements",
-    "showing":          "Showing {{from}} - {{to}} of {{total}}"
+    "showing":          "Showing {{from}} - {{to}} of {{total}}",
+    "delete_title":       "Delete item?",
+    "delete_desc":        "This action cannot be undone.",
+    "bulk_delete_title":  "Delete {{n}} items?",
+    "duplicated_toast":   "Duplicated \"{{name}}\"",
+    "suspended_toast":    "Item suspended",
+    "activated_toast":    "Item activated",
+    "barcode_print_toast":"Barcode {{code}} sent to print",
+    "deleted_toast":      "Deleted \"{{name}}\"",
+    "bulk_activated_toast":"{{n}} items activated",
+    "bulk_suspended_toast":"{{n}} items suspended",
+    "bulk_barcode_print_toast":"Barcodes for {{n}} items sent to print",
+    "bulk_export_toast":  "Exported {{n}} items",
+    "bulk_deleted_toast": "Deleted {{n}} items"
   },
   "categories": {
     "title":               "Categories",

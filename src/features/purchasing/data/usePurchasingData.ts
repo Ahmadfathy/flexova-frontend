@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type Dispatch, type SetStateAction } from "react";
 import { mockFetch, loadFixture } from "@/lib/mock/client";
 
 // ── Inventory-sourced types ──────────────────────────────────────
@@ -286,6 +286,8 @@ export interface UsePurchasingDataResult {
   error: string | null;
   isOffline: boolean;
   reload: () => void;
+  /** Apply a local (mock-layer) mutation to the loaded data without refetching. */
+  mutate: Dispatch<SetStateAction<PurchasingData | null>>;
 }
 
 export function usePurchasingData(): UsePurchasingDataResult {
@@ -369,5 +371,5 @@ export function usePurchasingData(): UsePurchasingDataResult {
 
   useEffect(() => { load(); }, [load]);
 
-  return { data, loading, error, isOffline, reload: load };
+  return { data, loading, error, isOffline, reload: load, mutate: setData };
 }

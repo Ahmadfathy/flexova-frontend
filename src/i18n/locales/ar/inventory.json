@@ -20,7 +20,20 @@
     "no_results":         "مفيش نتائج لـ \"{{q}}\"",
     "no_results_empty":   "مفيش نتائج بالفلاتر دي",
     "cant_delete":        "لا يمكن الحذف — للصنف حركات مسجّلة",
-    "showing":            "عرض {{from}} - {{to}} من {{total}}"
+    "showing":            "عرض {{from}} - {{to}} من {{total}}",
+    "delete_title":       "حذف الصنف؟",
+    "delete_desc":        "هذا الإجراء لا يمكن التراجع عنه.",
+    "bulk_delete_title":  "حذف {{n}} صنف؟",
+    "duplicated_toast":   "تم نسخ \"{{name}}\"",
+    "suspended_toast":    "تم إيقاف الصنف",
+    "activated_toast":    "تم تفعيل الصنف",
+    "barcode_print_toast":"تم إرسال باركود {{code}} للطباعة",
+    "deleted_toast":      "تم حذف \"{{name}}\"",
+    "bulk_activated_toast":"تم تفعيل {{n}} صنف",
+    "bulk_suspended_toast":"تم إيقاف {{n}} صنف",
+    "bulk_barcode_print_toast":"تم إرسال باركود {{n}} صنف للطباعة",
+    "bulk_export_toast":  "تم تصدير {{n}} صنف",
+    "bulk_deleted_toast": "تم حذف {{n}} صنف"
   },
   "categories": {
     "title":               "التصنيفات",
