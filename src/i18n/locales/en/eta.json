@@ -1,0 +1,57 @@
+{
+  "connection": {
+    "status_disconnected": "Disconnected",
+    "status_connecting": "Connecting…",
+    "status_connected": "Connected",
+    "status_error": "Connection error",
+    "environment_sandbox": "Sandbox",
+    "environment_production": "Production",
+    "scope_tenant": "Tenant-level",
+    "scope_branch": "Branch-level",
+    "trn_label": "Tax Registration Number",
+    "eseal_label": "E-seal",
+    "last_tested": "Last tested",
+    "never_tested": "Not tested yet",
+    "no_error": "No errors"
+  },
+  "actions": {
+    "connect": "Connect",
+    "reconnect": "Reconnect",
+    "test_connection": "Test connection",
+    "disconnect": "Disconnect",
+    "save_settings": "Save settings",
+    "go_live": "Go live"
+  },
+  "wizard": {
+    "title": "E-Invoicing connector setup",
+    "step_trn": "Tax Registration Number",
+    "step_trn_desc": "Enter the TRN registered with the tax authority",
+    "step_eseal": "E-seal",
+    "step_eseal_desc": "Attach the e-seal certificate (USB token or HSM)",
+    "step_sandbox_test": "Sandbox test",
+    "step_sandbox_test_desc": "Send a test document to verify the setup before going live",
+    "step_go_live": "Go live",
+    "step_go_live_desc": "Switch from the sandbox environment to production",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "load_failed": "Failed to load connection status",
+    "connect_failed": "Could not complete the connection",
+    "test_failed": "Connection test failed",
+    "reconnect_failed": "Could not reconnect",
+    "generic": "Something went wrong, please try again"
+  },
+  "warnings": {
+    "draft_only_blocked": "Issuing is disabled until the connection is set up — you can still save as a draft",
+    "full_block_blocked": "All actions are disabled until the e-invoicing connection is set up",
+    "warn_only_notice": "Connection is incomplete — documents will be issued with a warning; please finish setting up the connection soon"
+  },
+  "entrypoints": {
+    "settings": "Settings",
+    "banner": "Alert banner",
+    "hub": "E-invoicing hub"
+  }
+}

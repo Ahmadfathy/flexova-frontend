@@ -1,0 +1,53 @@
+{
+  "eta_connection": {
+    "id": "eta-conn-001",
+    "scope": "tenant",
+    "scope_id": "tenant-001",
+    "environment": "sandbox",
+    "status": "disconnected",
+    "trn": null,
+    "e_seal_ref": null,
+    "last_tested_at": null,
+    "last_error_ar": null,
+    "last_error_en": null
+  },
+  "eta_flags": {
+    "block_policy": "draft_only",
+    "connect_entrypoints": ["settings", "banner", "hub"],
+    "connection_scope": "tenant"
+  },
+  "mock_variants": {
+    "disconnected": {
+      "status": "disconnected",
+      "trn": null,
+      "e_seal_ref": null,
+      "last_tested_at": null,
+      "last_error_ar": null,
+      "last_error_en": null
+    },
+    "connecting": {
+      "status": "connecting",
+      "trn": "300123456700003",
+      "e_seal_ref": null,
+      "last_tested_at": null,
+      "last_error_ar": null,
+      "last_error_en": null
+    },
+    "connected": {
+      "status": "connected",
+      "trn": "300123456700003",
+      "e_seal_ref": "eseal-usb-77213",
+      "last_tested_at": "2026-07-01T09:12:00",
+      "last_error_ar": null,
+      "last_error_en": null
+    },
+    "error": {
+      "status": "error",
+      "trn": "300123456700003",
+      "e_seal_ref": "eseal-usb-77213",
+      "last_tested_at": "2026-07-01T09:12:00",
+      "last_error_ar": "تعذّر التحقق من شهادة الختم الإلكتروني — الرجاء إعادة تسجيل الدخول والمحاولة مرة أخرى.",
+      "last_error_en": "E-seal certificate verification failed — please re-authenticate and try again."
+    }
+  }
+}

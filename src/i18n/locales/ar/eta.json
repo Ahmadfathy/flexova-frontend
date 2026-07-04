@@ -1,0 +1,57 @@
+{
+  "connection": {
+    "status_disconnected": "غير متصل",
+    "status_connecting": "جارِ الاتصال…",
+    "status_connected": "متصل",
+    "status_error": "خطأ في الاتصال",
+    "environment_sandbox": "بيئة تجريبية",
+    "environment_production": "بيئة الإنتاج",
+    "scope_tenant": "على مستوى المنشأة",
+    "scope_branch": "على مستوى الفرع",
+    "trn_label": "الرقم الضريبي",
+    "eseal_label": "الختم الإلكتروني",
+    "last_tested": "آخر اختبار",
+    "never_tested": "لم يتم الاختبار بعد",
+    "no_error": "لا توجد أخطاء"
+  },
+  "actions": {
+    "connect": "ربط",
+    "reconnect": "إعادة الربط",
+    "test_connection": "اختبار الاتصال",
+    "disconnect": "قطع الاتصال",
+    "save_settings": "حفظ الإعدادات",
+    "go_live": "الانتقال للإنتاج"
+  },
+  "wizard": {
+    "title": "معالج ربط منظومة الفاتورة الإلكترونية",
+    "step_trn": "الرقم الضريبي",
+    "step_trn_desc": "أدخل الرقم الضريبي المسجّل لدى مصلحة الضرائب",
+    "step_eseal": "الختم الإلكتروني",
+    "step_eseal_desc": "اربط شهادة الختم الإلكتروني (USB Token أو HSM)",
+    "step_sandbox_test": "اختبار تجريبي",
+    "step_sandbox_test_desc": "أرسل مستنداً تجريبياً للتحقق من صحة الإعداد قبل التفعيل",
+    "step_go_live": "التفعيل النهائي",
+    "step_go_live_desc": "الانتقال من البيئة التجريبية إلى بيئة الإنتاج",
+    "next": "التالي",
+    "back": "رجوع",
+    "finish": "إنهاء",
+    "cancel": "إلغاء"
+  },
+  "errors": {
+    "load_failed": "تعذّر تحميل حالة الاتصال",
+    "connect_failed": "تعذّر إتمام عملية الربط",
+    "test_failed": "فشل اختبار الاتصال",
+    "reconnect_failed": "تعذّر إعادة الربط",
+    "generic": "حدث خطأ غير متوقع، الرجاء المحاولة لاحقاً"
+  },
+  "warnings": {
+    "draft_only_blocked": "الإصدار الفعلي معطّل حتى إتمام الربط — يمكنك حفظ المستند كمسودة",
+    "full_block_blocked": "جميع العمليات معطّلة حتى إتمام الربط بمنظومة الفاتورة الإلكترونية",
+    "warn_only_notice": "الاتصال غير مكتمل — سيتم الإصدار مع تنبيه، يُرجى إكمال الربط في أقرب وقت"
+  },
+  "entrypoints": {
+    "settings": "الإعدادات",
+    "banner": "شريط التنبيه",
+    "hub": "مركز الفاتورة الإلكترونية"
+  }
+}

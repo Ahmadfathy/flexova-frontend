@@ -1,18 +1,21 @@
 # Flexova — أسس التصميم (Design Foundations)
 
 > **المصدر الوحيد للحقيقة (Single Source of Truth) لنظام التصميم.**
-> هذا المستند يوثّق الحالة **الفعلية المنفّذة** في الكود (`src/styles/globals.css`, `tailwind.config.ts`, `src/components/`)، لا التصوّر النظري.
-> الإصدار: 2.0 — يونيو 2026 (يستبدل الإصدار 1.0)
-> اللغة: شرح بالعربية · توكنات وكود بالإنجليزية كما هي في المشروع.
+> يوثّق الحالة **الفعلية المنفّذة** في الكود (`globals.css`, `tailwind.config.ts`, `src/components/`).
+> الإصدار: **3.0 — يوليو 2026** (يستبدل 2.0). يعكس مراجعة التصميم الشاملة على النواة.
+> اللغة: شرح بالعربية · توكنات وكود بالإنجليزية كما هي.
 > عند أي تعارض بين هذا المستند وأي مستند آخر: **هذا المستند هو المرجع.**
 
 ---
 
 ## 0) كيف نستخدم هذا المستند
 
-ده الـ **Design System المرجعي** لـ Flexova. أي شاشة في النواة أو في أي قطاع تلتزم بالـ tokens والمكوّنات والقواعد هنا. لو احتجنا مكوّن جديد مخصّص لقطاع، بيتبني **فوق** هذه الأسس مش بمعزل عنها.
+ده الـ **Design System المرجعي** لـ Flexova. أي شاشة في النواة أو أي قطاع تلتزم بالـ tokens والمكوّنات والقواعد هنا. المكوّنات المخصّصة للقطاعات تُبنى **فوق** هذه الأسس لا بمعزل عنها.
 
-**الأقسام:** المبادئ → الألوان → الشكل والظل → التايبوجرافي → المسافات والكسر → الـ Shell → مكوّنات shadcn → مكوّنات الأنماط (Patterns) → مكوّنات الـ Shell → الحالات → خريطة الألوان الدلالية → جرد المكوّنات.
+**سجل الإصدارات:**
+- **3.0 (يوليو 2026):** مراجعة تصميم شاملة — توحيد radius، إزالة outlines، Card/Table بلا حدود، ModalShell/DrawerShell/ConfirmDialog، نظام Alert/Toast، Button (tone×variant)، DatePicker، PageHeader جديد، Quick-Add hub، محاذاة RTL نهائية.
+- **2.0 (يونيو 2026):** توثيق من الكود الفعلي.
+- **1.0:** التصوّر النظري الأول.
 
 ---
 
@@ -20,11 +23,11 @@
 
 خمسة مبادئ تحكم كل قرار بصري:
 
-1. **عربي-أولاً وRTL أصيل (Arabic-first).** الواجهة تُصمَّم من اليمين لليسار كأصل، والإنجليزية مرآة لها. كل المحاذاة والأيقونات الاتجاهية والمسافات تستخدم **الخصائص المنطقية (logical properties)** لا الفيزيائية — `start`/`end`، `ms-`/`me-`، `ps-`/`pe-`، `border-s/e` — ممنوع `left`/`right`.
-2. **بساطة متطرفة (Radical Simplicity).** المستخدم غالباً غير تقني. الشاشة الواحدة تعمل مهمة واحدة واضحة. نقلّل الخيارات الظاهرة ونخبّي المتقدّم.
-3. **الثقة مرئية (Visible Trust).** النظام بيمسك فلوس وبيانات ضريبية. الحالات المالية والـ ETA تبان بوضوح، والأخطاء صريحة وقابلة للتصحيح، والإجراءات الحسّاسة لها تأكيد.
-4. **مقاومة الظروف (Resilient by Design).** النت المتقطّع واقع. الواجهة تتعامل مع **offline** كحالة أولى لا استثناء، وتوضّح حالة المزامنة بصراحة.
-5. **أداء قبل الزخرفة (Performance over Decoration).** أجهزة العملاء متواضعة. نفضّل الحلول الخفيفة وزمن الاستجابة على أي تأثير بصري.
+1. **عربي-أولاً وRTL أصيل.** الواجهة تُصمَّم من اليمين لليسار كأصل. كل المحاذاة والأيقونات الاتجاهية والمسافات تستخدم **الخصائص المنطقية (logical properties)** لا الفيزيائية — `start`/`end`، `ms-`/`me-`، `ps-`/`pe-`، `border-s/e`. ممنوع `left`/`right`.
+2. **بساطة متطرفة.** المستخدم غالباً غير تقني. الشاشة الواحدة مهمة واحدة واضحة. نقلّل الخيارات الظاهرة ونخبّي المتقدّم.
+3. **الثقة مرئية.** النظام يمسك فلوس وبيانات ضريبية. الحالات المالية والـ ETA تبان بوضوح، والأخطاء صريحة قابلة للتصحيح، والإجراءات الحسّاسة لها تأكيد.
+4. **مقاومة الظروف (offline-first).** النت المتقطّع واقع. الواجهة تتعامل مع offline كحالة أولى، وتوضّح حالة المزامنة بصراحة. الـ POS يعمل كاملاً offline.
+5. **أداء قبل الزخرفة.** أجهزة العملاء متواضعة. نفضّل الحلول الخفيفة وزمن الاستجابة على أي تأثير بصري.
 
 ---
 
@@ -32,16 +35,16 @@
 
 ### 2.1 الفلسفة
 - **اللون الأساسي (Brand) فقط هو المتغيّر** بين الثيمات. المحايدات والألوان الدلالية ثابتة.
-- كل الألوان مكتوبة كـ **HSL channels** (بدون `hsl()` wrapper) عشان تشتغل مع opacity modifiers في Tailwind (`bg-primary/50`).
-- **التدرجات (Tints) مُولّدة لا ثابتة:** تُشتق عبر `color-mix` فتتكيّف تلقائياً مع الوضع الفاتح/الداكن. إضافة ثيم = تعريف `--brand` + `--brand-dark` فقط.
-- **الوضعان (Light/Dark) من اليوم الأول:** كل ثيم يعمل في الوضعين، عبر `html[data-mode="dark"]`.
+- كل الألوان **HSL channels** (بدون `hsl()` wrapper) لتعمل مع opacity modifiers (`bg-primary/50`).
+- **التدرجات (Tints) مُولّدة عبر `color-mix`** فتتكيّف تلقائياً مع الوضع الفاتح/الداكن. إضافة ثيم = `--brand` + `--brand-dark` فقط.
+- **الوضعان (Light/Dark) من اليوم الأول** عبر `html[data-mode="dark"]`.
 
-### 2.2 توكنات المحايدات (Neutral Surface Tokens)
+### 2.2 توكنات المحايدات (Neutral Surface)
 
 | Token | Light (HSL) | Light (HEX) | Dark (HSL) | الاستخدام |
 |---|---|---|---|---|
 | `--fx-bg` | `220 20% 98%` | `#F9FAFB` | `218 36% 9%` | خلفية الصفحة |
-| `--fx-surface` | `0 0% 100%` | `#FFFFFF` | `215 29% 13%` | الكروت / سطح الـ sidebar |
+| `--fx-surface` | `0 0% 100%` | `#FFFFFF` | `215 29% 13%` | الكروت / sidebar |
 | `--fx-tint-base` | `0 0% 100%` | `#FFFFFF` | `214 26% 16%` | أساس اشتقاق الـ tints |
 | `--fx-ink` | `222 47% 11%` | `#0F172A` | `215 33% 93%` | النص الأساسي |
 | `--fx-muted` | `215 16% 47%` | `#64748B` | `215 19% 64%` | النص الثانوي |
@@ -51,10 +54,10 @@
 
 | Token | Value (HSL) | الاستخدام |
 |---|---|---|
-| `--success` | `142 76% 36%` | مؤشرات النجاح (أخضر) |
-| `--warning` | `32 95% 44%` | مؤشرات التحذير (كهرماني) |
-| `--danger` | `0 72% 51%` | مؤشرات الخطر (أحمر) |
-| `--on-brand` | `0 0% 100%` | النص فوق أسطح الـ brand الممتلئة |
+| `--success` | `142 76% 36%` | نجاح (أخضر) |
+| `--warning` | `32 95% 44%` | تحذير (كهرماني) |
+| `--danger` | `0 72% 51%` | خطر (أحمر) |
+| `--on-brand` | `0 0% 100%` | النص فوق أسطح brand الممتلئة |
 
 ### 2.4 توكنات النص الدلالي (Semantic Text)
 
@@ -65,11 +68,11 @@
 | `--danger-text` | `hsl(var(--danger))` | `color-mix(white 38%, danger)` |
 | `--brand-text` | `hsl(var(--brand-dark))` | `color-mix(white 38%, brand)` |
 
-> في الوضع الداكن نُفتّح نصوص الدلالة والـ brand لأن اللون الغامق على خلفية غامقة ضعيف التباين.
+> في الوضع الداكن نُفتّح نصوص الدلالة والـ brand لتحسين التباين.
 
 ### 2.5 توكنات التدرجات (Tints — عبر `color-mix`)
 
-| Token | اللون الأساس | نسبة المزج |
+| Token | الأساس | النسبة |
 |---|---|---|
 | `--brand-tint` | brand | 12% |
 | `--success-tint` | success | 14% |
@@ -87,7 +90,7 @@
 
 ### 2.6 لوحة الثيمات (Brand Palette)
 
-تُضبط عبر `html[data-theme="..."]`. الافتراضي **nile**. مفعّل عند الإطلاق: nile · emerald · graphite (والباقي جاهز بالبنية).
+عبر `html[data-theme="..."]`. الافتراضي **nile**. مفعّل عند الإطلاق: nile · emerald · graphite.
 
 | Key | `--brand` (HSL) | `--brand-dark` (HSL) | الحالة |
 |---|---|---|---|
@@ -98,30 +101,46 @@
 | `royal` | `263 70% 50%` | `263 69% 42%` | جاهز |
 | `teal` | `175 84% 32%` | `175 83% 26%` | جاهز |
 
-### 2.7 منطق التفعيل (Activation Logic)
-- **الوضع (Light/Dark):** يتبع النظام افتراضياً عبر `prefers-color-scheme`، مع **override يدوي** للمستخدم. الأولوية: تفضيل المستخدم > النظام. تقنياً عبر `html[data-mode="dark"]`.
-- **الثيم اللوني:** للـ tenant ثيم افتراضي، ويمكن لكل مستخدم تغييره لنفسه من صفحة التخصيص.
+### 2.7 منطق التفعيل
+- **الوضع (Light/Dark):** يتبع النظام افتراضياً (`prefers-color-scheme`) + override يدوي. الأولوية: المستخدم > النظام. عبر `html[data-mode="dark"]`.
+- **الثيم اللوني:** للـ tenant ثيم افتراضي، وكل مستخدم يغيّره لنفسه من صفحة التخصيص.
 - التطبيق عبر `data-*` على `<html>`: `data-theme`, `data-mode`, `data-layout`, `data-density`, `data-collapsed`, `data-font-scale`, `data-font-ar`, `data-font-en`, `dir`, `lang`. التخزين: `flexova.appearance` (Zustand persist).
 
 ---
 
 ## 3) الشكل والظل (Shape & Shadow)
 
+### 3.1 سلّم أنصاف الأقطار (Radius Scale) — **مُحدّث في 3.0**
+
+قيم **ثابتة (static)** في `tailwind.config.ts` (لا `calc`, لا `var(--radius)`):
+
+| Class | القيمة | الاستخدام |
+|---|---|---|
+| `rounded` (DEFAULT) | **0.25rem** (4px) | **كل العناصر التفاعلية والحاويات** (الافتراضي الحاكم) |
+| `rounded-sm` | **0.40rem** (~6.4px) | **Card · Table · PageSection فقط** |
+| `rounded-md` | **0.55rem** (~8.8px) | متاح، نادر الاستخدام |
+| `rounded-lg` | **0.75rem** (12px) | متاح، نادر الاستخدام |
+| `rounded-xl` | **1rem** (16px) | متاح، حالات خاصة |
+| `rounded-full` | 9999px | نقاط الحالة (status dots) فقط |
+
+```ts
+// tailwind.config.ts → theme.extend.borderRadius
+{ DEFAULT: '0.25rem', sm: '0.40rem', md: '0.55rem', lg: '0.75rem', xl: '1rem' }
+```
+
+### 3.2 قاعدة التوحيد الحاكمة (Radius Unification) — **جوهري**
+- **كل عنصر تفاعلي أو حاوية** يستخدم `rounded`: buttons · links · inputs · selects · textareas · badges · switches (track+thumb) · checkboxes · avatars · icon background boxes · menu/nav items · كل الحاويات العائمة (dialog · sheet · popover · dropdown · tooltip · hovercard · command · search panel · quick-add).
+- **الاستثناء الوحيد:** `Card` · `Table` · `PageSection` = `rounded-sm`.
+- **نقاط الحالة (status dots)** الصغيرة (EtaBadge dot، StatusPill dot) تبقى `rounded-full`. الأيقونة نفسها لا تُلمس؛ **خلفيتها (box)** هي التي تأخذ `rounded`.
+
+### 3.3 الظلال
+
 | Token | Value | ملاحظة |
 |---|---|---|
-| `--radius` | `16px` | الأساس؛ منه تُشتق md و sm |
 | `--shadow` | `0 2px 4px rgba(15,23,42,.04), 0 12px 32px -12px rgba(15,23,42,.12)` | ظل ناعم منتشر |
 | `--shadow-sm` | `0 1px 3px rgba(15,23,42,.06)` | حافة الكروت |
 
-الوضع الداكن يستخدم `rgba(0,0,0,...)` بكثافة أعلى.
-
-**سلّم أنصاف الأقطار في Tailwind:**
-
-| Key | Value | Pixels |
-|---|---|---|
-| `rounded-lg` | `var(--radius)` | 16px |
-| `rounded-md` | `calc(var(--radius) - 2px)` | 14px |
-| `rounded-sm` | `calc(var(--radius) - 4px)` | 12px |
+الوضع الداكن يستخدم `rgba(0,0,0,...)` بكثافة أعلى. **Card/Table/PageSection: بلا border، تعتمد على `shadow-sm` فقط** (تحديث 3.0 — الحدود أُزيلت، الظل الناعم هو الفاصل).
 
 ---
 
@@ -134,16 +153,14 @@
 | الخط العربي | `--font-ar: "IBM Plex Sans Arabic"` (بديل: `"Cairo"` عبر `data-font-ar="cairo"`) |
 | الخط الإنجليزي | `--font-en: "Inter"` (بديل: `"IBM Plex Sans"` عبر `data-font-en="plex-sans"`) |
 | الخط النشط | `--font-active` — يتبدّل حسب `html[lang]` |
-| الحجم الأساسي | `--font-base: 14px` (افتراضي) |
+| الحجم الأساسي | `--font-base: 14px` (افتراضي، على `<html>`) |
 
 ```ts
-// tailwind.config.ts
 fontFamily: { sans: ["var(--font-active)", "system-ui", "sans-serif"] }
 ```
 
 ### 4.2 مقاسات الخط (Font Scale)
-
-عبر `data-font-scale` على `<html>` — يُضبط `--font-base`:
+عبر `data-font-scale` على `<html>` — يضبط `--font-base`:
 
 | المقاس | `data-font-scale` | الحجم |
 |---|---|---|
@@ -151,313 +168,220 @@ fontFamily: { sans: ["var(--font-active)", "system-ui", "sans-serif"] }
 | متوسط (افتراضي) | `md` | 15px |
 | كبير | `lg` | 18px |
 
-> `font-size` يُضبط على `<html>` (لا `body`) حتى تتناسب كل وحدات `rem` في Tailwind مع `--font-base`.
+> `font-size` على `<html>` (لا `body`) لترث كل وحدات `rem`.
 
-### 4.3 المقياس الطباعي الفعلي (Tailwind `rem` → px)
+### 4.3 المقياس الطباعي (Tailwind `rem` → px عند base=14px)
 
-محسوب على أساس `--font-base = 14px`:
-
-| Tailwind | rem | px (افتراضي) |
+| Tailwind | rem | px |
 |---|---|---|
-| `text-xs` | 0.75rem | 10.5px |
-| `text-sm` | 0.875rem | 12.25px |
-| `text-base` | 1rem | 14px |
-| `text-lg` | 1.125rem | 15.75px |
-| `text-xl` | 1.25rem | 17.5px |
-| `text-2xl` | 1.5rem | 21px |
+| `text-xs` | 0.75 | 10.5 |
+| `text-sm` | 0.875 | 12.25 |
+| `text-base` | 1 | 14 |
+| `text-lg` | 1.125 | 15.75 |
+| `text-xl` | 1.25 | 17.5 |
+| `text-2xl` | 1.5 | 21 |
 
-كلها تتناسب تلقائياً عند تغيير `data-font-scale`.
-
-### 4.4 الأرقام والعملة
+### 4.4 الأرقام والعملة — **قواعد RTL محدّثة في 3.0**
 - **الأرقام الغربية (0-9)** هي الافتراضي للقيم المالية.
-- `font-variant-numeric: tabular-nums` لمحاذاة الأرقام عمودياً — عبر الكلاس `.num`.
-- العملة: `ج.م` بعد الرقم في العربي، فاصل آلاف، خانتان عشريتان عند الحاجة. مثال: `48,260.00 ج.م`.
-- الأرقام والكلمات اللاتينية والأكواد (TRN/UUID) تُعرض LTR ضمن سياق RTL (bidi).
+- `font-variant-numeric: tabular-nums` عبر كلاس `.num` للمحاذاة العمودية.
+- العملة: `ج.م` بعد الرقم، فاصل آلاف، خانتان عند الحاجة. مثال: `48,260.00 ج.م`.
+- **محاذاة الأرقام والأكواد في الجداول = `text-start`** (يمين في RTL) مع الرأس — **أُلغيت قاعدة "numeric = end" القديمة**. الأرقام تحتفظ بـ tabular-nums.
+- **الأرقام في الـ inputs (العربي) = start-aligned** (تبدأ من اليمين طبيعياً).
+- **الأكواد/التواريخ:** لا يُفرض `dir="ltr"` على الخلية إطلاقاً. المحاذاة start، وترتيب الأحرف الداخلي يُحمى عند الحاجة بـ `<bdi>` أو `dir="auto"` على القيمة فقط. التاريخ يبقى `dd/MM/yyyy`.
 
 ---
 
 ## 5) المسافات ونقاط الكسر (Spacing & Breakpoints)
 
 ### 5.1 مقياس المسافات
-Base-4: `4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64` (بكسل). الوحدة الأساسية للتنفّس = `16px`.
+Base-4: `4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64` (px). وحدة التنفّس الأساسية = `16px`.
 
 ### 5.2 نقاط الكسر
-- `mobile` < 640px — عمود واحد، الـ side nav يختفي ويتحوّل لـ drawer.
+- `mobile` < 640px — عمود واحد، الـ side nav → drawer.
 - `tablet` 640–1024px — شريط جانبي مطوي.
 - `desktop` > 1024px — كامل.
 
-### 5.3 الكثافة (Density)
+### 5.3 الكثافة
 `data-density`: `comfortable` (افتراضي) / `compact` — يؤثر على ارتفاع الصفوف والمسافات.
 
-### 5.4 الحركة (Motion)
-- `--ease: cubic-bezier(.2,.8,.2,1)` (في Tailwind: `ease-brand`).
-- `animate-eta-pulse`: نبضة نقطة الـ EtaBadge (1.1s infinite).
-- `animate-popin`: دخول الـ dropdown/popover (0.18s).
-- `prefers-reduced-motion` يوقف كل الـ transitions والـ animations عالمياً.
+### 5.4 قاعدة padding المحتوى — **جديد في 3.0**
+- `<main>` يوفّر الـ padding الأفقي الوحيد (`p-6`). **لا صفحة تضيف padding/margin أفقي داخلي إضافي**؛ المحتوى يمتد لحواف الـ main.
+- المسافات الرأسية بين العناصر (breadcrumb/title row · alerts · content) تبقى عبر `space-y-*` / `gap-*`.
+- padding المكوّنات الداخلي (كروت، خلايا) لا يتأثر.
+
+### 5.5 الحركة (Motion)
+- `--ease: cubic-bezier(.2,.8,.2,1)` (Tailwind: `ease-brand`).
+- `animate-eta-pulse` (1.1s)، `animate-popin` (0.18s).
+- `prefers-reduced-motion` يوقف كل الـ transitions/animations عالمياً.
 
 ---
 
-## 6) الـ Shell (App Frame)
+## 6) قواعد التفاعل والحدود (Interaction & Borders) — **جديد في 3.0**
 
-### 6.1 مقاييس الـ Shell
+### 6.1 إزالة الـ Outline
+- **كل العناصر التفاعلية** (a/href · button · input · select · textarea · checkbox · switch · radio) **بلا `outline` في كل الحالات** (default/focus/focus-visible/active/hover). أُزيل `focus-visible:ring-*` من كل المكوّنات.
+
+### 6.2 بديل الـ Focus للحقول
+- **Input · Textarea · Select trigger:** الحد الافتراضي `border-input`. عند **hover/focus/active** الحد يصير **غامق** = `border-foreground` (`--fx-ink`). في الوضع الداكن يصير فاتحاً على غامق (تباين عالٍ صحيح).
+- عرض الحد ثابت 1px (لا layout shift). `transition-colors`.
+- ملاحظة معمارية: الحد الغامق هو الـ focus affordance البديل بعد إزالة الـ ring — قرار تصميمي معتمد.
+
+---
+
+## 7) الـ Shell (App Frame)
+
+### 7.1 المقاييس
 
 | Token | Value |
 |---|---|
-| `--nav-w` | `240px` — عرض الـ sidebar |
-| `--nav-w-collapsed` | `72px` — الـ mini rail المطوي |
+| `--nav-w` | `240px` |
+| `--nav-w-collapsed` | `72px` (mini rail) |
 | `--topbar-h` | `60px` |
 
-### 6.2 شبكة الـ Shell (`.app`)
+### 7.2 شبكة الـ Shell (`.app`)
+CSS Grid: `grid-areas: "nav top" / "nav main"`.
 
-CSS Grid يقود إطار التطبيق كله:
-
-```
-grid-areas:  "nav top"
-             "nav main"
-```
-
-| Layout (`html[data-layout]`) | أعمدة الـ grid |
+| Layout (`html[data-layout]`) | أعمدة |
 |---|---|
 | `sidebar` (افتراضي) | `240px 1fr` → `72px 1fr` عند الطي |
-| `sidebar-split` | `292px 1fr` (rail 72px + panel 220px) → `72px 1fr` عند الطي/إغلاق اللوحة |
-| `horizontal` | `1fr` — لا nav جانبي، الـ header بارتفاع تلقائي |
-| `horizontal-dropdown` | مثل horizontal |
-| Mobile (`≤640px`) | دائماً `1fr` — الـ nav الجانبي مخفي |
+| `sidebar-split` | `292px 1fr` (rail 72 + panel 220) → `72px 1fr` |
+| `horizontal` | `1fr` (header بارتفاع تلقائي، 3 صفوف) |
+| `horizontal-dropdown` | `1fr` (صفّان + dropdown) |
+| Mobile (`≤640px`) | `1fr` (nav → drawer) |
 
-`<main>` دائماً: `[grid-area:main] overflow-auto p-6 bg-background`.
+`<main>`: `[grid-area:main] overflow-auto p-6 bg-background`.
 
-### 6.3 كلاسات مساعدة (Utility)
+### 7.3 الأنماط الأربعة (Layouts)
+كلها تقرأ نفس **menu registry** (`src/config/menu.ts`)؛ المستخدم يختار (`data-layout`).
+
+- **`sidebar`:** عمود واحد، accordion للـ subItems، يطوي لـ mini rail (أيقونات + flyout عند hover). active = `brand-tint box` + شريط brand على حافة الـ start.
+- **`sidebar-split`:** rail أيقونات (size-9) + panel للـ subItems. active = brand-tint box؛ popover للاسم ناحية المحتوى.
+- **`horizontal`:** 3 صفوف — topbar / موديولات / subItems (ثابت). سكرول أفقي داخلي (`min-width:0`).
+- **`horizontal-dropdown`:** صفّان، الموديول يفتح dropdown بالـ subItems.
+- **موبايل:** كل الأنماط → drawer من جهة الـ end + scrim + body-lock + زر X + لوجو.
+
+### 7.4 كلاسات مساعدة
 
 | Class | الأثر |
 |---|---|
-| `.num` | `font-variant-numeric: tabular-nums` — على كل الأرقام |
-| `.nav-scroll` | scrollbar رفيع (3px) متوافق مع الثيم — لصفوف الـ HorizontalNav |
-| `.drawer-panel` | أنيميشن انزلاق متوافق مع RTL (`drawer-in/out-ltr/rtl` بـ 0.22s) |
-| `:focus-visible` | إطار `2px solid ring`، `outline-offset:2px`, `border-radius:6px` |
-| `::selection` | خلفية `var(--brand-tint)` |
+| `.num` | `tabular-nums` على الأرقام |
+| `.nav-scroll` | scrollbar رفيع 3px لصفوف الـ nav |
+| `.fx-scroll` / الافتراضي العام | scrollbar موحّد 6px (§8.12) |
+| `.drawer-panel` | أنيميشن انزلاق RTL (0.22s) |
+| `::selection` | خلفية `--brand-tint` |
 
-### 6.4 الوضع الداكن في Tailwind
+> **إزالة `:focus-visible` outline** (كان 2px ring) — استُبدل بقاعدة §6.
 
+### 7.5 الوضع الداكن في Tailwind
 ```ts
 darkMode: ['variant', '&:where(html[data-mode="dark"], html[data-mode="dark"] *)']
 ```
-مدفوع بـ `html[data-mode="dark"]` — لا استراتيجية `media`.
+
+### 7.6 الـ Topbar
+ترتيب (start→end): `Collapse · Home · Search · Quick-Add(+) · ETA status · Fullscreen · Notifications · User menu`.
+- **Search:** command palette (cmdk) — recent فارغ، نتائج مجمّعة بالنوع، أكواد LTR.
+- **Quick-Add:** hub الإنشاء (§13).
+- **EtaBadge:** مؤشر حالة (§9). حالياً 3 حالات؛ سيتوسّع لـ 4 مع الـ ETA connector.
+- **Dashboard:** صفحة Home (أيقونة + اللوجو لينك لها) — ليست موديول.
+- **موبايل:** يُزال wordmark الوسط؛ Home + Search يبقيان (≥44px لمس).
 
 ---
 
-## 7) مكوّنات shadcn/ui الأساسية (`src/components/ui/`)
+## 8) المكوّنات (Components)
 
-كلها أساسها **Radix UI** بـ Tailwind، وتقبل `className` للتجاوز.
+كلها أساسها **Radix/shadcn** بـ Tailwind، radius = `rounded` (عدا Card/Table/PageSection = `rounded-sm`)، بلا outline، RTL-safe، i18n keys فقط.
 
-### 7.1 Button
-```tsx
-<Button variant="default" size="default" asChild={false} />
-```
-**خريطة Variant → الدور (مُلزِمة):**
+### 8.1 Button — **نظام tone × variant (محدّث 3.0)**
+نموذج `tone × variant` عبر cva.
 
-| Variant | الاستخدام | المظهر |
-|---|---|---|
-| `default` | أساسي: جديد/حفظ/إرسال | brand ممتلئ، نص أبيض |
-| `outline` | ثانوي: تصدير/استيراد/طباعة | سطح كارت + حد |
-| `ghost` | ثالثي: إلغاء/مسح/إغلاق | نص فقط، hover بـ accent |
-| `destructive` | هدّام: حذف/إلغاء صلاحية/تعليق | أحمر ممتلئ |
-| `icon` | أزرار أيقونة (toolbar/صف) | نص muted، hover بـ accent |
-| `link` | روابط نصية | لون brand، underline عند hover |
-| `secondary` | **لا يُستخدم** — غير متّسق | — |
-
-**الأحجام:**
+**Tones (8):** `primary` (brand) · `secondary` · `success` · `info` · `warning` · `danger` · `light` · `dark`.
+**Variants (fill):** `solid` (خلفية صريحة + نص متباين) · `soft` (tint + نص ملوّن) · `outline` (حد ملوّن + شفاف) · `ghost` (نص ملوّن + hover tint) · `link`.
 
 | Size | Height | Padding |
 |---|---|---|
-| `default` | `h-10` | `px-4 py-2` |
-| `sm` | `h-9` | `px-3` |
-| `lg` | `h-11` | `px-8` |
-| `icon` | `h-10 w-10` | — |
+| `default` | h-10 | px-4 py-2 |
+| `sm` | h-9 | px-3 |
+| `lg` | h-11 | px-8 |
+| `icon` | h-10 w-10 | — |
 
-Base: `inline-flex items-center gap-2 rounded-md text-sm font-medium`, `disabled:opacity-50`.
+Base: `inline-flex items-center justify-center gap-2 rounded text-sm font-medium transition-colors disabled:opacity-50`.
 
-### 7.2 Badge
-| Variant | المظهر |
-|---|---|
-| `default` | brand ممتلئ، `rounded-full` |
-| `secondary` | secondary ممتلئ |
-| `destructive` | danger ممتلئ |
-| `outline` | حد فقط + نص foreground |
+**tone × solid:** primary→bg-brand/on-brand (hover brand-dark) · success→bg-success/white · warning→bg-warning/white · danger→bg-danger/white · info→bg-brand/white · light→bg-muted/foreground · dark→bg-foreground/background · secondary→bg-secondary.
+**tone × soft:** `bg-{tone}-tint` + `text-{tone}-text` (primary→brand-tint/brand-text، وهكذا).
+**tone × outline/ghost:** حد/نص باللون، hover = tone tint.
 
-Base: `inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold`.
+**أشكال المحتوى (متّسقة):** text-only · text+icon (`size-4`, gap-2, أيقونة على الـ start، RTL-safe) · icon-only (`size="icon"` + aria-label).
 
-### 7.3 Input / Textarea / Label
-- **Input:** `h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm`. Focus: `ring-2 ring-ring`. Disabled: `cursor-not-allowed opacity-50`.
-- **Textarea:** نفس الـ Input متعدد الأسطر.
-- **Label:** `text-sm font-medium leading-none`، موصول بـ `htmlFor`.
+**Convention (موثّق، غير مفروض):** primary solid = الإجراء الرئيسي (واحد لكل شاشة) · danger = الهدّام · outline/secondary soft = ثانوي (تصدير/استيراد/طباعة) · ghost = ثالثي (إلغاء/إغلاق) · success/warning/info/light/dark تُستخدم بقصد لا زخرفة.
 
-### 7.4 Dialog / Sheet
-- **Dialog (مودال مركزي):** Overlay `bg-black/80 fixed inset-0 z-50`. Content `fixed left-1/2 top-1/2 -translate-1/2 max-w-lg rounded-lg border bg-background p-6 shadow-lg`. زر الإغلاق `end-4 top-4` (منطقي RTL). أنيميشن `animate-in fade-in-0 zoom-in-95`.
-- **Sheet (لوحة جانبية):** نفس Radix Dialog. `side`: `right` (افتراضي، `inset-y-0 right-0 w-3/4 sm:max-w-sm`) / `left` / `top` / `bottom`.
+**توافق خلفي:** الـ API القديم (`variant="default|destructive|outline|ghost|secondary|link|icon"`) مربوط بالنموذج الجديد فلا تنكسر الشاشات.
 
-### 7.5 Table
-أجزاء: `Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption`.
-- `Table`: داخل `div.relative.w-full.overflow-auto`.
-- `TableHead`: `h-12 px-4 text-start font-semibold text-muted-foreground`.
-- `TableCell`: `p-4 align-middle`.
-- `TableRow`: hover `bg-muted/50`، selected `bg-muted`.
-- RTL-safe: `text-start` لا `text-left`.
+### 8.2 Badge / StatusPill / EtaBadge
+- **Badge:** `rounded` (كان full)، `border px-2.5 py-0.5 text-xs font-semibold`. variants: default/secondary/destructive/outline.
+- **StatusPill:** يغلّف Badge + نقطة حالة (`rounded-full`) في المقدّمة. 10 حالات (paid/approved→success · pending/credit/in-progress→warning · sent/active→brand · rejected→danger · inactive/default→muted). الـ box نفسه `rounded`، النقطة `rounded-full`.
+- **EtaBadge:** مؤشر topbar، `rounded` (كان full). حالات: connected(أخضر) · syncing(brand+نبضة) · offline(كهرماني). النقطة `rounded-full`.
 
-### 7.6 عناصر الإدخال والتنقّل
-- **Select:** Radix Select بـ trigger ومحتوى مخصّص.
-- **Checkbox:** `h-4 w-4 rounded border border-primary`، checked = brand ممتلئ.
-- **Switch:** `h-6 w-11 rounded-full`، checked = خلفية brand.
-- **RadioGroup:** كل عنصر `h-4 w-4 rounded-full border border-primary`.
-- **Tabs:** `TabsList` = `h-10 rounded-md bg-muted p-1`، الـ trigger النشط `bg-background text-foreground shadow-sm`.
-- **Popover:** `z-50 rounded-md border bg-popover p-4 shadow-md`.
-- **Tooltip:** `z-50 rounded-md border bg-popover px-3 py-1.5 text-sm shadow-md`، `TooltipProvider delayDuration={300}`.
-- **DropdownMenu:** المحتوى `z-50 min-w-32 rounded-md border bg-popover p-1 shadow-md`، العناصر `h-8 px-2 text-sm rounded-sm`، focus `bg-accent`.
-- **HoverCard:** `z-50 rounded-md border bg-popover p-4 shadow-md`.
-- **NavigationMenu:** تنقّل أفقي متعدد المستويات (في HorizontalNav فقط).
+### 8.3 Input / Textarea / Label / Select
+- **Input/Textarea:** `h-10 rounded border border-input px-3 py-2 text-sm`، بلا outline، **hover/focus → border-foreground** (§6). العربي: أرقام start-aligned.
+- **Select:** Radix، trigger `rounded` + قاعدة الحد الغامق، SelectContent `rounded`.
+- **Label:** `text-sm font-medium`، موصول بـ `htmlFor`.
 
-### 7.7 عناصر العرض والحالة
-- **Avatar:** `h-10 w-10 rounded-full`، fallback `bg-muted text-muted-foreground`. (في EntityCell بتجاوز `rounded-md`.)
-- **Card:** `rounded-lg border bg-card text-card-foreground shadow-sm`، المحتوى `p-6`.
-- **Separator:** `h-px bg-border` (أفقي) / `w-px bg-border` (رأسي).
-- **ScrollArea:** Radix بـ thumb مخصّص متوافق مع الثيم.
-- **Skeleton:** `animate-pulse rounded-md bg-muted`.
-- **Sonner (Toast):** متناسق مع سطح/نص التطبيق.
-- **AlertDialog:** تأكيد الإجراءات الهدّامة.
-- **Command:** أساس الـ command palette (داخل SearchPanel).
+### 8.4 Checkbox / Switch / Radio — **RTL + rounded (محدّث 3.0)**
+- **Checkbox:** `h-4 w-4 rounded border` (كان sm)، checked = brand. الأيقونة مركزية، مسافات logical.
+- **Switch:** track + thumb الاثنان `rounded` (كانا full). **RTL-aware:** الـ thumb يستقر عند الـ start ويتحرك للـ end، منعكس صحيحاً في RTL/LTR. الحجم (h-6 w-11) واللون ثابتان.
+- **Radio:** `h-4 w-4 rounded-full border` (يبقى دائري — طبيعة الراديو).
 
----
+### 8.5 ModalShell — **جديد 3.0** (`patterns/ModalShell.tsx`)
+غلاف موحّد فوق Dialog. بنية: **Header ثابت** (title + description? + زر X على الـ end + border-b) · **Body قابل للتمرير** (`flex-1 overflow-y-auto`، هو وحده يـscroll) · **Footer ثابت** (أزرار على الـ end + border-t، اختياري).
+- `flex flex-col max-h-[85vh] p-0 gap-0`، `bg-card`، `rounded`.
+- Props: `open, onOpenChange, title, description?, footer?, size?(sm/md/lg)`.
+- Convention: footer = Cancel(ghost) + Save(primary).
 
-## 8) مكوّنات الأنماط (`src/components/patterns/`)
+### 8.6 DrawerShell — **جديد 3.0** (`patterns/DrawerShell.tsx`)
+غلاف موحّد فوق Sheet، **full-height**، نفس بنية ModalShell (header/body-scroll/footer)، `bg-card`, `flex flex-col h-full`. يفتح من الـ **end** (متّسق مع MobileDrawer)، RTL-safe. Props مثل ModalShell + `side?`.
 
-لبنات أعلى مستوى مركّبة من أساسيات shadcn.
+### 8.7 ConfirmDialog — **جديد 3.0** (`patterns/ConfirmDialog.tsx`)
+فوق AlertDialog (يحفظ دلالات الـ alertdialog + focus trap)، بنفس بنية ModalShell البصرية. للتأكيدات الهدّامة/التحذيرية. Props: `open, onOpenChange, title, description?, confirmLabel, cancelLabel, confirmTone(danger/primary/warning), onConfirm, loading?, children?`. يمكن أن يحوي `Alert` تحذيري في الـ body. كل الـ Dialogs/AlertDialogs مهاجرة لـ ModalShell/ConfirmDialog.
 
-### 8.1 StatusPill
-شارة ملوّنة بنقطة في المقدّمة، تغلّف `Badge variant="outline"`. **10 variants:**
+### 8.8 Alert — **جديد 3.0** (`ui/alert.tsx`)
+تنبيه inline بخلفيات tint دلالية. **6 variants:** success · danger · warning · info · light (muted) · white (card+border).
+- بنية: `flex items-start gap-3 rounded border px-4 py-3` · أيقونة variant على الـ start (size-5) · title? (`text-sm font-semibold`) + body (`text-sm`) · زر إغلاق اختياري على الـ end.
+- الألوان: `bg-{tone}-tint` + `border-{tone}/30` + `text-{tone}-text` + أيقونة `text-{tone}` (CheckCircle2/XCircle/AlertTriangle/Info).
 
-| variant | Background | Text | Dot |
-|---|---|---|---|
-| `paid` / `approved` | `bg-success-tint` | `text-success-text` | `bg-success` |
-| `credit` / `pending` / `in-progress` | `bg-warning-tint` | `text-warning-text` | `bg-warning` |
-| `sent` / `active` | `bg-brand-tint` | `text-brand-text` | `bg-brand` |
-| `rejected` | `bg-danger-tint` | `text-danger-text` | `bg-danger` |
-| `inactive` / `default` | `bg-muted` | `text-muted-foreground` | `bg-muted-foreground` |
+### 8.9 Toast (Sonner)
+نفس منظومة الـ Alert: success/error/warning/info/default بنفس الـ tint backgrounds + الأيقونات، `rounded`، ظلّنا، موضع RTL-safe، dark-mode صحيح.
 
-### 8.2 DataTable\<T\>
-جدول فرز كامل بحالات loading/error/empty مدمجة.
-```ts
-interface Column<T> {
-  key: string; header: string; cell: (row: T) => React.ReactNode;
-  sortable?: boolean;  // asc → desc → none
-  numeric?: boolean;   // محاذاة end + tabular-nums
-  className?: string;
-}
-```
-- رأس: sticky، `bg-muted/30 backdrop-blur-sm`، `text-xs uppercase tracking-wide`.
-- hover الصف: `bg-muted/40`.
-- يعرض `TableSkeleton` / `ErrorState` / `EmptyState` تلقائياً.
+### 8.10 DatePicker — **جديد 3.0** (`patterns/DatePicker.tsx`)
+يستبدل native date/time/datetime. مبني على Popover + Calendar (react-day-picker). trigger كحقل (outline، `rounded`، حد غامق عند hover/focus، أيقونة تقويم على الـ start). RTL calendar بالعربي (locale ar-EG) مع **أرقام غربية**. Props: `value, onChange, placeholder, disabled, min/max, mode(date/time/datetime)`. يربط مع rhf عبر Controller.
 
-**مكوّنات فرعية من نفس الملف:**
-- **EntityCell:** أفاتار + اسم + subtitle في خلية. `<EntityCell name sub avatarFallback avatarSrc avatarClass />`.
-- **ActionCell:** صف أزرار أيقونة مدمجة (`h-7 w-7`). الـ destructive: `hover:text-danger hover:bg-danger-tint`.
+### 8.11 مكوّنات العرض والبيانات
+- **DataTable\<T\>:** فرز كامل + حالات مدمجة. أعمدة `numeric` و`code` = **text-start** (يمين RTL) + رأس start؛ numeric يحتفظ بـ tabular-nums؛ **لا `dir="ltr"`** على الخلايا (`<bdi>` عند الحاجة). فرعية: EntityCell (أفاتار `rounded` + اسم + sub) · ActionCell (§8.13).
+- **StatCard / KpiCard:** قيمة كبيرة + label + delta + sparkline/bars. tones (plain/brand/success/warning/danger). icon box `rounded`.
+- **ListRow:** icon box `rounded` ملوّن + عنوان + subtitle + slot + chevron (RTL). density-aware.
+- **ProgressRow:** شريط تقدّم ملوّن.
+- **FormLayout:** FormSection/FormField/FormGrid/FormActions. label فوق، helper/error تحت، أزرار على الـ end. مبني على rhf+zod.
+- **MiniChart:** SparkArea/SparkBar/RadialGauge/DonutGauge (Recharts، ألوان من التوكنات).
+- **Card / PageSection:** **بلا border · shadow-sm · rounded-sm** (محدّث 3.0). الفواصل الداخلية (header divider, row lines) تبقى.
 
-### 8.3 StatCard
-كارت KPI باختيار sparkline أو bar chart عند الحافة السفلية.
+### 8.12 Scrollbar — **موحّد 3.0**
+scrollbar عام ~6px، thumb `rounded` بلون `--fx-line` (hover `--fx-muted`)، track شفاف، `background-clip: padding-box`. Firefox: `scrollbar-width: thin`. مطبّق على main/modals/popovers/tables. dark-mode + RTL تلقائي. `.nav-scroll` (3px) يبقى لصفوف الـ nav.
 
-| Prop | Type | Default |
-|---|---|---|
-| `label` | string | required |
-| `value` | string \| number | required |
-| `delta` | string | optional |
-| `deltaPositive` | boolean | optional |
-| `sparkline` | number[] | area chart |
-| `bars` | number[] | bar chart (أولوية على sparkline) |
-| `tone` | `plain` \| `brand` \| `success` \| `warning` \| `danger` | `plain` |
+### 8.13 Actions في الجداول — **محدّث 3.0**
+- **dropdown:** `min-w-44`، padding `p-1.5`، `rounded`.
+- **items:** `px-3 py-2`، أيقونة معبّرة على الـ start (View→Eye · Edit→Pencil · Delete→Trash2 · Duplicate→Copy · Print→Printer · Download→Download · Send→Send · Approve→CheckCircle2 · Cancel→XCircle)، **cursor-pointer** (disabled→cursor-not-allowed)، الهدّام danger-styled.
+- **كل action مربوط بـ handler فعلي وينفّذ** (view/edit/delete via ConfirmDialog+toast/...) على صف صحيح، مفلتر بالصلاحية. لا actions معطّلة/وهمية.
 
-الـ tones تؤثر على خلفية الكارت ولون الـ label والقيمة. الـ sparkline يمتد للحواف (`-mx-5 -mb-5`). recharts بألوان مُحلّلة من التوكنات (تتكيّف مع الثيم).
+### 8.14 مكوّنات الصفحة
+- **PageHeader** (§10) · **PageSection** · **ModuleTabs** (تبويبات مربوطة بالراوتر).
 
-### 8.4 KpiCard
-أيقونة + label + قيمة كبيرة + delta اختياري. أبسط من StatCard (بدون sparkline).
-
-| tone | خلفية الكارت | لون الأيقونة | لون النص |
-|---|---|---|---|
-| none | كارت افتراضي | `text-brand` في box `bg-brand-tint` | `text-foreground` |
-| `brand` / `info` | `bg-brand-tint` | `text-brand` | `text-brand-text` |
-| `success` | `bg-success-tint` | `text-success` | `text-success-text` |
-| `warning` | `bg-warning-tint` | `text-warning` | `text-warning-text` |
-| `danger` | `bg-danger-tint` | `text-danger` | `text-danger-text` |
-
-box الأيقونة: `h-9 w-9 rounded-md bg-white/40` (على الكروت الملوّنة) أو `bg-brand-tint`.
-
-### 8.5 ListRow
-عنصر قائمة عام: box أيقونة ملوّن + عنوان/subtitle + slot نهائي + chevron اختياري.
-- tones: `brand`/`success`/`warning`/`danger`/`muted` (كل واحد `bg-*-tint text-*`).
-- density-aware: compact → `py-2.5` + أيقونة `h-8 w-8`؛ default → `py-3.5` + `h-10 w-10`.
-- مع `onClick` يصبح `<button>` بـ focus styles؛ بدونه `<div>`.
-- chevron متوافق RTL (ChevronLeft في RTL).
-
-### 8.6 ProgressRow
-شريط تقدّم أفقي مُعنوَن. tones: brand/success/warning/danger.
-- Track: `h-2 rounded-full bg-muted`. Fill: `transition-[width] duration-500 ease-brand`.
-- `value` مقيّد 0–100. `displayValue` يتجاوز النص النهائي (مثل `"1,234 ج.م"`).
-
-### 8.7 مكوّنات الفورم (`FormLayout.tsx`)
-- **FormSection:** كتلة مُعنونة (عنوان + Separator + grid).
-- **FormField:** label فوق + control + helper/error تحت. الخطأ: الـ label يصير `text-danger-text` والـ helper يُستبدل بالخطأ. النجمة المطلوبة `text-danger`.
-- **FormGrid:** `cols=1` (دائماً عمود) / `cols=2` افتراضي (`grid-cols-1 sm:grid-cols-2`) / `cols=3`.
-- **FormActions:** صف Cancel + Save على الـ end المنطقي. spinner داخل Save عند `saving`. `start` slot (مثل زر حذف). Save بـ `min-w-24`.
-
-### 8.8 MiniChart (Sparkline & Gauge Suite)
-كل الـ charts تحلّل توكنات الألوان لقيم فعلية وقت التشغيل (تتكيّف مع الثيم/الوضع).
-- **SparkArea:** area chart مدمج بتعبئة gradient. tones.
-- **SparkBar:** bar chart مصغّر. `fillOpacity=0.55`, `radius=[2,2,0,0]`.
-- **RadialGauge:** نصف-دونات (180°) نسبة مئوية بنص مركزي. Track `hsl(var(--border))`.
-- **DonutGauge:** دونات كامل 360° متعدد الشرائح بقيمة مركزية.
-
-### 8.9 مكوّنات الصفحة
-- **PageHeader:** `h1 text-xl font-semibold` + breadcrumb (عبر `useBreadcrumb`) + subtitle + actions (`flex items-center gap-2 shrink-0`). `crumbLabel` = null في صفحات القوائم.
-- **PageSection:** حاوية كارت برأس اختياري. `padded` (افتراضي true، `p-6`)؛ `padded=false` للمحتوى الممتد للحواف (الجداول). الرأس: `px-6 py-4 border-b`.
-- **ModuleTabs:** شريط تبويبات مربوط بالـ router (`NavLink`، الحالة النشطة من الـ URL). لغة بصرية = `TabsList`+`TabsTrigger`. النشط `bg-background text-foreground shadow-sm`. scrollable.
-
-### 8.10 مكوّنات الحالة
-- **EmptyState:** أيقونة + عنوان + وصف + action اختياري. `py-16 flex-col items-center gap-4`، box الأيقونة `h-12 w-12 rounded-lg bg-muted`.
-- **ErrorState:** نص الخطأ + زر Retry اختياري.
-- **Skeletons:** `TableSkeleton` (rows/cols، opacity متناقص للعمق) · `KpiSkeleton` · `Skeleton` (الأساس).
-- **Breadcrumb:** يُرسَم تلقائياً عبر PageHeader/`useBreadcrumb`. كل جزء لينك عدا الأخير. skeleton للأجزاء الديناميكية.
-- **OfflineBanner:** بانر ثابت عند اكتشاف offline.
+### 8.15 مكوّنات الحالة
+EmptyState (icon box `rounded`) · ErrorState (+retry) · Skeletons · Breadcrumb (§10) · OfflineBanner.
 
 ---
 
-## 9) مكوّنات الـ Shell (`src/components/shell/`)
+## 9) خريطة الألوان الدلالية (Quick Reference)
 
-- **AppShell:** غلاف الجذر؛ يطبّق `.app` CSS grid ويعرض الـ nav الصحيح حسب `layout`.
-- **Topbar:** رأس sticky، `z-40`، `bg-card/80 backdrop-blur-sm border-b`، ارتفاع 60px. (تفاصيل الصفوف في §6.)
-- **Sidebar:** nav جانبي، `bg-card border-e`. موسّع: accordion بمجموعتي Core/Admin، النشط `bg-brand-tint text-brand-text font-medium` + شريط brand. مطوي: mini rail 72px أيقونات + tooltip/flyout.
-- **SidebarSplit:** عمودان — rail أيقونات 72px + sub-panel 220px.
-- **HorizontalNav:** module bar + sub-bar + dropdown bar.
-- **MobileDrawer:** drawer منزلق متوافق RTL (`drawer-panel`). LTR من اليسار، RTL من اليمين. 0.22s. يعرض Sidebar في وضع `inDrawer`.
-- **EtaBadge:** مؤشر حالة ETA في الـ Topbar. الحالات الحالية: `connected` (أخضر) · `syncing` (brand + نبضة) · `offline` (كهرماني). الشكل `inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium` + نقطة ملوّنة.
-- **SearchPanel:** popover بحث عام، `w-[min(560px,calc(100vw-2rem))]`.
-- **QuickAdd:** زر `+ New` (outline) يفتح dropdown إجراءات إنشاء سريعة per-module.
-- **UserChip / UserMenu:** أفاتار + اسم في نهاية الـ Topbar، dropdown (بروفايل/إعدادات/خروج).
-- **AuthGuard:** يعيد التوجيه لـ `/auth/login` بدون جلسة نشطة.
-
----
-
-## 10) الحالات (States) — قسم حرج
-
-كل شاشة بيانات تتعامل مع الحالات الخمس بوضوح، قابلة للاختبار عبر `?mock=loading|empty|error|no_results|offline`:
-
-1. **تحميل (Loading):** Skeletons بدل سبينر فارغ.
-2. **فارغ (Empty):** EmptyState — رسالة ودّية + أيقونة + CTA. لا شاشة بيضاء.
-3. **خطأ (Error):** ErrorState — رسالة مفهومة + إعادة محاولة. لا أكواد تقنية للمستخدم.
-4. **نتيجة بحث فارغة (No-results):** متميّزة عن "فارغ"، تعكس الفلاتر.
-5. **غير متصل (Offline):** OfflineBanner ثابت + بيان الحفظ المحلي + حالة لكل عنصر (محلي/قيد المزامنة/تمت/تعارض). الـ POS يعمل كاملاً offline.
-
----
-
-## 11) خريطة الألوان الدلالية (Quick Reference)
-
-| Tone | bg class | text class | dot/fill class |
+| Tone | bg | text | dot/fill |
 |---|---|---|---|
 | brand | `bg-brand-tint` | `text-brand-text` | `bg-brand` |
 | success | `bg-success-tint` | `text-success-text` | `bg-success` |
@@ -467,37 +391,122 @@ box الأيقونة: `h-9 w-9 rounded-md bg-white/40` (على الكروت ال
 
 ---
 
-## 12) جرد المكوّنات (Component Inventory)
+## 10) ترتيب الصفحة و PageHeader — **محدّث 3.0**
 
+### 10.1 ترتيب عناصر الصفحة (صارم)
 ```
-src/components/
-├── ui/                          shadcn / Radix primitives (27)
-│   ├── alert-dialog · avatar · badge · breadcrumb · button · card
-│   ├── checkbox · command · dialog · dropdown-menu · hover-card · input
-│   ├── label · navigation-menu · popover · radio-group · scroll-area
-│   ├── select · separator · sheet · skeleton · sonner · switch
-│   ├── table · tabs · textarea · tooltip
-│
-├── patterns/                    Flexova design patterns (16)
-│   ├── Breadcrumb · Card (PageSection alias) · DataTable (+EntityCell +ActionCell)
-│   ├── EmptyState · ErrorState · FormLayout (Section/Field/Grid/Actions)
-│   ├── KpiCard · ListRow · MiniChart (SparkArea/SparkBar/RadialGauge/DonutGauge)
-│   ├── ModuleTabs · OfflineBanner · PageHeader · PageSection
-│   ├── ProgressRow · Skeletons (Table/Kpi/base) · StatusPill
-│
-└── shell/                       App chrome (12)
-    ├── AppShell · AuthGuard · EtaBadge · HorizontalNav · MobileDrawer
-    ├── QuickAdd · SearchPanel · Sidebar · SidebarSplit · Topbar · UserChip
+(1) PageHeader  →  (2) Page-level Alert(s)  →  (3) Content
 ```
+الـ alert **لا يقع أبداً** بين الـ breadcrumb والـ title، ولا فوق الـ PageHeader. الـ PageHeader (بعنوانه و breadcrumb) دائماً أول شيء، ثم التنبيهات، ثم المحتوى.
 
-**الستاك:** React 18 · Vite · TypeScript · TailwindCSS v3.4 · shadcn/ui (Radix، رسمي) · react-i18next · Zustand · TanStack Table · react-hook-form + zod · Recharts · lucide-react · mock layer (JSON fixtures).
+### 10.2 PageHeader (قسمان)
+`flex items-start justify-between gap-4` (RTL-safe):
+- **الـ start (يمين RTL) — كتلة رأسية (`flex flex-col gap-1`):**
+  - **سطر علوي:** `page title` (h1, text-xl font-semibold) + **count pill** اختياري بجانبه — badge ملوّن (brand soft، `rounded`) يظهر فقط عند تمرير عدّاد (مثل "1 تسوية").
+  - **سطر سفلي:** `Breadcrumb` — **سطر واحد دائماً** (flex-nowrap, whitespace-nowrap)، يُختصر بالوسط بـ "…"، لا يلتف. فاصل chevron (`›`, ChevronLeft في RTL).
+- **الـ end (شمال RTL):** أزرار الإجراءات (`flex items-center gap-2 shrink-0`).
+
+Props: `title` · `count?` + `countLabel?` (يرسم الـ pill) · `actions?` · breadcrumb تلقائي من `useBreadcrumb`.
+
+### 10.3 عنوان المستند (Document Title)
+`useDocumentTitle` (يُستدعى من PageHeader): `<title>` = **`{pageTitle} — Flexova`** (بالعربي: `{العنوان} — Flexova`)، fallback `Flexova`.
+
+### 10.4 قواعد أخرى
+- **subItems في الـ shell فقط** — لا تتكرر كتبويبات أعلى كل صفحة. التبويبات داخل شاشة واحدة (بطاقة الصنف) = محتوى الشاشة، تبقى.
+- **toolbar الجدول** (search/filters/date/toggles) **داخل كارت الجدول** من فوقه (padding `py-6`)، كنمط `inventory/items`. الـ PageHeader يبقى خارج الكارت فوقه — لا تدخل أزرار الصفحة الكارت.
+- كل منيو scrollable داخل حاويته فقط (`min-width:0` على الـ flex parents).
 
 ---
 
-## 13) ما لا يُلمَس دون إذن صريح
-- `globals.css` (التوكنات) و `tailwind.config.ts` (الثيمات).
+## 11) menu registry (`src/config/menu.ts`)
+عناصر بـ: `key` (i18n) · `icon` (lucide) · `route` · `group` (core/sector/admin) · `order` · `permission?` · `moduleFlag?` · `status?` (active/"soon"→معطّل+badge "قريباً") · `subItems?`.
+- يُعرض: Dashboard ثم CORE ثم مجموعة Sector (عنوانها = القطاع النشط) ثم ADMIN.
+- الفلترة: `moduleFlag` مفعّل **و** `can(permission)`. كل موديول عنصر مستقل؛ subItems تبويبات داخله، **لا تُعشَّش موديول كتبويب في آخر**.
+
+---
+
+## 12) قواعد الصفحات (تُطبَّق على كل الموديولات)
+- **كل محتوى داخل card** (PageSection/ContentCard).
+- **الفورمات حسب الحجم:** قصير→modal (ModalShell) · متوسط→drawer (DrawerShell) · طويل/معقّد→صفحة كاملة (route).
+- **أزرار حسب الدور** (§8.1 convention): primary/secondary/ghost/danger موحّدة.
+- **رؤوس الجداول:** start + semibold. numeric/code → start + (tabular للأرقام).
+- thumbnails: صورة الصنف أو placeholder محايد (~36px، `rounded`، lazy، object-cover).
+- **مكوّنات متكرّرة:** Header ثابت · Sidebar حسب الدور · جدول قياسي (بحث/فلترة/ترتيب/pagination/تصدير) · modal/drawer قياسي · KPI card · إيصال قابل للطباعة · شارات حالة · الحالات الخمس.
+
+---
+
+## 13) Quick-Add — hub الإنشاء الشامل — **جديد 3.0**
+
+الـ Quick-Add (`+` في الـ topbar) = **مرجع شامل لكل عمليات إنشاء الكيانات الجديدة** في النظام، مجمّع بالموديول.
+
+### 13.1 المبدأ
+- كل عملية **create new record** موجودة فعلاً في أي صفحة → لها shortcut في Quick-Add.
+- **يحترم الطريقة الأصلية للإنشاء:**
+  - إنشاء عبر **modal/drawer** → Quick-Add يفتح نفس الـ modal/drawer **فوق الصفحة الحالية** (بلا navigation).
+  - إنشاء عبر **صفحة كاملة** (فاتورة…) → Quick-Add **يـnavigate** للراوت.
+- سلوك مطابق تماماً لزر "الإنشاء" الأصلي في صفحة الكيان.
+
+### 13.2 المعمار — Global Create Dispatcher
+- `openCreate(entityKey, params?)` (Zustand/context على مستوى الـ shell) يُركّب الـ modal/drawer الصحيح فوق أي صفحة نشطة.
+- زر "جديد" في صفحة القائمة **و** Quick-Add كلاهما ينادي نفس `openCreate(entityKey)`.
+- عند النجاح: يُغلق الـ modal ويُحدّث القائمة الحالية؛ **لا** navigation قسري بعيداً عن صفحة المستخدم.
+
+### 13.3 create-actions registry (مصدر واحد)
+كل create له: `entityKey` · `label` (i18n) · module · permission · moduleFlag · icon · `method: modal|drawer|page` (+route للـ page). **أي صفحة إنشاء جديدة مستقبلاً تُسجّل هنا** لتظهر في Quick-Add.
+
+### 13.4 العرض
+mega-menu مجمّع بالموديول (عناوين = أسماء الموديولات)، مفلتر بـ moduleFlag + can(permission)، أيقونة معبّرة، cursor-pointer، RTL-safe، يـscroll لو طال، موبايل 1–2 عمود. **لا روابط لكيانات/صفحات غير موجودة.**
+
+---
+
+## 14) الحالات (States) — قسم حرج
+كل شاشة بيانات تتعامل مع الخمس حالات، قابلة للاختبار عبر `?mock=loading|empty|error|no_results|offline`:
+1. **Loading:** Skeletons.
+2. **Empty:** EmptyState (رسالة + أيقونة + CTA).
+3. **Error:** ErrorState (رسالة مفهومة + retry، لا أكواد خام).
+4. **No-results:** متميّزة عن empty، تعكس الفلاتر.
+5. **Offline:** OfflineBanner + حالة لكل عنصر (محلي/قيد المزامنة/تمت/تعارض). POS كامل offline.
+
+---
+
+## 15) جرد المكوّنات (Component Inventory)
+
+```
+src/components/
+├── ui/        shadcn/Radix primitives
+│   alert(جديد) · alert-dialog · avatar · badge · breadcrumb · button(tone×variant)
+│   calendar(جديد) · card · checkbox · command · dialog · dropdown-menu · hover-card
+│   input · label · navigation-menu · popover · radio-group · scroll-area · select
+│   separator · sheet · skeleton · sonner · switch · table · tabs · textarea · tooltip
+│
+├── patterns/  Flexova patterns
+│   Breadcrumb · ConfirmDialog(جديد) · DataTable(+EntityCell +ActionCell)
+│   DatePicker(جديد) · DrawerShell(جديد) · EmptyState · ErrorState · FormLayout
+│   KpiCard · ListRow · MiniChart · ModalShell(جديد) · ModuleTabs · OfflineBanner
+│   PageHeader(محدّث) · PageSection · ProgressRow · Skeletons · StatCard · StatusPill
+│
+└── shell/     App chrome
+    AppShell · AuthGuard · EtaBadge · HorizontalNav · MobileDrawer · QuickAdd(hub)
+    SearchPanel · Sidebar · SidebarSplit · Topbar · UserChip
+    + create-dispatcher (openCreate) — جديد
+```
+
+**الستاك:** React 18 · Vite · TypeScript · Tailwind v3.4 · shadcn/ui (Radix، رسمي) · react-i18next · Zustand · TanStack Table · react-hook-form + zod · Recharts · react-day-picker · lucide-react · mock layer (JSON fixtures).
+
+---
+
+## 16) ما لا يُلمَس دون إذن صريح
+- `globals.css` (التوكنات) و `tailwind.config.ts` (الثيمات + سلّم radius).
 - الـ Shell (الأنماط الأربعة + Topbar + menus).
 
 ---
 
-*نهاية المستند — أسس التصميم، الإصدار 2.0 (موثّق من الكود الفعلي، يونيو 2026).*
+## 17) نقاط مفتوحة / مؤجّلة
+- **ETA connector:** تحويل ETA لـ connector صريح بـ 4 حالات (disconnected/connecting/connected/error) + زر ربط + wizard (TRN→e-seal→sandbox→go live). القرارات (صرامة المنع · مكان الزر · مستوى tenant/branch) مؤجّلة لخلاصة محاسب ضرائب. الـ EtaBadge سيتوسّع من 3 لـ 4 حالات.
+- **نواقص تصميم بسيطة:** مؤجّلة لمرحلة بناء أعمق (لا تؤثر على الأساس).
+- **التسعير/الباقات:** مؤجّل.
+- **FE_00 §14:** توثيقي (اندمج جوهره هنا).
+
+---
+
+*نهاية المستند — أسس التصميم، الإصدار 3.0 (يوليو 2026).*
