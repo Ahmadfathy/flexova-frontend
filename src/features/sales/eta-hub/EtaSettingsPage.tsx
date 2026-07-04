@@ -14,28 +14,94 @@ import { Badge }    from "@/components/ui/badge";
 import { Input }    from "@/components/ui/input";
 import { Label }    from "@/components/ui/label";
 import { Switch }   from "@/components/ui/switch";
+import { Alert }    from "@/components/ui/alert";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
+import { EtaConnectWizard } from "./EtaConnectWizard";
 
 import {
   CheckCircle2, AlertTriangle, ShieldCheck, Lock,
-  Building2, ArrowRight, Save,
+  Building2, ArrowRight, Save, Link2, RefreshCw, Loader2,
 } from "lucide-react";
 
 import { useSalesData } from "@/features/sales/invoices/useSalesData";
 import { useCan }       from "@/lib/permissions";
 import { cn }           from "@/lib/utils";
 
+import { useEtaConnection } from "@/hooks/useEtaConnection";
+import type {
+  EtaBlockPolicy, EtaConnectEntrypoint, EtaConnectionScope,
+  EtaConnectionStatus, EtaEnvironment,
+} from "@/lib/mock/eta";
+
+// ── Connection status → badge classes (mirrors EtaBadge's palette) ──
+const CONN_STYLE: Record<EtaConnectionStatus, { badge: string; dot: string }> = {
+  disconnected: { badge: "bg-muted text-muted-foreground",        dot: "bg-muted-foreground" },
+  connecting:   { badge: "bg-brand-tint text-brand-text",         dot: "bg-brand animate-pulse" },
+  connected:    { badge: "bg-success-tint text-success-text",     dot: "bg-success" },
+  error:        { badge: "bg-danger-tint text-danger-text",       dot: "bg-danger" },
+};
+
 // ═══════════════════════════════════════════════════════════════════
 export function EtaSettingsPage() {
   const { t, i18n } = useTranslation("sales");
+  const { t: tEta }  = useTranslation("eta");
   const lang = i18n.language as "ar" | "en";
   const nav  = useNavigate();
   const can  = useCan();
 
   const { data, loading, error, isOffline, reload } = useSalesData();
+
+  // ── ETA connector (mock service + global store — see ETA-1) ───
+  const {
+    connection, flags, status: connStatus, environment: connEnvironment,
+    test: testConnection, patchSettings,
+  } = useEtaConnection();
+
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardMode, setWizardMode] = useState<"connect" | "reconnect">("connect");
+  const [retesting,  setRetesting]  = useState(false);
+  const [switchEnvOpen, setSwitchEnvOpen] = useState(false);
+  const [switching,     setSwitching]     = useState(false);
+
+  function openConnectWizard()   { setWizardMode("connect");   setWizardOpen(true); }
+  function openReconnectWizard() { setWizardMode("reconnect"); setWizardOpen(true); }
+
+  async function handleRetest() {
+    setRetesting(true);
+    await testConnection();
+    setRetesting(false);
+  }
+
+  async function handleSwitchEnvConfirm() {
+    const nextEnv: EtaEnvironment = connEnvironment === "sandbox" ? "production" : "sandbox";
+    setSwitching(true);
+    await testConnection(nextEnv);
+    setSwitching(false);
+    setSwitchEnvOpen(false);
+  }
+
+  async function handleBlockPolicyChange(value: string) {
+    await patchSettings({ block_policy: value as EtaBlockPolicy });
+    toast.success(tEta("flags.saved"));
+  }
+
+  async function handleScopeChange(value: string) {
+    await patchSettings({ connection_scope: value as EtaConnectionScope });
+    toast.success(tEta("flags.saved"));
+  }
+
+  async function handleToggleEntrypoint(ep: EtaConnectEntrypoint) {
+    const current = flags?.connect_entrypoints ?? [];
+    const next = current.includes(ep) ? current.filter(x => x !== ep) : [...current, ep];
+    await patchSettings({ connect_entrypoints: next });
+    toast.success(tEta("flags.saved"));
+  }
 
   // ── Local env override (mock — production toggle is mock-persistent) ──
   const [localEnv,  setLocalEnv]  = useState<string | null>(null);
@@ -157,6 +223,139 @@ export function EtaSettingsPage() {
           </div>
         }
       />
+
+      {/* ── ETA connector status ───────────────────────────────── */}
+      <PageSection
+        title={tEta("connection.section_title")}
+        actions={connStatus === "connected" ? (
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" disabled={retesting} onClick={handleRetest}>
+              <RefreshCw className={cn("size-3.5 me-1", retesting && "animate-spin")} />
+              {tEta("connection.cta_test")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setSwitchEnvOpen(true)}>
+              <ArrowRight className="size-3.5 me-1" />
+              {tEta("connection.cta_switch_env")}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={openReconnectWizard}>
+              {tEta("connection.cta_reconnect")}
+            </Button>
+          </div>
+        ) : undefined}
+      >
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className={cn("inline-flex items-center gap-1.5 rounded px-3 py-1 text-xs font-medium", CONN_STYLE[connStatus].badge)}>
+              <span className={cn("h-1.5 w-1.5 rounded-full", CONN_STYLE[connStatus].dot)} />
+              {tEta(`connection.status_${connStatus}`)}
+            </span>
+            <Badge variant="outline" className="text-xs">
+              {connEnvironment === "sandbox" ? tEta("connection.environment_sandbox") : tEta("connection.environment_production")}
+            </Badge>
+          </div>
+
+          {connStatus === "disconnected" && (
+            <div className="flex flex-col items-start gap-3 rounded border border-dashed border-border p-4">
+              <p className="text-sm text-muted-foreground">{tEta("connection.not_connected_yet")}</p>
+              <Button onClick={openConnectWizard}>
+                <Link2 className="size-4 me-1.5" />
+                {tEta("connection.cta_connect")}
+              </Button>
+            </div>
+          )}
+
+          {connStatus === "error" && (
+            <div className="space-y-3">
+              <Alert variant="danger" title={tEta("connection.error_banner_title")}>
+                {(lang === "ar" ? connection?.last_error_ar : connection?.last_error_en) ?? tEta("errors.generic")}
+              </Alert>
+              <Button onClick={openReconnectWizard}>
+                <RefreshCw className="size-4 me-1.5" />
+                {tEta("connection.cta_reconnect")}
+              </Button>
+            </div>
+          )}
+
+          {connStatus === "connecting" && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="size-4 animate-spin" />
+              {tEta("connection.status_connecting")}
+            </div>
+          )}
+
+          {connStatus === "connected" && connection && (
+            <div className="grid gap-3 sm:grid-cols-3 text-sm">
+              <div>
+                <p className="text-xs text-muted-foreground">{tEta("connection.trn_label")}</p>
+                <p className="font-mono tabular-nums" dir="ltr">{connection.trn ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{tEta("connection.eseal_label")}</p>
+                <p>{connection.e_seal_ref ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{tEta("connection.last_tested")}</p>
+                <p>
+                  {connection.last_tested_at
+                    ? new Date(connection.last_tested_at).toLocaleString(lang === "ar" ? "ar-EG" : "en-US")
+                    : tEta("connection.never_tested")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </PageSection>
+
+      {/* ── ETA connector config flags ─────────────────────────── */}
+      <PageSection title={tEta("flags.section_title")}>
+        <div className="space-y-5">
+          <p className="text-xs text-muted-foreground -mt-1">{tEta("flags.section_subtitle")}</p>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>{tEta("flags.block_policy_label")}</Label>
+              <Select value={flags?.block_policy ?? "draft_only"} onValueChange={handleBlockPolicyChange}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft_only">{tEta("flags.block_policy_draft_only")}</SelectItem>
+                  <SelectItem value="full_block">{tEta("flags.block_policy_full_block")}</SelectItem>
+                  <SelectItem value="warn_only">{tEta("flags.block_policy_warn_only")}</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                {tEta(`flags.block_policy_${flags?.block_policy ?? "draft_only"}_desc`)}
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>{tEta("flags.scope_label")}</Label>
+              <Select value={flags?.connection_scope ?? "tenant"} onValueChange={handleScopeChange}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tenant">{tEta("connection.scope_tenant")}</SelectItem>
+                  <SelectItem value="branch">{tEta("connection.scope_branch")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>{tEta("flags.entrypoints_label")}</Label>
+            <div className="flex flex-wrap gap-5">
+              {(["settings", "banner", "hub"] as const).map(ep => (
+                <div key={ep} className="flex items-center gap-2">
+                  <Switch
+                    checked={(flags?.connect_entrypoints ?? []).includes(ep)}
+                    onCheckedChange={() => handleToggleEntrypoint(ep)}
+                    aria-label={tEta(`entrypoints.${ep}`)}
+                  />
+                  <span className="text-sm">{tEta(`entrypoints.${ep}`)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </PageSection>
 
       {/* ── Business details ───────────────────────────────────── */}
       <PageSection
@@ -395,6 +594,25 @@ export function EtaSettingsPage() {
         confirmLabel={<>{t("settings.switch_confirm_action")}<ArrowRight className="size-3.5 ms-1" /></>}
         cancelLabel={t("settings.switch_cancel")}
         onConfirm={handleGoLiveConfirm}
+      />
+
+      {/* ── ETA connector: environment switch confirm ──────────── */}
+      <ConfirmDialog
+        open={switchEnvOpen}
+        onOpenChange={setSwitchEnvOpen}
+        title={tEta("connection.switch_env_confirm_title")}
+        description={tEta("connection.switch_env_confirm_body")}
+        confirmTone="warning"
+        confirmLabel={connEnvironment === "sandbox" ? tEta("connection.switch_to_production") : tEta("connection.switch_to_sandbox")}
+        loading={switching}
+        onConfirm={handleSwitchEnvConfirm}
+      />
+
+      {/* ── ETA connector: connect / reconnect wizard ──────────── */}
+      <EtaConnectWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        mode={wizardMode}
       />
     </div>
   );

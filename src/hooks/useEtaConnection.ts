@@ -34,7 +34,7 @@ export interface UseEtaConnectionResult {
   isConnected: boolean;
   canIssue: boolean;
   connect: (payload: EtaConnectPayload) => Promise<void>;
-  test: () => Promise<void>;
+  test: (environment?: EtaEnvironment) => Promise<void>;
   reconnect: (payload: EtaConnectPayload) => Promise<void>;
   patchSettings: (patch: Partial<EtaFlags>) => Promise<void>;
   reload: () => Promise<void>;
@@ -94,10 +94,10 @@ export function useEtaConnection(): UseEtaConnectionResult {
     }
   }, [connection, setConnection, setError]);
 
-  const test = useCallback(async () => {
+  const test = useCallback(async (environment?: EtaEnvironment) => {
     setError(null);
     try {
-      const result = await etaService.testConnection();
+      const result = await etaService.testConnection(environment);
       setConnection(result);
     } catch {
       setError("test_failed");

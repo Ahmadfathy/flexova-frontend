@@ -79,15 +79,24 @@ export async function connect(payload: EtaConnectPayload): Promise<EtaConnection
   return s.connection;
 }
 
-/** POST test — re-checks the current connection; same success/error shape as connect(). */
-export async function testConnection(): Promise<EtaConnection> {
+/**
+ * POST test — re-checks the current connection; same success/error shape as connect().
+ * Optional `environment` lets the settings screen switch sandbox/production and
+ * re-test in one call, without re-collecting TRN/credentials.
+ */
+export async function testConnection(environment?: EtaEnvironment): Promise<EtaConnection> {
   await delay(1000);
   const s = await getSession();
   const fixture = await loadFixture<EtaConnectionFixture>("eta-connection");
   const override = statusOverride();
 
   const variant = override === "error" ? fixture.mock_variants.error : fixture.mock_variants.connected;
-  s.connection = { ...s.connection, ...variant, last_tested_at: new Date().toISOString() };
+  s.connection = {
+    ...s.connection,
+    ...variant,
+    environment: environment ?? s.connection.environment,
+    last_tested_at: new Date().toISOString(),
+  };
   return s.connection;
 }
 
