@@ -87,6 +87,7 @@ import {
 
 // Dev tools
 import { PatternsPage } from "@/features/dev/PatternsPage";
+import { EtaConnectorPlayground } from "@/features/dev/EtaConnectorPlayground";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -240,6 +241,7 @@ export default function App() {
 
           {/* Dev tools — pattern library preview */}
           <Route path="/dev/patterns" element={<PatternsPage />} />
+          <Route path="/dev/eta-connector" element={<EtaConnectorPlayground />} />
 
           {/* Settings */}
           <Route path="/settings">

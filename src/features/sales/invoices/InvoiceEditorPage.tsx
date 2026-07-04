@@ -30,8 +30,9 @@ import { cn }          from "@/lib/utils";
 import { useCan }      from "@/lib/permissions";
 import { useSalesData } from "./useSalesData";
 import type { SalesData, InventoryItem, SalesCustomer } from "./useSalesData";
-import { useEtaConnection } from "@/hooks/useEtaConnection";
+import { useEtaGate } from "@/hooks/useEtaGate";
 import { EtaConnectBanner } from "@/features/sales/eta-hub/EtaConnectBanner";
+import { EtaGateNotice } from "@/components/shell/EtaGateNotice";
 
 // ── Local types ──────────────────────────────────────────────────
 
@@ -448,24 +449,11 @@ function ReadinessPanel({
   return (
     <div className="space-y-3">
       {/* ETA connector notice — hard block (danger/warning) or warn-only notice */}
-      {etaNoticeText && (
-        <div className={cn(
-          "flex items-start gap-2 rounded px-3 py-2.5",
-          etaNoticeTone === "danger" ? "bg-danger-tint text-danger-text" : "bg-warning-tint text-warning-text",
-        )}>
-          <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-          <div className="flex-1 min-w-0 space-y-1">
-            <p className="text-sm font-medium">{etaNoticeText}</p>
-            <button
-              type="button"
-              onClick={onConnectEta}
-              className="text-xs underline underline-offset-2 inline-flex items-center gap-1"
-            >
-              {connectEtaLabel}
-            </button>
-          </div>
-        </div>
-      )}
+      <EtaGateNotice
+        gate={{ etaNoticeText, etaNoticeTone }}
+        onConnect={onConnectEta}
+        connectLabel={connectEtaLabel}
+      />
 
       {/* Readiness status — superseded entirely while ETA hard-blocks the document */}
       {etaHardBlocked ? null : canSubmit ? (
@@ -611,7 +599,7 @@ export function InvoiceEditorPage() {
   const can          = useCan();
 
   const { data, loading, error, isOffline, reload } = useSalesData();
-  const { status: connStatus, canIssue, flags: etaFlags } = useEtaConnection();
+  const etaGate = useEtaGate();
 
   // ── Draft state ────────────────────────────────────────────────
   const [draft, setDraft] = useState<InvoiceDraft>({
@@ -715,25 +703,12 @@ export function InvoiceEditorPage() {
     return bs;
   }, [draft, trn, isB2B, data, lang]);
 
-  // ── ETA connector gating (ETA-1 §1.3) ──────────────────────────
-  const blockPolicy   = etaFlags?.block_policy ?? "draft_only";
-  const isConnected   = connStatus === "connected";
-  const isDisconnectedOrError = connStatus === "disconnected" || connStatus === "error";
-  const etaHardBlocked = isDisconnectedOrError && blockPolicy !== "warn_only";
-  const etaWarnOnly    = isDisconnectedOrError && blockPolicy === "warn_only";
-  const draftBlocked   = blockPolicy === "full_block" && !isConnected;
-
-  const etaNoticeTone: "danger" | "warning" = blockPolicy === "full_block" && etaHardBlocked ? "danger" : "warning";
-  const etaNoticeText = etaHardBlocked
-    ? tEta(blockPolicy === "full_block" ? "warnings.full_block_blocked" : "warnings.draft_only_blocked")
-    : etaWarnOnly ? tEta("warnings.warn_only_notice") : null;
-
-  const showEtaBanner = isDisconnectedOrError
-    && (etaFlags?.connect_entrypoints ?? []).includes("banner");
+  // ── ETA connector gating (ETA-1 §1.3) — see useEtaGate for the shared logic
+  const showEtaBanner = etaGate.isDisconnectedOrError && etaGate.connectEntrypoints.includes("banner");
 
   // Document-level blockers are superseded while the connector hard-blocks the document.
-  const effectiveBlockers = etaHardBlocked ? [] : blockers;
-  const canSubmitNow = canIssue && effectiveBlockers.length === 0;
+  const effectiveBlockers = etaGate.etaHardBlocked ? [] : blockers;
+  const canSubmitNow = etaGate.canIssue && effectiveBlockers.length === 0;
 
   // ── Line handlers ──────────────────────────────────────────────
   const addLine = useCallback(() => {
@@ -1107,10 +1082,10 @@ export function InvoiceEditorPage() {
               onFixBlocker={handleFixBlocker}
               t={t}
               lang={lang}
-              etaHardBlocked={etaHardBlocked}
-              etaNoticeText={etaNoticeText}
-              etaNoticeTone={etaNoticeTone}
-              draftBlocked={draftBlocked}
+              etaHardBlocked={etaGate.etaHardBlocked}
+              etaNoticeText={etaGate.etaNoticeText}
+              etaNoticeTone={etaGate.etaNoticeTone}
+              draftBlocked={etaGate.draftBlocked}
               onConnectEta={() => navigate("/sales/settings/eta")}
               connectEtaLabel={tEta("connection.cta_connect")}
             />

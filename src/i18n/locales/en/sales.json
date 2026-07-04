@@ -306,7 +306,8 @@
     "tier_1_ok":               "Tier 1 — Excellent",
     "tier_2_warn":             "Tier 2 — fix within {{x}} days",
     "tier_3_warn":             "Tier 3 — Critical",
-    "disconnected_hint":       "Connect the e-invoicing system to see acceptance rates, submission windows and the document queue."
+    "disconnected_hint":       "Connect the e-invoicing system to see acceptance rates, submission windows and the document queue.",
+    "select_all":              "Select all"
   },
 
   "settings": {

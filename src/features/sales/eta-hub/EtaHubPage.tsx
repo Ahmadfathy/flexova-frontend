@@ -15,6 +15,7 @@ import { Skeleton }      from "@/components/patterns/Skeletons";
 import { Button }   from "@/components/ui/button";
 import { Badge }    from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Alert }    from "@/components/ui/alert";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -24,7 +25,7 @@ import {
 
 import {
   Settings, AlertTriangle, CheckCircle2, RefreshCw,
-  ShieldCheck, ExternalLink, RotateCcw, XCircle, Link2,
+  ShieldCheck, ExternalLink, RotateCcw, Link2,
 } from "lucide-react";
 
 import { useSalesData } from "@/features/sales/invoices/useSalesData";
@@ -392,22 +393,9 @@ export function EtaHubPage() {
       {alerts.length > 0 && (
         <div className="space-y-2">
           {alerts.map((alert, i) => (
-            <div
-              key={i}
-              className={cn(
-                "flex items-start gap-3 rounded border px-4 py-3 text-sm",
-                alert.level === "danger"
-                  ? "border-destructive/40 bg-destructive/5 text-destructive"
-                  : alert.level === "warning"
-                  ? "border-warning/40 bg-warning/5 text-warning"
-                  : "border-border bg-muted/40 text-muted-foreground",
-              )}
-            >
-              {alert.level === "danger"  && <XCircle       className="size-4 mt-0.5 shrink-0" />}
-              {alert.level === "warning" && <AlertTriangle className="size-4 mt-0.5 shrink-0" />}
-              {alert.level === "info"    && <CheckCircle2  className="size-4 mt-0.5 shrink-0" />}
-              <span>{lang === "ar" ? alert.text_ar : alert.text_en}</span>
-            </div>
+            <Alert key={i} variant={alert.level}>
+              {lang === "ar" ? alert.text_ar : alert.text_en}
+            </Alert>
           ))}
         </div>
       )}
@@ -503,7 +491,7 @@ export function EtaHubPage() {
                     <Checkbox
                       checked={allChecked || (someChecked ? "indeterminate" : false)}
                       onCheckedChange={toggleAll}
-                      aria-label="select all"
+                      aria-label={t("eta_hub.select_all")}
                     />
                   </TableHead>
                 )}

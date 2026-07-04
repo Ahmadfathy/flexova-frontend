@@ -25,7 +25,7 @@ import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { EtaConnectWizard } from "./EtaConnectWizard";
 
 import {
-  CheckCircle2, AlertTriangle, ShieldCheck, Lock,
+  CheckCircle2, ShieldCheck, Lock,
   Building2, ArrowRight, Save, Link2, RefreshCw, Loader2,
 } from "lucide-react";
 
@@ -68,6 +68,7 @@ export function EtaSettingsPage() {
   const [retesting,  setRetesting]  = useState(false);
   const [switchEnvOpen, setSwitchEnvOpen] = useState(false);
   const [switching,     setSwitching]     = useState(false);
+  const [savingFlags,   setSavingFlags]   = useState(false);
 
   function openConnectWizard()   { setWizardMode("connect");   setWizardOpen(true); }
   function openReconnectWizard() { setWizardMode("reconnect"); setWizardOpen(true); }
@@ -86,20 +87,29 @@ export function EtaSettingsPage() {
     setSwitchEnvOpen(false);
   }
 
+  // `savingFlags` gates all three handlers below so overlapping clicks can't
+  // race on a stale `flags` snapshot while a previous patch is in flight
+  // (patchSettings replaces connect_entrypoints wholesale — see mock/eta.ts).
   async function handleBlockPolicyChange(value: string) {
+    setSavingFlags(true);
     await patchSettings({ block_policy: value as EtaBlockPolicy });
+    setSavingFlags(false);
     toast.success(tEta("flags.saved"));
   }
 
   async function handleScopeChange(value: string) {
+    setSavingFlags(true);
     await patchSettings({ connection_scope: value as EtaConnectionScope });
+    setSavingFlags(false);
     toast.success(tEta("flags.saved"));
   }
 
   async function handleToggleEntrypoint(ep: EtaConnectEntrypoint) {
+    setSavingFlags(true);
     const current = flags?.connect_entrypoints ?? [];
     const next = current.includes(ep) ? current.filter(x => x !== ep) : [...current, ep];
     await patchSettings({ connect_entrypoints: next });
+    setSavingFlags(false);
     toast.success(tEta("flags.saved"));
   }
 
@@ -206,20 +216,9 @@ export function EtaSettingsPage() {
         alert={
           <div className="space-y-2">
             {isOffline && <OfflineBanner />}
-            {/* Sandbox warning strip */}
-            {isSandbox && (
-              <div className="flex items-start gap-3 rounded border border-warning/40 bg-warning/5 px-4 py-3 text-sm text-warning">
-                <AlertTriangle className="size-4 mt-0.5 shrink-0" />
-                <span>{t("settings.env_sandbox_note")}</span>
-              </div>
-            )}
-            {/* Production confirmation strip */}
-            {!isSandbox && (
-              <div className="flex items-start gap-3 rounded border border-success/40 bg-success/5 px-4 py-3 text-sm text-success">
-                <CheckCircle2 className="size-4 mt-0.5 shrink-0" />
-                <span>{t("settings.production_note")}</span>
-              </div>
-            )}
+            {isSandbox
+              ? <Alert variant="warning">{t("settings.env_sandbox_note")}</Alert>
+              : <Alert variant="success">{t("settings.production_note")}</Alert>}
           </div>
         }
       />
@@ -314,7 +313,7 @@ export function EtaSettingsPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label>{tEta("flags.block_policy_label")}</Label>
-              <Select value={flags?.block_policy ?? "draft_only"} onValueChange={handleBlockPolicyChange}>
+              <Select value={flags?.block_policy ?? "draft_only"} onValueChange={handleBlockPolicyChange} disabled={savingFlags}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="draft_only">{tEta("flags.block_policy_draft_only")}</SelectItem>
@@ -329,7 +328,7 @@ export function EtaSettingsPage() {
 
             <div className="space-y-1.5">
               <Label>{tEta("flags.scope_label")}</Label>
-              <Select value={flags?.connection_scope ?? "tenant"} onValueChange={handleScopeChange}>
+              <Select value={flags?.connection_scope ?? "tenant"} onValueChange={handleScopeChange} disabled={savingFlags}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="tenant">{tEta("connection.scope_tenant")}</SelectItem>
@@ -347,6 +346,7 @@ export function EtaSettingsPage() {
                   <Switch
                     checked={(flags?.connect_entrypoints ?? []).includes(ep)}
                     onCheckedChange={() => handleToggleEntrypoint(ep)}
+                    disabled={savingFlags}
                     aria-label={tEta(`entrypoints.${ep}`)}
                   />
                   <span className="text-sm">{tEta(`entrypoints.${ep}`)}</span>
