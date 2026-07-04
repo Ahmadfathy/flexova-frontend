@@ -116,7 +116,7 @@ export function Topbar() {
       {/* ── End side ────────────────────────────────────────── */}
 
       {/* ETA badge — always visible, sits in its own slot */}
-      <EtaBadge state="connected" />
+      <EtaBadge />
 
       {/* Fullscreen — desktop only; too cramped on 375 px.
           sm:contents dissolves the wrapper so the Button is a

@@ -85,6 +85,10 @@
     "banner": "Alert banner",
     "hub": "E-invoicing hub"
   },
+  "banner": {
+    "title": "Connect ETA to start issuing",
+    "body": "Invoices and receipts can't be issued until the e-invoicing connection is set up."
+  },
   "flags": {
     "section_title": "Connector settings",
     "section_subtitle": "Editable now for testing — final values are decided later",

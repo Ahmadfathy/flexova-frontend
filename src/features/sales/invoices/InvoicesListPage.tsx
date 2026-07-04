@@ -46,6 +46,8 @@ import {
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn }        from "@/lib/utils";
 import { useCan }    from "@/lib/permissions";
+import { useEtaConnection } from "@/hooks/useEtaConnection";
+import { EtaConnectBanner } from "@/features/sales/eta-hub/EtaConnectBanner";
 import {
   useSalesData,
   type SalesInvoice,
@@ -249,6 +251,9 @@ export function InvoicesListPage() {
   const navigate      = useNavigate();
   const can           = useCan();
   const { data, loading, error, isOffline, reload } = useSalesData();
+  const { status: connStatus, flags: etaFlags } = useEtaConnection();
+  const showEtaBanner = (connStatus === "disconnected" || connStatus === "error")
+    && (etaFlags?.connect_entrypoints ?? []).includes("banner");
 
   const [filters,   setFilters]   = useState<InvoiceFilters>(EMPTY_FILTERS);
   const [sorting,   setSorting]   = useState<SortingState>([]);
@@ -467,6 +472,9 @@ export function InvoicesListPage() {
 
       {/* Offline banner */}
       {isOffline && <OfflineBanner />}
+
+      {/* ETA connector banner (entrypoints: "banner") */}
+      {showEtaBanner && <EtaConnectBanner />}
 
       {/* Bulk action bar */}
       {hasSelection && (

@@ -24,13 +24,17 @@ import {
 
 import {
   Settings, AlertTriangle, CheckCircle2, RefreshCw,
-  ShieldCheck, ExternalLink, RotateCcw, XCircle,
+  ShieldCheck, ExternalLink, RotateCcw, XCircle, Link2,
 } from "lucide-react";
 
 import { useSalesData } from "@/features/sales/invoices/useSalesData";
 import { useCan }       from "@/lib/permissions";
 import type { EtaStatus, SalesData } from "@/features/sales/invoices/useSalesData";
 import { cn } from "@/lib/utils";
+
+import { useEtaConnection } from "@/hooks/useEtaConnection";
+import { ETA_CONN_STYLE }   from "@/components/shell/EtaBadge";
+import { EtaConnectWizard } from "./EtaConnectWizard";
 
 // ── ETA queue document (flattened from invoices + notes) ──────────
 interface EtaQueueDoc {
@@ -152,12 +156,29 @@ function DocTypeBadge({ type, t }: { type: EtaQueueDoc["docType"]; t: (k: string
 // ═══════════════════════════════════════════════════════════════════
 export function EtaHubPage() {
   const { t, i18n } = useTranslation("sales");
+  const { t: tEta }  = useTranslation("eta");
   const lang = i18n.language as "ar" | "en";
   const nav  = useNavigate();
   const can  = useCan();
   const canResend = can("eta.resend");
+  const canManageEta = can("eta.settings");
 
   const { data, loading, error, isOffline, reload } = useSalesData();
+
+  // ── ETA connector (mock service + global store — see ETA-1) ───
+  const {
+    connection, flags: etaFlags,
+    status: connStatus, environment: connEnvironment,
+  } = useEtaConnection();
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardMode, setWizardMode] = useState<"connect" | "reconnect">("connect");
+  const isConnNotReady = connStatus === "disconnected" || connStatus === "error";
+  const hubEntrypointEnabled = (etaFlags?.connect_entrypoints ?? []).includes("hub");
+
+  function openWizard() {
+    setWizardMode(connStatus === "error" ? "reconnect" : "connect");
+    setWizardOpen(true);
+  }
 
   // ── Filters ──────────────────────────────────────────────────
   const [queueTab,     setQueueTab]     = useState<"all" | "b2b" | "b2c">("all");
@@ -297,6 +318,49 @@ export function EtaHubPage() {
         }
       />
 
+      {/* ── Connection status — always the first card ─────────── */}
+      <PageSection title={tEta("connection.section_title")}>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className={cn(
+              "inline-flex items-center gap-1.5 rounded px-3 py-1 text-xs font-medium",
+              ETA_CONN_STYLE[connStatus].badge,
+            )}>
+              <span className={cn("h-1.5 w-1.5 rounded-full", ETA_CONN_STYLE[connStatus].dot)} />
+              {tEta(`connection.status_${connStatus}`)}
+            </span>
+            <Badge variant="outline" className="text-xs">
+              {tEta(`connection.environment_${connEnvironment}`)}
+            </Badge>
+            {isConnNotReady && (
+              <span className="text-sm text-muted-foreground">
+                {connStatus === "error"
+                  ? (lang === "ar" ? connection?.last_error_ar : connection?.last_error_en) ?? tEta("errors.generic")
+                  : tEta("connection.not_connected_yet")}
+              </span>
+            )}
+          </div>
+          {isConnNotReady && canManageEta && hubEntrypointEnabled && (
+            <Button size="sm" onClick={openWizard}>
+              <Link2 className="size-4 me-1.5" />
+              {tEta(connStatus === "error" ? "connection.cta_reconnect" : "connection.cta_connect")}
+            </Button>
+          )}
+        </div>
+      </PageSection>
+
+      {/* ── Disconnected empty-state — supersedes KPIs/alerts/queue ── */}
+      {isConnNotReady ? (
+        <PageSection>
+          <EmptyState
+            icon={Link2}
+            title={tEta("connection.not_connected_yet")}
+            description={t("eta_hub.disconnected_hint")}
+            action={canManageEta && hubEntrypointEnabled ? { label: tEta("connection.cta_connect"), onClick: openWizard } : undefined}
+          />
+        </PageSection>
+      ) : (
+      <>
       {/* ── KPI row ────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -600,6 +664,8 @@ export function EtaHubPage() {
           </div>
         </PageSection>
       )}
+      </>
+      )}
 
       {/* ── E-seal + ETA portal ────────────────────────────────── */}
       {settings && (
@@ -653,6 +719,13 @@ export function EtaHubPage() {
           </div>
         </PageSection>
       )}
+
+      {/* ── ETA connector: connect / reconnect wizard ──────────── */}
+      <EtaConnectWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        mode={wizardMode}
+      />
     </div>
   );
 }
