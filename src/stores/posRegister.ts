@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
 
 export interface PosCartLine {
   id: string;
@@ -35,6 +36,41 @@ export interface ClosedTicketSummary {
   loyaltyEarned: number;
 }
 
+export interface ParkedTicket {
+  id: string;
+  number: string;
+  parkedAt: string;
+  lines: PosCartLine[];
+  customer: PosCustomer | null;
+  ticketDiscount: number;
+}
+
+const SEED_PARKED_TICKET = posFixtures.tickets.find(t => t.status === "parked");
+
+const SEED_PARKED: ParkedTicket[] = SEED_PARKED_TICKET ? [{
+  id: SEED_PARKED_TICKET.id,
+  number: SEED_PARKED_TICKET.number,
+  parkedAt: SEED_PARKED_TICKET.opened_at,
+  customer: null,
+  ticketDiscount: SEED_PARKED_TICKET.totals.ticket_discount,
+  lines: SEED_PARKED_TICKET.lines.map(l => ({
+    id: crypto.randomUUID(),
+    item_id: l.item_id,
+    sku: l.sku ?? undefined,
+    name: l.description,
+    sold_by: "weight_kg" in l ? "weight" : "unit",
+    qty: "qty" in l ? l.qty : undefined,
+    weight_kg: "weight_kg" in l ? l.weight_kg : undefined,
+    price: "price_per_kg" in l ? l.price_per_kg : l.price,
+    uom_id: l.uom_id,
+    tax_type_id: l.tax_type_id,
+    line_discount: l.line_discount,
+    eta_code_missing: "_flag" in l && l._flag === "eta_code_missing",
+  })),
+}] : [];
+
+let parkedSeq = 5505;
+
 interface PosRegisterState {
   category: string;
   searchQuery: string;
@@ -42,6 +78,7 @@ interface PosRegisterState {
   ticketDiscount: number;
   customer: PosCustomer | null;
   lastClosedTicket: ClosedTicketSummary | null;
+  parkedTickets: ParkedTicket[];
   addUnitLine: (line: Omit<PosCartLine, "id" | "qty" | "weight_kg" | "sold_by">, qty?: number) => void;
   addWeightLine: (line: Omit<PosCartLine, "id" | "qty" | "weight_kg" | "sold_by">, weightKg: number) => void;
   updateQty: (id: string, qty: number) => void;
@@ -54,6 +91,8 @@ interface PosRegisterState {
   setCustomer: (customer: PosCustomer | null) => void;
   clearTicket: () => void;
   closeTicket: (summary: ClosedTicketSummary) => void;
+  parkTicket: () => void;
+  retrieveTicket: (id: string) => void;
 }
 
 export const usePosRegister = create<PosRegisterState>()(
@@ -65,6 +104,7 @@ export const usePosRegister = create<PosRegisterState>()(
       ticketDiscount: 0,
       customer: null,
       lastClosedTicket: null,
+      parkedTickets: SEED_PARKED,
 
       addUnitLine: (line, qty = 1) => set((s) => {
         const key = lineKey(line.item_id, line.sku);
@@ -111,6 +151,37 @@ export const usePosRegister = create<PosRegisterState>()(
       setCustomer: (customer) => set({ customer }),
       clearTicket: () => set({ lines: [], ticketDiscount: 0, customer: null }),
       closeTicket: (summary) => set({ lines: [], ticketDiscount: 0, customer: null, lastClosedTicket: summary }),
+
+      parkTicket: () => set((s) => {
+        if (s.lines.length === 0) return s;
+        const ticket: ParkedTicket = {
+          id: crypto.randomUUID(),
+          number: `${posFixtures.terminals[0].number_prefix}-${parkedSeq++}`,
+          parkedAt: new Date().toISOString(),
+          lines: s.lines,
+          customer: s.customer,
+          ticketDiscount: s.ticketDiscount,
+        };
+        return {
+          parkedTickets: [ticket, ...s.parkedTickets],
+          lines: [],
+          ticketDiscount: 0,
+          customer: null,
+          lastClosedTicket: null,
+        };
+      }),
+
+      retrieveTicket: (id) => set((s) => {
+        const ticket = s.parkedTickets.find(p => p.id === id);
+        if (!ticket) return s;
+        return {
+          lines: ticket.lines,
+          customer: ticket.customer,
+          ticketDiscount: ticket.ticketDiscount,
+          lastClosedTicket: null,
+          parkedTickets: s.parkedTickets.filter(p => p.id !== id),
+        };
+      }),
     }),
     { name: "flexova.pos.register" }
   )

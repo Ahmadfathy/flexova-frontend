@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   MoreVertical, Printer, Share2, RotateCcw, RefreshCw, User, Trash2,
-  Plus, Minus, Percent, ChevronUp, ChevronDown, Scale, Flag, X, CheckCircle2,
+  Plus, Minus, Percent, ChevronUp, ChevronDown, Scale, Flag, X, CheckCircle2, Timer,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import { computeCartTotals, lineTotal } from "./posTotals";
 import { WeightEntryDialog } from "./WeightEntryDialog";
 import { TenderModal } from "./TenderModal";
 import { CustomerPickerDialog } from "./CustomerPickerDialog";
+import { ParkedTicketsDialog } from "./ParkedTicketsDialog";
 import type { PosItem } from "./useCashierCatalog";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
 import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
@@ -160,10 +161,13 @@ export function TicketPanel() {
   const customer = usePosRegister(s => s.customer);
   const setCustomer = usePosRegister(s => s.setCustomer);
   const lastClosedTicket = usePosRegister(s => s.lastClosedTicket);
+  const parkedTickets = usePosRegister(s => s.parkedTickets);
+  const parkTicket = usePosRegister(s => s.parkTicket);
 
   const [expanded, setExpanded] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [customerPickerOpen, setCustomerPickerOpen] = useState(false);
+  const [parkedTicketsOpen, setParkedTicketsOpen] = useState(false);
   const [editingWeightLine, setEditingWeightLine] = useState<PosCartLine | null>(null);
   const [ticketDiscountInput, setTicketDiscountInput] = useState(String(ticketDiscount || ""));
 
@@ -230,28 +234,44 @@ export function TicketPanel() {
             </p>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="icon" size="icon" className="h-8 w-8 shrink-0" disabled={!hasLines} aria-label="menu">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
-                <Printer className="h-4 w-4 me-2" /> {t("ticket.kebab.print")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
-                <Share2 className="h-4 w-4 me-2" /> {t("ticket.kebab.share")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
-                <RotateCcw className="h-4 w-4 me-2" /> {t("ticket.kebab.return")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
-                <RefreshCw className="h-4 w-4 me-2" /> {t("ticket.kebab.resend_eta")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-1 shrink-0">
+            <Button
+              variant="icon" size="icon" className="h-8 w-8 relative"
+              onClick={() => setParkedTicketsOpen(true)}
+              aria-label={t("parked.title")}
+              title={t("parked.title")}
+            >
+              <Timer className="h-4 w-4" />
+              {parkedTickets.length > 0 && (
+                <span className="absolute -top-1 -end-1 flex items-center justify-center h-4 min-w-4 px-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold tabular-nums">
+                  {parkedTickets.length}
+                </span>
+              )}
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="icon" size="icon" className="h-8 w-8 shrink-0" disabled={!hasLines} aria-label="menu">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
+                  <Printer className="h-4 w-4 me-2" /> {t("ticket.kebab.print")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
+                  <Share2 className="h-4 w-4 me-2" /> {t("ticket.kebab.share")}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
+                  <RotateCcw className="h-4 w-4 me-2" /> {t("ticket.kebab.return")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => stub(t("ticket.stub_action"))}>
+                  <RefreshCw className="h-4 w-4 me-2" /> {t("ticket.kebab.resend_eta")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         {/* Customer chip — walk-in default, or linked customer with loyalty/credit context */}
@@ -381,7 +401,10 @@ export function TicketPanel() {
             {t("pay")}
           </Button>
           <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" className="h-11" disabled={!hasLines} onClick={() => stub(t("ticket.hold_stub"))}>
+            <Button
+              variant="outline" size="sm" className="h-11" disabled={!hasLines}
+              onClick={() => { parkTicket(); toast.success(t("parked.parked_toast")); }}
+            >
               {t("park")}
             </Button>
             <Button variant="outline" size="sm" className="h-11" onClick={() => setCustomerPickerOpen(true)}>
@@ -397,6 +420,12 @@ export function TicketPanel() {
         open={customerPickerOpen}
         onOpenChange={setCustomerPickerOpen}
         onPick={setCustomer}
+      />
+
+      <ParkedTicketsDialog
+        open={parkedTicketsOpen}
+        onOpenChange={setParkedTicketsOpen}
+        hasActiveTicket={hasLines}
       />
 
       <WeightEntryDialog

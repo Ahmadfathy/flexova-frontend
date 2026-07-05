@@ -21,6 +21,14 @@
   "category": {
     "all": "All"
   },
+  "parked": {
+    "title": "Parked tickets",
+    "empty": "No parked tickets",
+    "item_count": "{{n}} items",
+    "parked_toast": "Ticket parked",
+    "retrieved_toast": "Ticket retrieved",
+    "active_ticket_warning": "Park or complete the current ticket first"
+  },
 
   "title": "Point of Sale",
   "pay": "Pay",
@@ -163,7 +171,6 @@
       "resend_eta": "Resend to ETA"
     },
     "stub_action": "Available once the ticket is closed (Step 3)",
-    "hold_stub": "Parking tickets will work once the Parked Tickets screen lands",
     "empty_title": "Ticket is empty",
     "empty_body": "Tap an item on the grid to add it",
     "status": {
