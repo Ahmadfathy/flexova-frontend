@@ -19,11 +19,29 @@ export interface PosCartLine {
 
 const lineKey = (item_id: string, sku?: string) => `${item_id}:${sku ?? ""}`;
 
+export interface PosCustomer {
+  id: string;
+  type: "individual" | "company";
+  name_ar: string;
+  name_en: string;
+  credit_limit: number;
+  ar_balance: number;
+}
+
+export interface ClosedTicketSummary {
+  paymentStatus: "paid" | "credit";
+  syncStatus: "local" | "queued";
+  grandTotal: number;
+  loyaltyEarned: number;
+}
+
 interface PosRegisterState {
   category: string;
   searchQuery: string;
   lines: PosCartLine[];
   ticketDiscount: number;
+  customer: PosCustomer | null;
+  lastClosedTicket: ClosedTicketSummary | null;
   addUnitLine: (line: Omit<PosCartLine, "id" | "qty" | "weight_kg" | "sold_by">, qty?: number) => void;
   addWeightLine: (line: Omit<PosCartLine, "id" | "qty" | "weight_kg" | "sold_by">, weightKg: number) => void;
   updateQty: (id: string, qty: number) => void;
@@ -33,7 +51,9 @@ interface PosRegisterState {
   setTicketDiscount: (amount: number) => void;
   setCategory: (category: string) => void;
   setSearchQuery: (query: string) => void;
+  setCustomer: (customer: PosCustomer | null) => void;
   clearTicket: () => void;
+  closeTicket: (summary: ClosedTicketSummary) => void;
 }
 
 export const usePosRegister = create<PosRegisterState>()(
@@ -43,6 +63,8 @@ export const usePosRegister = create<PosRegisterState>()(
       searchQuery: "",
       lines: [],
       ticketDiscount: 0,
+      customer: null,
+      lastClosedTicket: null,
 
       addUnitLine: (line, qty = 1) => set((s) => {
         const key = lineKey(line.item_id, line.sku);
@@ -50,18 +72,19 @@ export const usePosRegister = create<PosRegisterState>()(
         if (existing) {
           return {
             lines: s.lines.map(l => l.id === existing.id ? { ...l, qty: (l.qty ?? 0) + qty } : l),
+            lastClosedTicket: null,
           };
         }
-        return { lines: [...s.lines, { ...line, id: crypto.randomUUID(), sold_by: "unit", qty }] };
+        return { lines: [...s.lines, { ...line, id: crypto.randomUUID(), sold_by: "unit", qty }], lastClosedTicket: null };
       }),
 
       addWeightLine: (line, weightKg) => set((s) => {
         const key = lineKey(line.item_id, line.sku);
         const existing = s.lines.find(l => lineKey(l.item_id, l.sku) === key);
         if (existing) {
-          return { lines: s.lines.map(l => l.id === existing.id ? { ...l, weight_kg: weightKg } : l) };
+          return { lines: s.lines.map(l => l.id === existing.id ? { ...l, weight_kg: weightKg } : l), lastClosedTicket: null };
         }
-        return { lines: [...s.lines, { ...line, id: crypto.randomUUID(), sold_by: "weight", weight_kg: weightKg }] };
+        return { lines: [...s.lines, { ...line, id: crypto.randomUUID(), sold_by: "weight", weight_kg: weightKg }], lastClosedTicket: null };
       }),
 
       updateQty: (id, qty) => set((s) => ({
@@ -85,7 +108,9 @@ export const usePosRegister = create<PosRegisterState>()(
       setTicketDiscount: (amount) => set({ ticketDiscount: Math.max(0, amount) }),
       setCategory: (category) => set({ category }),
       setSearchQuery: (searchQuery) => set({ searchQuery }),
-      clearTicket: () => set({ lines: [], ticketDiscount: 0 }),
+      setCustomer: (customer) => set({ customer }),
+      clearTicket: () => set({ lines: [], ticketDiscount: 0, customer: null }),
+      closeTicket: (summary) => set({ lines: [], ticketDiscount: 0, customer: null, lastClosedTicket: summary }),
     }),
     { name: "flexova.pos.register" }
   )

@@ -36,7 +36,40 @@
   "walk_in": "Walk-in",
   "tender": {
     "store_credit": "Store credit",
-    "loyalty": "Loyalty points"
+    "loyalty": "Loyalty points",
+    "title": "Tender",
+    "amount_placeholder": "Amount",
+    "available_credit": "Available credit: {{amount}}",
+    "over_limit_warning": "Over the available credit limit — allowed via override permission",
+    "over_limit_blocked": "Over the available credit limit and no override permission",
+    "link_customer_cta": "Link customer",
+    "link_customer_hint": "Credit tender needs a customer linked to the ticket",
+    "voucher_code_placeholder": "Voucher code",
+    "voucher_check": "Check",
+    "voucher_balance": "Balance: {{amount}}",
+    "voucher_invalid": "Invalid code or the voucher is used up",
+    "voucher_use_customer": "Use customer balance ({{amount}})",
+    "loyalty_balance": "Points balance: {{points}} ({{value}})",
+    "loyalty_below_min": "Minimum redeemable is {{min}} points",
+    "loyalty_no_customer": "Link a loyalty-enrolled customer to redeem points",
+    "closed_toast": "Ticket closed for {{total}} — sending to printer (80mm)",
+    "earned_toast": "+{{n}} loyalty points",
+    "redeemed_toast": "Redeemed {{n}} loyalty points"
+  },
+  "customer_picker": {
+    "search_placeholder": "Search by name or phone…",
+    "heading": "Customers",
+    "create_new": "New customer",
+    "create_stub": "Creating a new customer lands in a later step"
+  },
+  "customer_chip": {
+    "available_credit": "Available credit: {{amount}}",
+    "loyalty": "{{points}} pts ({{value}})",
+    "change": "Change"
+  },
+  "closed": {
+    "title": "Ticket closed",
+    "new_ticket_hint": "Tap an item to start a new ticket"
   },
   "offline": "Offline — selling works, syncs later",
 
@@ -81,10 +114,13 @@
     },
     "stub_action": "Available once the ticket is closed (Step 3)",
     "hold_stub": "Parking tickets will work once the Parked Tickets screen lands",
-    "customer_stub": "Customer selection lands in a later step",
-    "pay_stub_title": "Tender",
-    "pay_stub_body": "The tender screen (cash/card/mixed) is coming in Step 3",
     "empty_title": "Ticket is empty",
-    "empty_body": "Tap an item on the grid to add it"
+    "empty_body": "Tap an item on the grid to add it",
+    "status": {
+      "paid": "Paid",
+      "credit": "Credit",
+      "local": "Local",
+      "queued": "Queued"
+    }
   }
 }

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   MoreVertical, Printer, Share2, RotateCcw, RefreshCw, User, Trash2,
-  Plus, Minus, Percent, ChevronUp, ChevronDown, Scale, Flag,
+  Plus, Minus, Percent, ChevronUp, ChevronDown, Scale, Flag, X, CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ModalShell } from "@/components/patterns/ModalShell";
+import { StatusPill } from "@/components/patterns/StatusPill";
 import { cn } from "@/lib/utils";
 import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
@@ -19,9 +19,13 @@ import { useCan } from "@/lib/permissions";
 import { usePosRegister, type PosCartLine } from "@/stores/posRegister";
 import { computeCartTotals, lineTotal } from "./posTotals";
 import { WeightEntryDialog } from "./WeightEntryDialog";
+import { TenderModal } from "./TenderModal";
+import { CustomerPickerDialog } from "./CustomerPickerDialog";
 import type { PosItem } from "./useCashierCatalog";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
 import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+
+const LOYALTY = posFixtures.loyalty;
 
 const TAX_TYPES = inventoryFixtures.tax_types as { id: string; name_ar: string; name_en: string; rate: number }[];
 const TAX_RATES: Record<string, number> = Object.fromEntries(TAX_TYPES.map(tt => [tt.id, tt.rate]));
@@ -153,15 +157,21 @@ export function TicketPanel() {
   const ticketDiscount = usePosRegister(s => s.ticketDiscount);
   const setTicketDiscount = usePosRegister(s => s.setTicketDiscount);
   const updateWeight = usePosRegister(s => s.updateWeight);
+  const customer = usePosRegister(s => s.customer);
+  const setCustomer = usePosRegister(s => s.setCustomer);
+  const lastClosedTicket = usePosRegister(s => s.lastClosedTicket);
 
   const [expanded, setExpanded] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
+  const [customerPickerOpen, setCustomerPickerOpen] = useState(false);
   const [editingWeightLine, setEditingWeightLine] = useState<PosCartLine | null>(null);
   const [ticketDiscountInput, setTicketDiscountInput] = useState(String(ticketDiscount || ""));
 
   const canDiscount = can("pos.discount.override");
   const totals = useMemo(() => computeCartTotals(lines, ticketDiscount, TAX_RATES), [lines, ticketDiscount]);
   const hasLines = lines.length > 0;
+  const loyaltyMember = customer ? LOYALTY.members.find(m => m.customer_id === customer.id) : undefined;
+  const availableCredit = customer ? Math.max(0, customer.credit_limit - customer.ar_balance) : 0;
 
   const stub = (message: string) => toast.info(message);
 
@@ -244,11 +254,35 @@ export function TicketPanel() {
           </DropdownMenu>
         </div>
 
-        {/* Customer chip — walk-in default */}
-        <div className="px-4 py-2 border-b border-border shrink-0">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
-            <User className="h-3 w-3" /> {t("walk_in")}
-          </span>
+        {/* Customer chip — walk-in default, or linked customer with loyalty/credit context */}
+        <div className="px-4 py-2 border-b border-border shrink-0 flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => setCustomerPickerOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent min-w-0"
+          >
+            <User className="h-3 w-3 shrink-0" />
+            <span className="truncate">{customer ? (lang === "ar" ? customer.name_ar : customer.name_en) : t("walk_in")}</span>
+          </button>
+
+          {customer ? (
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="flex flex-col items-end text-[10px] text-muted-foreground leading-tight">
+                {loyaltyMember && (
+                  <span>{t("customer_chip.loyalty", { points: loyaltyMember.points_balance, value: formatMoney(loyaltyMember.redeemable_value_egp, lang) })}</span>
+                )}
+                <span>{t("customer_chip.available_credit", { amount: formatMoney(availableCredit, lang) })}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCustomer(null)}
+                className="flex items-center justify-center h-6 w-6 rounded text-muted-foreground hover:bg-danger-tint hover:text-danger-text shrink-0"
+                aria-label={t("customer_chip.change")}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {/* Lines */}
@@ -257,6 +291,20 @@ export function TicketPanel() {
             lines.map(line => (
               <CartLineRow key={line.id} line={line} canDiscount={canDiscount} onEditWeight={setEditingWeightLine} />
             ))
+          ) : lastClosedTicket ? (
+            <div className="flex flex-col items-center justify-center h-full text-center py-8 gap-2">
+              <CheckCircle2 className="h-8 w-8 text-success" />
+              <p className="text-sm font-semibold text-foreground">{t("closed.title")}</p>
+              <p className="text-lg font-bold tabular-nums">{formatMoney(lastClosedTicket.grandTotal, lang)}</p>
+              <div className="flex items-center gap-1.5">
+                <StatusPill variant={lastClosedTicket.paymentStatus} label={t(`ticket.status.${lastClosedTicket.paymentStatus}`)} />
+                <StatusPill variant={lastClosedTicket.syncStatus === "queued" ? "pending" : "default"} label={t(`ticket.status.${lastClosedTicket.syncStatus}`)} />
+              </div>
+              {lastClosedTicket.loyaltyEarned > 0 && (
+                <p className="text-xs text-success-text">{t("tender.earned_toast", { n: lastClosedTicket.loyaltyEarned })}</p>
+              )}
+              <p className="text-xs text-muted-foreground pt-2">{t("closed.new_ticket_hint")}</p>
+            </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center py-8 gap-1">
               <p className="text-sm font-medium text-foreground">{t("ticket.empty_title")}</p>
@@ -336,22 +384,20 @@ export function TicketPanel() {
             <Button variant="outline" size="sm" className="h-11" disabled={!hasLines} onClick={() => stub(t("ticket.hold_stub"))}>
               {t("park")}
             </Button>
-            <Button variant="outline" size="sm" className="h-11" onClick={() => stub(t("ticket.customer_stub"))}>
+            <Button variant="outline" size="sm" className="h-11" onClick={() => setCustomerPickerOpen(true)}>
               {t("customer")}
             </Button>
           </div>
         </div>
       </div>
 
-      <ModalShell
-        open={payOpen}
-        onOpenChange={setPayOpen}
-        title={t("ticket.pay_stub_title")}
-        size="sm"
-        footer={<Button onClick={() => setPayOpen(false)}>{tCommon("close")}</Button>}
-      >
-        <p className="text-sm text-muted-foreground">{t("ticket.pay_stub_body")}</p>
-      </ModalShell>
+      <TenderModal open={payOpen} onOpenChange={setPayOpen} grandTotal={totals.grandTotal} />
+
+      <CustomerPickerDialog
+        open={customerPickerOpen}
+        onOpenChange={setCustomerPickerOpen}
+        onPick={setCustomer}
+      />
 
       <WeightEntryDialog
         item={editingItem}

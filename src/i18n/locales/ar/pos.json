@@ -36,7 +36,40 @@
   "walk_in": "عميل نقدي",
   "tender": {
     "store_credit": "رصيد متجر",
-    "loyalty": "نقاط ولاء"
+    "loyalty": "نقاط ولاء",
+    "title": "الدفع",
+    "amount_placeholder": "المبلغ",
+    "available_credit": "الحد الائتماني المتاح: {{amount}}",
+    "over_limit_warning": "تجاوزت الحد الائتماني المتاح — مسموح بصلاحية تجاوز الحد",
+    "over_limit_blocked": "تجاوزت الحد الائتماني المتاح ولا توجد صلاحية تجاوز",
+    "link_customer_cta": "اربط عميل",
+    "link_customer_hint": "الدفع الآجل محتاج عميل مرتبط بالتذكرة",
+    "voucher_code_placeholder": "كود القسيمة",
+    "voucher_check": "تحقق",
+    "voucher_balance": "الرصيد: {{amount}}",
+    "voucher_invalid": "كود غير صحيح أو القسيمة مستهلكة",
+    "voucher_use_customer": "استخدام رصيد العميل ({{amount}})",
+    "loyalty_balance": "رصيد النقاط: {{points}} ({{value}})",
+    "loyalty_below_min": "الحد الأدنى للاستبدال {{min}} نقطة",
+    "loyalty_no_customer": "اربط عميل مسجّل في الولاء عشان يستبدل نقاط",
+    "closed_toast": "تم إغلاق التذكرة بمبلغ {{total}} — جاري الطباعة (80مم)",
+    "earned_toast": "+{{n}} نقطة ولاء",
+    "redeemed_toast": "تم خصم {{n}} نقطة ولاء"
+  },
+  "customer_picker": {
+    "search_placeholder": "ابحث بالاسم أو الهاتف…",
+    "heading": "العملاء",
+    "create_new": "عميل جديد",
+    "create_stub": "إنشاء عميل جديد هيتفعّل في خطوة لاحقة"
+  },
+  "customer_chip": {
+    "available_credit": "ائتمان متاح: {{amount}}",
+    "loyalty": "{{points}} نقطة ({{value}})",
+    "change": "تغيير"
+  },
+  "closed": {
+    "title": "اتقفلت التذكرة",
+    "new_ticket_hint": "دوس على صنف عشان تبدأ تذكرة جديدة"
   },
   "offline": "غير متصل — البيع يعمل ويتزامن لاحقاً",
 
@@ -81,10 +114,13 @@
     },
     "stub_action": "متاح بعد إغلاق التذكرة (الخطوة 3)",
     "hold_stub": "تعليق التذاكر هيتفعّل مع شاشة التذاكر المعلّقة",
-    "customer_stub": "اختيار العميل هيتفعّل في خطوة لاحقة",
-    "pay_stub_title": "الدفع",
-    "pay_stub_body": "شاشة الدفع (نقدي/بطاقة/مختلط) جاية في الخطوة 3",
     "empty_title": "التذكرة فاضية",
-    "empty_body": "دوس على صنف من الشبكة عشان تضيفه"
+    "empty_body": "دوس على صنف من الشبكة عشان تضيفه",
+    "status": {
+      "paid": "مدفوع",
+      "credit": "آجل",
+      "local": "محلي",
+      "queued": "في الطابور"
+    }
   }
 }

@@ -1,5 +1,9 @@
 import type { PosCartLine } from "@/stores/posRegister";
 
+export function round2(n: number): number {
+  return Math.round((n + Number.EPSILON) * 100) / 100;
+}
+
 export interface TaxGroupTotal {
   tax_type_id: string;
   base: number;
