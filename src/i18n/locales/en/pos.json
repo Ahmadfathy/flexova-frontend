@@ -1,0 +1,28 @@
+{
+  "layout": {
+    "exit": "Exit POS",
+    "exit_confirm_title": "Exit POS",
+    "exit_confirm": "A ticket is open. Exit and park it?",
+    "online": "Online",
+    "offline": "Offline",
+    "queue": "Queued: {{n}}",
+    "shift_open": "Shift open",
+    "shift_closed": "No shift",
+    "fullscreen": "Fullscreen",
+    "sandbox": "Sandbox",
+    "switch_language": "Switch language",
+    "grid_placeholder_title": "Cashier screen",
+    "grid_placeholder_body": "The product grid will render here (FE_09)",
+    "ticket_placeholder_title": "Current ticket",
+    "no_shift_title": "No open shift",
+    "no_shift_body": "Open a shift with a starting float before you can sell",
+    "open_shift_cta": "Open shift",
+    "grand_total": "Grand total"
+  },
+  "category": {
+    "all": "All"
+  },
+  "pay": "Pay",
+  "park": "Park",
+  "customer": "Customer"
+}

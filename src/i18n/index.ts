@@ -31,23 +31,25 @@ import arPatterns    from "./locales/ar/patterns.json";
 import enPatterns    from "./locales/en/patterns.json";
 import arEta         from "./locales/ar/eta.json";
 import enEta         from "./locales/en/eta.json";
+import arPos         from "./locales/ar/pos.json";
+import enPos         from "./locales/en/pos.json";
 
 i18n.use(initReactI18next).init({
   lng: "ar", fallbackLng: "ar",
-  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta"],
+  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos"],
   defaultNS: "common",
   resources: {
     ar: {
       common: arCommon, shell: arShell, settings: arSettings,
       inventory: arInventory, sales: arSales, purchasing: arPurchasing,
       finance: arFinance, crm: arCrm, hr: arHr, reports: arReports, admin: arAdmin,
-      auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta,
+      auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos,
     },
     en: {
       common: enCommon, shell: enShell, settings: enSettings,
       inventory: enInventory, sales: enSales, purchasing: enPurchasing,
       finance: enFinance, crm: enCrm, hr: enHr, reports: enReports, admin: enAdmin,
-      auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta,
+      auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos,
     },
   },
   interpolation: { escapeValue: false },

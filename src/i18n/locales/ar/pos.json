@@ -1,0 +1,28 @@
+{
+  "layout": {
+    "exit": "خروج من نقطة البيع",
+    "exit_confirm_title": "الخروج من نقطة البيع",
+    "exit_confirm": "فيه تذكرة مفتوحة. تخرج وتسيبها معلّقة؟",
+    "online": "متصل",
+    "offline": "غير متصل",
+    "queue": "في الطابور: {{n}}",
+    "shift_open": "وردية مفتوحة",
+    "shift_closed": "لا توجد وردية",
+    "fullscreen": "ملء الشاشة",
+    "sandbox": "بيئة تجريبية",
+    "switch_language": "تبديل اللغة",
+    "grid_placeholder_title": "شاشة الكاشير",
+    "grid_placeholder_body": "شبكة الأصناف هتظهر هنا (FE_09)",
+    "ticket_placeholder_title": "التذكرة الحالية",
+    "no_shift_title": "لا توجد وردية مفتوحة",
+    "no_shift_body": "لازم تفتح وردية بمبلغ افتتاحي عشان تقدر تبيع",
+    "open_shift_cta": "فتح وردية",
+    "grand_total": "الإجمالي"
+  },
+  "category": {
+    "all": "الكل"
+  },
+  "pay": "دفع",
+  "park": "تعليق",
+  "customer": "عميل"
+}

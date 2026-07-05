@@ -89,6 +89,10 @@ import {
 import { PatternsPage } from "@/features/dev/PatternsPage";
 import { EtaConnectorPlayground } from "@/features/dev/EtaConnectorPlayground";
 
+// Retail POS — FE_09a (layout frame only; FE_09 screens land under its Outlet)
+import { PosLayout, PosGridPlaceholder } from "@/components/shell/pos/PosLayout";
+import { PosExitTracker } from "@/components/shell/pos/PosExitTracker";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -103,6 +107,7 @@ function PageFallback() {
 export default function App() {
   return (
     <BrowserRouter>
+      <PosExitTracker />
       <Routes>
 
         {/* ── Auth pages (no shell) ─────────────────────────── */}
@@ -122,6 +127,13 @@ export default function App() {
 
         {/* ── Authenticated app (guarded shell) ───────────────── */}
         <Route element={<AuthGuard />}>
+
+        {/* Retail POS — FE_09a — dedicated layout, not AppShell */}
+        <Route path="/pos/*" element={<PosLayout />}>
+          <Route index element={<PosGridPlaceholder />} />
+          <Route path="*" element={<PosGridPlaceholder />} />
+        </Route>
+
         <Route element={<AppShell />}>
 
           {/* Dashboard */}

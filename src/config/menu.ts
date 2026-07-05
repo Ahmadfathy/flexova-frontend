@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Package, ShoppingCart, Truck, Users, Calculator,
-  UserCog, BarChart3, Shield, Settings,
+  UserCog, BarChart3, Shield, Settings, Store,
 } from "lucide-react";
 
 export type MenuGroup = "core" | "sector" | "admin";
@@ -137,11 +137,20 @@ export const MENU: MenuItem[] = [
     ],
   },
   {
+    key: "pos",
+    icon: Store,
+    route: "/pos",
+    group: "sector",
+    order: 8,
+    moduleFlag: "pos",
+    permission: "pos.access",
+  },
+  {
     key: "permissions",
     icon: Shield,
     route: "/admin",
     group: "admin",
-    order: 8,
+    order: 9,
     subItems: [
       { key: "users",     route: "/admin/users" },
       { key: "roles",     route: "/admin/roles" },
@@ -155,7 +164,7 @@ export const MENU: MenuItem[] = [
     icon: Settings,
     route: "/settings",
     group: "admin",
-    order: 9,
+    order: 10,
     subItems: [
       { key: "settings_appearance", route: "/settings/appearance" },
     ],
