@@ -1,0 +1,172 @@
+{
+  "_meta": {
+    "module": "pos",
+    "version": "1.0",
+    "currency": "EGP",
+    "depends_on": "inventory.fixtures.json (it_rice, it_oil, it_tea, it_cola, uom_*, tax_t1) · sales.fixtures.json (customers cu_*, payment_methods pm_*, treasuries tr_*) · crm.fixtures.json (loyalty)",
+    "eta": { "environment": "sandbox", "test_mode": true, "eseal_configured": true, "submission_window_hours_b2c": 48 },
+    "golden_rules": "Offline-first cashier; finance is single source of truth. Payment status and sync/ETA status are independent. Flag-don't-block: missing eta_code sells + flags, never blocks the sale.",
+    "notes": "Covers mixed tender, variant line, weighed line, loyalty redeem, store-credit tender, queued-nearing-window, rejected (plain-Arabic), parked, voided; open shift + closed shift with variance."
+  },
+
+  "terminals": [
+    { "id": "tm_main_1", "name_ar": "كاشير الرئيسي ١", "name_en": "Main Register 1", "branch_id": "br_main", "warehouse_id": "wh_main", "price_list_id": "pl_retail", "number_prefix": "MN-P1", "hardware": { "printer": "80mm_thermal", "drawer": true, "scanner": true, "scale": false } },
+    { "id": "tm_nasr_1", "name_ar": "كاشير مدينة نصر ١", "name_en": "Nasr City Register 1", "branch_id": "br_nasr", "warehouse_id": "wh_nasr", "price_list_id": "pl_retail", "number_prefix": "NS-P1", "hardware": { "printer": "80mm_thermal", "drawer": true, "scanner": true, "scale": true } }
+  ],
+
+  "tender_types": [
+    { "id": "pm_cash", "name_ar": "نقدي", "name_en": "Cash", "gives_change": true },
+    { "id": "pm_card", "name_ar": "بطاقة", "name_en": "Card", "gives_change": false },
+    { "id": "pm_wallet", "name_ar": "محفظة إلكترونية", "name_en": "E-wallet", "gives_change": false },
+    { "id": "pm_fawry", "name_ar": "فوري", "name_en": "Fawry", "gives_change": false },
+    { "id": "pm_credit", "name_ar": "آجل", "name_en": "Credit", "gives_change": false, "requires_customer": true, "credit_check": true },
+    { "id": "pm_store_credit", "name_ar": "رصيد متجر", "name_en": "Store credit", "gives_change": false, "requires_balance": true },
+    { "id": "pm_loyalty", "name_ar": "نقاط ولاء", "name_en": "Loyalty points", "gives_change": false, "requires_balance": true }
+  ],
+
+  "pos_items": [
+    { "item_id": "it_rice", "name_ar": "أرز مصري فاخر ٥ كجم", "name_en": "Premium rice 5kg", "barcode": "6221031400015", "price": 168.00, "tax_type_id": "tax_t1", "eta_code": "EG-100234", "uom_id": "uom_pack", "stock": 340, "sold_by": "unit", "category": "cat_grocery" },
+    { "item_id": "it_oil", "name_ar": "زيت عافية ذرة ٢.٢٥ لتر", "name_en": "Afia corn oil 2.25L", "barcode": "6221031400022", "price": 158.00, "tax_type_id": "tax_t1", "eta_code": "EG-100235", "uom_id": "uom_bottle", "stock": 120, "sold_by": "unit", "category": "cat_grocery" },
+    { "item_id": "it_cola", "name_ar": "كوكاكولا ١ لتر", "name_en": "Coca-Cola 1L", "barcode": "5449000000996", "price": 22.00, "tax_type_id": "tax_t1", "eta_code": "EG-100240", "uom_id": "uom_bottle", "stock": 500, "sold_by": "unit", "category": "cat_beverages" },
+    { "item_id": "it_bread", "name_ar": "عيش فينو", "name_en": "Fino bread", "barcode": "6221000100017", "price": 3.00, "tax_type_id": "tax_t1", "eta_code": "", "uom_id": "uom_piece", "stock": 200, "sold_by": "unit", "category": "cat_grocery", "_flag": "eta_code_missing" },
+    { "item_id": "it_beef", "name_ar": "لحمة بتلو طازة", "name_en": "Fresh veal", "barcode": null, "price_per_kg": 420.00, "tax_type_id": "tax_t1", "eta_code": "EG-100301", "uom_id": "uom_kg", "stock_kg": 65.5, "sold_by": "weight", "category": "cat_butchery" },
+    { "item_id": "it_shirt", "name_ar": "قميص كلاسيك", "name_en": "Classic shirt", "is_model": true, "tax_type_id": "tax_t1", "eta_code": "EG-100410", "uom_id": "uom_piece", "sold_by": "unit", "category": "cat_clothing",
+      "variants": [
+        { "sku": "it_shirt-S-WHT", "size": "S", "color_ar": "أبيض", "color_en": "White", "barcode": "6224000500011", "price": 450.00, "stock": 12 },
+        { "sku": "it_shirt-M-WHT", "size": "M", "color_ar": "أبيض", "color_en": "White", "barcode": "6224000500028", "price": 450.00, "stock": 8 },
+        { "sku": "it_shirt-L-WHT", "size": "L", "color_ar": "أبيض", "color_en": "White", "barcode": "6224000500035", "price": 450.00, "stock": 0 },
+        { "sku": "it_shirt-S-BLU", "size": "S", "color_ar": "أزرق", "color_en": "Blue", "barcode": "6224000500042", "price": 450.00, "stock": 5 },
+        { "sku": "it_shirt-M-BLU", "size": "M", "color_ar": "أزرق", "color_en": "Blue", "barcode": "6224000500059", "price": 450.00, "stock": 0 },
+        { "sku": "it_shirt-L-BLU", "size": "L", "color_ar": "أزرق", "color_en": "Blue", "barcode": "6224000500066", "price": 450.00, "stock": 3 }
+      ]
+    }
+  ],
+
+  "categories": [
+    { "id": "cat_grocery", "name_ar": "بقالة", "name_en": "Grocery" },
+    { "id": "cat_beverages", "name_ar": "مشروبات", "name_en": "Beverages" },
+    { "id": "cat_butchery", "name_ar": "جزارة", "name_en": "Butchery" },
+    { "id": "cat_clothing", "name_ar": "ملابس", "name_en": "Clothing" }
+  ],
+
+  "store_credit_vouchers": [
+    { "id": "sc_8801", "code": "SC-8801-4F2A", "issued_from": "return", "customer_id": null, "issued_at": "2026-07-02T12:10:00", "amount": 158.00, "balance": 158.00, "status": "active", "note": "bearer voucher — walk-in return with no receipt" },
+    { "id": "sc_8790", "code": "SC-8790-9C1B", "issued_from": "return", "customer_id": "cu_mohamed", "issued_at": "2026-06-28T17:40:00", "amount": 300.00, "balance": 120.00, "status": "partial" }
+  ],
+
+  "loyalty": {
+    "enabled": true,
+    "earn_rule": "1 point per 100 EGP spent",
+    "point_value_egp": 0.10,
+    "min_redeem_points": 100,
+    "members": [
+      { "customer_id": "cu_mohamed", "points_balance": 640, "redeemable_value_egp": 64.00 },
+      { "customer_id": "cu_noor", "points_balance": 20, "redeemable_value_egp": 2.00, "_flag": "below_min_redeem" }
+    ]
+  },
+
+  "shifts": [
+    {
+      "id": "sh_open_main", "terminal_id": "tm_main_1", "branch_id": "br_main", "cashier_ar": "سيد كامل", "cashier_en": "Sayed Kamel",
+      "status": "open", "opened_at": "2026-07-05T09:00:00", "opening_float": 500.00,
+      "running": { "sales_count": 3, "returns_count": 1, "by_tender": { "pm_cash": 512.36, "pm_card": 450.00, "pm_wallet": 0, "pm_store_credit": 0 }, "paid_in": 0, "paid_out": 50.00, "no_sale_opens": 1 },
+      "expected_cash": 962.36
+    },
+    {
+      "id": "sh_closed_nasr", "terminal_id": "tm_nasr_1", "branch_id": "br_nasr", "cashier_ar": "منى فؤاد", "cashier_en": "Mona Fouad",
+      "status": "closed", "opened_at": "2026-07-04T09:00:00", "closed_at": "2026-07-04T22:05:00",
+      "opening_float": 500.00, "paid_in": 200.00, "paid_out": 120.00,
+      "by_tender": { "pm_cash": 3840.00, "pm_card": 2110.00, "pm_wallet": 640.00, "pm_fawry": 0 },
+      "expected_cash": 4420.00, "counted_cash": 4390.00, "variance": -30.00, "variance_state": "short",
+      "treasury_id": "tr_cash_main", "posted": true, "z_report_no": "NS-P1-Z-0044"
+    }
+  ],
+
+  "tickets": [
+    {
+      "id": "tk_5501", "number": "MN-P1-5501", "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main", "warehouse_id": "wh_main",
+      "customer_id": "cu_cash", "channel": "e-receipt", "opened_at": "2026-07-05T09:12:00", "closed_at": "2026-07-05T09:13:10",
+      "status": "paid", "payment_status": "paid", "sync_status": "valid",
+      "lines": [
+        { "item_id": "it_rice", "sku": null, "description": "أرز مصري فاخر ٥ كجم", "qty": 2, "uom_id": "uom_pack", "price": 168.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 336.00 },
+        { "item_id": "it_cola", "sku": null, "description": "كوكاكولا ١ لتر", "qty": 3, "uom_id": "uom_bottle", "price": 22.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 66.00 }
+      ],
+      "totals": { "subtotal": 402.00, "line_discounts": 0, "ticket_discount": 0, "taxable_base": 402.00, "tax": 56.28, "rounding": 0, "grand_total": 458.28 },
+      "tenders": [ { "type": "pm_cash", "amount": 500.00 } ], "change_due": 41.72,
+      "eta": { "uuid": "A1B2C3D4E5F60718", "accepted_at": "2026-07-05T09:13:20", "qr": "https://invoicing.eta.gov.eg/print/A1B2C3D4E5F60718", "environment": "sandbox" }
+    },
+    {
+      "id": "tk_5502", "number": "MN-P1-5502", "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main", "warehouse_id": "wh_main",
+      "customer_id": "cu_mohamed", "channel": "e-receipt", "opened_at": "2026-07-05T09:20:00", "closed_at": "2026-07-05T09:22:00",
+      "status": "paid", "payment_status": "paid", "sync_status": "valid",
+      "note": "MIXED TENDER + LOYALTY REDEEM + VARIANT LINE",
+      "lines": [
+        { "item_id": "it_shirt", "sku": "it_shirt-M-BLU", "description": "قميص كلاسيك — M أزرق", "qty": 1, "uom_id": "uom_piece", "price": 450.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 450.00 },
+        { "item_id": "it_shirt", "sku": "it_shirt-S-WHT", "description": "قميص كلاسيك — S أبيض", "qty": 1, "uom_id": "uom_piece", "price": 450.00, "line_discount": 50, "tax_type_id": "tax_t1", "line_total": 400.00 }
+      ],
+      "totals": { "subtotal": 900.00, "line_discounts": 50.00, "ticket_discount": 0, "taxable_base": 850.00, "tax": 119.00, "rounding": 0, "grand_total": 969.00 },
+      "tenders": [ { "type": "pm_loyalty", "amount": 64.00, "points_used": 640 }, { "type": "pm_cash", "amount": 505.00 }, { "type": "pm_card", "amount": 400.00 } ], "change_due": 0,
+      "loyalty_earned": 6,
+      "eta": { "uuid": "B2C3D4E5F6071829", "accepted_at": "2026-07-05T09:22:10", "qr": "https://invoicing.eta.gov.eg/print/B2C3D4E5F6071829", "environment": "sandbox" }
+    },
+    {
+      "id": "tk_5503", "number": "MN-P1-5503", "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main", "warehouse_id": "wh_main",
+      "customer_id": "cu_cash", "channel": "e-receipt", "opened_at": "2026-07-05T09:35:00", "closed_at": "2026-07-05T09:36:30",
+      "status": "paid", "payment_status": "paid", "sync_status": "queued",
+      "note": "WEIGHED LINE + B2C QUEUED NEARING WINDOW (offline sale)",
+      "lines": [
+        { "item_id": "it_beef", "sku": null, "description": "لحمة بتلو طازة", "weight_kg": 1.750, "uom_id": "uom_kg", "price_per_kg": 420.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 735.00 },
+        { "item_id": "it_bread", "sku": null, "description": "عيش فينو", "qty": 5, "uom_id": "uom_piece", "price": 3.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 15.00, "_flag": "eta_code_missing" }
+      ],
+      "totals": { "subtotal": 750.00, "line_discounts": 0, "ticket_discount": 0, "taxable_base": 750.00, "tax": 105.00, "rounding": 0, "grand_total": 855.00 },
+      "tenders": [ { "type": "pm_cash", "amount": 855.00 } ], "change_due": 0,
+      "eta": { "uuid": null, "queued_at": "2026-07-05T09:36:40", "window_deadline": "2026-07-07T09:36:40", "window_remaining_hours": 6, "environment": "sandbox" },
+      "_flag": "nearing_window,line_eta_code_missing"
+    },
+    {
+      "id": "tk_5498", "number": "NS-P1-5498", "terminal_id": "tm_nasr_1", "shift_id": "sh_closed_nasr", "branch_id": "br_nasr", "warehouse_id": "wh_nasr",
+      "customer_id": "cu_shifa", "channel": "e-invoice", "opened_at": "2026-07-04T15:10:00", "closed_at": "2026-07-04T15:12:00",
+      "status": "paid", "payment_status": "paid", "sync_status": "rejected",
+      "note": "B2B linked at POS, ETA rejected — plain-Arabic reason",
+      "lines": [ { "item_id": "it_oil", "sku": null, "description": "زيت عافية ذرة ٢.٢٥ لتر", "qty": 6, "uom_id": "uom_bottle", "price": 158.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 948.00 } ],
+      "totals": { "subtotal": 948.00, "line_discounts": 0, "ticket_discount": 0, "taxable_base": 948.00, "tax": 132.72, "rounding": 0, "grand_total": 1080.72 },
+      "tenders": [ { "type": "pm_card", "amount": 1080.72 } ], "change_due": 0,
+      "eta": { "uuid": null, "rejected_at": "2026-07-04T15:12:30", "reason_ar": "الرقم الضريبي للعميل غير صحيح", "reason_en": "Buyer tax registration number is invalid", "offending_field": "buyer.trn", "raw_code": "422" }
+    },
+    {
+      "id": "tk_5504", "number": "MN-P1-5504", "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main", "warehouse_id": "wh_main",
+      "customer_id": "cu_cash", "channel": "e-receipt", "opened_at": "2026-07-05T09:48:00", "closed_at": null,
+      "status": "parked", "payment_status": null, "sync_status": "local",
+      "note": "PARKED — customer stepped away",
+      "lines": [ { "item_id": "it_rice", "sku": null, "description": "أرز مصري فاخر ٥ كجم", "qty": 1, "uom_id": "uom_pack", "price": 168.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 168.00 } ],
+      "totals": { "subtotal": 168.00, "line_discounts": 0, "ticket_discount": 0, "taxable_base": 168.00, "tax": 23.52, "rounding": 0, "grand_total": 191.52 },
+      "tenders": [], "change_due": 0
+    },
+    {
+      "id": "tk_5497", "number": "NS-P1-5497", "terminal_id": "tm_nasr_1", "shift_id": "sh_closed_nasr", "branch_id": "br_nasr", "warehouse_id": "wh_nasr",
+      "customer_id": "cu_cash", "channel": "e-receipt", "opened_at": "2026-07-04T14:02:00", "closed_at": "2026-07-04T14:02:40",
+      "status": "voided", "payment_status": null, "sync_status": "local",
+      "note": "VOIDED before payment (wrong items)",
+      "voided_by_ar": "منى فؤاد", "void_reason_ar": "أصناف غلط",
+      "lines": [ { "item_id": "it_cola", "sku": null, "description": "كوكاكولا ١ لتر", "qty": 24, "uom_id": "uom_bottle", "price": 22.00, "line_discount": 0, "tax_type_id": "tax_t1", "line_total": 528.00 } ],
+      "totals": { "subtotal": 528.00, "line_discounts": 0, "ticket_discount": 0, "taxable_base": 528.00, "tax": 73.92, "rounding": 0, "grand_total": 601.92 },
+      "tenders": [], "change_due": 0
+    }
+  ],
+
+  "pos_returns": [
+    {
+      "id": "rt_331", "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main",
+      "original_ticket_id": "tk_5501", "has_original": true, "reason_ar": "الصنف تالف", "reason_en": "Damaged item",
+      "lines": [ { "item_id": "it_cola", "qty": 1, "line_total": 22.00 } ],
+      "refund_method": "pm_cash", "refund_amount": 25.08, "credit_note_id": "cn_pos_331", "inbound_movement": true
+    },
+    {
+      "id": "rt_332", "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main",
+      "original_ticket_id": null, "has_original": false, "reason_ar": "مقاس غير مناسب", "reason_en": "Wrong size",
+      "lines": [ { "item_id": "it_shirt", "sku": "it_shirt-M-WHT", "qty": 1, "line_total": 450.00 } ],
+      "refund_method": "pm_store_credit", "refund_amount": 450.00, "store_credit_voucher_id": "sc_new_pending", "customer_choice": "store_credit", "inbound_movement": true,
+      "note": "No original receipt → customer chose store credit (bearer voucher). Cash was also offered."
+    }
+  ]
+}
