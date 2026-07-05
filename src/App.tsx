@@ -94,6 +94,8 @@ import { PosLayout, PosGridPlaceholder } from "@/components/shell/pos/PosLayout"
 import { PosExitTracker } from "@/components/shell/pos/PosExitTracker";
 import CashierGridPage from "@/features/pos/CashierGridPage";
 import CloseShiftPage from "@/features/pos/CloseShiftPage";
+import PosJournalPage from "@/features/pos/JournalPage";
+import PosSettingsPage from "@/features/pos/SettingsPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -135,6 +137,8 @@ export default function App() {
           <Route index element={<Navigate to="register" replace />} />
           <Route path="register" element={<CashierGridPage />} />
           <Route path="shift/close" element={<CloseShiftPage />} />
+          <Route path="journal" element={<PosJournalPage />} />
+          <Route path="settings" element={<PosSettingsPage />} />
           <Route path="*" element={<PosGridPlaceholder />} />
         </Route>
 
