@@ -11,19 +11,11 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { usePosRegister, type PosCustomer } from "@/stores/posRegister";
+import { usePosShift } from "@/stores/posShift";
 import { round2 } from "./posTotals";
 import { CustomerPickerDialog } from "./CustomerPickerDialog";
+import { TENDER_TYPES, type TenderType } from "./tenderTypes";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
-
-interface TenderType {
-  id: string;
-  name_ar: string;
-  name_en: string;
-  gives_change: boolean;
-  requires_customer?: boolean;
-  credit_check?: boolean;
-  requires_balance?: boolean;
-}
 
 interface StoreCreditVoucher {
   id: string;
@@ -33,7 +25,6 @@ interface StoreCreditVoucher {
   status: string;
 }
 
-const TENDER_TYPES = posFixtures.tender_types as TenderType[];
 const VOUCHERS = posFixtures.store_credit_vouchers as StoreCreditVoucher[];
 const LOYALTY = posFixtures.loyalty;
 
@@ -51,9 +42,10 @@ interface TenderModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   grandTotal: number;
+  tax: number;
 }
 
-export function TenderModal({ open, onOpenChange, grandTotal }: TenderModalProps) {
+export function TenderModal({ open, onOpenChange, grandTotal, tax }: TenderModalProps) {
   const { t } = useTranslation("pos");
   const { t: tCommon } = useTranslation("common");
   const { lang } = useAppearance();
@@ -63,6 +55,7 @@ export function TenderModal({ open, onOpenChange, grandTotal }: TenderModalProps
   const customer = usePosRegister(s => s.customer);
   const setCustomer = usePosRegister(s => s.setCustomer);
   const closeTicket = usePosRegister(s => s.closeTicket);
+  const recordSale = usePosShift(s => s.recordSale);
 
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [voucherCode, setVoucherCode] = useState("");
@@ -173,6 +166,12 @@ export function TenderModal({ open, onOpenChange, grandTotal }: TenderModalProps
     const paymentStatus: "paid" | "credit" = creditAmount > 0 ? "credit" : "paid";
     const syncStatus: "local" | "queued" = isOnline ? "local" : "queued";
 
+    const tenders: Record<string, number> = {};
+    for (const id of Object.keys(amounts)) {
+      const amt = amountOf(id);
+      if (amt > 0) tenders[id] = amt;
+    }
+    recordSale(tenders, tax);
     closeTicket({ paymentStatus, syncStatus, grandTotal, loyaltyEarned: earnedPoints });
 
     toast.success(t("tender.closed_toast", { total: formatMoney(grandTotal, lang) }));

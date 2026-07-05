@@ -93,6 +93,7 @@ import { EtaConnectorPlayground } from "@/features/dev/EtaConnectorPlayground";
 import { PosLayout, PosGridPlaceholder } from "@/components/shell/pos/PosLayout";
 import { PosExitTracker } from "@/components/shell/pos/PosExitTracker";
 import CashierGridPage from "@/features/pos/CashierGridPage";
+import CloseShiftPage from "@/features/pos/CloseShiftPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -133,6 +134,7 @@ export default function App() {
         <Route path="/pos/*" element={<PosLayout />}>
           <Route index element={<Navigate to="register" replace />} />
           <Route path="register" element={<CashierGridPage />} />
+          <Route path="shift/close" element={<CloseShiftPage />} />
           <Route path="*" element={<PosGridPlaceholder />} />
         </Route>
 

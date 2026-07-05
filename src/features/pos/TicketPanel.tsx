@@ -391,7 +391,7 @@ export function TicketPanel() {
         </div>
       </div>
 
-      <TenderModal open={payOpen} onOpenChange={setPayOpen} grandTotal={totals.grandTotal} />
+      <TenderModal open={payOpen} onOpenChange={setPayOpen} grandTotal={totals.grandTotal} tax={totals.tax} />
 
       <CustomerPickerDialog
         open={customerPickerOpen}

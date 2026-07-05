@@ -5,17 +5,18 @@ import { LockKeyhole, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppearance } from "@/stores/appearance";
 import { usePosRegister } from "@/stores/posRegister";
+import { usePosShift } from "@/stores/posShift";
 import { PosTopBar } from "./PosTopBar";
 import { PosCategoryRail } from "./PosCategoryRail";
 import { TicketPanel } from "@/features/pos/TicketPanel";
+import { OpenShiftDialog } from "@/features/pos/OpenShiftDialog";
+import { ShiftActionsDialog } from "@/features/pos/ShiftActionsDialog";
+import { ZReportView } from "@/features/pos/ZReportView";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
 import permissionsFixtures from "@/lib/mock/fixtures/permissions.fixtures.json";
 
 const CURRENT_TERMINAL = posFixtures.terminals[0];
 const BRANCH = permissionsFixtures.branches.find(b => b.id === CURRENT_TERMINAL.branch_id);
-const OPEN_SHIFT = posFixtures.shifts.find(
-  s => s.terminal_id === CURRENT_TERMINAL.id && s.status === "open"
-);
 const QUEUE_COUNT = posFixtures.tickets.filter(t => t.sync_status === "queued").length;
 const IS_SANDBOX = posFixtures._meta.eta.environment === "sandbox";
 
@@ -34,11 +35,19 @@ export function PosGridPlaceholder() {
 export function PosLayout() {
   const { t } = useTranslation("pos");
   const { lang } = useAppearance();
-  const [shiftOpen, setShiftOpen] = useState(!!OPEN_SHIFT);
   const hasOpenTicket = usePosRegister(s => s.lines.length > 0);
 
-  const cashierName = OPEN_SHIFT
-    ? (lang === "ar" ? OPEN_SHIFT.cashier_ar : OPEN_SHIFT.cashier_en)
+  const shiftStatus = usePosShift(s => s.status);
+  const shiftCashierAr = usePosShift(s => s.cashierAr);
+  const shiftCashierEn = usePosShift(s => s.cashierEn);
+  const lastClosedShift = usePosShift(s => s.lastClosedShift);
+  const shiftOpen = shiftStatus === "open";
+
+  const [openShiftDialogOpen, setOpenShiftDialogOpen] = useState(false);
+  const [shiftActionsOpen, setShiftActionsOpen] = useState(false);
+
+  const cashierName = shiftOpen
+    ? (lang === "ar" ? shiftCashierAr : shiftCashierEn)
     : undefined;
 
   return (
@@ -48,7 +57,7 @@ export function PosLayout() {
         branchName={BRANCH ? (lang === "ar" ? BRANCH.name_ar : BRANCH.name_en) : ""}
         shiftOpen={shiftOpen}
         cashierName={cashierName}
-        onToggleShift={() => setShiftOpen(o => !o)}
+        onToggleShift={shiftOpen ? () => setShiftActionsOpen(true) : undefined}
         queueCount={QUEUE_COUNT}
         sandbox={IS_SANDBOX}
         hasOpenTicket={hasOpenTicket}
@@ -58,12 +67,16 @@ export function PosLayout() {
         <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden">
           <PosCategoryRail />
 
-          {/* ── Grid area — FE_09 cashier screen mounts here ────── */}
+          {/* ── Grid area — FE_09 cashier/close-shift screens mount here ─ */}
           <div className="flex-1 min-w-0 min-h-0 overflow-auto p-4 pb-20 lg:pb-4">
             <Outlet />
           </div>
 
           <TicketPanel />
+        </div>
+      ) : lastClosedShift ? (
+        <div className="flex-1 min-h-0 overflow-auto p-4 md:p-8">
+          <ZReportView summary={lastClosedShift} onStartNewShift={() => setOpenShiftDialogOpen(true)} />
         </div>
       ) : (
         <div className="flex-1 min-h-0 flex items-center justify-center p-6">
@@ -71,12 +84,15 @@ export function PosLayout() {
             <LockKeyhole className="h-8 w-8 text-muted-foreground" />
             <p className="text-base font-semibold text-foreground">{t("layout.no_shift_title")}</p>
             <p className="text-sm text-muted-foreground">{t("layout.no_shift_body")}</p>
-            <Button variant="solid" tone="primary" onClick={() => setShiftOpen(true)}>
-              {t("layout.open_shift_cta")}
+            <Button variant="solid" tone="primary" onClick={() => setOpenShiftDialogOpen(true)}>
+              {t("shift.open")}
             </Button>
           </div>
         </div>
       )}
+
+      <OpenShiftDialog open={openShiftDialogOpen} onOpenChange={setOpenShiftDialogOpen} />
+      <ShiftActionsDialog open={shiftActionsOpen} onOpenChange={setShiftActionsOpen} />
     </div>
   );
 }
