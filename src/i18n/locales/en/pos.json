@@ -22,7 +22,69 @@
   "category": {
     "all": "All"
   },
+
+  "title": "Point of Sale",
   "pay": "Pay",
   "park": "Park",
-  "customer": "Customer"
+  "return": "Return",
+  "customer": "Customer",
+  "discount": "Discount",
+  "drawer": "Open drawer",
+  "exit": "Exit",
+  "change_due": "Change due",
+  "remaining": "Remaining",
+  "walk_in": "Walk-in",
+  "tender": {
+    "store_credit": "Store credit",
+    "loyalty": "Loyalty points"
+  },
+  "offline": "Offline — selling works, syncs later",
+
+  "subtotal": "Subtotal",
+  "tax_total": "Tax",
+  "rounding": "Rounding",
+
+  "grid": {
+    "search_placeholder": "Search by name or barcode…",
+    "oos": "Out of stock",
+    "no_eta_code_hint": "No ETA code — still sells, flagged for later",
+    "empty_category_title": "No items here",
+    "empty_category_body": "Try a different category",
+    "no_results_title": "No results for \"{{query}}\"",
+    "no_results_body": "Try a different name or barcode",
+    "loading": "Loading items…",
+    "error_title": "Couldn't load items",
+    "error_body": "Check your connection and try again",
+    "offline_note": "Offline — selling works and will sync once you're back online"
+  },
+
+  "variant": {
+    "pick": "Pick size & color",
+    "oos": "Out of stock"
+  },
+
+  "weight": {
+    "title": "Weight",
+    "per_kg": "Price / kg",
+    "placeholder": "Enter weight in kilograms",
+    "line_total": "Line total"
+  },
+
+  "ticket": {
+    "draft": "Draft",
+    "discount": "Ticket discount",
+    "kebab": {
+      "print": "Print 80mm",
+      "share": "Share",
+      "return": "Return",
+      "resend_eta": "Resend to ETA"
+    },
+    "stub_action": "Available once the ticket is closed (Step 3)",
+    "hold_stub": "Parking tickets will work once the Parked Tickets screen lands",
+    "customer_stub": "Customer selection lands in a later step",
+    "pay_stub_title": "Tender",
+    "pay_stub_body": "The tender screen (cash/card/mixed) is coming in Step 3",
+    "empty_title": "Ticket is empty",
+    "empty_body": "Tap an item on the grid to add it"
+  }
 }

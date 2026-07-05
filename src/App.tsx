@@ -89,9 +89,10 @@ import {
 import { PatternsPage } from "@/features/dev/PatternsPage";
 import { EtaConnectorPlayground } from "@/features/dev/EtaConnectorPlayground";
 
-// Retail POS — FE_09a (layout frame only; FE_09 screens land under its Outlet)
+// Retail POS — FE_09a layout frame + FE_09 cashier screen (§4)
 import { PosLayout, PosGridPlaceholder } from "@/components/shell/pos/PosLayout";
 import { PosExitTracker } from "@/components/shell/pos/PosExitTracker";
+import CashierGridPage from "@/features/pos/CashierGridPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -130,7 +131,8 @@ export default function App() {
 
         {/* Retail POS — FE_09a — dedicated layout, not AppShell */}
         <Route path="/pos/*" element={<PosLayout />}>
-          <Route index element={<PosGridPlaceholder />} />
+          <Route index element={<Navigate to="register" replace />} />
+          <Route path="register" element={<CashierGridPage />} />
           <Route path="*" element={<PosGridPlaceholder />} />
         </Route>
 

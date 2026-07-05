@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { LucideIcon } from "lucide-react";
-import { LayoutGrid, ShoppingBasket, CupSoda, Beef, Shirt } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppearance } from "@/stores/appearance";
+import { usePosRegister } from "@/stores/posRegister";
+import { getCategoryIcon } from "@/features/pos/categoryIcons";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
 
 interface Category {
@@ -12,25 +12,19 @@ interface Category {
   name_en: string;
 }
 
-const CATEGORY_ICON: Record<string, LucideIcon> = {
-  cat_grocery: ShoppingBasket,
-  cat_beverages: CupSoda,
-  cat_butchery: Beef,
-  cat_clothing: Shirt,
-};
-
 const categories = posFixtures.categories as Category[];
 
 export function PosCategoryRail() {
   const { t } = useTranslation("pos");
   const { lang } = useAppearance();
-  const [active, setActive] = useState<string>("all");
+  const active = usePosRegister(s => s.category);
+  const setActive = usePosRegister(s => s.setCategory);
 
   const items = [
     { id: "all", icon: LayoutGrid, label: t("category.all") },
     ...categories.map(c => ({
       id: c.id,
-      icon: CATEGORY_ICON[c.id] ?? LayoutGrid,
+      icon: getCategoryIcon(c.id),
       label: lang === "ar" ? c.name_ar : c.name_en,
     })),
   ];
