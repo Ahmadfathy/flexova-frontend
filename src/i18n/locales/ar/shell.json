@@ -92,7 +92,8 @@
     "fullscreen_enter": "وضع ملء الشاشة",
     "fullscreen_exit":  "الخروج من ملء الشاشة",
     "notifications":    "الإشعارات",
-    "home":             "الرئيسية"
+    "home":             "الرئيسية",
+    "open_pos":         "فتح نقطة البيع ↗"
   },
 
   "search": {

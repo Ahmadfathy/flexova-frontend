@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Menu, PanelLeft, Home, Maximize, Minimize, Bell } from "lucide-react";
+import { Menu, PanelLeft, Home, Maximize, Minimize, Bell, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EtaBadge } from "./EtaBadge";
 import { UserMenu } from "./UserChip";
@@ -10,7 +10,24 @@ import { HorizontalModuleBar, HorizontalSubBar, HorizontalDropdownModuleBar } fr
 import { SearchPanel } from "./SearchPanel";
 import { QuickAdd } from "./QuickAdd";
 import { useAppearance } from "@/stores/appearance";
+import { useCan } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
+
+/** Reciprocal quick-launch (FE_09a §1) — opens /pos in a new tab, gated by pos.access. */
+function OpenPosButton() {
+  const { t } = useTranslation("shell");
+  const can = useCan();
+
+  if (!can("pos.access")) return null;
+
+  return (
+    <Button variant="icon" size="icon" asChild className="hidden sm:inline-flex shrink-0">
+      <a href="/pos" target="_blank" rel="noopener noreferrer" aria-label={t("topbar.open_pos")} title={t("topbar.open_pos")}>
+        <ExternalLink className="h-4 w-4" />
+      </a>
+    </Button>
+  );
+}
 
 function FullscreenButton() {
   const { t } = useTranslation("shell");
@@ -117,6 +134,9 @@ export function Topbar() {
 
       {/* ETA badge — always visible, sits in its own slot */}
       <EtaBadge />
+
+      {/* Open POS — quick-launch, new tab, gated by pos.access */}
+      <OpenPosButton />
 
       {/* Fullscreen — desktop only; too cramped on 375 px.
           sm:contents dissolves the wrapper so the Button is a

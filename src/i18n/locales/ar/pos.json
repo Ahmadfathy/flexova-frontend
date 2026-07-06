@@ -16,7 +16,12 @@
     "ticket_placeholder_title": "التذكرة الحالية",
     "no_shift_title": "لا توجد وردية مفتوحة",
     "no_shift_body": "لازم تفتح وردية بمبلغ افتتاحي عشان تقدر تبيع",
-    "grand_total": "الإجمالي"
+    "grand_total": "الإجمالي",
+    "open_dashboard": "فتح لوحة التحكم ↗",
+    "open_pos": "فتح نقطة البيع ↗",
+    "journal": "اليومية",
+    "terminal": "إعدادات الطرفية",
+    "back_to_register": "الرجوع لشاشة البيع"
   },
   "category": {
     "all": "الكل"

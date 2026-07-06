@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BookText, Search, X, Lock } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeft, BookText, Search, X, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +55,9 @@ export default function JournalPage() {
   const { t } = useTranslation("pos");
   const { lang } = useAppearance();
   const can = useCan();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isRoutedView = location.pathname.startsWith("/pos/journal");
   const { tickets, loading, error, isOffline, reload } = useTerminalJournal();
 
   const [filters, setFilters] = useState<JournalFilters>(EMPTY_FILTERS);
@@ -98,9 +102,22 @@ export default function JournalPage() {
 
   return (
     <div className="max-w-3xl w-full mx-auto space-y-4 pb-6">
-      <div className="flex items-center gap-2">
-        <BookText className="h-5 w-5 text-muted-foreground" />
-        <h1 className="text-base font-semibold text-foreground">{t("journal.title")}</h1>
+      <div className="space-y-1">
+        {isRoutedView && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 -ms-2 gap-1 px-2 text-xs text-muted-foreground"
+            onClick={() => navigate("/pos/register")}
+          >
+            <ArrowLeft className="h-3.5 w-3.5 rtl:-scale-x-100" />
+            {t("layout.back_to_register")}
+          </Button>
+        )}
+        <div className="flex items-center gap-2">
+          <BookText className="h-5 w-5 text-muted-foreground" />
+          <h1 className="text-base font-semibold text-foreground">{t("journal.title")}</h1>
+        </div>
       </div>
 
       {isOffline && <OfflineBanner message={t("journal.offline_note")} />}

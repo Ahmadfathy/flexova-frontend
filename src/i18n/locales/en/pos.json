@@ -16,7 +16,12 @@
     "ticket_placeholder_title": "Current ticket",
     "no_shift_title": "No open shift",
     "no_shift_body": "Open a shift with a starting float before you can sell",
-    "grand_total": "Grand total"
+    "grand_total": "Grand total",
+    "open_dashboard": "Open Dashboard ↗",
+    "open_pos": "Open POS ↗",
+    "journal": "Journal",
+    "terminal": "Terminal settings",
+    "back_to_register": "Back to register"
   },
   "category": {
     "all": "All"

@@ -92,7 +92,8 @@
     "fullscreen_enter": "Enter fullscreen",
     "fullscreen_exit":  "Exit fullscreen",
     "notifications":    "Notifications",
-    "home":             "Home"
+    "home":             "Home",
+    "open_pos":         "Open POS ↗"
   },
 
   "search": {
