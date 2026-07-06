@@ -1,4 +1,4 @@
-import { useMemo, useState, type KeyboardEvent } from "react";
+import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Search, ScanBarcode } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,16 +8,18 @@ import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { useAppearance } from "@/stores/appearance";
 import { usePosRegister } from "@/stores/posRegister";
+import { usePosTerminalSettings } from "@/stores/posTerminalSettings";
 import { useCan } from "@/lib/permissions";
 import { useCashierCatalog, type PosItem, type PosVariant } from "./useCashierCatalog";
 import { ProductCard } from "./ProductCard";
+import { GridDensity } from "./GridDensity";
 import { VariantPickerDialog } from "./VariantPickerDialog";
 import { WeightEntryDialog } from "./WeightEntryDialog";
 
-function GridSkeleton() {
+function GridSkeleton({ density }: { density: number }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
-      {Array.from({ length: 10 }).map((_, i) => (
+    <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${density}, minmax(0, 1fr))` }}>
+      {Array.from({ length: density * 2 }).map((_, i) => (
         <Skeleton key={i} className="h-[168px] rounded-lg" />
       ))}
     </div>
@@ -36,6 +38,10 @@ export default function CashierGridPage() {
   const addUnitLine = usePosRegister(s => s.addUnitLine);
   const addWeightLine = usePosRegister(s => s.addWeightLine);
 
+  const gridDensity = usePosTerminalSettings(s => s.gridDensity);
+  const setGridDensity = usePosTerminalSettings(s => s.setGridDensity);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [variantItem, setVariantItem] = useState<PosItem | null>(null);
   const [weightItem, setWeightItem] = useState<PosItem | null>(null);
 
@@ -120,20 +126,34 @@ export default function CashierGridPage() {
     <div className="h-full flex flex-col gap-3">
       {isOffline && <OfflineBanner message={t("grid.offline_note")} />}
 
-      <div className="relative shrink-0">
-        <Search className="absolute top-1/2 -translate-y-1/2 start-3 h-4 w-4 text-muted-foreground" />
-        <Input
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          onKeyDown={handleSearchKeyDown}
-          placeholder={t("grid.search_placeholder")}
-          className="ps-9 pe-9 h-11"
-        />
-        <ScanBarcode className="absolute top-1/2 -translate-y-1/2 end-3 h-4 w-4 text-muted-foreground/50" />
+      <div className="flex items-center gap-2 shrink-0">
+        <div className="relative flex-1 min-w-0">
+          <Search className="absolute top-1/2 -translate-y-1/2 start-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            ref={searchInputRef}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            placeholder={t("search_placeholder")}
+            className="ps-9 h-11 border-2 border-foreground/20 focus:border-brand focus:ring-2 focus:ring-brand/20"
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => searchInputRef.current?.focus()}
+          aria-label={t("scanner")}
+          title={t("scanner")}
+          className="h-11 w-11 shrink-0 inline-flex items-center justify-center rounded border-2 border-foreground/20 bg-muted text-foreground hover:border-brand hover:bg-brand-tint hover:text-brand-text transition-colors"
+        >
+          <ScanBarcode className="h-4 w-4" />
+        </button>
+
+        <GridDensity value={gridDensity} onChange={setGridDensity} />
       </div>
 
       {loading ? (
-        <GridSkeleton />
+        <GridSkeleton density={gridDensity} />
       ) : error ? (
         <ErrorState title={t("grid.error_title")} description={t("grid.error_body")} onRetry={reload} />
       ) : filtered.length === 0 ? (
@@ -146,7 +166,10 @@ export default function CashierGridPage() {
           <EmptyState title={t("grid.empty_category_title")} description={t("grid.empty_category_body")} />
         )
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 overflow-auto">
+        <div
+          className="grid gap-3 overflow-auto"
+          style={{ gridTemplateColumns: `repeat(${gridDensity}, minmax(0, 1fr))` }}
+        >
           {filtered.map(item => (
             <ProductCard key={item.item_id} item={item} onActivate={activate} />
           ))}

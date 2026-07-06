@@ -45,6 +45,12 @@
   "exit": "Exit",
   "change_due": "Change due",
   "remaining": "Remaining",
+  "search_placeholder": "Search by name or barcode…",
+  "scanner": "Scan barcode",
+  "density": "Grid density",
+  "density_cols": "{{n}} columns",
+  "density_decrease": "Fewer columns",
+  "density_increase": "More columns",
   "walk_in": "Walk-in",
   "paidin": "Paid in",
   "paidout": "Paid out",
@@ -141,7 +147,6 @@
   "rounding": "Rounding",
 
   "grid": {
-    "search_placeholder": "Search by name or barcode…",
     "oos": "Out of stock",
     "no_eta_code_hint": "No ETA code — still sells, flagged for later",
     "empty_category_title": "No items here",

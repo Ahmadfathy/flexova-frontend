@@ -45,6 +45,12 @@
   "exit": "خروج",
   "change_due": "الباقي",
   "remaining": "المتبقّي",
+  "search_placeholder": "ابحث بالاسم أو الباركود…",
+  "scanner": "مسح باركود",
+  "density": "كثافة العرض",
+  "density_cols": "{{n}} أعمدة",
+  "density_decrease": "تقليل الكثافة",
+  "density_increase": "زيادة الكثافة",
   "walk_in": "عميل نقدي",
   "paidin": "إيداع",
   "paidout": "سحب",
@@ -140,7 +146,6 @@
   "rounding": "التقريب",
 
   "grid": {
-    "search_placeholder": "ابحث بالاسم أو الباركود…",
     "oos": "غير متوفر",
     "no_eta_code_hint": "لا يوجد كود ETA — البيع يعمل، هيتصلح بعدين",
     "empty_category_title": "مفيش أصناف هنا",

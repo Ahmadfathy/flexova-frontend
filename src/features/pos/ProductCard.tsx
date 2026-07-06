@@ -83,7 +83,7 @@ export function ProductCard({ item, onActivate }: ProductCardProps) {
       {hint && <p className="text-[11px] text-muted-foreground truncate mt-0.5">{hint}</p>}
 
       <div className="mt-auto pt-1.5 flex items-center justify-between gap-1">
-        <span className="text-sm font-bold tabular-nums text-foreground truncate">{priceLabel}</span>
+        <span className="min-w-0 flex-1 text-sm font-bold tabular-nums text-foreground truncate">{priceLabel}</span>
 
         {inCart ? (
           <span className="inline-flex items-center gap-0.5 rounded-full bg-brand text-on-brand text-[11px] font-bold h-6 min-w-6 px-1.5 justify-center shrink-0 tabular-nums">

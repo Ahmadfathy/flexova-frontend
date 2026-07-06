@@ -6,6 +6,9 @@ const CURRENT_TERMINAL = posFixtures.terminals[0];
 
 export type HardwareKey = "printer" | "drawer" | "scanner" | "scale";
 
+export const GRID_DENSITY_MIN = 4;
+export const GRID_DENSITY_MAX = 12;
+
 interface PosTerminalSettingsState {
   hardwareBound: Record<HardwareKey, boolean>;
   lastTestedAt: Record<HardwareKey, string | null>;
@@ -13,6 +16,7 @@ interface PosTerminalSettingsState {
   defaultPriceListId: string;
   etaDeviceActivated: boolean;
   etaAccessToken: string | null;
+  gridDensity: number;
 
   toggleHardware: (key: HardwareKey) => void;
   testHardware: (key: HardwareKey) => void;
@@ -21,6 +25,7 @@ interface PosTerminalSettingsState {
   activateEtaDevice: () => void;
   deactivateEtaDevice: () => void;
   regenerateEtaToken: () => void;
+  setGridDensity: (n: number) => void;
 }
 
 function mockToken() {
@@ -41,6 +46,7 @@ export const usePosTerminalSettings = create<PosTerminalSettingsState>()(
       defaultPriceListId: CURRENT_TERMINAL.price_list_id,
       etaDeviceActivated: false,
       etaAccessToken: null,
+      gridDensity: CURRENT_TERMINAL.grid_density,
 
       toggleHardware: (key) => set((s) => ({
         hardwareBound: { ...s.hardwareBound, [key]: !s.hardwareBound[key] },
@@ -56,6 +62,10 @@ export const usePosTerminalSettings = create<PosTerminalSettingsState>()(
       activateEtaDevice: () => set({ etaDeviceActivated: true, etaAccessToken: mockToken() }),
       deactivateEtaDevice: () => set({ etaDeviceActivated: false, etaAccessToken: null }),
       regenerateEtaToken: () => set({ etaAccessToken: mockToken() }),
+
+      setGridDensity: (n) => set({
+        gridDensity: Math.min(GRID_DENSITY_MAX, Math.max(GRID_DENSITY_MIN, Math.round(n))),
+      }),
     }),
     { name: "flexova.pos.terminalSettings" }
   )
