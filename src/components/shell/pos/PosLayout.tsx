@@ -32,10 +32,16 @@ export function PosGridPlaceholder() {
   );
 }
 
-export function PosLayout() {
+interface PosLayoutProps {
+  /** "pos" (default) keeps the cashier rail+ticket body; "generic" gives sector
+   * modules (e.g. F&B) a full-bleed body — they assemble their own chrome. */
+  variant?: "pos" | "generic";
+}
+
+export function PosLayout({ variant = "pos" }: PosLayoutProps) {
   const { t } = useTranslation("pos");
   const { lang } = useAppearance();
-  const hasOpenTicket = usePosRegister(s => s.lines.length > 0);
+  const hasOpenTicket = usePosRegister(s => s.lines.length > 0) && variant === "pos";
 
   const shiftStatus = usePosShift(s => s.status);
   const shiftCashierAr = usePosShift(s => s.cashierAr);
@@ -64,16 +70,22 @@ export function PosLayout() {
       />
 
       {shiftOpen ? (
-        <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden">
-          <PosCategoryRail />
+        variant === "pos" ? (
+          <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden">
+            <PosCategoryRail />
 
-          {/* ── Grid area — FE_09 cashier/close-shift screens mount here ─ */}
-          <div className="flex-1 min-w-0 min-h-0 overflow-auto p-4 pb-20 lg:pb-4">
+            {/* ── Grid area — FE_09 cashier/close-shift screens mount here ─ */}
+            <div className="flex-1 min-w-0 min-h-0 overflow-auto p-4 pb-20 lg:pb-4">
+              <Outlet />
+            </div>
+
+            <TicketPanel />
+          </div>
+        ) : (
+          <div className="flex-1 min-h-0 overflow-hidden">
             <Outlet />
           </div>
-
-          <TicketPanel />
-        </div>
+        )
       ) : lastClosedShift ? (
         <div className="flex-1 min-h-0 overflow-auto p-4 md:p-8">
           <ZReportView summary={lastClosedShift} onStartNewShift={() => setOpenShiftDialogOpen(true)} />

@@ -97,6 +97,10 @@ import CloseShiftPage from "@/features/pos/CloseShiftPage";
 import PosJournalPage from "@/features/pos/JournalPage";
 import PosSettingsPage from "@/features/pos/SettingsPage";
 
+// F&B — FE_10 — reuses PosLayout (generic variant); Floor plan this step
+import FloorPlanPage from "@/features/fnb/FloorPlanPage";
+import FnbOrderStub from "@/features/fnb/FnbOrderStub";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -140,6 +144,15 @@ export default function App() {
           <Route path="journal" element={<PosJournalPage />} />
           <Route path="settings" element={<PosSettingsPage />} />
           <Route path="*" element={<PosGridPlaceholder />} />
+        </Route>
+
+        {/* F&B — FE_10 — reuses PosLayout (generic body: no POS rail/ticket).
+            Journal/settings/shift are reused via the shared /pos/* routes
+            (top-bar Journal/Terminal icons already navigate there). */}
+        <Route path="/fnb/*" element={<PosLayout variant="generic" />}>
+          <Route index element={<Navigate to="floor" replace />} />
+          <Route path="floor" element={<FloorPlanPage />} />
+          <Route path="order/:checkId" element={<FnbOrderStub />} />
         </Route>
 
         <Route element={<AppShell />}>

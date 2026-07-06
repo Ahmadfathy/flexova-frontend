@@ -1,0 +1,59 @@
+{
+  "title": "F&B",
+  "guests": "Guests",
+
+  "table": {
+    "open": "Open table",
+    "enter": "Enter order",
+    "seats_count": "{{n}} seats",
+    "reserved_for": "Reserved for {{name}}",
+    "status": {
+      "available": "Available",
+      "occupied": "Occupied",
+      "reserved": "Reserved",
+      "dirty": "Needs cleaning"
+    }
+  },
+
+  "floor": {
+    "title": "Floor plan",
+    "edit_mode": "Edit layout",
+    "done_editing": "Done",
+    "add_table": "Add table",
+    "add_section": "Add section",
+    "remove_table": "Remove table",
+    "remove_section": "Remove section",
+    "remove_section_blocked": "Move or remove this section's tables first",
+    "remove_section_last": "At least one section must remain",
+    "remove_table_blocked": "Table is occupied — close the order first",
+    "section_name_ar_placeholder": "Section name (Arabic)",
+    "section_name_en_placeholder": "Section name (English)",
+    "edit_table_title": "Edit table",
+    "seats": "Seats",
+    "shape": "Shape",
+    "shape_square": "Square",
+    "shape_round": "Round",
+    "shape_rect": "Rectangle",
+    "zoom_in": "Zoom in",
+    "zoom_out": "Zoom out",
+    "transfer_table": "Transfer order",
+    "merge_tables": "Merge tables",
+    "move_table": "Move table",
+    "stub_toast": "Available in a later step",
+    "empty_title": "No tables yet",
+    "empty_body": "Add tables from editor mode",
+    "error_title": "Couldn't load the floor plan",
+    "error_body": "Check your connection and try again",
+    "no_results_title": "No tables in this section",
+    "no_results_body": "Try another section or add a table from editor mode",
+    "offline_note": "Offline — changes will sync once you're back online",
+    "permission_required": "You don't have access to the floor plan"
+  },
+
+  "order_stub": {
+    "title": "Order screen",
+    "body": "The order screen arrives in the next step (Order)",
+    "check_id": "Check",
+    "back_to_floor": "Back to floor plan"
+  }
+}

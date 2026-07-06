@@ -1,0 +1,59 @@
+{
+  "title": "الأكل والمشروبات",
+  "guests": "عدد الضيوف",
+
+  "table": {
+    "open": "فتح طاولة",
+    "enter": "دخول الطلب",
+    "seats_count": "{{n}} مقاعد",
+    "reserved_for": "محجوزة لـ {{name}}",
+    "status": {
+      "available": "متاحة",
+      "occupied": "مشغولة",
+      "reserved": "محجوزة",
+      "dirty": "تحتاج تنظيف"
+    }
+  },
+
+  "floor": {
+    "title": "مخطط الصالة",
+    "edit_mode": "وضع التحرير",
+    "done_editing": "تم",
+    "add_table": "إضافة طاولة",
+    "add_section": "إضافة قسم",
+    "remove_table": "حذف الطاولة",
+    "remove_section": "حذف القسم",
+    "remove_section_blocked": "انقل أو احذف طاولات القسم أولاً",
+    "remove_section_last": "لازم يفضل قسم واحد على الأقل",
+    "remove_table_blocked": "الطاولة مشغولة — حرّر الطلب الأول",
+    "section_name_ar_placeholder": "اسم القسم (عربي)",
+    "section_name_en_placeholder": "اسم القسم (إنجليزي)",
+    "edit_table_title": "تعديل الطاولة",
+    "seats": "عدد المقاعد",
+    "shape": "الشكل",
+    "shape_square": "مربع",
+    "shape_round": "دائري",
+    "shape_rect": "مستطيل",
+    "zoom_in": "تكبير",
+    "zoom_out": "تصغير",
+    "transfer_table": "نقل الطلب",
+    "merge_tables": "دمج الطاولات",
+    "move_table": "نقل الطاولة",
+    "stub_toast": "هتتفعّل في خطوة لاحقة",
+    "empty_title": "لا توجد طاولات",
+    "empty_body": "أضف طاولات من وضع التحرير",
+    "error_title": "تعذّر تحميل مخطط الصالة",
+    "error_body": "تحقق من الاتصال وحاول تاني",
+    "no_results_title": "لا توجد طاولات في هذا القسم",
+    "no_results_body": "جرّب قسم تاني أو أضف طاولة من وضع التحرير",
+    "offline_note": "غير متصل — التعديلات هتتزامن لما ترجع الشبكة",
+    "permission_required": "مفيش صلاحية لعرض مخطط الصالة"
+  },
+
+  "order_stub": {
+    "title": "شاشة الطلب",
+    "body": "شاشة الطلب هتتفعّل في الخطوة الجاية (Order)",
+    "check_id": "رقم الطلب",
+    "back_to_floor": "الرجوع لمخطط الصالة"
+  }
+}

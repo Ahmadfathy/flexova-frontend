@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Package, ShoppingCart, Truck, Users, Calculator,
-  UserCog, BarChart3, Shield, Settings, Store,
+  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed,
 } from "lucide-react";
 
 export type MenuGroup = "core" | "sector" | "admin";
@@ -146,11 +146,20 @@ export const MENU: MenuItem[] = [
     permission: "pos.access",
   },
   {
+    key: "fnb",
+    icon: UtensilsCrossed,
+    route: "/fnb",
+    group: "sector",
+    order: 9,
+    moduleFlag: "fnb",
+    permission: "fnb.access",
+  },
+  {
     key: "permissions",
     icon: Shield,
     route: "/admin",
     group: "admin",
-    order: 9,
+    order: 10,
     subItems: [
       { key: "users",     route: "/admin/users" },
       { key: "roles",     route: "/admin/roles" },
@@ -164,7 +173,7 @@ export const MENU: MenuItem[] = [
     icon: Settings,
     route: "/settings",
     group: "admin",
-    order: 10,
+    order: 11,
     subItems: [
       { key: "settings_appearance", route: "/settings/appearance" },
     ],
