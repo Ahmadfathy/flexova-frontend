@@ -75,7 +75,8 @@ Rendered inside **`PosLayout`** (FE_09a) as **3 zones**, RTL-native: **category 
 
 ### 4.3 Components
 **Category rail:** provided by `PosLayout` (`PosCategoryRail`) — vertical icon+label list, active state; small screens → horizontal chips above the grid.
-**Product grid:** `ProductCard` tiles — **image optional** (fallback = category icon or first letter — perf/offline: no image dependency), name, SKU/hint, price, and a corner action: `＋` add, or **`✓` in-cart** indicator (with qty). Badges: **`▾ variants`** (opens picker §5), **`⚖ weight`** (opens weight entry §6), **`⚑ no eta_code`** (flag-don't-block: still sells). Instant `SearchInput` + **always-on barcode capture** (scanner/keyboard wedge → resolves straight to a `sku`/weighted line). OOS still tappable (config).
+**Search row:** `SearchInput` (start, fluid) with **strengthened contrast** — a visible border (`border-strong` on rest, brand on focus), a clear leading search icon, and a **distinct barcode/scanner button** (bordered, filled-icon, not a faint glyph) so both read clearly. On the **opposite end of the same row: a density control (`GridDensity` 4→12 columns)** — a quick stepper/segmented control the cashier adjusts live; the choice is **persisted per-terminal** (settings), so every screen size can be dialed in.
+**Product grid:** responsive grid whose column count is driven by the **density control (4–12)**, not fixed breakpoints — this fixes the card breakage on smaller screens. `ProductCard` tiles have a **stable internal layout** (fixed image/fallback area on top; name; SKU/hint; a bottom row that always aligns **price · action**) so the `＋`/**`✓` in-cart** (with qty) and price never misalign as columns change. Fallback = category icon or first letter (perf/offline: no image dependency). Badges: **`▾ variants`** (opens picker §5), **`⚖ weight`** (opens weight entry §6), **`⚑ no eta_code`** (flag-don't-block: still sells). **Always-on barcode capture** (scanner/keyboard wedge → resolves straight to a `sku`/weighted line). OOS still tappable (config).
 **Ticket panel:** header = `ticket no` + **kebab** (`print 80mm` · `share` · `return` · `resend ETA`); **customer chip** (name + type + **loyalty points/value** if enabled + available credit if credit); line list (name/variant · qty **or** weight · price · line total) with tap-to-edit qty/weight, delete, **line discount** (gated) and ticket-level discount; totals (subtotal · discounts · tax by type · rounding · **grand total bold**).
 **Footer (simplified — GotPOS-informed):** one **`Pay` (primary, large)** + two secondary: **`Hold`** (park) · **`Customer`**. `discount`/`drawer`/`return` reachable via cart line actions + kebab; no crowded 4-button bar.
 
@@ -111,6 +112,10 @@ Optimized for tablet/terminal landscape. Desktop: grid + side cart. Small tablet
 | pos.tender.store_credit | رصيد متجر | Store credit |
 | pos.tender.loyalty | نقاط ولاء | Loyalty points |
 | pos.offline | غير متصل — البيع يعمل ويتزامن لاحقاً | Offline — selling works, syncs later |
+| pos.search_placeholder | ابحث بالاسم أو الباركود… | Search by name or barcode… |
+| pos.scanner | مسح باركود | Scan barcode |
+| pos.density | كثافة العرض | Grid density |
+| pos.density_cols | {{n}} أعمدة | {{n}} columns |
 
 ---
 
@@ -168,22 +173,24 @@ Count cash (optionally per tender) → system shows **expected vs counted + vari
 
 ---
 
-## 11) Screen — Terminal journal (`/pos/journal`)
+## 11) Screen — Terminal journal (`/pos/journal` · **also a top-bar popover**)
 
-Tickets of the current shift/day with **payment pill + sync pill** (independent), search/filter by status. **Resend** rejected/queued (reuses `sales.eta.resend`); tap a ticket → its issued receipt view (FE_02 §6, 80mm). Inherits the ETA hub (FE_02 §10) for cross-branch compliance view.
+**Primary surface = a popover** anchored on the top-bar `journal` icon (FE_09a) — opens in-place over the cashier, dismiss to return. When reached as a **route** (`/pos/journal`, e.g. deep link), the screen renders a clear **"back to register" control** (`pos.layout.back_to_register`) at the top so the cashier is never stranded.
+Content: tickets of the current shift/day with **payment pill + sync pill** (independent), search/filter by status. **Resend** rejected/queued (reuses `sales.eta.resend`); tap a ticket → its issued receipt view (FE_02 §6, 80mm). Inherits the ETA hub (FE_02 §10) for cross-branch compliance view.
 **Permissions:** `pos.journal.view`.
-**AR/EN:** `pos.journal.title`="يومية الطرفية"/"Terminal journal", `pos.journal.resend`="إعادة إرسال"/"Resend".
-**Acceptance:** payment and sync statuses shown separately; rejected shows plain-Arabic reason; resend works; ticket opens its 80mm receipt.
+**AR/EN:** `pos.journal.title`="يومية الطرفية"/"Terminal journal", `pos.journal.resend`="إعادة إرسال"/"Resend", `pos.layout.back_to_register`="الرجوع لشاشة البيع"/"Back to register".
+**Acceptance:** opens as a popover from the top bar; when routed, a back-to-register control is present; payment and sync statuses shown separately; rejected shows plain-Arabic reason; resend works; ticket opens its 80mm receipt.
 
 ---
 
-## 12) Screen — Terminal settings (`/pos/settings`)
+## 12) Screen — Terminal settings (`/pos/settings` · **also a top-bar popover**)
 
+**Primary surface = a popover** anchored on the top-bar `terminal` icon (FE_09a) — opens in-place over the cashier, dismiss to return. When reached as a **route**, the screen renders a clear **"back to register" control** at the top.
 Bind hardware (**80mm printer / cash drawer / barcode scanner / scale**) with **test print** and **test drawer**; default warehouse + price list; local numbering behavior; ETA device activation/access-token (base in FE_02 §11). 
 **Permissions:** `pos.terminal.settings` (admin/manager).
 > **MVP decision (approved):** all hardware (80mm printer / cash drawer / barcode scanner / scale) runs behind a **mock bridge interface** — no real device I/O yet. Test print/drawer/scan/weigh are simulated so every flow is exercisable; real device integration lands with the **Backend/native layer** (module's last stage).
 **AR/EN:** `pos.settings.title`="إعدادات الطرفية"/"Terminal settings", `pos.settings.printer`="الطابعة"/"Printer", `pos.settings.drawer`="الدرج"/"Cash drawer", `pos.settings.scanner`="السكانر"/"Scanner", `pos.settings.scale`="الميزان"/"Scale", `pos.settings.test_print`="اختبار طباعة"/"Test print".
-**Acceptance:** hardware bindings persist; test print/drawer fire; defaults apply to new tickets.
+**Acceptance:** opens as a popover from the top bar; when routed, a back-to-register control is present; hardware bindings persist; test print/drawer fire; defaults apply to new tickets.
 
 ---
 

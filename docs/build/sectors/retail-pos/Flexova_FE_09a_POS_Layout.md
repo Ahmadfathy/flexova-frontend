@@ -12,10 +12,17 @@ The three appearance layouts are **back-office** frames (nav + topbar + content)
 - `/pos/*` → `PosLayout`. Everything else → `AppShell`.
 - POS still appears in the back-office nav as a **Sector item** (`moduleFlag:"pos"`, FE_00 §14.3). Activating it navigates to `/pos`, which **leaves** `AppShell` and mounts `PosLayout`. **Exit POS** returns to the previous back-office route.
 
+**Entry points (both directions):**
+- **Back-office → POS:** the Sector nav item (same tab) **plus** an **`Open POS ↗` quick-launch button in the back-office `Topbar`** that opens `/pos` in a **new tab**, gated by `pos.access`. *This is an **approved additive** change to the FE_00 `Topbar` — a new button only, no other Topbar edits.*
+- **POS → Back-office:** `Exit POS` (same tab) **and** `Open Dashboard ↗` (new tab, gated by back-office access) — see §2.
+
 ## 2) What it keeps vs drops
-**Keeps (a slim POS top bar only):** terminal + branch label · **shift indicator** (open/closed + cashier) · **online/offline** · **sandbox** badge · **Fullscreen** (reuses FE_00 §14.5 button) · **language toggle** (ar/en) · **Exit POS**.
+**Keeps (a slim POS top bar only):**
+- **start:** **Flexova logo** · **live date + clock** (running, updates each second) · terminal + branch label.
+- **center/inline:** **shift indicator** (open/closed + cashier) · **online/offline** (+ queue) · **sandbox** badge.
+- **end:** **Journal** (popover) · **Terminal settings** (popover) · **Fullscreen** (reuses FE_00 §14.5) · **language toggle** (ar/en) · **`Exit POS`** (same tab → back-office) · **`Open Dashboard ↗`** (new tab, permission-gated).
 **Drops:** module navigation, global search-everything, notifications tray, breadcrumbs, page headers — none belong on a cashier screen.
-> Decision (adjustable): **slim top bar**, not fully chromeless — a cashier must always see shift + connection + exit. If you later want zero chrome, it's a one-line toggle.
+> Notes: **Journal & Terminal settings open as popovers** anchored on their top-bar icons (not routes/drawers) — fast, in-place, dismiss to return to the cashier. **`Exit POS` and `Open Dashboard ↗` are two separate actions** — Exit closes POS in the same tab (shared devices); Open Dashboard launches the back-office in a **new tab** (a manager who wants both open), shown only if the user has back-office access.
 
 ## 3) Region map — **3 zones** (RTL-native; `start` = right)
 
@@ -24,19 +31,19 @@ The three appearance layouts are **back-office** frames (nav + topbar + content)
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │  POS TOP BAR (slim, ~52px)                                                 │
-│  [terminal · branch]   [ shift ● · cashier · online/offline · sandbox? ]   │
-│                                          [⛶ fullscreen · ع/EN · Exit]      │
+│  [◆Flexova · 🗓 Mon 6 Jul 2026 · ⏱ 12:36 · terminal · branch]              │
+│   [ shift ● · cashier · online/offline · sandbox? ]                        │
+│        [ 🧾 journal▾ · ⚙ terminal▾ · ⛶ fullscreen · ع/EN · Exit · Dashboard↗ ]│
 ├──────┬─────────────────────────────────────────────┬──────────────────────┤
-│ RAIL │  PRODUCT GRID  (fluid)                        │  TICKET PANEL (end)  │
-│ ~64  │  [ search .................. | 🔫 barcode ]   │  ~360–420px, fixed   │
-│ icon │  ┌─────┐ ┌─────┐ ┌─────┐  (image optional,    │  ticket no ·  ⋮ kebab │
-│ cats │  │ img │ │ img │ │ IMG │   fallback letter)   │  customer · ★points  │
-│ (all,│  │name │ │name │ │name │                      │  ┌──────────────────┐│
-│ groc,│  │sku ＋│ │sku ✓│ │sku ＋│  ✓ = in cart        │  │ line · qty/wt · ₤ ││
-│ bev, │  └─────┘ └─────┘ └─────┘                      │  │ …                ││
-│ meat,│  … grid (variants ▾, ⚖ weight, ⚑ no-code)     │  └──────────────────┘│
-│ cloth)│                                              │  subtotal / tax      │
-│      │                                               │  GRAND TOTAL (bold)  │
+│ RAIL │  [ 🔍 search .......... 🔫 ] [ ▦ density 4–12 ]│  TICKET PANEL (end)  │
+│ ~64  │  ┌─────┐ ┌─────┐ ┌─────┐  (image optional,    │  ticket no ·  ⋮ kebab │
+│ icon │  │ img │ │ img │ │ IMG │   fallback letter)   │  customer · ★points  │
+│ cats │  │name │ │name │ │name │                      │  ┌──────────────────┐│
+│ (all,│  │sku ＋│ │sku ✓│ │sku ＋│  ✓ = in cart        │  │ line · qty/wt · ₤ ││
+│ groc,│  └─────┘ └─────┘ └─────┘                      │  │ …                ││
+│ bev, │  … grid (variants ▾, ⚖ weight, ⚑ no-code)     │  └──────────────────┘│
+│ meat,│                                               │  subtotal / tax      │
+│ cloth)│                                              │  GRAND TOTAL (bold)  │
 │      │                                               │  ┌──────────────────┐│
 │      │                                               │  │    PAY (large)   ││
 │      │                                               │  └──────────────────┘│
@@ -49,12 +56,15 @@ Small screens: rail → horizontal chips above the grid; ticket panel → bottom
 
 ## 4) Components (new, under `components/shell/pos/`)
 - `PosLayout.tsx` — the frame: top bar + **3-zone** body (rail · grid · ticket); owns fullscreen/exit; reads appearance store for `theme/mode/lang/dir`.
-- `PosTopBar.tsx` — slim bar (terminal/branch · `ShiftIndicator` · `ConnectionIndicator` · sandbox badge · `FullscreenBtn` reused · lang toggle · `ExitPosBtn`).
+- `PosTopBar.tsx` — slim bar (start: `PosBrandClock` · terminal/branch; inline: `ShiftIndicator` · `ConnectionIndicator` · sandbox badge; end: `JournalPopoverBtn` · `TerminalPopoverBtn` · `FullscreenBtn` reused · lang toggle · `ExitPosBtn` · `OpenDashboardBtn`).
+- `PosBrandClock.tsx` — **Flexova logo + live date + running clock** (updates each second; `Intl` locale-aware, western digits, respects `prefers-reduced-motion` by still ticking but no animation).
+- `JournalPopoverBtn.tsx` / `TerminalPopoverBtn.tsx` — open the **Journal** and **Terminal-settings** surfaces as **popovers** anchored on their icons (FE_09 §11/§12 content mounts inside), dismiss to return to the cashier. (If deep-linked as a route, those screens still render with a **back-to-register** control — FE_09.)
+- `OpenDashboardBtn.tsx` — opens the back-office (`/`) in a **new tab** (`target="_blank"`); rendered only if the user has back-office access (`app.backoffice.access` / equivalent). Distinct from `ExitPosBtn`.
 - `PosCategoryRail.tsx` — vertical icon+label category rail (active state); collapses to horizontal chips on small screens.
 - `ShiftIndicator.tsx` — open/closed dot + cashier name (click → X-read / close, gated).
 - `ConnectionIndicator.tsx` — online/offline + queue count (drives the persistent offline state).
-- `ExitPosBtn.tsx` — confirm if an open ticket exists (`ConfirmDialog`), else return to prior back-office route.
-> The POS **screens** are FE_09 — this layout frames them via `<Outlet/>`. FE_09 owns: `ProductCard` (image optional + letter/icon fallback; badges: `✓ in-cart` / `▾ variants` / `⚖ weight` / `⚑ no eta_code`), the `TicketPanel` (kebab = print 80mm · share · return · resend ETA; customer chip with loyalty points; footer = **Pay (large)** + **Hold** + **Customer**), and all overlays (variant picker, weight, tender).
+- `ExitPosBtn.tsx` — confirm if an open ticket exists (`ConfirmDialog`), else return to prior back-office route **in the same tab**.
+> The POS **screens** are FE_09 — this layout frames them via `<Outlet/>`. FE_09 owns: `ProductCard` (image optional + letter/icon fallback; badges: `✓ in-cart` / `▾ variants` / `⚖ weight` / `⚑ no eta_code`), the **search row + density control (4–12)**, the `TicketPanel` (kebab = print 80mm · share · return · resend ETA; customer chip with loyalty points; footer = **Pay (large)** + **Hold** + **Customer**), the **back-to-register control on Journal/Settings when routed**, and all overlays (variant picker, weight, tender).
 
 ## 5) Routing shape (for Claude Code)
 ```
@@ -82,7 +92,7 @@ Small screens: rail → horizontal chips above the grid; ticket panel → bottom
 - Touch targets ≥ 44px throughout (FE_00 token).
 
 ## 8) Permissions
-Entering `PosLayout` requires `pos.access`. Top-bar actions gate individually: shift open/close (`pos.shift.*`), drawer no-sale (`pos.drawer.open`). Exit is always available.
+Entering `PosLayout` requires `pos.access`. Top-bar actions gate individually: shift open/close (`pos.shift.*`), drawer no-sale (`pos.drawer.open`), journal (`pos.journal.view`), terminal settings (`pos.terminal.settings`). **`Open Dashboard ↗`** shows only with back-office access; **`Open POS ↗`** (back-office Topbar) shows only with `pos.access`. Exit is always available.
 
 ## 9) i18n (add to `pos` namespace; a few to `shell`)
 | key | AR | EN |
@@ -95,15 +105,23 @@ Entering `PosLayout` requires `pos.access`. Top-bar actions gate individually: s
 | pos.layout.shift_open | وردية مفتوحة | Shift open |
 | pos.layout.shift_closed | لا توجد وردية | No shift |
 | pos.layout.fullscreen | ملء الشاشة | Fullscreen |
+| pos.layout.open_dashboard | فتح لوحة التحكم ↗ | Open Dashboard ↗ |
+| pos.layout.open_pos | فتح نقطة البيع ↗ | Open POS ↗ |
+| pos.layout.journal | اليومية | Journal |
+| pos.layout.terminal | إعدادات الطرفية | Terminal settings |
+| pos.layout.back_to_register | الرجوع لشاشة البيع | Back to register |
 
 ## 10) Acceptance criteria
 1. `/pos/*` renders inside `PosLayout` (no back-office nav/topbar/breadcrumbs); everything else still renders inside `AppShell` unchanged.
 2. **No token or existing shell layout is modified;** only new files under `components/shell/pos/` + one additive router branch.
-3. Slim POS top bar shows terminal/branch, shift, online/offline (+queue), sandbox (when applicable), fullscreen, language toggle, and Exit.
+3. Slim POS top bar shows **Flexova logo + live date + running clock**, terminal/branch, shift, online/offline (+queue), sandbox (when applicable), **journal & terminal popovers**, fullscreen, language toggle, **Exit POS**, and **Open Dashboard ↗**.
 4. Theme/dark-light/language/dir are inherited live from the appearance store (switching them reflects in POS with no extra wiring).
 5. **Exit POS** confirms when a ticket is open, then returns to the prior back-office route.
 6. Shift gate: without an open shift, only the Open-Shift screen shows; selling is locked.
 7. Responsive: two-pane on landscape; cart → bottom sheet on small screens; touch targets ≥44px; full RTL via logical properties.
 8. POS still appears as a Sector nav item in the back-office (`moduleFlag:"pos"`); activating it enters `PosLayout`.
+9. **Journal & Terminal settings open as popovers** from their top-bar icons; if reached as routes, they show a **back-to-register** control (FE_09).
+10. **Clock is live** (updates each second); date localized, western digits.
+11. **`Exit POS` (same tab)** and **`Open Dashboard ↗` (new tab, gated)** are two distinct actions; and a back-office `Topbar` **`Open POS ↗`** button (new tab, gated `pos.access`) is added **additively** (no other Topbar edits).
 
 *End of FE_09a — Dedicated POS Layout — version 1.0*

@@ -10,8 +10,8 @@
   },
 
   "terminals": [
-    { "id": "tm_main_1", "name_ar": "كاشير الرئيسي ١", "name_en": "Main Register 1", "branch_id": "br_main", "warehouse_id": "wh_main", "price_list_id": "pl_retail", "number_prefix": "MN-P1", "hardware": { "printer": "80mm_thermal", "drawer": true, "scanner": true, "scale": false } },
-    { "id": "tm_nasr_1", "name_ar": "كاشير مدينة نصر ١", "name_en": "Nasr City Register 1", "branch_id": "br_nasr", "warehouse_id": "wh_nasr", "price_list_id": "pl_retail", "number_prefix": "NS-P1", "hardware": { "printer": "80mm_thermal", "drawer": true, "scanner": true, "scale": true } }
+    { "id": "tm_main_1", "name_ar": "كاشير الرئيسي ١", "name_en": "Main Register 1", "branch_id": "br_main", "warehouse_id": "wh_main", "price_list_id": "pl_retail", "number_prefix": "MN-P1", "grid_density": 5, "hardware": { "printer": "80mm_thermal", "drawer": true, "scanner": true, "scale": false } },
+    { "id": "tm_nasr_1", "name_ar": "كاشير مدينة نصر ١", "name_en": "Nasr City Register 1", "branch_id": "br_nasr", "warehouse_id": "wh_nasr", "price_list_id": "pl_retail", "number_prefix": "NS-P1", "grid_density": 4, "hardware": { "printer": "80mm_thermal", "drawer": true, "scanner": true, "scale": true } }
   ],
 
   "tender_types": [
