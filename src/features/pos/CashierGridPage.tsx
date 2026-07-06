@@ -20,7 +20,7 @@ function GridSkeleton({ density }: { density: number }) {
   return (
     <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${density}, minmax(0, 1fr))` }}>
       {Array.from({ length: density * 2 }).map((_, i) => (
-        <Skeleton key={i} className="h-[168px] rounded-lg" />
+        <Skeleton key={i} className="h-[176px] rounded-lg" />
       ))}
     </div>
   );

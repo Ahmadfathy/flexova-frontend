@@ -3,14 +3,16 @@ import { Languages, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { PosBrandLogo } from "./PosBrandLogo";
 import { PosBrandClock } from "./PosBrandClock";
 import { ShiftIndicator } from "./ShiftIndicator";
 import { ConnectionIndicator } from "./ConnectionIndicator";
-import { JournalPopoverBtn } from "./JournalPopoverBtn";
-import { TerminalPopoverBtn } from "./TerminalPopoverBtn";
+import { OpenDashboardBtn } from "./OpenDashboardBtn";
+import { JournalBtn } from "./JournalBtn";
+import { TerminalBtn } from "./TerminalBtn";
+import { PosIconTooltip } from "./PosIconTooltip";
 import { FullscreenBtn } from "./FullscreenBtn";
 import { ExitPosBtn } from "./ExitPosBtn";
-import { OpenDashboardBtn } from "./OpenDashboardBtn";
 
 interface PosTopBarProps {
   terminalName: string;
@@ -31,46 +33,60 @@ export function PosTopBar({
   const can = useCan();
 
   return (
-    <header className="flex items-center gap-2 h-[52px] px-3 border-b border-border bg-card shrink-0 overflow-x-auto">
-      {/* ── Start: brand+clock · terminal / branch ───────────── */}
-      <PosBrandClock />
-      <div className="flex flex-col leading-tight shrink-0 min-w-0 me-1">
-        <span className="text-sm font-semibold text-foreground truncate">{terminalName}</span>
-        <span className="text-[11px] text-muted-foreground truncate">{branchName}</span>
+    <header className="flex items-stretch h-[52px] border-b border-border bg-card shrink-0 overflow-x-auto">
+      {/* ── Logo column — column-aligned to the category rail below (~64px, lg+) ── */}
+      <div className="hidden lg:flex w-20 shrink-0 items-center justify-center border-e border-border">
+        <PosBrandLogo />
       </div>
 
-      <ShiftIndicator open={shiftOpen} cashierName={cashierName} onClick={onToggleShift} />
-      <ConnectionIndicator queueCount={queueCount} />
-
-      {sandbox && (
-        <span className="inline-flex items-center gap-1 rounded px-2 h-11 text-xs font-medium bg-warning-tint text-warning-text shrink-0">
-          <FlaskConical className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline whitespace-nowrap">{t("layout.sandbox")}</span>
+      <div className="flex flex-1 items-center gap-2 px-3 min-w-0">
+        {/* Compact logo — shown inline only below the rail breakpoint */}
+        <span className="lg:hidden shrink-0">
+          <PosBrandLogo />
         </span>
-      )}
 
-      {/* ── Spacer ────────────────────────────────────────────── */}
-      <div className="flex-1 min-w-0" />
+        <PosBrandClock />
 
-      {/* ── End: journal · settings · fullscreen · language · exit · dashboard ── */}
-      {shiftOpen && can("pos.journal.view") && <JournalPopoverBtn />}
-      {shiftOpen && can("pos.terminal.settings") && <TerminalPopoverBtn />}
+        <div className="flex flex-col leading-tight shrink-0 min-w-0 me-1">
+          <span className="text-sm font-semibold text-foreground truncate">{terminalName}</span>
+          <span className="text-[11px] text-muted-foreground truncate">{branchName}</span>
+        </div>
 
-      <FullscreenBtn />
+        <ShiftIndicator open={shiftOpen} cashierName={cashierName} onClick={onToggleShift} />
+        <ConnectionIndicator queueCount={queueCount} />
 
-      <Button
-        variant="icon"
-        size="icon"
-        className="h-11 w-11 shrink-0"
-        onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-        aria-label={t("layout.switch_language")}
-        title={t("layout.switch_language")}
-      >
-        <Languages className="h-4 w-4" />
-      </Button>
+        {sandbox && (
+          <span className="inline-flex items-center gap-1 rounded px-2 h-11 text-xs font-medium bg-warning-tint text-warning-text shrink-0">
+            <FlaskConical className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline whitespace-nowrap">{t("layout.sandbox")}</span>
+          </span>
+        )}
 
-      <ExitPosBtn hasOpenTicket={hasOpenTicket} />
-      <OpenDashboardBtn />
+        {/* ── Spacer ────────────────────────────────────────────── */}
+        <div className="flex-1 min-w-0" />
+
+        {/* ── End (order matters): Dashboard pill · journal · terminal · language · fullscreen · exit ── */}
+        <OpenDashboardBtn />
+
+        {shiftOpen && can("pos.journal.view") && <JournalBtn />}
+        {shiftOpen && can("pos.terminal.settings") && <TerminalBtn />}
+
+        <PosIconTooltip label={t("layout.language")}>
+          <Button
+            variant="icon"
+            size="icon"
+            className="h-11 w-11 shrink-0"
+            onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+            aria-label={t("layout.switch_language")}
+          >
+            <Languages className="h-4 w-4" />
+          </Button>
+        </PosIconTooltip>
+
+        <FullscreenBtn />
+
+        <ExitPosBtn hasOpenTicket={hasOpenTicket} />
+      </div>
     </header>
   );
 }

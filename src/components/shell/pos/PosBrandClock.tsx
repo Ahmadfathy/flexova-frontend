@@ -11,12 +11,12 @@ function useNow() {
 }
 
 /**
- * Flexova logo + live date + running clock (ticks every second).
- * Locale-aware wording (ar/en) but forced Latin digits — cash-register
- * clocks read left-to-right regardless of interface language.
+ * Live date + running clock (ticks every second). Locale-aware wording
+ * (ar/en) but forced Latin digits — cash-register clocks read
+ * left-to-right regardless of interface language.
  */
 export function PosBrandClock() {
-  const { lang, branding } = useAppearance();
+  const { lang } = useAppearance();
   const now = useNow();
   const locale = lang === "ar" ? "ar-EG" : "en-US";
 
@@ -31,16 +31,9 @@ export function PosBrandClock() {
   }).format(now);
 
   return (
-    <div className="flex items-center gap-2 shrink-0 min-w-0 pe-2 me-1 border-e border-border">
-      <span className="flex items-center justify-center h-8 w-8 rounded bg-brand-tint text-brand-text font-bold text-sm shrink-0 overflow-hidden">
-        {branding.logoUrl
-          ? <img src={branding.logoUrl} alt="" className="h-6 w-6 object-contain" />
-          : "F"}
-      </span>
-      <div className="hidden md:flex flex-col leading-tight min-w-0">
-        <span className="text-[11px] text-muted-foreground truncate tabular-nums" dir="ltr">{dateStr}</span>
-        <span className="text-sm font-semibold text-foreground tabular-nums" dir="ltr">{timeStr}</span>
-      </div>
+    <div className="hidden md:flex flex-col leading-tight min-w-0 shrink-0 pe-2 me-1 border-e border-border">
+      <span className="text-[11px] text-muted-foreground truncate tabular-nums" dir="ltr">{dateStr}</span>
+      <span className="text-sm font-semibold text-foreground tabular-nums" dir="ltr">{timeStr}</span>
     </div>
   );
 }

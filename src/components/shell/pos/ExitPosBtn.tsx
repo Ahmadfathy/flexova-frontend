@@ -21,7 +21,7 @@ export function ExitPosBtn({ hasOpenTicket }: ExitPosBtnProps) {
     <>
       <Button
         variant="soft"
-        tone="secondary"
+        tone="danger"
         size="sm"
         className="h-11 gap-1.5 shrink-0"
         onClick={() => (hasOpenTicket ? setConfirmOpen(true) : exit())}

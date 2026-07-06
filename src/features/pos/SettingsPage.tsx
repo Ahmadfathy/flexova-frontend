@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   ArrowLeft, Settings2, Printer, Box, ScanBarcode, Scale, Lock,
@@ -76,9 +76,7 @@ export default function SettingsPage() {
   const { t } = useTranslation("pos");
   const { lang } = useAppearance();
   const can = useCan();
-  const location = useLocation();
   const navigate = useNavigate();
-  const isRoutedView = location.pathname.startsWith("/pos/settings");
 
   const defaultWarehouseId = usePosTerminalSettings(s => s.defaultWarehouseId);
   const defaultPriceListId = usePosTerminalSettings(s => s.defaultPriceListId);
@@ -104,17 +102,15 @@ export default function SettingsPage() {
   return (
     <div className="max-w-2xl w-full mx-auto space-y-5 pb-6">
       <div className="space-y-1">
-        {isRoutedView && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 -ms-2 gap-1 px-2 text-xs text-muted-foreground"
-            onClick={() => navigate("/pos/register")}
-          >
-            <ArrowLeft className="h-3.5 w-3.5 rtl:-scale-x-100" />
-            {t("layout.back_to_register")}
-          </Button>
-        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 -ms-2 gap-1 px-2 text-xs text-muted-foreground"
+          onClick={() => navigate("/pos/register")}
+        >
+          <ArrowLeft className="h-3.5 w-3.5 rtl:-scale-x-100" />
+          {t("layout.back_to_register")}
+        </Button>
         <div className="flex items-center gap-2">
           <Settings2 className="h-5 w-5 text-muted-foreground" />
           <h1 className="text-base font-semibold text-foreground">{t("settings.title")}</h1>
