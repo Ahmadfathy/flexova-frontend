@@ -173,24 +173,24 @@ Count cash (optionally per tender) → system shows **expected vs counted + vari
 
 ---
 
-## 11) Screen — Terminal journal (`/pos/journal` · **also a top-bar popover**)
+## 11) Screen — Terminal journal (`/pos/journal`)
 
-**Primary surface = a popover** anchored on the top-bar `journal` icon (FE_09a) — opens in-place over the cashier, dismiss to return. When reached as a **route** (`/pos/journal`, e.g. deep link), the screen renders a clear **"back to register" control** (`pos.layout.back_to_register`) at the top so the cashier is never stranded.
+Opened from the top-bar journal icon → **navigates to this screen**. It renders a clear **"back to register" control** (`pos.layout.back_to_register`) at the top so the cashier is never stranded.
 Content: tickets of the current shift/day with **payment pill + sync pill** (independent), search/filter by status. **Resend** rejected/queued (reuses `sales.eta.resend`); tap a ticket → its issued receipt view (FE_02 §6, 80mm). Inherits the ETA hub (FE_02 §10) for cross-branch compliance view.
 **Permissions:** `pos.journal.view`.
 **AR/EN:** `pos.journal.title`="يومية الطرفية"/"Terminal journal", `pos.journal.resend`="إعادة إرسال"/"Resend", `pos.layout.back_to_register`="الرجوع لشاشة البيع"/"Back to register".
-**Acceptance:** opens as a popover from the top bar; when routed, a back-to-register control is present; payment and sync statuses shown separately; rejected shows plain-Arabic reason; resend works; ticket opens its 80mm receipt.
+**Acceptance:** a back-to-register control is present; payment and sync statuses shown separately; rejected shows plain-Arabic reason; resend works; ticket opens its 80mm receipt.
 
 ---
 
-## 12) Screen — Terminal settings (`/pos/settings` · **also a top-bar popover**)
+## 12) Screen — Terminal settings (`/pos/settings`)
 
-**Primary surface = a popover** anchored on the top-bar `terminal` icon (FE_09a) — opens in-place over the cashier, dismiss to return. When reached as a **route**, the screen renders a clear **"back to register" control** at the top.
+Opened from the top-bar terminal icon → **navigates to this screen**, which renders a clear **"back to register" control** at the top.
 Bind hardware (**80mm printer / cash drawer / barcode scanner / scale**) with **test print** and **test drawer**; default warehouse + price list; local numbering behavior; ETA device activation/access-token (base in FE_02 §11). 
 **Permissions:** `pos.terminal.settings` (admin/manager).
 > **MVP decision (approved):** all hardware (80mm printer / cash drawer / barcode scanner / scale) runs behind a **mock bridge interface** — no real device I/O yet. Test print/drawer/scan/weigh are simulated so every flow is exercisable; real device integration lands with the **Backend/native layer** (module's last stage).
 **AR/EN:** `pos.settings.title`="إعدادات الطرفية"/"Terminal settings", `pos.settings.printer`="الطابعة"/"Printer", `pos.settings.drawer`="الدرج"/"Cash drawer", `pos.settings.scanner`="السكانر"/"Scanner", `pos.settings.scale`="الميزان"/"Scale", `pos.settings.test_print`="اختبار طباعة"/"Test print".
-**Acceptance:** opens as a popover from the top bar; when routed, a back-to-register control is present; hardware bindings persist; test print/drawer fire; defaults apply to new tickets.
+**Acceptance:** a back-to-register control is present; hardware bindings persist; test print/drawer fire; defaults apply to new tickets.
 
 ---
 
