@@ -1,0 +1,132 @@
+{
+  "_meta": {
+    "module": "fnb",
+    "version": "1.0",
+    "currency": "EGP",
+    "scope": "narrow core v1 — Floor/Order/Modifiers/Courses/KDS/Bill-Split. Menu&Recipe editor deferred; menu+modifiers+recipes are SEED data here.",
+    "depends_on": "pos.fixtures.json (pm_*, tm_main_1, sh_open_main, tender modal) · inventory.fixtures.json (it_cola, uom_*, tax_t1, raw ingredients seed) · crm.fixtures.json (cu_*) · sales+ETA path (settle → document)",
+    "flags": { "fnb.recipe": true },
+    "golden_rules": "Check lives long on the table; kitchen (Fire) and finance (Settle) are synced but independent. BOM flag-aware. Flag-don't-block carried from POS.",
+    "settle_context": { "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main", "warehouse_id": "wh_main" }
+  },
+
+  "sections": [
+    { "id": "sec_hall", "name_ar": "الصالة", "name_en": "Hall" },
+    { "id": "sec_terrace", "name_ar": "التراس", "name_en": "Terrace" },
+    { "id": "sec_vip", "name_ar": "في آي بي", "name_en": "VIP" }
+  ],
+
+  "tables": [
+    { "id": "tbl_1", "section_id": "sec_hall", "number": "١", "seats": 2, "x": 40, "y": 60, "shape": "square", "status": "available", "current_check_id": null },
+    { "id": "tbl_2", "section_id": "sec_hall", "number": "٢", "seats": 4, "x": 160, "y": 60, "shape": "square", "status": "occupied", "current_check_id": "chk_101" },
+    { "id": "tbl_3", "section_id": "sec_hall", "number": "٣", "seats": 4, "x": 280, "y": 60, "shape": "round", "status": "dirty", "current_check_id": null },
+    { "id": "tbl_4", "section_id": "sec_terrace", "number": "ت١", "seats": 6, "x": 60, "y": 180, "shape": "rect", "status": "reserved", "current_check_id": null, "reserved_for": "أحمد — ٨:٠٠م" },
+    { "id": "tbl_5", "section_id": "sec_terrace", "number": "ت٢", "seats": 2, "x": 200, "y": 180, "shape": "round", "status": "available", "current_check_id": null },
+    { "id": "tbl_6", "section_id": "sec_vip", "number": "ڤ١", "seats": 8, "x": 120, "y": 300, "shape": "rect", "status": "available", "current_check_id": null }
+  ],
+
+  "kitchen_stations": [
+    { "id": "st_grill", "name_ar": "الجريل", "name_en": "Grill" },
+    { "id": "st_drinks", "name_ar": "المشروبات", "name_en": "Drinks" },
+    { "id": "st_dessert", "name_ar": "الحلويات", "name_en": "Dessert" }
+  ],
+
+  "courses": [
+    { "id": "crs_1", "name_ar": "مقبلات", "name_en": "Starters", "seq": 1 },
+    { "id": "crs_2", "name_ar": "رئيسي", "name_en": "Mains", "seq": 2 },
+    { "id": "crs_3", "name_ar": "تحلية", "name_en": "Dessert", "seq": 3 }
+  ],
+
+  "menu_categories": [
+    { "id": "mcat_starters", "name_ar": "مقبلات", "name_en": "Starters" },
+    { "id": "mcat_mains", "name_ar": "أطباق رئيسية", "name_en": "Mains" },
+    { "id": "mcat_drinks", "name_ar": "مشروبات", "name_en": "Drinks" },
+    { "id": "mcat_dessert", "name_ar": "حلويات", "name_en": "Dessert" }
+  ],
+
+  "modifier_groups": [
+    { "id": "mg_doneness", "name_ar": "درجة الاستواء", "name_en": "Doneness", "type": "single", "required": true,
+      "options": [ { "id": "mo_rare", "name_ar": "نيء", "name_en": "Rare", "delta": 0 }, { "id": "mo_med", "name_ar": "وسط", "name_en": "Medium", "delta": 0 }, { "id": "mo_well", "name_ar": "ويل دن", "name_en": "Well done", "delta": 0 } ] },
+    { "id": "mg_extras", "name_ar": "إضافات", "name_en": "Extras", "type": "multi", "required": false,
+      "options": [ { "id": "mo_cheese", "name_ar": "جبنة", "name_en": "Cheese", "delta": 10 }, { "id": "mo_bacon", "name_ar": "بيكون", "name_en": "Bacon", "delta": 15 }, { "id": "mo_pickle", "name_ar": "مخلل", "name_en": "Pickles", "delta": 0 } ] },
+    { "id": "mg_size", "name_ar": "الحجم", "name_en": "Size", "type": "single", "required": true,
+      "options": [ { "id": "mo_reg", "name_ar": "عادي", "name_en": "Regular", "delta": 0 }, { "id": "mo_large", "name_ar": "كبير", "name_en": "Large", "delta": 12 } ] }
+  ],
+
+  "menu_items": [
+    { "id": "mi_koshari", "name_ar": "كشري", "name_en": "Koshari", "category": "mcat_mains", "station_id": "st_grill", "price": 55.00, "tax_type_id": "tax_t1", "eta_code": "EG-200110", "uom_id": "uom_plate", "default_course": "crs_2", "modifier_groups": [], "recipe": null, "_note": "simple direct item — no recipe" },
+    { "id": "mi_burger", "name_ar": "برجر لحم", "name_en": "Beef burger", "category": "mcat_mains", "station_id": "st_grill", "price": 120.00, "tax_type_id": "tax_t1", "eta_code": "EG-200111", "uom_id": "uom_plate", "default_course": "crs_2",
+      "modifier_groups": ["mg_doneness", "mg_extras"],
+      "recipe": { "enabled": true, "bom": [ { "ingredient_id": "ing_bun", "qty": 1, "uom_id": "uom_piece" }, { "ingredient_id": "ing_patty", "qty": 1, "uom_id": "uom_piece" }, { "ingredient_id": "ing_cheese", "qty": 0.03, "uom_id": "uom_kg" } ] },
+      "_note": "recipe flag-on → depletes raw on fire/settle" },
+    { "id": "mi_fries", "name_ar": "بطاطس", "name_en": "Fries", "category": "mcat_starters", "station_id": "st_grill", "price": 35.00, "tax_type_id": "tax_t1", "eta_code": "EG-200112", "uom_id": "uom_plate", "default_course": "crs_1", "modifier_groups": ["mg_size"], "recipe": null },
+    { "id": "mi_mango", "name_ar": "عصير مانجو", "name_en": "Mango juice", "category": "mcat_drinks", "station_id": "st_drinks", "price": 40.00, "tax_type_id": "tax_t1", "eta_code": "EG-200120", "uom_id": "uom_glass", "default_course": "crs_1", "modifier_groups": ["mg_size"], "recipe": null },
+    { "id": "mi_cola", "ref_item": "it_cola", "name_ar": "كوكاكولا", "name_en": "Coca-Cola", "category": "mcat_drinks", "station_id": "st_drinks", "price": 25.00, "tax_type_id": "tax_t1", "eta_code": "EG-100240", "uom_id": "uom_bottle", "default_course": "crs_1", "modifier_groups": [], "recipe": null, "_note": "references inventory it_cola" },
+    { "id": "mi_cheesecake", "name_ar": "تشيز كيك", "name_en": "Cheesecake", "category": "mcat_dessert", "station_id": "st_dessert", "price": 65.00, "tax_type_id": "tax_t1", "eta_code": "EG-200130", "uom_id": "uom_piece", "default_course": "crs_3", "modifier_groups": [], "recipe": null },
+    { "id": "mi_special", "name_ar": "طبق اليوم", "name_en": "Chef special", "category": "mcat_mains", "station_id": "st_grill", "price": 90.00, "tax_type_id": "tax_t1", "eta_code": "", "uom_id": "uom_plate", "default_course": "crs_2", "modifier_groups": [], "recipe": null, "_flag": "eta_code_missing — flag-don't-block: still sells" }
+  ],
+
+  "ingredients_seed": [
+    { "id": "ing_bun", "name_ar": "خبز برجر", "name_en": "Burger bun", "uom_id": "uom_piece", "stock": 200 },
+    { "id": "ing_patty", "name_ar": "قرص لحم", "name_en": "Beef patty", "uom_id": "uom_piece", "stock": 150 },
+    { "id": "ing_cheese", "name_ar": "جبنة شيدر", "name_en": "Cheddar", "uom_id": "uom_kg", "stock_kg": 8.5 }
+  ],
+
+  "checks": [
+    {
+      "id": "chk_101", "number": "FNB-1001", "type": "dine-in", "table_id": "tbl_2", "section_id": "sec_hall", "guests": 4,
+      "waiter_ar": "كريم", "waiter_en": "Karim", "customer_id": "cu_cash", "channel": "cashier",
+      "status": "fired", "opened_at": "2026-07-06T20:05:00", "shift_id": "sh_open_main",
+      "lines": [
+        { "id": "ln_1", "item_id": "mi_fries", "name": "بطاطس (كبير)", "course_id": "crs_1", "qty": 1, "modifiers": [ { "group": "mg_size", "option": "mo_large", "delta": 12 } ], "price": 35.00, "line_total": 47.00, "status": "served", "station_id": "st_grill" },
+        { "id": "ln_2", "item_id": "mi_burger", "name": "برجر لحم (وسط، جبنة)", "course_id": "crs_2", "qty": 2, "modifiers": [ { "group": "mg_doneness", "option": "mo_med", "delta": 0 }, { "group": "mg_extras", "option": "mo_cheese", "delta": 10 } ], "price": 120.00, "line_total": 260.00, "status": "preparing", "station_id": "st_grill" },
+        { "id": "ln_3", "item_id": "mi_mango", "name": "عصير مانجو", "course_id": "crs_1", "qty": 2, "modifiers": [ { "group": "mg_size", "option": "mo_reg", "delta": 0 } ], "price": 40.00, "line_total": 80.00, "status": "ready", "station_id": "st_drinks" }
+      ],
+      "totals": { "subtotal": 387.00, "line_discounts": 0, "order_discount": 0, "service_charge_pct": 12, "service_charge": 46.44, "tips": 0, "taxable_base": 387.00, "tax": 54.18, "rounding": 0, "grand_total": 487.62 },
+      "tenders": [], "payment_status": null, "sync_status": null
+    },
+    {
+      "id": "chk_102", "number": "FNB-1002", "type": "takeaway", "table_id": null, "guests": 1,
+      "customer_id": "cu_cash", "channel": "cashier", "status": "fired", "opened_at": "2026-07-06T20:12:00", "shift_id": "sh_open_main",
+      "lines": [
+        { "id": "ln_4", "item_id": "mi_koshari", "name": "كشري", "course_id": "crs_2", "qty": 2, "modifiers": [], "price": 55.00, "line_total": 110.00, "status": "preparing", "station_id": "st_grill" },
+        { "id": "ln_5", "item_id": "mi_special", "name": "طبق اليوم", "course_id": "crs_2", "qty": 1, "modifiers": [], "price": 90.00, "line_total": 90.00, "status": "preparing", "station_id": "st_grill", "_flag": "eta_code_missing" }
+      ],
+      "totals": { "subtotal": 200.00, "service_charge": 0, "tips": 0, "taxable_base": 200.00, "tax": 28.00, "rounding": 0, "grand_total": 228.00 },
+      "tenders": [], "payment_status": null, "sync_status": null
+    },
+    {
+      "id": "chk_103", "number": "FNB-1003", "type": "delivery", "table_id": null, "guests": 1,
+      "customer_id": "cu_mohamed", "channel": "app", "delivery": { "provider_modeled": "aggregator", "address": "مدينة نصر، ش عباس العقاد", "phone": "0100XXXXXXX", "rider": null, "status": "preparing", "_note": "channel modeled; aggregator API deferred" },
+      "status": "fired", "opened_at": "2026-07-06T20:18:00", "shift_id": "sh_open_main",
+      "lines": [
+        { "id": "ln_6", "item_id": "mi_burger", "name": "برجر لحم (ويل دن، بيكون)", "course_id": "crs_2", "qty": 1, "modifiers": [ { "group": "mg_doneness", "option": "mo_well", "delta": 0 }, { "group": "mg_extras", "option": "mo_bacon", "delta": 15 } ], "price": 120.00, "line_total": 135.00, "status": "preparing", "station_id": "st_grill" },
+        { "id": "ln_7", "item_id": "mi_cheesecake", "name": "تشيز كيك", "course_id": "crs_3", "qty": 1, "modifiers": [], "price": 65.00, "line_total": 65.00, "status": "new", "station_id": "st_dessert" }
+      ],
+      "totals": { "subtotal": 200.00, "service_charge": 0, "tips": 0, "delivery_fee": 25.00, "taxable_base": 200.00, "tax": 28.00, "rounding": 0, "grand_total": 253.00 },
+      "tenders": [], "payment_status": null, "sync_status": null
+    }
+  ],
+
+  "kot_tickets": [
+    { "id": "kot_1", "check_id": "chk_101", "check_number": "FNB-1001", "table": "٢", "station_id": "st_grill", "course_id": "crs_2", "fired_at": "2026-07-06T20:09:00", "status": "preparing",
+      "items": [ { "name_ar": "برجر لحم ×٢", "modifiers_ar": "وسط · جبنة", "line_id": "ln_2", "timer_seconds": 480 } ] },
+    { "id": "kot_2", "check_id": "chk_101", "check_number": "FNB-1001", "table": "٢", "station_id": "st_drinks", "course_id": "crs_1", "fired_at": "2026-07-06T20:06:00", "status": "ready",
+      "items": [ { "name_ar": "عصير مانجو ×٢", "modifiers_ar": "عادي", "line_id": "ln_3", "timer_seconds": 0 } ] },
+    { "id": "kot_3", "check_id": "chk_102", "check_number": "FNB-1002", "table": "تيك-أواي", "station_id": "st_grill", "course_id": "crs_2", "fired_at": "2026-07-06T20:13:00", "status": "new",
+      "items": [ { "name_ar": "كشري ×٢", "modifiers_ar": "", "line_id": "ln_4", "timer_seconds": 600 }, { "name_ar": "طبق اليوم ×١", "modifiers_ar": "", "line_id": "ln_5", "timer_seconds": 600 } ] },
+    { "id": "kot_4", "check_id": "chk_103", "check_number": "FNB-1003", "table": "ديليفري", "station_id": "st_dessert", "course_id": "crs_3", "fired_at": "2026-07-06T20:19:00", "status": "new",
+      "items": [ { "name_ar": "تشيز كيك ×١", "modifiers_ar": "", "line_id": "ln_7", "timer_seconds": 300 } ] }
+  ],
+
+  "split_example": {
+    "check_id": "chk_101", "mode": "by_seat", "seats": 4,
+    "groups": [
+      { "seat": 1, "lines": ["ln_2"], "amount": 148.20 },
+      { "seat": 2, "lines": ["ln_2"], "amount": 148.20 },
+      { "seat": 3, "lines": ["ln_1", "ln_3"], "amount": 95.61 },
+      { "seat": 4, "lines": [], "amount": 0 }
+    ],
+    "_note": "by-seat split of chk_101 incl. 12% service + 14% tax; also supports equally / by_item"
+  }
+}
