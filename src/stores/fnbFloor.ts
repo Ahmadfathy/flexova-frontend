@@ -40,6 +40,8 @@ interface FnbFloorState {
   addSection: (nameAr: string, nameEn: string) => void;
   removeSection: (id: string) => "removed" | "blocked_last" | "blocked_has_tables";
   openCheck: (tableId: string, checkId: string) => void;
+  /** Settle frees the table — occupied → dirty (cleaning is a separate, not-yet-built Floor action), and it stops pointing at the now-settled check. */
+  freeTable: (tableId: string) => void;
 }
 
 export const useFnbFloor = create<FnbFloorState>()(
@@ -99,6 +101,13 @@ export const useFnbFloor = create<FnbFloorState>()(
       openCheck: (tableId, checkId) => set((s) => ({
         tables: s.tables.map(t => t.id === tableId
           ? { ...t, status: "occupied", current_check_id: checkId }
+          : t
+        ),
+      })),
+
+      freeTable: (tableId) => set((s) => ({
+        tables: s.tables.map(t => t.id === tableId
+          ? { ...t, status: "dirty", current_check_id: null }
           : t
         ),
       })),

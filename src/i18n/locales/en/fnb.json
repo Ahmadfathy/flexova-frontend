@@ -93,7 +93,6 @@
     "fire_count": "Fire ({{n}})",
     "fired_toast": "Fired {{n}} item(s) to {{stations}}",
     "bill": "Bill",
-    "bill_stub_toast": "Bill & Split arrives in a later step",
     "void": "Void",
     "void_confirm": "Confirm void",
     "void_line_title": "Void this line?",
@@ -110,6 +109,48 @@
     "add": "Add to check",
     "save": "Save changes",
     "price_delta_free": "No extra charge"
+  },
+
+  "bill": {
+    "permission_required": "You don't have access to the bill",
+    "error_title": "Couldn't load the bill",
+    "error_body": "Check your connection and try again",
+    "offline_note": "Offline — settlement will queue and sync once you're back online",
+    "channel_b2b": "B2B (has TRN)",
+    "channel_b2c": "B2C",
+    "empty_title": "No items on this check",
+    "empty_body": "Add items from the order screen first",
+    "subtotal": "Subtotal",
+    "service_charge": "Service charge",
+    "tips": "Tips",
+    "delivery_fee": "Delivery fee",
+    "tax": "Tax",
+    "grand_total": "Grand total",
+    "settle": "Settle",
+    "settled_toast": "{{group}} settled",
+    "fully_settled_toast": "Check fully settled — table freed",
+    "print": "Print receipt",
+    "print_toast": "Receipt sent to printer",
+    "status": {
+      "paid": "Paid",
+      "credit": "Credit",
+      "local": "Local",
+      "queued": "Queued"
+    },
+    "split": {
+      "whole_check": "Whole check",
+      "equally": "Equally",
+      "by_item": "By item",
+      "by_seat": "By seat",
+      "groups_count": "Groups",
+      "seats_count": "Seats",
+      "apply": "Apply split",
+      "assign_hint": "Tap the groups/seats that share each item — an item ticked into more than one splits evenly between them.",
+      "group_label": "Group {{n}}",
+      "seat_label": "Seat {{n}}",
+      "locked_hint": "Split is locked once a group has been settled",
+      "unassigned_warning": "Assign every item to at least one group first"
+    }
   },
 
   "kds": {

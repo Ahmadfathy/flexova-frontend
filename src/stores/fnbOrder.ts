@@ -28,6 +28,25 @@ export interface FnbCheckLine {
   eta_code_missing?: boolean;
 }
 
+export type FnbSplitMode = "none" | "equally" | "by_item" | "by_seat";
+
+export interface FnbBillGroup {
+  id: string;
+  /** 1-based seat/group index for display (e.g. "Seat 2" / "Group 2"). Unused (0) for "none". */
+  index: number;
+  /** Lines this group covers (their full amount, or a fractional share if the same line is also assigned elsewhere). */
+  lineIds: string[];
+  amount: number;
+  settled: boolean;
+  payment_status?: "paid" | "credit";
+  sync_status?: "local" | "queued";
+}
+
+export interface FnbCheckBill {
+  mode: FnbSplitMode;
+  groups: FnbBillGroup[];
+}
+
 export interface FnbCheck {
   id: string;
   number: string;
@@ -43,6 +62,13 @@ export interface FnbCheck {
   opened_at: string;
   shift_id?: string;
   lines: FnbCheckLine[];
+  /** Dine-in defaults to 12%, else 0 — editable pre-split, gated by `fnb.discount.override`. */
+  service_charge_pct: number;
+  tips: number;
+  /** Fixed, modeled delivery-channel fee — only meaningful for `type === "delivery"`. */
+  delivery_fee: number;
+  /** null until the Bill screen configures it (lazily, via `ensureBill`). */
+  bill: FnbCheckBill | null;
 }
 
 interface FixtureLine {
@@ -73,6 +99,7 @@ interface FixtureCheck {
   opened_at: string;
   shift_id?: string;
   lines: FixtureLine[];
+  totals?: { service_charge_pct?: number; tips?: number; delivery_fee?: number };
 }
 
 function seedLine(line: FixtureLine): FnbCheckLine {
@@ -108,6 +135,10 @@ function seedCheck(check: FixtureCheck): FnbCheck {
     opened_at: check.opened_at,
     shift_id: check.shift_id,
     lines: check.lines.map(seedLine),
+    service_charge_pct: check.totals?.service_charge_pct ?? (check.type === "dine-in" ? 12 : 0),
+    tips: check.totals?.tips ?? 0,
+    delivery_fee: check.totals?.delivery_fee ?? 0,
+    bill: null,
   };
 }
 
@@ -137,6 +168,15 @@ interface FnbOrderState {
   voidLine: (checkId: string, lineId: string) => void;
   /** KDS bump/recall — flips specific fired lines to `ready`/back to `preparing`. Never touches `held`/`void` lines. */
   setLinesStatus: (checkId: string, lineIds: string[], status: FnbLineStatus) => void;
+  /** Locked once a split has been configured (`bill.mode !== "none"`) — Bill screen enforces this via disabled inputs. */
+  setServiceChargePct: (checkId: string, pct: number) => void;
+  setTips: (checkId: string, amount: number) => void;
+  /** Lazily creates a single-group ("none") bill covering the whole check — the Bill screen's default, unsplit state. No-op if a bill already exists. */
+  ensureBill: (checkId: string) => void;
+  /** Replaces the bill's groups entirely — blocked (returns `"blocked_settled"`) once any group has already settled, since re-splitting would orphan a paid group. */
+  configureSplit: (checkId: string, mode: FnbSplitMode, groups: { lineIds: string[]; amount: number }[]) => "ok" | "blocked_settled";
+  /** Marks one group paid; once every group is settled, flips the check to `settled`. Returns whether the whole check is now fully paid. */
+  settleGroup: (checkId: string, groupId: string, payment: { payment_status: "paid" | "credit"; sync_status: "local" | "queued" }) => boolean;
 }
 
 export const useFnbOrder = create<FnbOrderState>()(
@@ -160,6 +200,10 @@ export const useFnbOrder = create<FnbOrderState>()(
               status: "open",
               opened_at: new Date().toISOString(),
               lines: [],
+              service_charge_pct: params.type === "dine-in" ? 12 : 0,
+              tips: 0,
+              delivery_fee: 0,
+              bill: null,
             },
           },
         }));
@@ -294,6 +338,72 @@ export const useFnbOrder = create<FnbOrderState>()(
           },
         };
       }),
+
+      setServiceChargePct: (checkId, pct) => set((s) => {
+        const check = s.checks[checkId];
+        if (!check || (check.bill && check.bill.mode !== "none")) return s;
+        return { checks: { ...s.checks, [checkId]: { ...check, service_charge_pct: Math.max(0, pct) } } };
+      }),
+
+      setTips: (checkId, amount) => set((s) => {
+        const check = s.checks[checkId];
+        if (!check || (check.bill && check.bill.mode !== "none")) return s;
+        return { checks: { ...s.checks, [checkId]: { ...check, tips: Math.max(0, amount) } } };
+      }),
+
+      ensureBill: (checkId) => set((s) => {
+        const check = s.checks[checkId];
+        if (!check || check.bill) return s;
+        return {
+          checks: {
+            ...s.checks,
+            [checkId]: {
+              ...check,
+              bill: {
+                mode: "none",
+                groups: [{ id: "grp_whole", index: 0, lineIds: check.lines.filter(l => l.status !== "void").map(l => l.id), amount: 0, settled: false }],
+              },
+            },
+          },
+        };
+      }),
+
+      configureSplit: (checkId, mode, groups) => {
+        const check = get().checks[checkId];
+        if (!check) return "ok";
+        if (check.bill?.groups.some(g => g.settled)) return "blocked_settled";
+        set((s) => ({
+          checks: {
+            ...s.checks,
+            [checkId]: {
+              ...check,
+              bill: {
+                mode,
+                groups: groups.map((g, i) => ({ id: `grp_${i + 1}`, index: i + 1, lineIds: g.lineIds, amount: g.amount, settled: false })),
+              },
+            },
+          },
+        }));
+        return "ok";
+      },
+
+      settleGroup: (checkId, groupId, payment) => {
+        const check = get().checks[checkId];
+        if (!check?.bill) return false;
+        const groups = check.bill.groups.map(g => g.id === groupId ? { ...g, settled: true, ...payment } : g);
+        const fullyPaid = groups.every(g => g.settled);
+        set((s) => ({
+          checks: {
+            ...s.checks,
+            [checkId]: {
+              ...check,
+              bill: { ...check.bill!, groups },
+              status: fullyPaid ? "settled" : "billed",
+            },
+          },
+        }));
+        return fullyPaid;
+      },
     }),
     { name: "flexova.fnb.order" }
   )

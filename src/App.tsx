@@ -101,6 +101,7 @@ import PosSettingsPage from "@/features/pos/SettingsPage";
 import FloorPlanPage from "@/features/fnb/FloorPlanPage";
 import OrderPage from "@/features/fnb/OrderPage";
 import KdsPage from "@/features/fnb/KdsPage";
+import BillPage from "@/features/fnb/BillPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -156,6 +157,7 @@ export default function App() {
           <Route path="order/:checkId" element={<OrderPage />} />
           <Route path="kds" element={<KdsPage />} />
           <Route path="kds/:stationId" element={<KdsPage />} />
+          <Route path="bill/:checkId" element={<BillPage />} />
         </Route>
 
         <Route element={<AppShell />}>

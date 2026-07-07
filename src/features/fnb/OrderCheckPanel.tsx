@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Minus, Plus, Trash2, Flag, ChevronDown, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -85,6 +86,7 @@ export function OrderCheckPanel({ checkId, onEditLine }: OrderCheckPanelProps) {
   const { t } = useTranslation("fnb");
   const { lang } = useAppearance();
   const can = useCan();
+  const navigate = useNavigate();
 
   const check = useFnbOrder(s => s.checks[checkId]);
   const updateQty = useFnbOrder(s => s.updateQty);
@@ -137,7 +139,7 @@ export function OrderCheckPanel({ checkId, onEditLine }: OrderCheckPanelProps) {
     toast.success(t("order.fired_toast", { n: fired.length, stations: stations.join(lang === "ar" ? "، " : ", ") }));
   };
 
-  const handleBill = () => toast.info(t("order.bill_stub_toast"));
+  const handleBill = () => navigate(`/fnb/bill/${checkId}`);
 
   const handleConfirmVoid = () => {
     if (!voidTarget || !voidReason.trim()) return;

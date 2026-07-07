@@ -38,14 +38,24 @@ const METHOD_ICON: Record<string, LucideIcon> = {
   pm_loyalty: Star,
 };
 
+interface TenderSettleResult {
+  tenders: Record<string, number>;
+  paymentStatus: "paid" | "credit";
+  syncStatus: "local" | "queued";
+  loyaltyEarned: number;
+  pointsRedeemed: number;
+}
+
 interface TenderModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   grandTotal: number;
   tax: number;
+  /** When provided, settlement is delegated here instead of `usePosRegister`/`usePosShift` — used by F&B Bill/Split, which keeps its own check store. Everything else (method grid, mixed tender, voucher, loyalty, credit gating) stays identical. */
+  onSettle?: (result: TenderSettleResult) => void;
 }
 
-export function TenderModal({ open, onOpenChange, grandTotal, tax }: TenderModalProps) {
+export function TenderModal({ open, onOpenChange, grandTotal, tax, onSettle }: TenderModalProps) {
   const { t } = useTranslation("pos");
   const { t: tCommon } = useTranslation("common");
   const { lang } = useAppearance();
@@ -171,8 +181,13 @@ export function TenderModal({ open, onOpenChange, grandTotal, tax }: TenderModal
       const amt = amountOf(id);
       if (amt > 0) tenders[id] = amt;
     }
-    recordSale(tenders, tax);
-    closeTicket({ paymentStatus, syncStatus, grandTotal, loyaltyEarned: earnedPoints });
+
+    if (onSettle) {
+      onSettle({ tenders, paymentStatus, syncStatus, loyaltyEarned: earnedPoints, pointsRedeemed });
+    } else {
+      recordSale(tenders, tax);
+      closeTicket({ paymentStatus, syncStatus, grandTotal, loyaltyEarned: earnedPoints });
+    }
 
     toast.success(t("tender.closed_toast", { total: formatMoney(grandTotal, lang) }));
     if (earnedPoints > 0) toast.info(t("tender.earned_toast", { n: earnedPoints }));
