@@ -106,7 +106,9 @@
     "title": "Modifiers",
     "required": "Required",
     "optional": "Optional",
-    "confirm": "Add to check",
+    "required_hint": "Choose one to continue",
+    "add": "Add to check",
+    "save": "Save changes",
     "price_delta_free": "No extra charge"
   }
 }

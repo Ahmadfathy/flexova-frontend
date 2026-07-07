@@ -126,8 +126,10 @@ interface FnbOrderState {
   checks: Record<string, FnbCheck>;
 
   ensureCheck: (id: string, params: NewCheckParams) => void;
-  addLine: (checkId: string, item: MenuItem, modifiers: FnbLineModifier[], courseId?: string) => void;
+  addLine: (checkId: string, item: MenuItem, modifiers: FnbLineModifier[], courseId?: string, qty?: number) => void;
   updateQty: (checkId: string, lineId: string, qty: number) => void;
+  /** Re-applies modifiers + qty to a not-yet-fired line — the Modifiers overlay's "edit" path. No-op once the line has left `held`. */
+  updateLineModifiers: (checkId: string, lineId: string, modifiers: FnbLineModifier[], qty: number) => void;
   removeLine: (checkId: string, lineId: string) => void;
   setLineCourse: (checkId: string, lineId: string, courseId: string) => void;
   /** Fire held lines to the kitchen — all of them, or only those in `courseId`. Flips status to `preparing`, flips order status to `fired`, and depletes BOM (flag-aware, never blocks). Returns fired lines for the caller to toast a summary. */
@@ -161,7 +163,7 @@ export const useFnbOrder = create<FnbOrderState>()(
         }));
       },
 
-      addLine: (checkId, item, modifiers, courseId) => set((s) => {
+      addLine: (checkId, item, modifiers, courseId, qty = 1) => set((s) => {
         const check = s.checks[checkId];
         if (!check) return s;
         const line: FnbCheckLine = {
@@ -169,7 +171,7 @@ export const useFnbOrder = create<FnbOrderState>()(
           item_id: item.id,
           name: item.name_ar,
           course_id: courseId ?? item.default_course,
-          qty: 1,
+          qty,
           modifiers,
           price: item.price,
           tax_type_id: item.tax_type_id,
@@ -178,6 +180,20 @@ export const useFnbOrder = create<FnbOrderState>()(
           eta_code_missing: item.eta_code === "",
         };
         return { checks: { ...s.checks, [checkId]: { ...check, lines: [...check.lines, line] } } };
+      }),
+
+      updateLineModifiers: (checkId, lineId, modifiers, qty) => set((s) => {
+        const check = s.checks[checkId];
+        if (!check) return s;
+        return {
+          checks: {
+            ...s.checks,
+            [checkId]: {
+              ...check,
+              lines: check.lines.map(l => (l.id === lineId && l.status === "held") ? { ...l, modifiers, qty } : l),
+            },
+          },
+        };
       }),
 
       updateQty: (checkId, lineId, qty) => set((s) => {

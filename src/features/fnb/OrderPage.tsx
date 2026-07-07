@@ -9,11 +9,11 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useFnbFloor } from "@/stores/fnbFloor";
-import { useFnbOrder, type FnbOrderStatus, type FnbOrderType } from "@/stores/fnbOrder";
+import { useFnbOrder, type FnbCheckLine, type FnbOrderStatus, type FnbOrderType } from "@/stores/fnbOrder";
 import { OrderMenuGrid } from "./OrderMenuGrid";
 import { OrderCheckPanel } from "./OrderCheckPanel";
 import { ModifiersDialog } from "./ModifiersDialog";
-import type { MenuItem } from "./menu";
+import { findMenuItem, type MenuItem } from "./menu";
 
 const TYPE_ICON: Record<FnbOrderType, typeof UtensilsCrossed> = {
   "dine-in": UtensilsCrossed,
@@ -48,9 +48,10 @@ export default function OrderPage() {
   const check = useFnbOrder(s => s.checks[checkId]);
   const ensureCheck = useFnbOrder(s => s.ensureCheck);
 
-  const [modifiersItem, setModifiersItem] = useState<MenuItem | null>(null);
+  const [modifiersTarget, setModifiersTarget] = useState<{ item: MenuItem; editingLine?: FnbCheckLine } | null>(null);
   const [panelExpanded, setPanelExpanded] = useState(false);
   const addLine = useFnbOrder(s => s.addLine);
+  const updateLineModifiers = useFnbOrder(s => s.updateLineModifiers);
 
   useEffect(() => {
     if (!checkId || check) return;
@@ -80,10 +81,16 @@ export default function OrderPage() {
 
   const handleActivate = (item: MenuItem) => {
     if (item.modifier_groups.length > 0) {
-      setModifiersItem(item);
+      setModifiersTarget({ item });
     } else {
       addLine(checkId, item, []);
     }
+  };
+
+  const handleEditLine = (line: FnbCheckLine) => {
+    const item = findMenuItem(line.item_id);
+    if (!item || item.modifier_groups.length === 0 || line.status !== "held") return;
+    setModifiersTarget({ item, editingLine: line });
   };
 
   const activeLineCount = check.lines.filter(l => l.status !== "void").length;
@@ -160,16 +167,22 @@ export default function OrderPage() {
               <ChevronDown className="h-4 w-4" />
             </button>
           )}
-          <OrderCheckPanel checkId={checkId} />
+          <OrderCheckPanel checkId={checkId} onEditLine={handleEditLine} />
         </div>
       </aside>
 
       <ModifiersDialog
-        item={modifiersItem}
-        open={!!modifiersItem}
-        onOpenChange={(o) => !o && setModifiersItem(null)}
-        onConfirm={(modifiers) => {
-          if (modifiersItem) addLine(checkId, modifiersItem, modifiers);
+        item={modifiersTarget?.item ?? null}
+        open={!!modifiersTarget}
+        onOpenChange={(o) => !o && setModifiersTarget(null)}
+        initial={modifiersTarget?.editingLine ? { modifiers: modifiersTarget.editingLine.modifiers, qty: modifiersTarget.editingLine.qty } : undefined}
+        onConfirm={(modifiers, qty) => {
+          if (!modifiersTarget) return;
+          if (modifiersTarget.editingLine) {
+            updateLineModifiers(checkId, modifiersTarget.editingLine.id, modifiers, qty);
+          } else {
+            addLine(checkId, modifiersTarget.item, modifiers, undefined, qty);
+          }
         }}
       />
     </div>

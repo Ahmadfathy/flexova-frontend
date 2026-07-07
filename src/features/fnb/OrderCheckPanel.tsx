@@ -76,9 +76,10 @@ function CourseBadgeButton({ checkId, line, disabled }: { checkId: string; line:
 
 interface OrderCheckPanelProps {
   checkId: string;
+  onEditLine: (line: FnbCheckLine) => void;
 }
 
-export function OrderCheckPanel({ checkId }: OrderCheckPanelProps) {
+export function OrderCheckPanel({ checkId, onEditLine }: OrderCheckPanelProps) {
   const { t } = useTranslation("fnb");
   const { lang } = useAppearance();
   const can = useCan();
@@ -164,18 +165,28 @@ export function OrderCheckPanel({ checkId }: OrderCheckPanelProps) {
               const opt = group?.options.find(o => o.id === m.option);
               return opt ? (lang === "ar" ? opt.name_ar : opt.name_en) : null;
             }).filter(Boolean);
+            const summary = modLabels.length > 0 ? `${name} — ${modLabels.join(" · ")}` : name;
+            const canEditModifiers = line.status === "held" && (item?.modifier_groups.length ?? 0) > 0;
             const canVoid = can("fnb.order.void") && (line.status === "preparing" || line.status === "ready");
 
             return (
               <div key={line.id} className="py-2 border-b border-border last:border-0">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="text-sm text-foreground truncate flex items-center gap-1">
-                      {name}
-                      {line.eta_code_missing && <Flag className="h-3 w-3 text-warning-text shrink-0" />}
-                    </p>
-                    {modLabels.length > 0 && (
-                      <p className="text-[11px] text-muted-foreground truncate">{modLabels.join(" · ")}</p>
+                    {canEditModifiers ? (
+                      <button
+                        type="button"
+                        onClick={() => onEditLine(line)}
+                        className="w-full text-sm text-foreground truncate flex items-center gap-1 text-start hover:underline"
+                      >
+                        <span className="truncate">{summary}</span>
+                        {line.eta_code_missing && <Flag className="h-3 w-3 text-warning-text shrink-0" />}
+                      </button>
+                    ) : (
+                      <p className="text-sm text-foreground truncate flex items-center gap-1">
+                        <span className="truncate">{summary}</span>
+                        {line.eta_code_missing && <Flag className="h-3 w-3 text-warning-text shrink-0" />}
+                      </p>
                     )}
                   </div>
                   <span className="tabular-nums text-sm font-semibold text-foreground shrink-0">
