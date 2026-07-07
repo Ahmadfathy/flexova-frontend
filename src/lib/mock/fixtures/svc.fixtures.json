@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "module": "svc",
+    "version": "1.0",
+    "currency": "EGP",
+    "scope": "narrow core v1 — Calendar/Appointment/Service Ticket/Packages+Subscriptions+renewals. Provider/Service/Package editors deferred; catalog is SEED here.",
+    "depends_on": "pos.fixtures.json (pm_*, tm_main_1, sh_open_main, tender) · fnb (Check→document pattern) · inventory.fixtures.json (products it_*, tax_t1) · crm.fixtures.json (cu_*) · hr.fixtures.json (employees + commission engine)",
+    "flags": { "svc.subscriptions": true, "svc.autorenew": true },
+    "golden_rules": "Appointment lives on the calendar; invoice generated on completion; commission on collected (HR). Auto-renew fully modeled; payment gateway = deferred stub. Flag-don't-block carried.",
+    "settle_context": { "terminal_id": "tm_main_1", "shift_id": "sh_open_main", "branch_id": "br_main" }
+  },
+
+  "providers": [
+    { "id": "prov_hana", "employee_id": "emp_hana", "name_ar": "هنا", "name_en": "Hana", "services": ["svc_haircut_f", "svc_color", "svc_facial"], "commission_pct": 15, "availability": { "days": ["sat","sun","mon","tue","wed"], "from": "10:00", "to": "20:00" } },
+    { "id": "prov_omar", "employee_id": "emp_omar", "name_ar": "عمر", "name_en": "Omar", "services": ["svc_haircut_m", "svc_beard"], "commission_pct": 12, "availability": { "days": ["sat","sun","mon","tue","wed","thu"], "from": "12:00", "to": "22:00" } },
+    { "id": "prov_mariam", "employee_id": "emp_mariam", "name_ar": "مريم", "name_en": "Mariam", "services": ["svc_massage", "svc_facial"], "commission_pct": 18, "availability": { "days": ["sun","mon","wed","thu"], "from": "11:00", "to": "19:00" } }
+  ],
+
+  "services_seed": [
+    { "id": "svc_haircut_f", "name_ar": "قص شعر حريمي", "name_en": "Women's haircut", "duration_min": 45, "price": 200.00, "tax_type_id": "tax_t1", "eta_code": "EG-300110", "category": "hair" },
+    { "id": "svc_haircut_m", "name_ar": "قص شعر رجالي", "name_en": "Men's haircut", "duration_min": 30, "price": 100.00, "tax_type_id": "tax_t1", "eta_code": "EG-300111", "category": "hair" },
+    { "id": "svc_color", "name_ar": "صبغة", "name_en": "Hair color", "duration_min": 90, "price": 450.00, "tax_type_id": "tax_t1", "eta_code": "EG-300112", "category": "hair" },
+    { "id": "svc_beard", "name_ar": "حلاقة دقن", "name_en": "Beard trim", "duration_min": 20, "price": 60.00, "tax_type_id": "tax_t1", "eta_code": "EG-300113", "category": "grooming" },
+    { "id": "svc_facial", "name_ar": "تنظيف بشرة", "name_en": "Facial", "duration_min": 60, "price": 350.00, "tax_type_id": "tax_t1", "eta_code": "EG-300120", "category": "skin" },
+    { "id": "svc_massage", "name_ar": "مساج", "name_en": "Massage", "duration_min": 60, "price": 400.00, "tax_type_id": "tax_t1", "eta_code": "", "category": "spa", "_flag": "eta_code_missing — flag-don't-block" }
+  ],
+
+  "appointments": [
+    { "id": "apt_5001", "number": "SVC-5001", "client_id": "cu_noor", "provider_id": "prov_hana", "services": ["svc_haircut_f"], "start": "2026-07-07T11:00:00", "duration_min": 45, "status": "completed", "source": "phone", "package_covered": false, "branch_id": "br_main", "ticket_id": "tk_svc_9001" },
+    { "id": "apt_5002", "number": "SVC-5002", "client_id": "cu_mohamed", "provider_id": "prov_omar", "services": ["svc_haircut_m", "svc_beard"], "start": "2026-07-07T13:00:00", "duration_min": 50, "status": "checked-in", "source": "cashier", "package_covered": false, "branch_id": "br_main" },
+    { "id": "apt_5003", "number": "SVC-5003", "client_id": "cu_shifa", "provider_id": "prov_mariam", "services": ["svc_facial"], "start": "2026-07-07T14:00:00", "duration_min": 60, "status": "confirmed", "source": "phone", "package_covered": true, "package_id": "pkg_7001", "branch_id": "br_main" },
+    { "id": "apt_5004", "number": "SVC-5004", "client_id": "cu_noor", "provider_id": "prov_hana", "services": ["svc_color"], "start": "2026-07-07T16:00:00", "duration_min": 90, "status": "booked", "source": "cashier", "package_covered": false, "branch_id": "br_main" },
+    { "id": "apt_5005", "number": "SVC-5005", "client_id": "cu_mohamed", "provider_id": "prov_omar", "services": ["svc_haircut_m"], "start": "2026-07-06T18:00:00", "duration_min": 30, "status": "no-show", "source": "phone", "package_covered": false, "branch_id": "br_main", "cancellation_fee": 0 }
+  ],
+
+  "service_tickets": [
+    {
+      "id": "tk_svc_9001", "number": "SVC-T-9001", "appointment_id": "apt_5001", "client_id": "cu_noor", "branch_id": "br_main", "shift_id": "sh_open_main",
+      "status": "settled", "payment_status": "paid", "sync_status": "valid",
+      "lines": [
+        { "type": "service", "ref": "svc_haircut_f", "name": "قص شعر حريمي", "provider_id": "prov_hana", "qty": 1, "price": 200.00, "line_total": 200.00 },
+        { "type": "product", "ref": "it_shampoo", "name": "شامبو", "provider_id": null, "qty": 1, "price": 120.00, "line_total": 120.00 }
+      ],
+      "totals": { "subtotal": 320.00, "discount": 0, "taxable_base": 320.00, "tax": 44.80, "rounding": 0, "grand_total": 364.80 },
+      "tenders": [ { "type": "pm_cash", "amount": 400.00 } ], "change_due": 35.20,
+      "commission": [ { "provider_id": "prov_hana", "base": 200.00, "pct": 15, "amount": 30.00, "on": "collected" } ],
+      "eta": { "uuid": "SVC0001A2B3C4D5", "accepted_at": "2026-07-07T11:50:00", "environment": "sandbox" }
+    }
+  ],
+
+  "packages": [
+    { "id": "pkg_7001", "client_id": "cu_shifa", "name_ar": "باقة ٥ جلسات تنظيف بشرة", "name_en": "5 facials package", "service_id": "svc_facial", "total_sessions": 5, "used": 2, "remaining": 3, "valid_until": "2026-12-31", "status": "active", "price_paid": 1500.00 },
+    { "id": "pkg_7002", "client_id": "cu_noor", "name_ar": "باقة ١٠ قص شعر", "name_en": "10 haircuts", "service_id": "svc_haircut_f", "total_sessions": 10, "used": 10, "remaining": 0, "valid_until": "2026-08-15", "status": "used-up", "price_paid": 1600.00 }
+  ],
+
+  "subscriptions": [
+    {
+      "id": "sub_8001", "client_id": "cu_mohamed", "plan_ar": "عضوية جيم شهري", "plan_en": "Monthly gym", "cycle": "monthly", "amount": 600.00,
+      "status": "active", "started_at": "2026-05-15", "renewal_date": "2026-08-15", "auto_renew": true, "billing_channel": "modeled",
+      "attempts": [ { "date": "2026-07-15", "result": "success", "amount": 600.00 }, { "date": "2026-06-15", "result": "success", "amount": 600.00 } ]
+    },
+    {
+      "id": "sub_8002", "client_id": "cu_noor", "plan_ar": "اشتراك سبا شهري", "plan_en": "Monthly spa", "cycle": "monthly", "amount": 900.00,
+      "status": "past_due", "started_at": "2026-03-10", "renewal_date": "2026-07-10", "auto_renew": true, "billing_channel": "modeled",
+      "attempts": [ { "date": "2026-07-10", "result": "failed", "reason_ar": "فشل التحصيل من القناة", "amount": 900.00 }, { "date": "2026-07-12", "result": "failed", "reason_ar": "إعادة محاولة — فشل", "amount": 900.00 } ],
+      "next_retry": "2026-07-15", "retries_left": 1
+    },
+    {
+      "id": "sub_8003", "client_id": "cu_shifa", "plan_ar": "عضوية سنوية", "plan_en": "Annual membership", "cycle": "yearly", "amount": 6000.00,
+      "status": "suspended", "started_at": "2025-07-01", "renewal_date": "2026-07-01", "auto_renew": true, "billing_channel": "modeled",
+      "attempts": [ { "date": "2026-07-01", "result": "failed", "amount": 6000.00 }, { "date": "2026-07-03", "result": "failed", "amount": 6000.00 }, { "date": "2026-07-05", "result": "failed", "amount": 6000.00 } ],
+      "suspended_at": "2026-07-05", "note": "exhausted retries → suspended"
+    }
+  ],
+
+  "renewals_dashboard": {
+    "upcoming": [ { "subscription_id": "sub_8001", "client": "محمد عبدالله", "renewal_date": "2026-08-15", "amount": 600.00 } ],
+    "past_due": [ { "subscription_id": "sub_8002", "client": "نور", "since": "2026-07-10", "amount": 900.00, "next_retry": "2026-07-15" } ],
+    "suspended": [ { "subscription_id": "sub_8003", "client": "شفاء", "suspended_at": "2026-07-05", "amount": 6000.00 } ]
+  }
+}
