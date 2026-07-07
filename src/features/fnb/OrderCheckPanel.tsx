@@ -13,7 +13,9 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useFnbOrder, type FnbCheckLine, type FnbLineStatus } from "@/stores/fnbOrder";
-import { FNB_COURSES, findCourse, findModifierGroup, findMenuItem, findStation } from "./menu";
+import { useFnbFloor } from "@/stores/fnbFloor";
+import { useFnbKds } from "@/stores/fnbKds";
+import { FNB_COURSES, findCourse, findMenuItem, findStation, modifierLabels } from "./menu";
 import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
 
 const TAX_TYPES = inventoryFixtures.tax_types as { id: string; rate: number }[];
@@ -89,6 +91,8 @@ export function OrderCheckPanel({ checkId, onEditLine }: OrderCheckPanelProps) {
   const removeLine = useFnbOrder(s => s.removeLine);
   const fireLines = useFnbOrder(s => s.fireLines);
   const voidLine = useFnbOrder(s => s.voidLine);
+  const tables = useFnbFloor(s => s.tables);
+  const createTicketsFromFire = useFnbKds(s => s.createTicketsFromFire);
 
   const [activeCourse, setActiveCourse] = useState<string>("all");
   const [voidTarget, setVoidTarget] = useState<FnbCheckLine | null>(null);
@@ -119,6 +123,13 @@ export function OrderCheckPanel({ checkId, onEditLine }: OrderCheckPanelProps) {
     const courseId = activeCourse === "all" ? null : activeCourse;
     const fired = fireLines(checkId, courseId);
     if (fired.length === 0) return;
+    createTicketsFromFire({
+      check_id: checkId,
+      check_number: check.number,
+      order_type: check.type,
+      table_number: check.table_id ? (tables.find(tb => tb.id === check.table_id)?.number ?? null) : null,
+      lines: fired,
+    });
     const stations = Array.from(new Set(fired.map(l => l.station_id)))
       .map(id => findStation(id))
       .filter((s): s is NonNullable<typeof s> => !!s)
@@ -160,11 +171,7 @@ export function OrderCheckPanel({ checkId, onEditLine }: OrderCheckPanelProps) {
           visibleLines.map(line => {
             const item = findMenuItem(line.item_id);
             const name = item ? (lang === "ar" ? item.name_ar : item.name_en) : line.name;
-            const modLabels = line.modifiers.map(m => {
-              const group = findModifierGroup(m.group);
-              const opt = group?.options.find(o => o.id === m.option);
-              return opt ? (lang === "ar" ? opt.name_ar : opt.name_en) : null;
-            }).filter(Boolean);
+            const modLabels = modifierLabels(line.modifiers, lang);
             const summary = modLabels.length > 0 ? `${name} — ${modLabels.join(" · ")}` : name;
             const canEditModifiers = line.status === "held" && (item?.modifier_groups.length ?? 0) > 0;
             const canVoid = can("fnb.order.void") && (line.status === "preparing" || line.status === "ready");

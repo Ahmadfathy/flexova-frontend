@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { Languages, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAppearance } from "@/stores/appearance";
@@ -10,6 +11,7 @@ import { ConnectionIndicator } from "./ConnectionIndicator";
 import { OpenDashboardBtn } from "./OpenDashboardBtn";
 import { JournalBtn } from "./JournalBtn";
 import { TerminalBtn } from "./TerminalBtn";
+import { KdsBtn } from "./KdsBtn";
 import { PosIconTooltip } from "./PosIconTooltip";
 import { FullscreenBtn } from "./FullscreenBtn";
 import { ExitPosBtn } from "./ExitPosBtn";
@@ -31,6 +33,7 @@ export function PosTopBar({
   const { t } = useTranslation("pos");
   const { lang, setLang } = useAppearance();
   const can = useCan();
+  const isFnb = useLocation().pathname.startsWith("/fnb");
 
   return (
     <header className="flex items-stretch h-[52px] border-b border-border bg-card shrink-0 overflow-x-auto">
@@ -68,6 +71,7 @@ export function PosTopBar({
         {/* ── End (order matters): Dashboard pill · journal · terminal · language · fullscreen · exit ── */}
         <OpenDashboardBtn />
 
+        {shiftOpen && isFnb && can("fnb.kds.view") && <KdsBtn />}
         {shiftOpen && can("pos.journal.view") && <JournalBtn />}
         {shiftOpen && can("pos.terminal.settings") && <TerminalBtn />}
 

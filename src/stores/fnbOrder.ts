@@ -135,6 +135,8 @@ interface FnbOrderState {
   /** Fire held lines to the kitchen — all of them, or only those in `courseId`. Flips status to `preparing`, flips order status to `fired`, and depletes BOM (flag-aware, never blocks). Returns fired lines for the caller to toast a summary. */
   fireLines: (checkId: string, courseId: string | null) => FnbCheckLine[];
   voidLine: (checkId: string, lineId: string) => void;
+  /** KDS bump/recall — flips specific fired lines to `ready`/back to `preparing`. Never touches `held`/`void` lines. */
+  setLinesStatus: (checkId: string, lineIds: string[], status: FnbLineStatus) => void;
 }
 
 export const useFnbOrder = create<FnbOrderState>()(
@@ -273,6 +275,21 @@ export const useFnbOrder = create<FnbOrderState>()(
             [checkId]: {
               ...check,
               lines: check.lines.map(l => l.id === lineId ? { ...l, status: "void" } : l),
+            },
+          },
+        };
+      }),
+
+      setLinesStatus: (checkId, lineIds, status) => set((s) => {
+        const check = s.checks[checkId];
+        if (!check) return s;
+        const ids = new Set(lineIds);
+        return {
+          checks: {
+            ...s.checks,
+            [checkId]: {
+              ...check,
+              lines: check.lines.map(l => (ids.has(l.id) && l.status !== "held" && l.status !== "void") ? { ...l, status } : l),
             },
           },
         };

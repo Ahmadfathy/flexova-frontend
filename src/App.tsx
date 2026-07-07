@@ -100,6 +100,7 @@ import PosSettingsPage from "@/features/pos/SettingsPage";
 // F&B — FE_10 — reuses PosLayout (generic variant); Floor plan + Order this step
 import FloorPlanPage from "@/features/fnb/FloorPlanPage";
 import OrderPage from "@/features/fnb/OrderPage";
+import KdsPage from "@/features/fnb/KdsPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -153,6 +154,8 @@ export default function App() {
           <Route index element={<Navigate to="floor" replace />} />
           <Route path="floor" element={<FloorPlanPage />} />
           <Route path="order/:checkId" element={<OrderPage />} />
+          <Route path="kds" element={<KdsPage />} />
+          <Route path="kds/:stationId" element={<KdsPage />} />
         </Route>
 
         <Route element={<AppShell />}>

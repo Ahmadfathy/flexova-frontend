@@ -79,3 +79,16 @@ export function findCourse(id: string): FnbCourse | undefined {
 export function findStation(id: string): KitchenStation | undefined {
   return KITCHEN_STATIONS.find(s => s.id === id);
 }
+
+export function modifierLabels(
+  modifiers: { group: string; option: string }[],
+  lang: "ar" | "en"
+): string[] {
+  return modifiers
+    .map(m => {
+      const group = findModifierGroup(m.group);
+      const opt = group?.options.find(o => o.id === m.option);
+      return opt ? (lang === "ar" ? opt.name_ar : opt.name_en) : null;
+    })
+    .filter((x): x is string => !!x);
+}

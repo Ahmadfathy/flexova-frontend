@@ -110,5 +110,28 @@
     "add": "Add to check",
     "save": "Save changes",
     "price_delta_free": "No extra charge"
+  },
+
+  "kds": {
+    "title": "Kitchen display",
+    "all_stations": "All stations",
+    "status": {
+      "new": "New",
+      "preparing": "Preparing",
+      "ready": "Ready"
+    },
+    "start": "Start",
+    "bump": "Ready",
+    "recall": "Recall",
+    "reprint": "Reprint",
+    "reprint_toast": "KOT reprinted",
+    "bumped_toast": "Sent to the floor — {{table}}",
+    "station_empty": "No tickets",
+    "empty_title": "No tickets right now",
+    "empty_body": "New tickets appear here as soon as they're fired from the order",
+    "error_title": "Couldn't load the kitchen display",
+    "error_body": "Check your connection and try again",
+    "offline_note": "Offline — tickets still show; bumps sync once you're back online",
+    "permission_required": "You don't have access to the kitchen display"
   }
 }
