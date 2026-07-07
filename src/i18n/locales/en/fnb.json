@@ -50,10 +50,63 @@
     "permission_required": "You don't have access to the floor plan"
   },
 
-  "order_stub": {
-    "title": "Order screen",
-    "body": "The order screen arrives in the next step (Order)",
-    "check_id": "Check",
-    "back_to_floor": "Back to floor plan"
+  "order": {
+    "back_to_floor": "Back to floor plan",
+    "table_label": "Table {{number}}",
+    "type": {
+      "dine_in": "Dine-in",
+      "takeaway": "Takeaway",
+      "delivery": "Delivery"
+    },
+    "guests_count": "{{n}} guests",
+    "items_count": "{{n}} items",
+    "status": {
+      "open": "Open",
+      "fired": "Fired",
+      "served": "Served",
+      "billed": "Billed",
+      "settled": "Settled",
+      "void": "Void"
+    },
+    "search_placeholder": "Search menu…",
+    "all_categories": "All",
+    "course_all": "All courses",
+    "modifiers_hint": "Has options",
+    "no_eta_hint": "No ETA code — sells anyway",
+    "menu_error_title": "Couldn't load the menu",
+    "menu_error_body": "Check your connection and try again",
+    "menu_empty_title": "No menu items",
+    "menu_empty_body": "Add items from the menu editor",
+    "menu_no_results_title": "No items match \"{{query}}\"",
+    "menu_no_results_body": "Try another search or category",
+    "menu_offline_note": "Offline — Fire queues and syncs once you're back online",
+    "check_empty_title": "No items yet",
+    "check_empty_body": "Tap a menu item to add it to the check",
+    "line_status": {
+      "held": "Not sent",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "served": "Served",
+      "void": "Void"
+    },
+    "fire": "Fire",
+    "fire_count": "Fire ({{n}})",
+    "fired_toast": "Fired {{n}} item(s) to {{stations}}",
+    "bill": "Bill",
+    "bill_stub_toast": "Bill & Split arrives in a later step",
+    "void": "Void",
+    "void_confirm": "Confirm void",
+    "void_line_title": "Void this line?",
+    "void_line_body": "This removes the item from the kitchen and bill.",
+    "void_reason_placeholder": "Reason (required)",
+    "permission_required": "You don't have access to build orders"
+  },
+
+  "modifiers": {
+    "title": "Modifiers",
+    "required": "Required",
+    "optional": "Optional",
+    "confirm": "Add to check",
+    "price_delta_free": "No extra charge"
   }
 }

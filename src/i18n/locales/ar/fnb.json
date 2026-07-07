@@ -50,10 +50,63 @@
     "permission_required": "مفيش صلاحية لعرض مخطط الصالة"
   },
 
-  "order_stub": {
-    "title": "شاشة الطلب",
-    "body": "شاشة الطلب هتتفعّل في الخطوة الجاية (Order)",
-    "check_id": "رقم الطلب",
-    "back_to_floor": "الرجوع لمخطط الصالة"
+  "order": {
+    "back_to_floor": "الرجوع لمخطط الصالة",
+    "table_label": "طاولة {{number}}",
+    "type": {
+      "dine_in": "صالة",
+      "takeaway": "تيك أواي",
+      "delivery": "ديليفري"
+    },
+    "guests_count": "{{n}} ضيوف",
+    "items_count": "{{n}} صنف",
+    "status": {
+      "open": "مفتوح",
+      "fired": "مُرسل للمطبخ",
+      "served": "تم التقديم",
+      "billed": "الحساب جاهز",
+      "settled": "تمت التسوية",
+      "void": "ملغي"
+    },
+    "search_placeholder": "ابحث في المنيو…",
+    "all_categories": "الكل",
+    "course_all": "كل الأطباق",
+    "modifiers_hint": "فيه إضافات",
+    "no_eta_hint": "بدون كود ETA — بيتباع برضه",
+    "menu_error_title": "تعذّر تحميل المنيو",
+    "menu_error_body": "تحقق من الاتصال وحاول تاني",
+    "menu_empty_title": "لا توجد أصناف",
+    "menu_empty_body": "أضف أصناف من محرر المنيو",
+    "menu_no_results_title": "لا نتائج لـ \"{{query}}\"",
+    "menu_no_results_body": "جرّب بحث تاني أو تصنيف تاني",
+    "menu_offline_note": "غير متصل — الإرسال للمطبخ هيتزامن لما ترجع الشبكة",
+    "check_empty_title": "لسه مفيش أصناف",
+    "check_empty_body": "دوس على صنف من المنيو عشان تضيفه للطلب",
+    "line_status": {
+      "held": "لسه ما اترسلش",
+      "preparing": "تحت التحضير",
+      "ready": "جاهز",
+      "served": "تم التقديم",
+      "void": "ملغي"
+    },
+    "fire": "إرسال للمطبخ",
+    "fire_count": "إرسال ({{n}})",
+    "fired_toast": "اترسل {{n}} صنف لـ {{stations}}",
+    "bill": "الحساب",
+    "bill_stub_toast": "الحساب والتقسيم هيتفعّلوا في خطوة لاحقة",
+    "void": "إلغاء",
+    "void_confirm": "تأكيد الإلغاء",
+    "void_line_title": "إلغاء هذا الصنف؟",
+    "void_line_body": "هيتشال الصنف من المطبخ والحساب.",
+    "void_reason_placeholder": "السبب (مطلوب)",
+    "permission_required": "مفيش صلاحية لإنشاء الطلبات"
+  },
+
+  "modifiers": {
+    "title": "الإضافات",
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "confirm": "إضافة للطلب",
+    "price_delta_free": "بدون تكلفة إضافية"
   }
 }

@@ -114,11 +114,11 @@ export default function FloorPlanPage() {
     }
   };
 
-  const handleConfirmGuests = () => {
+  const handleConfirmGuests = (guests: number) => {
     if (!guestsTable) return;
     const checkId = `chk_${Date.now()}`;
     openCheck(guestsTable.id, checkId);
-    navigate(`/fnb/order/${checkId}`);
+    navigate(`/fnb/order/${checkId}?guests=${guests}`);
   };
 
   const handleStubAction = () => toast.info(t("floor.stub_toast"));

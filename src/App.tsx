@@ -97,9 +97,9 @@ import CloseShiftPage from "@/features/pos/CloseShiftPage";
 import PosJournalPage from "@/features/pos/JournalPage";
 import PosSettingsPage from "@/features/pos/SettingsPage";
 
-// F&B — FE_10 — reuses PosLayout (generic variant); Floor plan this step
+// F&B — FE_10 — reuses PosLayout (generic variant); Floor plan + Order this step
 import FloorPlanPage from "@/features/fnb/FloorPlanPage";
-import FnbOrderStub from "@/features/fnb/FnbOrderStub";
+import OrderPage from "@/features/fnb/OrderPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -152,7 +152,7 @@ export default function App() {
         <Route path="/fnb/*" element={<PosLayout variant="generic" />}>
           <Route index element={<Navigate to="floor" replace />} />
           <Route path="floor" element={<FloorPlanPage />} />
-          <Route path="order/:checkId" element={<FnbOrderStub />} />
+          <Route path="order/:checkId" element={<OrderPage />} />
         </Route>
 
         <Route element={<AppShell />}>
