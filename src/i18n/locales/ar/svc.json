@@ -1,0 +1,55 @@
+{
+  "title": "الخدمات والمواعيد",
+
+  "calendar": {
+    "title": "التقويم",
+    "day": "يوم",
+    "week": "أسبوع",
+    "prev": "السابق",
+    "next": "التالي",
+    "today": "اليوم",
+    "new_appointment": "حجز جديد",
+    "appointment_details": "الموعد",
+
+    "filter_all_providers": "كل مقدّمي الخدمة",
+    "filter_all_services": "كل الخدمات",
+    "filter_all_branches": "كل الفروع",
+    "clear_filters": "مسح الفلاتر",
+
+    "status": {
+      "booked": "محجوز",
+      "confirmed": "مؤكّد",
+      "checked-in": "وصل",
+      "in-service": "جاري التنفيذ",
+      "completed": "مكتمل",
+      "no-show": "لم يحضر",
+      "cancelled": "ملغي"
+    },
+
+    "weekday": {
+      "sat": "سبت",
+      "sun": "أحد",
+      "mon": "اثنين",
+      "tue": "ثلاثاء",
+      "wed": "أربعاء",
+      "thu": "خميس",
+      "fri": "جمعة"
+    },
+
+    "reschedule_conflict_toast": "مقدّم الخدمة عنده موعد تاني في نفس الوقت — التأجيل اتمنع",
+    "reschedule_warned_toast": "اتنقل، بس برّه ساعات عمل مقدّم الخدمة",
+    "reschedule_ok_toast": "اتأجّل لـ {{time}}",
+
+    "stub_note": "نموذج الحجز الكامل هيتفعّل في الخطوة الجاية.",
+    "stub_close": "إغلاق",
+
+    "empty_title": "لسه مفيش مواعيد",
+    "empty_body": "دوس على أي وقت فاضي عند مقدّم خدمة، أو استخدم حجز جديد، عشان تحجز أول موعد",
+    "error_title": "تعذّر تحميل التقويم",
+    "error_body": "تحقق من الاتصال وحاول تاني",
+    "no_results_title": "مفيش مقدّمي خدمة مطابقين للفلاتر دي",
+    "no_results_body": "جرّب تركيبة تانية أو امسح الفلاتر",
+    "offline_note": "غير متصل — التقويم لسه شغال؛ التعديلات هتتزامن لما ترجع الشبكة",
+    "permission_required": "مفيش صلاحية لعرض التقويم"
+  }
+}

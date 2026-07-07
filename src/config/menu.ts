@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Package, ShoppingCart, Truck, Users, Calculator,
-  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed,
+  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock,
 } from "lucide-react";
 
 export type MenuGroup = "core" | "sector" | "admin";
@@ -155,11 +155,20 @@ export const MENU: MenuItem[] = [
     permission: "fnb.access",
   },
   {
+    key: "svc",
+    icon: CalendarClock,
+    route: "/svc",
+    group: "sector",
+    order: 10,
+    moduleFlag: "svc",
+    permission: "svc.access",
+  },
+  {
     key: "permissions",
     icon: Shield,
     route: "/admin",
     group: "admin",
-    order: 10,
+    order: 11,
     subItems: [
       { key: "users",     route: "/admin/users" },
       { key: "roles",     route: "/admin/roles" },
@@ -173,7 +182,7 @@ export const MENU: MenuItem[] = [
     icon: Settings,
     route: "/settings",
     group: "admin",
-    order: 11,
+    order: 12,
     subItems: [
       { key: "settings_appearance", route: "/settings/appearance" },
     ],

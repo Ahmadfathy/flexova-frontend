@@ -1,0 +1,55 @@
+{
+  "title": "Services & Appointments",
+
+  "calendar": {
+    "title": "Calendar",
+    "day": "Day",
+    "week": "Week",
+    "prev": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "new_appointment": "New appointment",
+    "appointment_details": "Appointment",
+
+    "filter_all_providers": "All providers",
+    "filter_all_services": "All services",
+    "filter_all_branches": "All branches",
+    "clear_filters": "Clear filters",
+
+    "status": {
+      "booked": "Booked",
+      "confirmed": "Confirmed",
+      "checked-in": "Checked in",
+      "in-service": "In service",
+      "completed": "Completed",
+      "no-show": "No-show",
+      "cancelled": "Cancelled"
+    },
+
+    "weekday": {
+      "sat": "Sat",
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri"
+    },
+
+    "reschedule_conflict_toast": "That provider already has an appointment at that time — reschedule blocked",
+    "reschedule_warned_toast": "Moved, but outside the provider's business hours",
+    "reschedule_ok_toast": "Rescheduled to {{time}}",
+
+    "stub_note": "The full booking form arrives in the next step.",
+    "stub_close": "Close",
+
+    "empty_title": "No appointments yet",
+    "empty_body": "Tap a provider's empty slot, or use New appointment, to book the first one",
+    "error_title": "Couldn't load the calendar",
+    "error_body": "Check your connection and try again",
+    "no_results_title": "No providers match these filters",
+    "no_results_body": "Try another combination or clear the filters",
+    "offline_note": "Offline — the calendar still works; changes sync once you're back online",
+    "permission_required": "You don't have access to the calendar"
+  }
+}

@@ -103,6 +103,9 @@ import OrderPage from "@/features/fnb/OrderPage";
 import KdsPage from "@/features/fnb/KdsPage";
 import BillPage from "@/features/fnb/BillPage";
 
+// Services & Appointments — FE_11 — reuses PosLayout (generic variant); Calendar this step
+import CalendarPage from "@/features/svc/CalendarPage";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -158,6 +161,13 @@ export default function App() {
           <Route path="kds" element={<KdsPage />} />
           <Route path="kds/:stationId" element={<KdsPage />} />
           <Route path="bill/:checkId" element={<BillPage />} />
+        </Route>
+
+        {/* Services & Appointments — FE_11 — reuses PosLayout (generic body).
+            Journal/settings/shift/tender are reused via the shared /pos/* routes. */}
+        <Route path="/svc/*" element={<PosLayout variant="generic" />}>
+          <Route index element={<Navigate to="calendar" replace />} />
+          <Route path="calendar" element={<CalendarPage />} />
         </Route>
 
         <Route element={<AppShell />}>

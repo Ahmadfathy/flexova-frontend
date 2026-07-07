@@ -35,23 +35,25 @@ import arPos         from "./locales/ar/pos.json";
 import enPos         from "./locales/en/pos.json";
 import arFnb         from "./locales/ar/fnb.json";
 import enFnb         from "./locales/en/fnb.json";
+import arSvc         from "./locales/ar/svc.json";
+import enSvc         from "./locales/en/svc.json";
 
 i18n.use(initReactI18next).init({
   lng: "ar", fallbackLng: "ar",
-  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb"],
+  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc"],
   defaultNS: "common",
   resources: {
     ar: {
       common: arCommon, shell: arShell, settings: arSettings,
       inventory: arInventory, sales: arSales, purchasing: arPurchasing,
       finance: arFinance, crm: arCrm, hr: arHr, reports: arReports, admin: arAdmin,
-      auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos, fnb: arFnb,
+      auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos, fnb: arFnb, svc: arSvc,
     },
     en: {
       common: enCommon, shell: enShell, settings: enSettings,
       inventory: enInventory, sales: enSales, purchasing: enPurchasing,
       finance: enFinance, crm: enCrm, hr: enHr, reports: enReports, admin: enAdmin,
-      auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos, fnb: enFnb,
+      auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos, fnb: enFnb, svc: enSvc,
     },
   },
   interpolation: { escapeValue: false },
