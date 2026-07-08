@@ -51,5 +51,76 @@
     "no_results_body": "Try another combination or clear the filters",
     "offline_note": "Offline — the calendar still works; changes sync once you're back online",
     "permission_required": "You don't have access to the calendar"
+  },
+
+  "appointment": {
+    "new_title": "New appointment",
+    "title": "Appointment",
+    "close": "Close",
+    "book_action": "Book",
+    "save_action": "Save changes",
+    "advance_action": {
+      "confirmed": "Confirm",
+      "checked-in": "Check in",
+      "in-service": "Start",
+      "completed": "Complete"
+    },
+    "no_show_action": "No-show",
+    "cancel_action": "Cancel",
+    "view_ticket": "View Service Ticket",
+    "reason_label": "Reason",
+    "fee_applied": "A {{amount}} fee was applied",
+
+    "conflict_toast": "That provider already has an appointment at that time — save blocked",
+    "availability_warning_toast": "Saved, but outside the provider's business hours",
+    "booked_toast": "Appointment booked",
+    "saved_toast": "Changes saved",
+    "package_empty_toast": "No remaining sessions in the package",
+    "status_toast": {
+      "confirmed": "Appointment confirmed",
+      "checked-in": "Client checked in",
+      "in-service": "Service started"
+    },
+    "cancelled_toast": "Appointment cancelled",
+    "no_show_toast": "Marked as no-show",
+    "conflict_inline": "That provider already has an appointment at that time",
+    "availability_warning_inline": "This time is outside the provider's business hours",
+
+    "client_label": "Client",
+    "client_placeholder": "Select a client",
+    "client_search_placeholder": "Search by name or phone",
+    "walk_in_option": "Walk-in client (no CRM record)",
+    "walk_in_badge": "Walk-in",
+    "walk_in_name_placeholder": "Client name",
+    "client_picker_heading": "Clients",
+    "client_add_new": "Add new client",
+    "client_add_stub": "Adding clients is coming soon",
+
+    "services_label": "Service(s)",
+    "minutes_suffix": "min",
+    "minutes_short": "m",
+
+    "provider_label": "Provider",
+    "provider_placeholder": "Select a provider",
+    "no_provider_error": "No provider offers this combination of services",
+
+    "date_label": "Date",
+    "time_label": "Time",
+
+    "coverage_label": "Package-covered",
+    "remaining_sessions": "{{n}} sessions remaining",
+
+    "notes_label": "Notes",
+
+    "cancel_title": "Cancel appointment",
+    "no_show_title": "Mark as no-show",
+    "cancel_reason_label": "Cancellation reason",
+    "apply_fee": "Apply a cancellation fee ({{amount}})"
+  },
+
+  "ticket": {
+    "stub_title": "The Service Ticket arrives in the next step",
+    "stub_body": "The appointment closed successfully — ticket {{id}}. The full screen (services + products + settle) is built in Step 3.",
+    "stub_back": "Back to calendar"
   }
 }

@@ -23,15 +23,21 @@ export interface SvcService {
   category: string;
 }
 
-interface CrmCustomer {
+export interface CrmCustomer {
   id: string;
   name_ar: string;
   name_en: string;
 }
 
+/** Optional cancellation/no-show fee (EGP) — flat per-config amount, applied when the caller opts in. */
+export const CANCELLATION_FEE_EGP = 50;
+
+/** New bookings created from the calendar always land on the main branch (single-branch fixtures seed). */
+export const DEFAULT_BRANCH_ID = "br_main";
+
 export const PROVIDERS = svcFixtures.providers as SvcProvider[];
 export const SERVICES = svcFixtures.services_seed as SvcService[];
-const CLIENTS = crmFixtures.customers as CrmCustomer[];
+export const CLIENTS = crmFixtures.customers as CrmCustomer[];
 
 export function findProvider(id: string | null | undefined): SvcProvider | undefined {
   return PROVIDERS.find((p) => p.id === id);
@@ -67,4 +73,14 @@ export function servicesLabel(serviceIds: string[], lang: Lang): string {
 
 export function servicesDuration(serviceIds: string[]): number {
   return serviceIds.reduce((sum, id) => sum + (findService(id)?.duration_min ?? 0), 0);
+}
+
+export function servicesPrice(serviceIds: string[]): number {
+  return serviceIds.reduce((sum, id) => sum + (findService(id)?.price ?? 0), 0);
+}
+
+/** Providers able to perform every service in `serviceIds` (empty selection → nobody qualifies yet). */
+export function eligibleProviders(serviceIds: string[]): SvcProvider[] {
+  if (serviceIds.length === 0) return [];
+  return PROVIDERS.filter((p) => serviceIds.every((id) => p.services.includes(id)));
 }

@@ -23,7 +23,7 @@ import { addDays, composeIso, isSameDay, snapMinutes, startOfWeekSat, GRID_START
 import { useCalendar } from "./useCalendar";
 import { DayGrid } from "./DayGrid";
 import { WeekGrid } from "./WeekGrid";
-import { AppointmentStubDialog } from "./AppointmentStubDialog";
+import { AppointmentDrawer } from "./AppointmentDrawer";
 
 type ViewMode = "day" | "week";
 const BRANCHES = permissionsFixtures.branches as { id: string; name_ar: string; name_en: string }[];
@@ -293,13 +293,13 @@ export default function CalendarPage() {
         />
       )}
 
-      <AppointmentStubDialog
+      <AppointmentDrawer
         open={!!newSlot}
         onOpenChange={(o) => !o && setNewSlot(null)}
         lang={lang}
         newSlot={newSlot}
       />
-      <AppointmentStubDialog
+      <AppointmentDrawer
         open={!!viewingAppointment}
         onOpenChange={(o) => !o && setViewingAppointment(null)}
         lang={lang}

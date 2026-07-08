@@ -51,5 +51,76 @@
     "no_results_body": "جرّب تركيبة تانية أو امسح الفلاتر",
     "offline_note": "غير متصل — التقويم لسه شغال؛ التعديلات هتتزامن لما ترجع الشبكة",
     "permission_required": "مفيش صلاحية لعرض التقويم"
+  },
+
+  "appointment": {
+    "new_title": "حجز جديد",
+    "title": "الموعد",
+    "close": "إغلاق",
+    "book_action": "احجز",
+    "save_action": "حفظ التعديلات",
+    "advance_action": {
+      "confirmed": "تأكيد",
+      "checked-in": "تسجيل الوصول",
+      "in-service": "بدء التنفيذ",
+      "completed": "إنهاء"
+    },
+    "no_show_action": "لم يحضر",
+    "cancel_action": "إلغاء",
+    "view_ticket": "عرض فاتورة الخدمة",
+    "reason_label": "السبب",
+    "fee_applied": "اتطبّقت غرامة {{amount}}",
+
+    "conflict_toast": "مقدّم الخدمة عنده موعد تاني في نفس الوقت — الحفظ اتمنع",
+    "availability_warning_toast": "اتحفظ، بس برّه ساعات عمل مقدّم الخدمة",
+    "booked_toast": "اتحجز الموعد",
+    "saved_toast": "اتحفظت التعديلات",
+    "package_empty_toast": "مفيش رصيد متبقي في الباقة",
+    "status_toast": {
+      "confirmed": "اتأكّد الموعد",
+      "checked-in": "اتسجّل وصول العميل",
+      "in-service": "بدأ تنفيذ الخدمة"
+    },
+    "cancelled_toast": "اتلغى الموعد",
+    "no_show_toast": "اتسجّل إن العميل ملحضرش",
+    "conflict_inline": "مقدّم الخدمة عنده موعد تاني في نفس الوقت",
+    "availability_warning_inline": "الوقت ده برّه ساعات عمل مقدّم الخدمة",
+
+    "client_label": "العميل",
+    "client_placeholder": "اختر عميل",
+    "client_search_placeholder": "دوّر بالاسم أو رقم التليفون",
+    "walk_in_option": "عميل بدون تسجيل (زيارة مباشرة)",
+    "walk_in_badge": "زيارة مباشرة",
+    "walk_in_name_placeholder": "اسم العميل",
+    "client_picker_heading": "العملاء",
+    "client_add_new": "إضافة عميل جديد",
+    "client_add_stub": "إضافة العملاء هتتفعّل قريب",
+
+    "services_label": "الخدمة/الخدمات",
+    "minutes_suffix": "دقيقة",
+    "minutes_short": "د",
+
+    "provider_label": "مقدّم الخدمة",
+    "provider_placeholder": "اختر مقدّم خدمة",
+    "no_provider_error": "مفيش مقدّم خدمة بيقدّم كل الخدمات المختارة دي",
+
+    "date_label": "التاريخ",
+    "time_label": "الوقت",
+
+    "coverage_label": "مغطّى بباقة",
+    "remaining_sessions": "متبقي {{n}} جلسات",
+
+    "notes_label": "ملاحظات",
+
+    "cancel_title": "إلغاء الموعد",
+    "no_show_title": "تسجيل عدم حضور",
+    "cancel_reason_label": "سبب الإلغاء",
+    "apply_fee": "تطبيق غرامة إلغاء ({{amount}})"
+  },
+
+  "ticket": {
+    "stub_title": "فاتورة الخدمة هتتفعّل في الخطوة الجاية",
+    "stub_body": "الموعد اتقفل بنجاح — رقم الفاتورة {{id}}. الشاشة الكاملة (خدمات + منتجات + تحصيل) هتتبني في الخطوة 3.",
+    "stub_back": "الرجوع للتقويم"
   }
 }
