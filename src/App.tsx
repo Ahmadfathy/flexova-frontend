@@ -103,9 +103,9 @@ import OrderPage from "@/features/fnb/OrderPage";
 import KdsPage from "@/features/fnb/KdsPage";
 import BillPage from "@/features/fnb/BillPage";
 
-// Services & Appointments — FE_11 — reuses PosLayout (generic variant); Calendar + Appointment this step
+// Services & Appointments — FE_11 — reuses PosLayout (generic variant); Calendar + Appointment + Service Ticket this step
 import CalendarPage from "@/features/svc/CalendarPage";
-import ServiceTicketStubPage from "@/features/svc/ServiceTicketStubPage";
+import ServiceTicketPage from "@/features/svc/ServiceTicketPage";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -169,7 +169,7 @@ export default function App() {
         <Route path="/svc/*" element={<PosLayout variant="generic" />}>
           <Route index element={<Navigate to="calendar" replace />} />
           <Route path="calendar" element={<CalendarPage />} />
-          <Route path="ticket/:id" element={<ServiceTicketStubPage />} />
+          <Route path="ticket/:id" element={<ServiceTicketPage />} />
         </Route>
 
         <Route element={<AppShell />}>

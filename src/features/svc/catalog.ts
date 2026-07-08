@@ -27,6 +27,7 @@ export interface CrmCustomer {
   id: string;
   name_ar: string;
   name_en: string;
+  trn?: string | null;
 }
 
 /** Optional cancellation/no-show fee (EGP) — flat per-config amount, applied when the caller opts in. */

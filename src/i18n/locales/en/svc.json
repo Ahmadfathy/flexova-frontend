@@ -119,8 +119,38 @@
   },
 
   "ticket": {
-    "stub_title": "The Service Ticket arrives in the next step",
-    "stub_body": "The appointment closed successfully — ticket {{id}}. The full screen (services + products + settle) is built in Step 3.",
-    "stub_back": "Back to calendar"
+    "back_to_calendar": "Back to calendar",
+    "status": { "open": "Open", "settled": "Settled" },
+    "payment": { "paid": "Paid", "unpaid": "Unpaid", "partial": "Partially paid" },
+    "sync": { "local": "Local", "queued": "Queued for submission", "valid": "Accepted", "rejected": "Rejected" },
+    "channel_b2c": "E-receipt (B2C)",
+    "channel_b2b": "E-invoice (B2B)",
+
+    "add_service": "Add service",
+    "add_product": "Add product",
+    "remove_line": "Remove line",
+    "no_products": "No products added yet",
+
+    "discount_gated_note": "Requires the discount-override permission to change this",
+    "provider_required_note": "Every service line needs a provider before you can settle",
+    "no_shift_note": "An open shift is required to settle",
+
+    "settle": "Settle",
+    "settle_by_balance": "Settle by balance (no cash due)",
+    "settled_toast": "Ticket settled",
+    "eta_rejected_toast": "Ticket settled, but the tax authority rejected the document — check the journal",
+    "eta_queued_toast": "Ticket settled — the document is queued for submission",
+
+    "commission_title": "Commission summary",
+    "tenders_title": "Tenders",
+    "print": "Print",
+    "print_toast": "80mm printing engages once real hardware is bound",
+    "window_note": "{{h}}h left in the submission window",
+
+    "error_title": "Couldn't load the ticket",
+    "error_body": "Check your connection and try again",
+    "not_found_title": "Ticket not found",
+    "not_found_body": "This link isn't tied to a completed appointment",
+    "offline_note": "Offline — settling still works; the document syncs once you're back online"
   }
 }
