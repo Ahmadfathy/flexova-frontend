@@ -1,0 +1,196 @@
+{
+  "_meta": {
+    "module": "repair",
+    "short_name": "rpr",
+    "version": "1.0",
+    "currency": "EGP",
+    "diagnosis_fee_enabled": true,
+    "default_warranty_days": 14,
+    "depends_on": "crm (customer), inventory (parts + stock, flag-aware), hr (commission rules), accounting (auto-posting — posted at delivery), eta (final doc routing)",
+    "notes": "Work Order = living entity; financial document born at delivery only (Check->document). Approval-gated: no execution before quote approved. Parts = real inventory (deduct on add); labor = non-stock service. Deposit optional. Warranty: period from delivery + zero-charge under-warranty WO. flag-don't-block on: unregistered part, device without serial, item without eta_code. One device per WO. Maps customers to FE_05 (cu_*), parts to FE_01 items."
+  },
+
+  "technicians": [
+    { "id": "tech_hazem", "name_ar": "حازم مصطفى", "name_en": "Hazem Mostafa", "commission_rule_id": "comm_labor_10", "hr_employee_id": "emp_hazem" },
+    { "id": "tech_kamal", "name_ar": "كمال السيد", "name_en": "Kamal El-Sayed", "commission_rule_id": "comm_labor_10", "hr_employee_id": "emp_kamal" }
+  ],
+
+  "commission_rules": [
+    { "id": "comm_labor_10", "name_ar": "10% على الخدمة", "basis": "labor", "type": "percent", "value": 10, "source": "hr" }
+  ],
+
+  "parts": [
+    { "id": "part_scr_a12", "sku": "SCR-A12", "name_ar": "شاشة سامسونج A12", "name_en": "Samsung A12 screen", "price": 950.00, "cost": 620.00, "stock": 6, "eta_code": "EG-1234567-SCR", "is_stock": true },
+    { "id": "part_bat_ip11", "sku": "BAT-IP11", "name_ar": "بطارية آيفون 11", "name_en": "iPhone 11 battery", "price": 700.00, "cost": 430.00, "stock": 3, "eta_code": "EG-7654321-BAT", "is_stock": true },
+    { "id": "part_chg_typc", "sku": "CHG-TYPC", "name_ar": "منفذ شحن Type-C", "name_en": "Type-C charging port", "price": 180.00, "cost": 95.00, "stock": 12, "eta_code": null, "is_stock": true, "_flag": "no_eta_code" },
+    { "id": "part_ram_8gb", "sku": "RAM-8GB", "name_ar": "رامة 8 جيجا لابتوب", "name_en": "8GB laptop RAM", "price": 1400.00, "cost": 1050.00, "stock": 1, "eta_code": "EG-2223334-RAM", "is_stock": true }
+  ],
+
+  "labor_services": [
+    { "id": "svc_screen_swap", "name_ar": "تركيب شاشة", "name_en": "Screen replacement", "price": 150.00 },
+    { "id": "svc_battery_swap", "name_ar": "تغيير بطارية", "name_en": "Battery replacement", "price": 100.00 },
+    { "id": "svc_diagnosis", "name_ar": "كشف وتشخيص", "name_en": "Diagnosis", "price": 50.00 },
+    { "id": "svc_water_clean", "name_ar": "معالجة مياه/تنظيف", "name_en": "Water/clean treatment", "price": 250.00 }
+  ],
+
+  "work_orders": [
+    {
+      "id": "wo_1001", "number": "WO-B1-1001", "status": "pending_diagnosis",
+      "customer_id": "cu_mohamed", "technician_id": "tech_hazem",
+      "device": { "type": "mobile", "brand": "Samsung", "model": "Galaxy A12", "serial": "R58N12ABCDE", "intake_condition": "شاشة مكسورة، الجهاز بيفتح", "accessories": ["الشاحن"], "photos": [], "customer_id": "cu_mohamed" },
+      "reported_faults": "الشاشة مكسورة بعد وقعة",
+      "diagnosis": null, "quote": null,
+      "part_lines": [], "labor_lines": [],
+      "deposit": { "amount": 200.00, "treasury_id": "trs_main", "taken_at": "2026-07-06" },
+      "warranty_days": 14, "original_wo_id": null, "final_doc_id": null,
+      "intake_at": "2026-07-06", "promise_at": "2026-07-08", "ready_at": null, "delivered_at": null,
+      "notes": ""
+    },
+    {
+      "id": "wo_1002", "number": "WO-B1-1002", "status": "pending_approval",
+      "customer_id": "cu_samir", "technician_id": "tech_kamal",
+      "device": { "type": "mobile", "brand": "Apple", "model": "iPhone 11", "serial": "F2LXK9GHJKL", "intake_condition": "البطارية بتخلص بسرعة", "accessories": ["الكيس", "الشاحن"], "photos": [], "customer_id": "cu_samir" },
+      "reported_faults": "البطارية ضعيفة",
+      "diagnosis": { "result": "البطارية تالفة وتحتاج تغيير", "proposed_work": "تغيير بطارية أصلية" },
+      "quote": {
+        "part_lines": [ { "part_id": "part_bat_ip11", "qty": 1, "price": 700.00 } ],
+        "labor_lines": [ { "service_id": "svc_battery_swap", "technician_id": "tech_kamal", "price": 100.00 } ],
+        "total": 800.00, "approval_status": "pending", "approval_channel": "whatsapp", "sent_at": "2026-07-07"
+      },
+      "part_lines": [], "labor_lines": [],
+      "deposit": null,
+      "warranty_days": 14, "original_wo_id": null, "final_doc_id": null,
+      "intake_at": "2026-07-07", "promise_at": "2026-07-09", "ready_at": null, "delivered_at": null,
+      "notes": ""
+    },
+    {
+      "id": "wo_1003", "number": "WO-B1-1003", "status": "in_progress",
+      "customer_id": "cu_noor", "technician_id": "tech_hazem",
+      "device": { "type": "computer", "brand": "Dell", "model": "Latitude 5420", "serial": null, "intake_condition": "بطيء جداً، بيهنّج", "accessories": ["الشاحن"], "photos": [], "customer_id": "cu_noor", "_flag": "device_no_serial" },
+      "reported_faults": "أداء بطيء، تعليق مستمر",
+      "diagnosis": { "result": "الرامة ضعيفة + يحتاج تنظيف", "proposed_work": "ترقية رامة 8 جيجا + صيانة" },
+      "quote": {
+        "part_lines": [ { "part_id": "part_ram_8gb", "qty": 1, "price": 1400.00 } ],
+        "labor_lines": [ { "service_id": "svc_water_clean", "technician_id": "tech_hazem", "price": 250.00 } ],
+        "total": 1650.00, "approval_status": "approved", "approval_channel": "in_person", "sent_at": "2026-07-05", "approved_at": "2026-07-05"
+      },
+      "part_lines": [
+        { "part_id": "part_ram_8gb", "qty": 1, "price": 1400.00, "deducted": true },
+        { "part_id": null, "adhoc_name": "معجون تبريد", "qty": 1, "price": 60.00, "deducted": false, "_flag": "parts_adhoc" }
+      ],
+      "labor_lines": [ { "service_id": "svc_water_clean", "technician_id": "tech_hazem", "price": 250.00 } ],
+      "deposit": { "amount": 500.00, "treasury_id": "trs_main", "taken_at": "2026-07-05" },
+      "warranty_days": 14, "original_wo_id": null, "final_doc_id": null,
+      "intake_at": "2026-07-05", "promise_at": "2026-07-08", "ready_at": null, "delivered_at": null,
+      "notes": "قطعة معجون تبريد غير مسجّلة — تُعلَّم للتصحيح"
+    },
+    {
+      "id": "wo_1004", "number": "WO-B1-1004", "status": "ready",
+      "customer_id": "cu_amal", "technician_id": "tech_hazem",
+      "device": { "type": "mobile", "brand": "Samsung", "model": "Galaxy A12", "serial": "R58N77ZZZZZ", "intake_condition": "شاشة مكسورة", "accessories": [], "photos": [], "customer_id": "cu_amal" },
+      "reported_faults": "الشاشة مكسورة",
+      "diagnosis": { "result": "الشاشة تحتاج تغيير", "proposed_work": "تركيب شاشة جديدة" },
+      "quote": {
+        "part_lines": [ { "part_id": "part_scr_a12", "qty": 1, "price": 950.00 } ],
+        "labor_lines": [ { "service_id": "svc_screen_swap", "technician_id": "tech_hazem", "price": 150.00 } ],
+        "total": 1100.00, "approval_status": "approved", "approval_channel": "phone", "sent_at": "2026-07-04", "approved_at": "2026-07-04"
+      },
+      "part_lines": [ { "part_id": "part_scr_a12", "qty": 1, "price": 950.00, "deducted": true } ],
+      "labor_lines": [ { "service_id": "svc_screen_swap", "technician_id": "tech_hazem", "price": 150.00 } ],
+      "deposit": null,
+      "warranty_days": 14, "original_wo_id": null, "final_doc_id": null,
+      "intake_at": "2026-07-04", "promise_at": "2026-07-06", "ready_at": "2026-07-06", "delivered_at": null,
+      "notes": ""
+    },
+    {
+      "id": "wo_1005", "number": "WO-B1-1005", "status": "delivered",
+      "customer_id": "cu_mohamed", "technician_id": "tech_kamal",
+      "device": { "type": "mobile", "brand": "Apple", "model": "iPhone 11", "serial": "F2LXK1AAAAA", "intake_condition": "منفذ الشحن لا يعمل", "accessories": ["الشاحن"], "photos": [], "customer_id": "cu_mohamed" },
+      "reported_faults": "لا يشحن",
+      "diagnosis": { "result": "منفذ الشحن تالف", "proposed_work": "تغيير منفذ الشحن" },
+      "quote": {
+        "part_lines": [ { "part_id": "part_chg_typc", "qty": 1, "price": 180.00 } ],
+        "labor_lines": [ { "service_id": "svc_battery_swap", "technician_id": "tech_kamal", "price": 100.00 } ],
+        "total": 280.00, "approval_status": "approved", "approval_channel": "in_person", "sent_at": "2026-06-28", "approved_at": "2026-06-28"
+      },
+      "part_lines": [ { "part_id": "part_chg_typc", "qty": 1, "price": 180.00, "deducted": true, "_flag": "no_eta_code" } ],
+      "labor_lines": [ { "service_id": "svc_battery_swap", "technician_id": "tech_kamal", "price": 100.00 } ],
+      "deposit": null,
+      "warranty_days": 14, "original_wo_id": null, "final_doc_id": "doc_rpr_5005",
+      "intake_at": "2026-06-28", "promise_at": "2026-06-29", "ready_at": "2026-06-29", "delivered_at": "2026-06-29",
+      "warranty_expires_at": "2026-07-13",
+      "notes": "صنف بلا eta_code — تم البيع والتعليم للتصحيح"
+    },
+    {
+      "id": "wo_1006", "number": "WO-B1-1006", "status": "in_progress",
+      "customer_id": "cu_mohamed", "technician_id": "tech_kamal",
+      "device": { "type": "mobile", "brand": "Apple", "model": "iPhone 11", "serial": "F2LXK1AAAAA", "intake_condition": "نفس الجهاز رجع — مشكلة الشحن تكررت", "accessories": ["الشاحن"], "photos": [], "customer_id": "cu_mohamed" },
+      "reported_faults": "رجع لا يشحن خلال فترة الضمان",
+      "diagnosis": { "result": "منفذ الشحن المركّب به عيب", "proposed_work": "استبدال المنفذ تحت الضمان" },
+      "quote": {
+        "part_lines": [ { "part_id": "part_chg_typc", "qty": 1, "price": 0.00 } ],
+        "labor_lines": [ { "service_id": "svc_battery_swap", "technician_id": "tech_kamal", "price": 0.00 } ],
+        "total": 0.00, "approval_status": "approved", "approval_channel": "in_person", "approved_at": "2026-07-07"
+      },
+      "part_lines": [ { "part_id": "part_chg_typc", "qty": 1, "price": 0.00, "deducted": true, "cost_as_warranty": true } ],
+      "labor_lines": [ { "service_id": "svc_battery_swap", "technician_id": "tech_kamal", "price": 0.00 } ],
+      "deposit": null,
+      "warranty_days": 0, "original_wo_id": "wo_1005", "final_doc_id": null,
+      "intake_at": "2026-07-07", "promise_at": "2026-07-08", "ready_at": null, "delivered_at": null,
+      "notes": "تحت الضمان — بلا تحصيل، القطعة تُخصم كتكلفة ضمان",
+      "_flag": "under_warranty"
+    },
+    {
+      "id": "wo_1007", "number": "WO-B1-1007", "status": "rejected",
+      "customer_id": "cu_samir", "technician_id": "tech_hazem",
+      "device": { "type": "appliance", "brand": "Toshiba", "model": "تكييف 1.5 حصان", "serial": "TSH-AC-4455", "intake_condition": "لا يبرّد", "accessories": [], "photos": [], "customer_id": "cu_samir" },
+      "reported_faults": "التكييف لا يبرّد",
+      "diagnosis": { "result": "الكمبروسر تالف — تكلفة الإصلاح عالية", "proposed_work": "تغيير كمبروسر" },
+      "quote": {
+        "part_lines": [], "labor_lines": [],
+        "total": 3200.00, "approval_status": "rejected", "approval_channel": "phone", "sent_at": "2026-07-03", "rejected_at": "2026-07-03"
+      },
+      "part_lines": [], "labor_lines": [],
+      "diagnosis_fee": { "amount": 50.00, "charged": true },
+      "deposit": null,
+      "warranty_days": 0, "original_wo_id": null, "final_doc_id": "doc_rpr_5007",
+      "intake_at": "2026-07-03", "promise_at": "2026-07-04", "ready_at": null, "delivered_at": "2026-07-03",
+      "notes": "العميل رفض العرض — تم تحصيل رسم الكشف فقط وتسليم الجهاز كما هو"
+    }
+  ],
+
+  "final_documents": [
+    {
+      "id": "doc_rpr_5005", "wo_id": "wo_1005", "customer_id": "cu_mohamed", "type": "e_receipt",
+      "lines": [
+        { "kind": "part", "name_ar": "منفذ شحن Type-C", "qty": 1, "price": 180.00, "eta_code": null, "_flag": "no_eta_code" },
+        { "kind": "service", "name_ar": "تغيير منفذ الشحن", "qty": 1, "price": 100.00, "eta_code": "SVC-REPAIR" }
+      ],
+      "parts_total": 180.00, "service_total": 100.00, "deposit_applied": 0.00, "net_due": 280.00,
+      "payment_status": "paid", "eta_status": "flagged_missing_code", "tender": [ { "method": "cash", "amount": 280.00 } ],
+      "posted": true, "issued_at": "2026-06-29"
+    },
+    {
+      "id": "doc_rpr_5007", "wo_id": "wo_1007", "customer_id": "cu_samir", "type": "e_receipt",
+      "lines": [ { "kind": "service", "name_ar": "كشف وتشخيص", "qty": 1, "price": 50.00, "eta_code": "SVC-DIAG" } ],
+      "parts_total": 0.00, "service_total": 50.00, "deposit_applied": 0.00, "net_due": 50.00,
+      "payment_status": "paid", "eta_status": "accepted", "tender": [ { "method": "cash", "amount": 50.00 } ],
+      "posted": true, "issued_at": "2026-07-03"
+    }
+  ],
+
+  "settings": {
+    "diagnosis_fee": { "enabled": true, "amount": 50.00 },
+    "default_warranty_days": 14,
+    "wo_numbering": { "prefix": "WO-B1-", "next": 1008 },
+    "whatsapp_templates": {
+      "approval_request": "عرض سعر إصلاح {device} برقم {wo}: {total} ج.م. توافق؟",
+      "ready_notice": "جهازك {device} ({wo}) جاهز للاستلام."
+    }
+  },
+
+  "board_states": {
+    "empty_example": false,
+    "offline_banner": false
+  }
+}
