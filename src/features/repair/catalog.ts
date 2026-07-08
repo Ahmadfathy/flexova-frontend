@@ -1,5 +1,8 @@
 import rprFixtures from "@/lib/mock/fixtures/rpr.fixtures.json";
+import crmFixtures from "@/lib/mock/fixtures/crm.fixtures.json";
+import accountingFixtures from "@/lib/mock/fixtures/accounting.fixtures.json";
 import type { Lang } from "@/stores/appearance";
+import type { PillVariant } from "@/components/patterns/StatusPill";
 
 // ── Entities (FE_12 §2) ──────────────────────────────────────────────
 
@@ -240,4 +243,76 @@ export function partName(part: RprPart | undefined, lang: Lang): string {
 export function laborServiceName(service: RprLaborService | undefined, lang: Lang): string {
   if (!service) return "";
   return lang === "ar" ? service.name_ar : service.name_en;
+}
+
+// ── Cross-module reference data (imported directly, local narrow shape —
+// same convention as svc/catalog.ts's own CrmCustomer) ────────────────
+
+export interface RprCustomer {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  phone: string | null;
+}
+
+export interface RprTreasury {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  type: string;
+}
+
+export const CUSTOMERS = crmFixtures.customers as RprCustomer[];
+export const TREASURIES = accountingFixtures.treasuries as RprTreasury[];
+
+export function findCustomer(id: string | null | undefined): RprCustomer | undefined {
+  return CUSTOMERS.find((c) => c.id === id);
+}
+
+export function customerName(customer: RprCustomer | undefined, lang: Lang): string {
+  if (!customer) return "";
+  return lang === "ar" ? customer.name_ar : customer.name_en;
+}
+
+export function findTreasury(id: string | null | undefined): RprTreasury | undefined {
+  return TREASURIES.find((tr) => tr.id === id);
+}
+
+export function treasuryName(treasury: RprTreasury | undefined, lang: Lang): string {
+  if (!treasury) return "";
+  return lang === "ar" ? treasury.name_ar : treasury.name_en;
+}
+
+// ── Board helpers ───────────────────────────────────────────────────
+
+/** Kanban columns, in lifecycle order (FE_12 §3.1 — "rejected" is a terminal
+ * side-branch, not part of the living-entity column flow; it still shows in list view). */
+export const BOARD_STATUSES: RprWoStatus[] = [
+  "pending_diagnosis", "pending_approval", "in_progress", "ready", "delivered",
+];
+
+export const ALL_STATUSES: RprWoStatus[] = [...BOARD_STATUSES, "rejected"];
+
+const STATUS_PILL: Record<RprWoStatus, PillVariant> = {
+  pending_diagnosis: "pending",
+  pending_approval: "credit",
+  in_progress: "in-progress",
+  ready: "active",
+  delivered: "approved",
+  rejected: "rejected",
+};
+
+export function statusPillVariant(status: RprWoStatus): PillVariant {
+  return STATUS_PILL[status] ?? "default";
+}
+
+/** Overdue = still open (not delivered/rejected) and past its promise date. */
+export function isOverdue(wo: RprWorkOrder): boolean {
+  if (wo.status === "delivered" || wo.status === "rejected") return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return wo.promise_at < today;
+}
+
+export function deviceLabel(device: RprDevice): string {
+  return [device.brand, device.model].filter(Boolean).join(" ");
 }
