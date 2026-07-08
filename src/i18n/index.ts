@@ -37,23 +37,25 @@ import arFnb         from "./locales/ar/fnb.json";
 import enFnb         from "./locales/en/fnb.json";
 import arSvc         from "./locales/ar/svc.json";
 import enSvc         from "./locales/en/svc.json";
+import arRepair      from "./locales/ar/repair.json";
+import enRepair      from "./locales/en/repair.json";
 
 i18n.use(initReactI18next).init({
   lng: "ar", fallbackLng: "ar",
-  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc"],
+  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc", "repair"],
   defaultNS: "common",
   resources: {
     ar: {
       common: arCommon, shell: arShell, settings: arSettings,
       inventory: arInventory, sales: arSales, purchasing: arPurchasing,
       finance: arFinance, crm: arCrm, hr: arHr, reports: arReports, admin: arAdmin,
-      auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos, fnb: arFnb, svc: arSvc,
+      auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos, fnb: arFnb, svc: arSvc, repair: arRepair,
     },
     en: {
       common: enCommon, shell: enShell, settings: enSettings,
       inventory: enInventory, sales: enSales, purchasing: enPurchasing,
       finance: enFinance, crm: enCrm, hr: enHr, reports: enReports, admin: enAdmin,
-      auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos, fnb: enFnb, svc: enSvc,
+      auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos, fnb: enFnb, svc: enSvc, repair: enRepair,
     },
   },
   interpolation: { escapeValue: false },

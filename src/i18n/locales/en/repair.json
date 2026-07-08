@@ -1,0 +1,87 @@
+{
+  "title": "Repair",
+
+  "placeholder": {
+    "note": "The real screen arrives in a later step"
+  },
+
+  "status": {
+    "pending_diagnosis": "Pending diagnosis",
+    "pending_approval": "Pending approval",
+    "in_progress": "In progress",
+    "ready": "Ready",
+    "delivered": "Delivered",
+    "rejected": "Rejected"
+  },
+
+  "board": {
+    "title": "Work Orders",
+    "overdue": "Overdue",
+    "promise": "Promise date",
+    "empty": "No work orders — start an intake"
+  },
+
+  "device": {
+    "mobile": "Mobile",
+    "computer": "Computer",
+    "appliance": "Appliance",
+    "vehicle": "Vehicle"
+  },
+
+  "intake": {
+    "new": "New intake",
+    "customer": "Customer",
+    "device_type": "Device type",
+    "serial": "Serial / IMEI",
+    "condition": "Condition at intake",
+    "accessories": "Accessories",
+    "faults": "Reported faults",
+    "deposit": "Deposit (optional)",
+    "promise": "Promise date",
+    "technician": "Technician",
+    "save_print": "Save + print intake ticket",
+    "no_serial": "Device without serial — accepted & flagged"
+  },
+
+  "wo": {
+    "diagnosis": "Diagnosis",
+    "proposed_work": "Proposed work",
+    "quote": "Quote",
+    "send_approval": "Send for approval",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approval_pending": "Awaiting customer approval",
+    "execution": "Execution",
+    "add_part": "Add part",
+    "add_labor": "Add labor",
+    "part_adhoc": "Unregistered part — sold & flagged",
+    "mark_ready": "Mark ready",
+    "deliver": "Deliver",
+    "locked": "Delivered — document frozen",
+    "warranty_link": "Under warranty — linked to original",
+    "quote_before_exec": "Quote still awaiting approval"
+  },
+
+  "release": {
+    "title": "Deliver + invoice",
+    "parts_total": "Parts total",
+    "service_total": "Service total",
+    "less_deposit": "Less deposit",
+    "net": "Net due",
+    "print": "Print receipt",
+    "eta_flagged": "Item without ETA code — sold & flagged"
+  },
+
+  "settings": {
+    "title": "Workshop settings",
+    "diag_fee": "Diagnosis fee",
+    "warranty_days": "Warranty period (days)",
+    "technicians": "Technicians"
+  },
+
+  "reports": {
+    "productivity": "Technician productivity",
+    "approval_rate": "Approval rate",
+    "warranty_cost": "Warranty cost"
+  }
+}

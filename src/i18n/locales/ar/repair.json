@@ -1,0 +1,87 @@
+{
+  "title": "الصيانة",
+
+  "placeholder": {
+    "note": "الشاشة الفعلية جاية في خطوة قادمة"
+  },
+
+  "status": {
+    "pending_diagnosis": "بانتظار الكشف",
+    "pending_approval": "بانتظار الموافقة",
+    "in_progress": "قيد التنفيذ",
+    "ready": "جاهز للتسليم",
+    "delivered": "مُسلَّم",
+    "rejected": "مرفوض"
+  },
+
+  "board": {
+    "title": "أوامر الشغل",
+    "overdue": "متأخر",
+    "promise": "تاريخ الوعد",
+    "empty": "مفيش أوامر شغل — ابدأ باستلام جهاز"
+  },
+
+  "device": {
+    "mobile": "موبايل",
+    "computer": "كمبيوتر",
+    "appliance": "جهاز منزلي",
+    "vehicle": "سيارة"
+  },
+
+  "intake": {
+    "new": "استلام جهاز",
+    "customer": "العميل",
+    "device_type": "نوع الجهاز",
+    "serial": "السيريال / IMEI",
+    "condition": "حالة الجهاز عند الاستلام",
+    "accessories": "الملحقات",
+    "faults": "الأعطال المبلّغة",
+    "deposit": "عربون (اختياري)",
+    "promise": "تاريخ الوعد",
+    "technician": "الفنّي المسؤول",
+    "save_print": "حفظ + طباعة إيصال الاستلام",
+    "no_serial": "جهاز بلا سيريال — تم القبول والتعليم"
+  },
+
+  "wo": {
+    "diagnosis": "الكشف",
+    "proposed_work": "العمل المقترح",
+    "quote": "عرض السعر",
+    "send_approval": "إرسال للموافقة",
+    "approve": "موافقة",
+    "reject": "رفض",
+    "approval_pending": "بانتظار موافقة العميل",
+    "execution": "التنفيذ",
+    "add_part": "إضافة قطعة",
+    "add_labor": "إضافة عمالة",
+    "part_adhoc": "قطعة غير مسجّلة — تُباع وتُعلَّم للتصحيح",
+    "mark_ready": "جاهز للتسليم",
+    "deliver": "تسليم",
+    "locked": "مُسلَّم — المستند مجمّد",
+    "warranty_link": "تحت الضمان — مرتبط بأمر أصلي",
+    "quote_before_exec": "العرض لسه بانتظار الموافقة"
+  },
+
+  "release": {
+    "title": "التسليم + الفاتورة",
+    "parts_total": "إجمالي القطع",
+    "service_total": "إجمالي الخدمة",
+    "less_deposit": "خصم العربون",
+    "net": "الصافي المستحق",
+    "print": "طباعة الإيصال",
+    "eta_flagged": "صنف بلا كود ETA — تم البيع والتعليم"
+  },
+
+  "settings": {
+    "title": "إعدادات الورشة",
+    "diag_fee": "رسم الكشف",
+    "warranty_days": "فترة الضمان (يوم)",
+    "technicians": "الفنّيون"
+  },
+
+  "reports": {
+    "productivity": "إنتاجية الفنّيين",
+    "approval_rate": "نسبة الموافقة",
+    "warranty_cost": "تكلفة الضمان"
+  }
+}

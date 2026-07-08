@@ -108,6 +108,12 @@ import CalendarPage from "@/features/svc/CalendarPage";
 import ServiceTicketPage from "@/features/svc/ServiceTicketPage";
 import SubscriptionsPage from "@/features/svc/SubscriptionsPage";
 
+// Repair / Work Order — FE_12 — reuses PosLayout (generic variant); Step 1 scaffold (placeholders only)
+import RepairBoardPage from "@/features/repair/RepairBoardPage";
+import RepairIntakePage from "@/features/repair/RepairIntakePage";
+import WorkOrderDetailPage from "@/features/repair/WorkOrderDetailPage";
+import RepairSettingsPage from "@/features/repair/RepairSettingsPage";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -172,6 +178,16 @@ export default function App() {
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="ticket/:id" element={<ServiceTicketPage />} />
           <Route path="subscriptions" element={<SubscriptionsPage />} />
+        </Route>
+
+        {/* Repair / Work Order — FE_12 — reuses PosLayout (generic body).
+            Settings (/repair/settings) is back-office and mounted separately below,
+            under AppShell — it is a static path so it outranks the ":id" splat here. */}
+        <Route path="/repair/*" element={<PosLayout variant="generic" />}>
+          <Route index element={<Navigate to="board" replace />} />
+          <Route path="board" element={<RepairBoardPage />} />
+          <Route path="new" element={<RepairIntakePage />} />
+          <Route path=":id" element={<WorkOrderDetailPage />} />
         </Route>
 
         <Route element={<AppShell />}>
@@ -290,6 +306,9 @@ export default function App() {
             <Route path="security" element={<SecurityPage />} />
             <Route path="audit"    element={<AuditPage />} />
           </Route>
+
+          {/* Repair / Work Order — FE_12 — Workshop settings is back-office (spec §7), not PosLayout */}
+          <Route path="/repair/settings" element={<RepairSettingsPage />} />
 
           {/* Dev tools — pattern library preview */}
           <Route path="/dev/patterns" element={<PatternsPage />} />
