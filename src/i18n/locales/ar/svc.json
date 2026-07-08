@@ -10,6 +10,7 @@
     "today": "اليوم",
     "new_appointment": "حجز جديد",
     "appointment_details": "الموعد",
+    "subscriptions_link": "الباقات والاشتراكات",
 
     "filter_all_providers": "كل مقدّمي الخدمة",
     "filter_all_services": "كل الخدمات",
@@ -152,5 +153,77 @@
     "not_found_title": "الفاتورة مش موجودة",
     "not_found_body": "الرابط ده مش مربوط بموعد مكتمل",
     "offline_note": "غير متصل — التحصيل هيشتغل والمستند هيتزامن لما ترجع الشبكة"
+  },
+
+  "subscriptions": {
+    "title": "الباقات والاشتراكات",
+    "tab_packages": "الباقات",
+    "tab_subscriptions": "الاشتراكات",
+    "tab_renewals": "التجديدات",
+
+    "search_placeholder": "دوّر باسم العميل",
+    "clear_search": "مسح البحث",
+    "permission_required": "محتاج صلاحية إدارة الاشتراكات",
+
+    "sell_package": "بيع باقة",
+    "sell_subscription": "بيع اشتراك",
+    "sell_action": "بيع",
+    "total_sessions": "عدد الجلسات",
+    "valid_until": "صالحة حتى",
+    "price_paid": "السعر",
+    "plan_label": "الخطة",
+    "plan_placeholder": "اختر خطة",
+    "cycle_label": "الدورة",
+    "cycle": { "monthly": "شهري", "yearly": "سنوي" },
+    "amount_label": "القيمة",
+    "renewal_date_label": "تاريخ التجديد",
+    "next_retry_label": "المحاولة الجاية",
+    "since_label": "متعثّر من",
+    "suspended_at_label": "تم الإيقاف في",
+
+    "package_sold_toast": "اتباعت الباقة",
+    "subscription_activated_toast": "اتفعّل الاشتراك",
+    "queued_toast": "غير متصل — الإجراء هيتزامن لما ترجع الشبكة",
+    "suspended_toast": "اتوقف الاشتراك",
+    "resumed_toast": "اترجّع تفعيل الاشتراك",
+    "cancelled_toast": "اتلغى الاشتراك",
+    "retry_success_toast": "نجحت إعادة المحاولة — الاشتراك رجع نشط",
+    "retry_failed_toast": "فشلت إعادة المحاولة",
+
+    "remaining_sessions_count": "{{remaining}} / {{total}} جلسات",
+    "package_status": { "active": "نشطة", "expired": "منتهية", "used-up": "مستهلكة" },
+    "status": { "active": "نشط", "past_due": "متعثّر", "suspended": "موقوف", "cancelled": "ملغي" },
+
+    "near_renewal_note": "التجديد قريب",
+    "attempts_title": "سجل محاولات التحصيل",
+    "attempt_success": "نجحت",
+    "attempt_failed": "فشلت",
+
+    "suspend_action": "إيقاف",
+    "resume_action": "استئناف",
+    "reactivate_action": "إعادة تفعيل",
+    "cancel_action": "إلغاء",
+    "retry_action": "إعادة المحاولة",
+
+    "cancel_title": "إلغاء الاشتراك",
+    "cancel_body": "الاشتراك هيتلغي نهائياً ومش هيتجدد تلقائي بعد كده.",
+
+    "packages_empty_title": "لسه مفيش باقات",
+    "packages_empty_body": "دوس على \"بيع باقة\" عشان تسجّل أول باقة",
+    "subscriptions_empty_title": "لسه مفيش اشتراكات",
+    "subscriptions_empty_body": "دوس على \"بيع اشتراك\" عشان تفعّل أول اشتراك",
+    "no_results_title": "مفيش نتايج مطابقة للبحث",
+    "no_results_body": "جرّب اسم تاني أو امسح البحث",
+
+    "upcoming_title": "تجديدات قريبة",
+    "upcoming_empty": "مفيش تجديدات قريبة",
+    "past_due_title": "متعثّرة",
+    "past_due_empty": "مفيش اشتراكات متعثّرة",
+    "suspended_title": "موقوفة",
+    "suspended_empty": "مفيش اشتراكات موقوفة",
+
+    "error_title": "تعذّر تحميل الباقات والاشتراكات",
+    "error_body": "تحقق من الاتصال وحاول تاني",
+    "offline_note": "غير متصل — البيانات هتتزامن لما ترجع الشبكة"
   }
 }

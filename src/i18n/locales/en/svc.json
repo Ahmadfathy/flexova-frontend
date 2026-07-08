@@ -10,6 +10,7 @@
     "today": "Today",
     "new_appointment": "New appointment",
     "appointment_details": "Appointment",
+    "subscriptions_link": "Packages & Subscriptions",
 
     "filter_all_providers": "All providers",
     "filter_all_services": "All services",
@@ -152,5 +153,77 @@
     "not_found_title": "Ticket not found",
     "not_found_body": "This link isn't tied to a completed appointment",
     "offline_note": "Offline — settling still works; the document syncs once you're back online"
+  },
+
+  "subscriptions": {
+    "title": "Packages & Subscriptions",
+    "tab_packages": "Packages",
+    "tab_subscriptions": "Subscriptions",
+    "tab_renewals": "Renewals",
+
+    "search_placeholder": "Search by client name",
+    "clear_search": "Clear search",
+    "permission_required": "Requires the subscription-management permission",
+
+    "sell_package": "Sell package",
+    "sell_subscription": "Sell subscription",
+    "sell_action": "Sell",
+    "total_sessions": "Total sessions",
+    "valid_until": "Valid until",
+    "price_paid": "Price",
+    "plan_label": "Plan",
+    "plan_placeholder": "Select a plan",
+    "cycle_label": "Cycle",
+    "cycle": { "monthly": "Monthly", "yearly": "Yearly" },
+    "amount_label": "Amount",
+    "renewal_date_label": "Renewal date",
+    "next_retry_label": "Next retry",
+    "since_label": "Past due since",
+    "suspended_at_label": "Suspended on",
+
+    "package_sold_toast": "Package sold",
+    "subscription_activated_toast": "Subscription activated",
+    "queued_toast": "Offline — this will sync once you're back online",
+    "suspended_toast": "Subscription suspended",
+    "resumed_toast": "Subscription resumed",
+    "cancelled_toast": "Subscription cancelled",
+    "retry_success_toast": "Retry succeeded — subscription is active again",
+    "retry_failed_toast": "Retry failed",
+
+    "remaining_sessions_count": "{{remaining}} / {{total}} sessions",
+    "package_status": { "active": "Active", "expired": "Expired", "used-up": "Used up" },
+    "status": { "active": "Active", "past_due": "Past due", "suspended": "Suspended", "cancelled": "Cancelled" },
+
+    "near_renewal_note": "Renewing soon",
+    "attempts_title": "Billing attempt log",
+    "attempt_success": "Succeeded",
+    "attempt_failed": "Failed",
+
+    "suspend_action": "Suspend",
+    "resume_action": "Resume",
+    "reactivate_action": "Reactivate",
+    "cancel_action": "Cancel",
+    "retry_action": "Retry",
+
+    "cancel_title": "Cancel subscription",
+    "cancel_body": "The subscription will be cancelled for good and won't auto-renew again.",
+
+    "packages_empty_title": "No packages yet",
+    "packages_empty_body": "Tap \"Sell package\" to record the first one",
+    "subscriptions_empty_title": "No subscriptions yet",
+    "subscriptions_empty_body": "Tap \"Sell subscription\" to activate the first one",
+    "no_results_title": "No matches for that search",
+    "no_results_body": "Try another name or clear the search",
+
+    "upcoming_title": "Upcoming renewals",
+    "upcoming_empty": "No upcoming renewals",
+    "past_due_title": "Past due",
+    "past_due_empty": "No past-due subscriptions",
+    "suspended_title": "Suspended",
+    "suspended_empty": "No suspended subscriptions",
+
+    "error_title": "Couldn't load packages & subscriptions",
+    "error_body": "Check your connection and try again",
+    "offline_note": "Offline — data will sync once you're back online"
   }
 }

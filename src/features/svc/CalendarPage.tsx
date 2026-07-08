@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
-  CalendarClock, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Lock, Plus,
+  CalendarClock, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Lock, Plus, Repeat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -58,6 +59,7 @@ export default function CalendarPage() {
   const { lang } = useAppearance();
   const dir = dirOf(lang);
   const can = useCan();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   const appointments = useSvcAppointments((s) => s.appointments);
@@ -196,6 +198,11 @@ export default function CalendarPage() {
         </span>
 
         <span className="flex-1" />
+
+        <Button variant="outline" size="sm" className="h-11 shrink-0" onClick={() => navigate("/svc/subscriptions")}>
+          <Repeat className="h-4 w-4 me-1.5" />
+          {t("calendar.subscriptions_link")}
+        </Button>
 
         {canBook && (
           <Button variant="solid" tone="primary" size="sm" className="h-11 shrink-0" onClick={openHeaderNewAppointment}>

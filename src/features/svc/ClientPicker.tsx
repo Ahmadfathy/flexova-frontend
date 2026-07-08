@@ -12,11 +12,13 @@ interface ClientPickerProps {
   onOpenChange: (open: boolean) => void;
   lang: Lang;
   onPickClient: (clientId: string) => void;
-  onPickWalkIn: () => void;
+  onPickWalkIn?: () => void;
+  /** Packages/subscriptions carry a balance tied to a stable client id — walk-in (no CRM record) doesn't have one, so those sell flows hide this option. Defaults to shown (Appointment booking). */
+  allowWalkIn?: boolean;
 }
 
 /** Client quick-pick for the Appointment drawer — CRM customers + walk-in + add-new (stub, mirrors the POS customer picker). */
-export function ClientPicker({ open, onOpenChange, lang, onPickClient, onPickWalkIn }: ClientPickerProps) {
+export function ClientPicker({ open, onOpenChange, lang, onPickClient, onPickWalkIn, allowWalkIn = true }: ClientPickerProps) {
   const { t } = useTranslation("svc");
   const { t: tCommon } = useTranslation("common");
 
@@ -26,12 +28,14 @@ export function ClientPicker({ open, onOpenChange, lang, onPickClient, onPickWal
       <CommandList>
         <CommandEmpty>{tCommon("no_results")}</CommandEmpty>
 
-        <CommandGroup>
-          <CommandItem onSelect={() => { onPickWalkIn(); onOpenChange(false); }}>
-            <UserRound className="h-4 w-4 me-2 text-muted-foreground shrink-0" />
-            {t("appointment.walk_in_option")}
-          </CommandItem>
-        </CommandGroup>
+        {allowWalkIn && onPickWalkIn && (
+          <CommandGroup>
+            <CommandItem onSelect={() => { onPickWalkIn(); onOpenChange(false); }}>
+              <UserRound className="h-4 w-4 me-2 text-muted-foreground shrink-0" />
+              {t("appointment.walk_in_option")}
+            </CommandItem>
+          </CommandGroup>
+        )}
 
         <CommandGroup heading={t("appointment.client_picker_heading")}>
           {CLIENTS.map((c) => (
