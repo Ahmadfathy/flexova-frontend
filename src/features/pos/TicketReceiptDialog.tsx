@@ -42,7 +42,6 @@ export function TicketReceiptDialog({ ticket, open, onOpenChange, isOffline }: T
   const terminal = TERMINALS.find(tm => tm.id === ticket.terminal_id);
   const branch = BRANCHES.find(b => b.id === ticket.branch_id);
   const customer = CUSTOMERS.find(c => c.id === ticket.customer_id);
-  const customerName = customer ? (lang === "ar" ? customer.name_ar : customer.name_en) : ticket.customer_id;
   const isB2B = ticket.channel === "e-invoice";
   const isRejected = ticket.sync_status === "rejected";
   const isQueued = ticket.sync_status === "queued";

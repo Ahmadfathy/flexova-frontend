@@ -6,7 +6,7 @@ import { ArrowLeft, Lock, Minus, Plus, Printer, UtensilsCrossed, ShoppingBag, Bi
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
+import { StatusPill } from "@/components/patterns/StatusPill";
 import { Skeleton } from "@/components/patterns/Skeletons";
 import { EmptyState } from "@/components/patterns/EmptyState";
 import { ErrorState } from "@/components/patterns/ErrorState";

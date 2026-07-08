@@ -61,7 +61,7 @@ const SEED_PARKED: ParkedTicket[] = SEED_PARKED_TICKET ? [{
     sold_by: "weight_kg" in l ? "weight" : "unit",
     qty: "qty" in l ? l.qty : undefined,
     weight_kg: "weight_kg" in l ? l.weight_kg : undefined,
-    price: "price_per_kg" in l ? l.price_per_kg : l.price,
+    price: ("price_per_kg" in l ? l.price_per_kg : l.price) ?? 0,
     uom_id: l.uom_id,
     tax_type_id: l.tax_type_id,
     line_discount: l.line_discount,
