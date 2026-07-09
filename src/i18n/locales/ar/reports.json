@@ -31,6 +31,7 @@
     "source_crm":       "العملاء",
     "source_hr":        "الموارد البشرية",
     "source_eta":       "الفاتورة الإلكترونية",
+    "source_repair":    "الصيانة",
     "run_title":        "معاينة التقرير",
     "run_subtitle":     "بيانات نموذجية",
     "save_btn":         "حفظ التقرير",

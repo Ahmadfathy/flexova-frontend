@@ -21,17 +21,19 @@ import { formatDate, formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useRprWorkOrders } from "@/stores/rprWorkOrders";
+import { useRprSettings } from "@/stores/rprSettings";
 import { useRprPartsStock, effectiveStock } from "@/stores/rprPartsStock";
 import {
-  SETTINGS, TECHNICIANS, LABOR_SERVICES,
+  TECHNICIANS, LABOR_SERVICES,
   findCustomer, customerName, findTechnician, technicianName, findPart, partName,
-  findLaborService, laborServiceName, deviceLabel, statusPillVariant,
+  findLaborService, laborServiceName, deviceLabel, statusPillVariant, isWarrantyClaimable,
   type RprWorkOrder, type RprWoStatus, type RprPart,
 } from "./catalog";
 import { computeCommission } from "./commission";
 import { useWorkOrderDetail } from "./useWorkOrderDetail";
 import { RprPartPicker } from "./RprPartPicker";
 import { SendQuoteDialog } from "./SendQuoteDialog";
+import { ReleaseWorkOrderDialog } from "./ReleaseWorkOrderDialog";
 
 type TabKey = "diagnosis" | "quote" | "execution" | "payments" | "warranty";
 
@@ -75,8 +77,11 @@ export default function WorkOrderDetailPage() {
   const addExecutionPartLine = useRprWorkOrders((s) => s.addExecutionPartLine);
   const addExecutionLaborLine = useRprWorkOrders((s) => s.addExecutionLaborLine);
   const markReady = useRprWorkOrders((s) => s.markReady);
+  const createWarrantyWorkOrder = useRprWorkOrders((s) => s.createWarrantyWorkOrder);
   const depleteStock = useRprPartsStock((s) => s.deplete);
   const depleted = useRprPartsStock((s) => s.depleted);
+  const diagnosisFeeEnabled = useRprSettings((s) => s.diagnosisFeeEnabled);
+  const diagnosisFeeAmount = useRprSettings((s) => s.diagnosisFeeAmount);
 
   const [tabInit, setTabInit] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("diagnosis");
@@ -91,6 +96,8 @@ export default function WorkOrderDetailPage() {
   const [sendQuoteOpen, setSendQuoteOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
   const [chargeDiagFee, setChargeDiagFee] = useState(false);
+  const [releaseOpen, setReleaseOpen] = useState(false);
+  const [warrantyConfirmOpen, setWarrantyConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (wo && !tabInit) {
@@ -130,16 +137,18 @@ export default function WorkOrderDetailPage() {
     toast.success(t("wo.diagnosis_saved_toast"));
   }
 
+  const isUnderWarranty = wo?._flag === "under_warranty";
+
   function handlePickQuotePart(part: RprPart) {
     if (!wo) return;
-    addQuotePartLine(wo.id, { part_id: part.id, qty: 1, price: part.price });
+    addQuotePartLine(wo.id, { part_id: part.id, qty: 1, price: isUnderWarranty ? 0 : part.price });
   }
 
   function handleAddQuoteLabor() {
     if (!wo || !quoteLaborService || !quoteLaborTech) return;
     const service = findLaborService(quoteLaborService);
     if (!service) return;
-    addQuoteLaborLine(wo.id, { service_id: service.id, technician_id: quoteLaborTech, price: service.price });
+    addQuoteLaborLine(wo.id, { service_id: service.id, technician_id: quoteLaborTech, price: isUnderWarranty ? 0 : service.price });
     setQuoteLaborService(""); setQuoteLaborTech("");
   }
 
@@ -149,7 +158,8 @@ export default function WorkOrderDetailPage() {
     const after = before - 1;
     depleteStock(part.id, 1);
     addExecutionPartLine(wo.id, {
-      part_id: part.id, qty: 1, price: part.price, deducted: true,
+      part_id: part.id, qty: 1, price: isUnderWarranty ? 0 : part.price, deducted: true,
+      cost_as_warranty: isUnderWarranty || undefined,
       _flag: !part.eta_code ? "no_eta_code" : after < 0 ? "negative_stock" : undefined,
     });
     if (after < 0) toast.warning(t("wo.negative_stock_warning", { name: partName(part, lang) }));
@@ -157,7 +167,10 @@ export default function WorkOrderDetailPage() {
 
   function handleAddExecutionAdhoc(name: string, price: number) {
     if (!wo) return;
-    addExecutionPartLine(wo.id, { part_id: null, adhoc_name: name, qty: 1, price, deducted: false, _flag: "parts_adhoc" });
+    addExecutionPartLine(wo.id, {
+      part_id: null, adhoc_name: name, qty: 1, price: isUnderWarranty ? 0 : price, deducted: false,
+      cost_as_warranty: isUnderWarranty || undefined, _flag: "parts_adhoc",
+    });
     toast.warning(t("wo.part_adhoc"));
   }
 
@@ -165,8 +178,18 @@ export default function WorkOrderDetailPage() {
     if (!wo || !execLaborService || !execLaborTech) return;
     const service = findLaborService(execLaborService);
     if (!service) return;
-    addExecutionLaborLine(wo.id, { service_id: service.id, technician_id: execLaborTech, price: service.price });
+    addExecutionLaborLine(wo.id, { service_id: service.id, technician_id: execLaborTech, price: isUnderWarranty ? 0 : service.price });
     setExecLaborService(""); setExecLaborTech("");
+  }
+
+  function handleCreateWarrantyWo() {
+    if (!wo) return;
+    const created = createWarrantyWorkOrder(wo.id);
+    setWarrantyConfirmOpen(false);
+    if (created) {
+      toast.success(t("wo.warranty_wo_created_toast", { number: created.number }));
+      navigate(`/repair/${created.id}`);
+    }
   }
 
   function handleSendQuote(channel: Parameters<typeof sendQuoteForApproval>[1]) {
@@ -196,7 +219,7 @@ export default function WorkOrderDetailPage() {
   }
 
   function handleDeliver() {
-    toast.info(t("wo.deliver_stub_toast"));
+    setReleaseOpen(true);
   }
 
   const canSendQuote = !!wo.diagnosis && !!wo.quote && (wo.quote.part_lines.length + wo.quote.labor_lines.length) > 0;
@@ -530,6 +553,11 @@ export default function WorkOrderDetailPage() {
                 {wo._flag === "under_warranty" && (
                   <p className="text-xs text-warning-text">{t("wo.warranty_zero_note")}</p>
                 )}
+                {isWarrantyClaimable(wo) && can("repair.warranty.manage") && (
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => setWarrantyConfirmOpen(true)}>
+                    <ShieldCheck className="h-3.5 w-3.5 me-1.5" /> {t("wo.warranty_create_action")}
+                  </Button>
+                )}
               </TabsContent>
             </Tabs>
           </div>
@@ -599,13 +627,29 @@ export default function WorkOrderDetailPage() {
         confirmLabel={t("wo.reject")}
         onConfirm={handleReject}
       >
-        {SETTINGS.diagnosis_fee.enabled && (
+        {diagnosisFeeEnabled && (
           <label className="flex items-center justify-between gap-2 text-sm">
-            <span>{t("wo.reject_fee_label")} ({formatMoney(SETTINGS.diagnosis_fee.amount, lang)})</span>
+            <span>{t("wo.reject_fee_label")} ({formatMoney(diagnosisFeeAmount, lang)})</span>
             <Switch checked={chargeDiagFee} onCheckedChange={setChargeDiagFee} />
           </label>
         )}
       </ConfirmDialog>
+
+      <ReleaseWorkOrderDialog
+        open={releaseOpen}
+        onOpenChange={setReleaseOpen}
+        lang={lang}
+        workOrder={wo}
+      />
+
+      <ConfirmDialog
+        open={warrantyConfirmOpen}
+        onOpenChange={setWarrantyConfirmOpen}
+        title={t("wo.warranty_create_title")}
+        description={t("wo.warranty_create_body")}
+        confirmLabel={t("wo.warranty_create_confirm")}
+        onConfirm={handleCreateWarrantyWo}
+      />
     </div>
   );
 }

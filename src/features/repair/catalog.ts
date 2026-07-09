@@ -126,6 +126,13 @@ export interface RprTender {
   amount: number;
 }
 
+export interface RprJournalLine {
+  account_ar: string;
+  account_en: string;
+  debit: number;
+  credit: number;
+}
+
 export interface RprFinalDocument {
   id: string;
   wo_id: string;
@@ -141,6 +148,10 @@ export interface RprFinalDocument {
   tender: RprTender[];
   posted: boolean;
   issued_at: string;
+  /** Added at Step 4 — optional so the pre-seeded fixture docs (doc_rpr_5005/5007,
+   * which predate release-flow implementation) still satisfy the type. */
+  commission?: RprCommission[];
+  journal?: RprJournalLine[];
 }
 
 /** Warranty is not a standalone fixture record — it's derived from a WorkOrder's own
@@ -250,9 +261,13 @@ export function laborServiceName(service: RprLaborService | undefined, lang: Lan
 
 export interface RprCustomer {
   id: string;
+  type: "company" | "individual";
   name_ar: string;
   name_en: string;
   phone: string | null;
+  /** Added at Step 4 for ETA B2B/B2C routing at release (mirrors svc/catalog.ts's own
+   * CrmCustomer, which already kept `trn` — repair's Step 1-3 narrow shape had dropped it). */
+  trn: string | null;
 }
 
 export interface RprTreasury {
@@ -333,4 +348,102 @@ export interface RprCommission {
   pct: number;
   amount: number;
   on: "collected";
+}
+
+// ── Release-screen helpers (Step 4) ───────────────────────────────────
+
+export function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+/** Builds the frozen final-document lines from a WO's execution part/labor lines —
+ * called once at delivery; the document is immutable afterward (golden rule #4).
+ * `name_ar`-only per the existing `RprFinalDocumentLine`/fixture shape (final documents in
+ * this dataset are always Arabic, like every other seeded `doc_rpr_*` record — a receipt/
+ * e-invoice legal-document convention, not a bilingual UI screen). */
+export function buildFinalDocLines(wo: RprWorkOrder): RprFinalDocumentLine[] {
+  const partLines: RprFinalDocumentLine[] = wo.part_lines.map((l) => {
+    const part = findPart(l.part_id);
+    return {
+      kind: "part",
+      name_ar: l.part_id ? (part?.name_ar ?? l.adhoc_name ?? "") : (l.adhoc_name ?? ""),
+      qty: l.qty,
+      price: l.price,
+      eta_code: part?.eta_code ?? null,
+      _flag: l._flag === "no_eta_code" ? "no_eta_code" : undefined,
+    };
+  });
+  const laborLines: RprFinalDocumentLine[] = wo.labor_lines.map((l) => {
+    const service = findLaborService(l.service_id);
+    return {
+      kind: "service",
+      name_ar: service?.name_ar ?? "",
+      qty: 1,
+      price: l.price,
+      eta_code: "SVC-REPAIR",
+    };
+  });
+  return [...partLines, ...laborLines];
+}
+
+/** Standard-journal preview for the release "auto-posting" step (FE_04 golden rule #6) —
+ * no real ledger/journal store exists anywhere in this codebase to post to (confirmed via
+ * reuse survey: JournalEntryCreateModal is a manual form, no module calls it on sale/settle),
+ * so this is a locally-computed, genuinely-balanced preview shown to the user, not a persisted
+ * ledger entry. Revenue/cash/deposit group balances at (parts+service); COGS/inventory group
+ * balances independently at partsCost — Σdebit=Σcredit by construction. */
+export function computeReleaseJournal(opts: {
+  partsTotal: number;
+  serviceTotal: number;
+  partsCost: number;
+  depositApplied: number;
+  netDue: number;
+}): { lines: RprJournalLine[]; balanced: boolean } {
+  const { partsTotal, serviceTotal, partsCost, depositApplied, netDue } = opts;
+  const lines: RprJournalLine[] = [];
+  if (netDue > 0) lines.push({ account_ar: "الصندوق / الخزينة", account_en: "Cash / Treasury", debit: round2(netDue), credit: 0 });
+  if (depositApplied > 0) lines.push({ account_ar: "التزام عربون العملاء", account_en: "Customer deposits liability", debit: round2(depositApplied), credit: 0 });
+  if (partsTotal > 0) lines.push({ account_ar: "إيراد قطع الغيار", account_en: "Parts revenue", debit: 0, credit: round2(partsTotal) });
+  if (serviceTotal > 0) lines.push({ account_ar: "إيراد الخدمة", account_en: "Service revenue", debit: 0, credit: round2(serviceTotal) });
+  if (partsCost > 0) {
+    lines.push({ account_ar: "تكلفة قطع الغيار المباعة", account_en: "Parts COGS", debit: round2(partsCost), credit: 0 });
+    lines.push({ account_ar: "مخزون قطع الغيار", account_en: "Parts inventory", debit: 0, credit: round2(partsCost) });
+  }
+  const totalDr = round2(lines.reduce((s, l) => s + l.debit, 0));
+  const totalCr = round2(lines.reduce((s, l) => s + l.credit, 0));
+  return { lines, balanced: Math.abs(totalDr - totalCr) < 0.01 };
+}
+
+// ── Fiscal period gate (Step 4 — net-new for repair; no other module in this
+// codebase reads/blocks on period status, confirmed via reuse survey) ───────
+
+export interface RprFiscalPeriod {
+  id: string;
+  month: number;
+  year: number;
+  status: "open" | "closed";
+}
+
+export const FISCAL_PERIODS = accountingFixtures.fiscal_periods as RprFiscalPeriod[];
+
+/** No fixture period exists for the current month in this demo dataset, so this is normally
+ * false — exposed for the release dialog's `?mock=closed_period` test hook (mirrors svc's own
+ * `?mock=eta_reject` convention) to demo the block without needing to fake the system clock. */
+export function isPeriodClosed(dateStr: string): boolean {
+  const d = new Date(dateStr);
+  const period = FISCAL_PERIODS.find((p) => p.year === d.getFullYear() && p.month === d.getMonth() + 1);
+  return period?.status === "closed";
+}
+
+export function openPeriodLabel(): string | null {
+  const open = FISCAL_PERIODS.filter((p) => p.status === "open").sort((a, b) => (a.year - b.year) || (a.month - b.month))[0];
+  return open ? `${String(open.month).padStart(2, "0")}/${open.year}` : null;
+}
+
+/** Under-warranty WO can be created from a delivered WO while today falls within its
+ * warranty window (period starts at delivery per FE_12 §9). */
+export function isWarrantyClaimable(wo: RprWorkOrder): boolean {
+  if (wo.status !== "delivered" || !wo.warranty_expires_at) return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return today <= wo.warranty_expires_at;
 }

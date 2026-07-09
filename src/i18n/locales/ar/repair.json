@@ -164,7 +164,6 @@
     "sent_toast": "تم إرسال العرض للعميل",
     "approve_toast": "تمت الموافقة — بدأ التنفيذ",
     "ready_toast": "الجهاز جاهز للتسليم",
-    "deliver_stub_toast": "شاشة التسليم + الفاتورة جايه في خطوة قادمة",
 
     "negative_stock_warning": "المخزون سالب لـ {{name}} — تم القبول والتعليم للتسوية",
 
@@ -176,7 +175,13 @@
 
     "channel_whatsapp": "واتساب",
     "channel_phone": "تليفون",
-    "channel_in_person": "حضوريًا"
+    "channel_in_person": "حضوريًا",
+
+    "warranty_create_action": "إنشاء أمر تحت الضمان",
+    "warranty_create_title": "إنشاء أمر تحت الضمان؟",
+    "warranty_create_body": "هيتفتح أمر شغل جديد مرتبط بالأمر ده، بدون تحصيل من العميل. القطع المستخدمة هتتخصم من المخزون وتُحسب كتكلفة ضمان.",
+    "warranty_create_confirm": "إنشاء الأمر",
+    "warranty_wo_created_toast": "تم إنشاء أمر الضمان {{number}}"
   },
 
   "release": {
@@ -186,14 +191,40 @@
     "less_deposit": "خصم العربون",
     "net": "الصافي المستحق",
     "print": "طباعة الإيصال",
-    "eta_flagged": "صنف بلا كود ETA — تم البيع والتعليم"
+    "eta_flagged": "صنف بلا كود ETA — تم البيع والتعليم",
+    "confirm_delivery": "تأكيد التسليم",
+    "proceed_payment": "المتابعة للدفع",
+    "posting_preview": "معاينة القيد المحاسبي",
+    "balanced": "القيد متوازن — مدين = دائن",
+    "unbalanced": "القيد غير متوازن",
+    "commission_preview": "عمولة الفنّيين",
+    "channel_b2b": "فاتورة إلكترونية (B2B) — العميل مسجَّل ببطاقة ضريبية",
+    "channel_b2c": "إيصال إلكتروني (B2C)",
+    "period_closed": "التسليم متوقف — الفترة المحاسبية مقفولة",
+    "period_closed_suggest": "الفترة المفتوحة الحالية: {{period}}",
+    "delivered_toast": "تم تسليم أمر الشغل {{number}}",
+    "eta_flagged_toast": "تم البيع — صنف بلا كود ETA اتعلّم للتصحيح",
+    "eta_queued_toast": "غير متصل — المستند هيتزامن مع الفاتورة الإلكترونية بعدين",
+    "commission_posted_toast": "تم ترحيل عمولة الفنّي"
   },
 
   "settings": {
     "title": "إعدادات الورشة",
     "diag_fee": "رسم الكشف",
+    "diag_fee_enable": "تفعيل رسم الكشف",
+    "diag_fee_amount": "المبلغ",
     "warranty_days": "فترة الضمان (يوم)",
-    "technicians": "الفنّيون"
+    "warranty_days_hint": "بالأيام — تُطبّق تلقائيًا على أوامر الشغل الجديدة",
+    "technicians": "الفنّيون",
+    "technicians_hint": "قواعد العمولة تُقرأ من الموارد البشرية ولا تُعدَّل هنا",
+    "numbering": "ترقيم أوامر الشغل",
+    "numbering_next": "الرقم التالي",
+    "whatsapp_templates": "قوالب واتساب",
+    "template_approval": "طلب الموافقة على العرض",
+    "template_ready": "إشعار الجاهزية",
+    "save": "حفظ",
+    "saved_toast": "تم الحفظ",
+    "permission_required": "لا تملك صلاحية إدارة إعدادات الورشة"
   },
 
   "reports": {

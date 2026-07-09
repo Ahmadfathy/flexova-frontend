@@ -31,6 +31,7 @@
     "source_crm":       "CRM",
     "source_hr":        "HR",
     "source_eta":       "ETA",
+    "source_repair":    "Repair",
     "run_title":        "Report preview",
     "run_subtitle":     "Showing sample data",
     "save_btn":         "Save report",

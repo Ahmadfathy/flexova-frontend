@@ -5,7 +5,8 @@ import { ModalShell } from "@/components/patterns/ModalShell";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
 import type { Lang } from "@/stores/appearance";
-import { SETTINGS, deviceLabel, type RprApprovalChannel, type RprWorkOrder } from "./catalog";
+import { useRprSettings } from "@/stores/rprSettings";
+import { deviceLabel, type RprApprovalChannel, type RprWorkOrder } from "./catalog";
 
 interface SendQuoteDialogProps {
   open: boolean;
@@ -26,9 +27,10 @@ const CHANNELS: { value: RprApprovalChannel; icon: typeof MessageCircle }[] = [
 export function SendQuoteDialog({ open, onOpenChange, lang, workOrder, onSend }: SendQuoteDialogProps) {
   const { t } = useTranslation("repair");
   const [channel, setChannel] = useState<RprApprovalChannel>("whatsapp");
+  const approvalTemplate = useRprSettings((s) => s.whatsappApprovalTemplate);
 
   const total = workOrder.quote?.total ?? 0;
-  const template = SETTINGS.whatsapp_templates.approval_request
+  const template = approvalTemplate
     .replace("{device}", deviceLabel(workOrder.device) || workOrder.device.type)
     .replace("{wo}", workOrder.number)
     .replace("{total}", formatMoney(total, lang));

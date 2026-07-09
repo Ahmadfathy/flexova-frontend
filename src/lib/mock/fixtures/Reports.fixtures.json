@@ -40,7 +40,12 @@
     { "id": "rep_ar_aging", "name_ar": "أعمار الديون", "name_en": "AR aging", "source": "crm", "columns": ["customer","current","d1_30","d31_60","d60_plus"] },
     { "id": "rep_labor_cost", "name_ar": "تكلفة العمالة", "name_en": "Labor cost", "source": "hr", "columns": ["employee","gross","net"], "financial": true },
     { "id": "rep_commissions", "name_ar": "العمولات", "name_en": "Commissions", "source": "hr", "columns": ["employee","accrued","paid"] },
-    { "id": "rep_vat_return", "name_ar": "ملخّص الإقرار الضريبي", "name_en": "VAT return summary", "source": "eta", "columns": ["vat_payable","vat_deductible","net"] }
+    { "id": "rep_vat_return", "name_ar": "ملخّص الإقرار الضريبي", "name_en": "VAT return summary", "source": "eta", "columns": ["vat_payable","vat_deductible","net"] },
+    { "id": "rep_rpr_open_overdue", "name_ar": "أوامر الشغل المفتوحة/المتأخرة", "name_en": "Open/overdue work orders", "source": "repair", "columns": ["number","customer","status","promise_date","overdue"] },
+    { "id": "rep_rpr_productivity", "name_ar": "إنتاجية الفنّيين", "name_en": "Technician productivity", "source": "repair", "columns": ["technician","wo_count","avg_repair_time"] },
+    { "id": "rep_rpr_approval_rate", "name_ar": "نسبة الموافقة على العروض", "name_en": "Quote approval rate", "source": "repair", "columns": ["period","sent","approved","rejected","rate"] },
+    { "id": "rep_rpr_top_parts", "name_ar": "الأكثر استهلاكاً من القطع", "name_en": "Most-consumed parts", "source": "repair", "columns": ["part","qty","revenue"] },
+    { "id": "rep_rpr_warranty_cost", "name_ar": "تكلفة الضمان", "name_en": "Warranty cost", "source": "repair", "columns": ["period","warranty_wos","parts_cost"], "financial": true }
   ],
 
   "saved_reports": [

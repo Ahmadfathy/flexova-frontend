@@ -1,14 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
-  WORK_ORDERS, SETTINGS, computeQuoteTotal,
+  WORK_ORDERS, FINAL_DOCUMENTS, SETTINGS, computeQuoteTotal,
   type RprWorkOrder, type RprDeviceType, type RprDeposit, type RprDiagnosis,
   type RprQuotePartLine, type RprQuoteLaborLine, type RprApprovalChannel,
-  type RprPartLine, type RprLaborLine,
+  type RprPartLine, type RprLaborLine, type RprFinalDocument,
 } from "@/features/repair/catalog";
+import { useRprSettings } from "@/stores/rprSettings";
 
 const SEED_WORK_ORDERS = WORK_ORDERS.reduce<Record<string, RprWorkOrder>>((acc, wo) => {
   acc[wo.id] = wo;
+  return acc;
+}, {});
+
+const SEED_FINAL_DOCUMENTS = FINAL_DOCUMENTS.reduce<Record<string, RprFinalDocument>>((acc, doc) => {
+  acc[doc.id] = doc;
   return acc;
 }, {});
 
@@ -39,6 +45,7 @@ let woSeq = 1;
 
 interface RprWorkOrdersState {
   workOrders: Record<string, RprWorkOrder>;
+  finalDocuments: Record<string, RprFinalDocument>;
   nextNumber: number;
   /** Creates a new Work Order at `pending_diagnosis` (intake). Device without a
    * serial is accepted + flagged (flag-don't-block, FE_12 golden rule #3). */
@@ -66,6 +73,17 @@ interface RprWorkOrdersState {
 
   /** Ready for pickup — enables Deliver. */
   markReady: (id: string) => void;
+
+  /** Golden rule #4/#6: freezes the document, starts the warranty window, status → delivered.
+   * The `RprFinalDocument` itself is built by the release dialog (parts/service totals, tender,
+   * eta_status, commission, journal preview) and handed in ready-made — this action just files
+   * it and stamps the WO. */
+  deliverWorkOrder: (id: string, doc: RprFinalDocument) => void;
+
+  /** Creates a fresh WO linked to a delivered original, flagged `under_warranty` — zero-charge
+   * lines enforced by the caller (WorkOrderDetailPage), not this action (mirrors createWorkOrder:
+   * the store only shapes the record, callers decide line pricing). */
+  createWarrantyWorkOrder: (originalWoId: string) => RprWorkOrder | null;
 }
 
 function patchWo(
@@ -82,6 +100,7 @@ export const useRprWorkOrders = create<RprWorkOrdersState>()(
   persist(
     (set, get) => ({
       workOrders: SEED_WORK_ORDERS,
+      finalDocuments: SEED_FINAL_DOCUMENTS,
       nextNumber: SETTINGS.wo_numbering.next,
 
       createWorkOrder: (input) => {
@@ -106,7 +125,7 @@ export const useRprWorkOrders = create<RprWorkOrdersState>()(
           deposit: input.deposit
             ? { amount: input.deposit.amount, treasury_id: input.deposit.treasury_id, taken_at: now } as RprDeposit
             : null,
-          warranty_days: SETTINGS.default_warranty_days,
+          warranty_days: useRprSettings.getState().defaultWarrantyDays,
           original_wo_id: null,
           final_doc_id: null,
           intake_at: now,
@@ -193,7 +212,7 @@ export const useRprWorkOrders = create<RprWorkOrdersState>()(
             status: "rejected",
             quote: wo.quote ? { ...wo.quote, approval_status: "rejected", rejected_at: now } : wo.quote,
             diagnosis_fee: opts.chargeDiagnosisFee
-              ? { amount: SETTINGS.diagnosis_fee.amount, charged: true }
+              ? { amount: useRprSettings.getState().diagnosisFeeAmount, charged: true }
               : wo.diagnosis_fee,
           }),
         };
@@ -215,6 +234,62 @@ export const useRprWorkOrders = create<RprWorkOrdersState>()(
         const now = new Date().toISOString().slice(0, 10);
         return { workOrders: patchWo(s.workOrders, id, { status: "ready", ready_at: now }) };
       }),
+
+      deliverWorkOrder: (id, doc) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo) return s;
+        const now = new Date().toISOString().slice(0, 10);
+        let warrantyExpiresAt: string | undefined;
+        if (wo.warranty_days > 0) {
+          const d = new Date(now);
+          d.setDate(d.getDate() + wo.warranty_days);
+          warrantyExpiresAt = d.toISOString().slice(0, 10);
+        }
+        return {
+          workOrders: patchWo(s.workOrders, id, {
+            status: "delivered",
+            delivered_at: now,
+            final_doc_id: doc.id,
+            warranty_expires_at: warrantyExpiresAt,
+          }),
+          finalDocuments: { ...s.finalDocuments, [doc.id]: doc },
+        };
+      }),
+
+      createWarrantyWorkOrder: (originalWoId) => {
+        const original = get().workOrders[originalWoId];
+        if (!original) return null;
+        const now = new Date().toISOString().slice(0, 10);
+        const number = `${SETTINGS.wo_numbering.prefix}${get().nextNumber}`;
+        const wo: RprWorkOrder = {
+          id: `wo_${Date.now()}_${woSeq++}`,
+          number,
+          status: "pending_diagnosis",
+          customer_id: original.customer_id,
+          technician_id: original.technician_id,
+          device: { ...original.device },
+          reported_faults: "",
+          diagnosis: null,
+          quote: null,
+          part_lines: [],
+          labor_lines: [],
+          deposit: null,
+          warranty_days: 0,
+          original_wo_id: original.id,
+          final_doc_id: null,
+          intake_at: now,
+          promise_at: now,
+          ready_at: null,
+          delivered_at: null,
+          notes: "",
+          _flag: "under_warranty",
+        };
+        set((s) => ({
+          workOrders: { ...s.workOrders, [wo.id]: wo },
+          nextNumber: s.nextNumber + 1,
+        }));
+        return wo;
+      },
     }),
     { name: "flexova.repair.workOrders" }
   )

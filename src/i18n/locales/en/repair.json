@@ -164,7 +164,6 @@
     "sent_toast": "Quote sent to the customer",
     "approve_toast": "Approved — execution started",
     "ready_toast": "Device ready for pickup",
-    "deliver_stub_toast": "Deliver + invoice screen arrives in a later step",
 
     "negative_stock_warning": "Negative stock for {{name}} — accepted & flagged for reconciliation",
 
@@ -176,7 +175,13 @@
 
     "channel_whatsapp": "WhatsApp",
     "channel_phone": "Phone",
-    "channel_in_person": "In person"
+    "channel_in_person": "In person",
+
+    "warranty_create_action": "Create warranty work order",
+    "warranty_create_title": "Create a warranty work order?",
+    "warranty_create_body": "A new work order linked to this one will open, zero-charge to the customer. Parts used will still deduct stock and post as warranty cost.",
+    "warranty_create_confirm": "Create order",
+    "warranty_wo_created_toast": "Warranty order {{number}} created"
   },
 
   "release": {
@@ -186,14 +191,40 @@
     "less_deposit": "Less deposit",
     "net": "Net due",
     "print": "Print receipt",
-    "eta_flagged": "Item without ETA code — sold & flagged"
+    "eta_flagged": "Item without ETA code — sold & flagged",
+    "confirm_delivery": "Confirm delivery",
+    "proceed_payment": "Proceed to payment",
+    "posting_preview": "Auto-posting preview",
+    "balanced": "Balanced — debit = credit",
+    "unbalanced": "Not balanced",
+    "commission_preview": "Technician commission",
+    "channel_b2b": "E-invoice (B2B) — customer has a registered TRN",
+    "channel_b2c": "E-receipt (B2C)",
+    "period_closed": "Delivery blocked — the accounting period is closed",
+    "period_closed_suggest": "Current open period: {{period}}",
+    "delivered_toast": "Work order {{number}} delivered",
+    "eta_flagged_toast": "Sold — item without an ETA code was flagged for correction",
+    "eta_queued_toast": "Offline — the document will sync with ETA later",
+    "commission_posted_toast": "Technician commission posted"
   },
 
   "settings": {
     "title": "Workshop settings",
     "diag_fee": "Diagnosis fee",
+    "diag_fee_enable": "Enable diagnosis fee",
+    "diag_fee_amount": "Amount",
     "warranty_days": "Warranty period (days)",
-    "technicians": "Technicians"
+    "warranty_days_hint": "In days — applied automatically to new work orders",
+    "technicians": "Technicians",
+    "technicians_hint": "Commission rules are read from HR and not edited here",
+    "numbering": "Work order numbering",
+    "numbering_next": "Next number",
+    "whatsapp_templates": "WhatsApp templates",
+    "template_approval": "Approval request",
+    "template_ready": "Ready notice",
+    "save": "Save",
+    "saved_toast": "Saved",
+    "permission_required": "You don't have permission to manage workshop settings"
   },
 
   "reports": {
