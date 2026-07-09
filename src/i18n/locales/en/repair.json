@@ -117,7 +117,66 @@
     "deliver": "Deliver",
     "locked": "Delivered — document frozen",
     "warranty_link": "Under warranty — linked to original",
-    "quote_before_exec": "Quote still awaiting approval"
+    "quote_before_exec": "Quote still awaiting approval",
+
+    "payments": "Payments",
+    "warranty": "Warranty",
+
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load the work order",
+    "not_found_title": "Work order not found",
+    "not_found_body": "The link is invalid or the order was deleted",
+    "back_to_board": "Back to board",
+    "offline_note": "Offline — added parts will sync later",
+
+    "dates_intake": "Intake date",
+    "dates_ready": "Ready date",
+    "dates_delivered": "Delivered date",
+
+    "diagnosis_result": "Diagnosis result",
+    "save_diagnosis": "Save diagnosis",
+    "diagnosis_saved_toast": "Diagnosis saved",
+    "start_diagnosis": "Start diagnosis",
+
+    "approval_status_pending": "Awaiting response",
+    "approval_status_approved": "Approved",
+    "approval_status_rejected": "Rejected",
+
+    "no_lines": "No lines yet",
+    "remove_line": "Remove line",
+    "add_labor_service_placeholder": "Select service",
+    "add_labor_technician_placeholder": "Select technician",
+    "total": "Total",
+    "est_commission": "Est. commission",
+
+    "payments_none": "No deposit taken",
+    "payments_note": "Any additional payments are recorded at delivery",
+
+    "warranty_started": "Warranty started",
+    "warranty_expires": "Expires",
+    "warranty_not_started": "Warranty period starts at delivery",
+    "warranty_zero_note": "Under-warranty order — zero-charge to the customer",
+
+    "reject_title": "Reject the quote?",
+    "reject_body": "The device will be released as-is with no parts or service invoice",
+    "reject_fee_label": "Charge diagnosis fee",
+    "reject_toast": "Quote rejected — device released",
+    "sent_toast": "Quote sent to the customer",
+    "approve_toast": "Approved — execution started",
+    "ready_toast": "Device ready for pickup",
+    "deliver_stub_toast": "Deliver + invoice screen arrives in a later step",
+
+    "negative_stock_warning": "Negative stock for {{name}} — accepted & flagged for reconciliation",
+
+    "part_search_placeholder": "Search for a part",
+    "stock_label": "Stock:",
+    "adhoc_part_title": "Unregistered part",
+    "adhoc_part_name": "Part name",
+    "adhoc_part_price": "Price",
+
+    "channel_whatsapp": "WhatsApp",
+    "channel_phone": "Phone",
+    "channel_in_person": "In person"
   },
 
   "release": {

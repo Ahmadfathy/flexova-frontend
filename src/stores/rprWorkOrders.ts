@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
-  WORK_ORDERS, SETTINGS,
-  type RprWorkOrder, type RprDeviceType, type RprDeposit,
+  WORK_ORDERS, SETTINGS, computeQuoteTotal,
+  type RprWorkOrder, type RprDeviceType, type RprDeposit, type RprDiagnosis,
+  type RprQuotePartLine, type RprQuoteLaborLine, type RprApprovalChannel,
+  type RprPartLine, type RprLaborLine,
 } from "@/features/repair/catalog";
 
 const SEED_WORK_ORDERS = WORK_ORDERS.reduce<Record<string, RprWorkOrder>>((acc, wo) => {
@@ -41,6 +43,39 @@ interface RprWorkOrdersState {
   /** Creates a new Work Order at `pending_diagnosis` (intake). Device without a
    * serial is accepted + flagged (flag-don't-block, FE_12 golden rule #3). */
   createWorkOrder: (input: CreateWorkOrderInput) => RprWorkOrder;
+
+  /** Diagnosis result + proposed work — no status change (status only moves on send/approve/reject). */
+  saveDiagnosis: (id: string, diagnosis: RprDiagnosis) => void;
+
+  /** Quote is composed incrementally (estimate lines, no stock effect) before being sent. */
+  addQuotePartLine: (id: string, line: RprQuotePartLine) => void;
+  removeQuotePartLine: (id: string, index: number) => void;
+  addQuoteLaborLine: (id: string, line: RprQuoteLaborLine) => void;
+  removeQuoteLaborLine: (id: string, index: number) => void;
+  /** Locks the composed quote and sends it → status `pending_approval`. */
+  sendQuoteForApproval: (id: string, channel: RprApprovalChannel) => void;
+  /** Customer approved → status `in_progress` (needs `repair.quote.approve`, sensitive). */
+  approveQuote: (id: string) => void;
+  /** Customer rejected → status `rejected`, device released as-is, optional diagnosis fee. */
+  rejectWorkOrder: (id: string, opts: { chargeDiagnosisFee: boolean }) => void;
+
+  /** Actual consumption — real stock deduction happens in the caller (useRprPartsStock),
+   * this only appends the line (mirrors F&B/svc's "no cross-store calls" convention). */
+  addExecutionPartLine: (id: string, line: RprPartLine) => void;
+  addExecutionLaborLine: (id: string, line: RprLaborLine) => void;
+
+  /** Ready for pickup — enables Deliver. */
+  markReady: (id: string) => void;
+}
+
+function patchWo(
+  workOrders: Record<string, RprWorkOrder>,
+  id: string,
+  patch: Partial<RprWorkOrder>
+): Record<string, RprWorkOrder> {
+  const wo = workOrders[id];
+  if (!wo) return workOrders;
+  return { ...workOrders, [id]: { ...wo, ...patch } };
 }
 
 export const useRprWorkOrders = create<RprWorkOrdersState>()(
@@ -88,6 +123,98 @@ export const useRprWorkOrders = create<RprWorkOrdersState>()(
 
         return wo;
       },
+
+      saveDiagnosis: (id, diagnosis) => set((s) => ({ workOrders: patchWo(s.workOrders, id, { diagnosis }) })),
+
+      addQuotePartLine: (id, line) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo) return s;
+        const base = wo.quote ?? { part_lines: [], labor_lines: [], total: 0, approval_status: "pending" as const, approval_channel: "in_person" as const };
+        const part_lines = [...base.part_lines, line];
+        const total = computeQuoteTotal(part_lines, base.labor_lines);
+        return { workOrders: patchWo(s.workOrders, id, { quote: { ...base, part_lines, total } }) };
+      }),
+
+      removeQuotePartLine: (id, index) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo?.quote) return s;
+        const part_lines = wo.quote.part_lines.filter((_, i) => i !== index);
+        const total = computeQuoteTotal(part_lines, wo.quote.labor_lines);
+        return { workOrders: patchWo(s.workOrders, id, { quote: { ...wo.quote, part_lines, total } }) };
+      }),
+
+      addQuoteLaborLine: (id, line) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo) return s;
+        const base = wo.quote ?? { part_lines: [], labor_lines: [], total: 0, approval_status: "pending" as const, approval_channel: "in_person" as const };
+        const labor_lines = [...base.labor_lines, line];
+        const total = computeQuoteTotal(base.part_lines, labor_lines);
+        return { workOrders: patchWo(s.workOrders, id, { quote: { ...base, labor_lines, total } }) };
+      }),
+
+      removeQuoteLaborLine: (id, index) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo?.quote) return s;
+        const labor_lines = wo.quote.labor_lines.filter((_, i) => i !== index);
+        const total = computeQuoteTotal(wo.quote.part_lines, labor_lines);
+        return { workOrders: patchWo(s.workOrders, id, { quote: { ...wo.quote, labor_lines, total } }) };
+      }),
+
+      sendQuoteForApproval: (id, channel) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo?.quote) return s;
+        const now = new Date().toISOString().slice(0, 10);
+        return {
+          workOrders: patchWo(s.workOrders, id, {
+            status: "pending_approval",
+            quote: { ...wo.quote, approval_channel: channel, approval_status: "pending", sent_at: now },
+          }),
+        };
+      }),
+
+      approveQuote: (id) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo?.quote) return s;
+        const now = new Date().toISOString().slice(0, 10);
+        return {
+          workOrders: patchWo(s.workOrders, id, {
+            status: "in_progress",
+            quote: { ...wo.quote, approval_status: "approved", approved_at: now },
+          }),
+        };
+      }),
+
+      rejectWorkOrder: (id, opts) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo) return s;
+        const now = new Date().toISOString().slice(0, 10);
+        return {
+          workOrders: patchWo(s.workOrders, id, {
+            status: "rejected",
+            quote: wo.quote ? { ...wo.quote, approval_status: "rejected", rejected_at: now } : wo.quote,
+            diagnosis_fee: opts.chargeDiagnosisFee
+              ? { amount: SETTINGS.diagnosis_fee.amount, charged: true }
+              : wo.diagnosis_fee,
+          }),
+        };
+      }),
+
+      addExecutionPartLine: (id, line) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo) return s;
+        return { workOrders: patchWo(s.workOrders, id, { part_lines: [...wo.part_lines, line] }) };
+      }),
+
+      addExecutionLaborLine: (id, line) => set((s) => {
+        const wo = s.workOrders[id];
+        if (!wo) return s;
+        return { workOrders: patchWo(s.workOrders, id, { labor_lines: [...wo.labor_lines, line] }) };
+      }),
+
+      markReady: (id) => set((s) => {
+        const now = new Date().toISOString().slice(0, 10);
+        return { workOrders: patchWo(s.workOrders, id, { status: "ready", ready_at: now }) };
+      }),
     }),
     { name: "flexova.repair.workOrders" }
   )

@@ -64,7 +64,7 @@ export interface RprPartLine {
   price: number;
   deducted: boolean;
   cost_as_warranty?: boolean;
-  _flag?: "parts_adhoc" | "no_eta_code";
+  _flag?: "parts_adhoc" | "no_eta_code" | "negative_stock";
 }
 
 export interface RprLaborLine {
@@ -315,4 +315,22 @@ export function isOverdue(wo: RprWorkOrder): boolean {
 
 export function deviceLabel(device: RprDevice): string {
   return [device.brand, device.model].filter(Boolean).join(" ");
+}
+
+// ── Detail-screen helpers (Step 3) ────────────────────────────────────
+
+export function computeQuoteTotal(partLines: RprQuotePartLine[], laborLines: RprQuoteLaborLine[]): number {
+  const partsTotal = partLines.reduce((sum, l) => sum + l.qty * l.price, 0);
+  const laborTotal = laborLines.reduce((sum, l) => sum + l.price, 0);
+  return partsTotal + laborTotal;
+}
+
+/** No live HR compute function exists anywhere in this codebase (confirmed — svc/commission.ts
+ * built its own local version for the same reason) — mirrors that shape for repair technicians. */
+export interface RprCommission {
+  technician_id: string;
+  base: number;
+  pct: number;
+  amount: number;
+  on: "collected";
 }

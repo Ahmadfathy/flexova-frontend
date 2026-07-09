@@ -117,7 +117,66 @@
     "deliver": "تسليم",
     "locked": "مُسلَّم — المستند مجمّد",
     "warranty_link": "تحت الضمان — مرتبط بأمر أصلي",
-    "quote_before_exec": "العرض لسه بانتظار الموافقة"
+    "quote_before_exec": "العرض لسه بانتظار الموافقة",
+
+    "payments": "المدفوعات",
+    "warranty": "الضمان",
+
+    "error_title": "حصل خطأ",
+    "error_body": "تعذّر تحميل أمر الشغل",
+    "not_found_title": "أمر الشغل غير موجود",
+    "not_found_body": "الرابط غير صحيح أو تم حذف الأمر",
+    "back_to_board": "الرجوع للوحة",
+    "offline_note": "غير متصل — إضافة القطع هتتزامن بعدين",
+
+    "dates_intake": "تاريخ الاستلام",
+    "dates_ready": "تاريخ الجاهزية",
+    "dates_delivered": "تاريخ التسليم",
+
+    "diagnosis_result": "نتيجة الكشف",
+    "save_diagnosis": "حفظ الكشف",
+    "diagnosis_saved_toast": "تم حفظ الكشف",
+    "start_diagnosis": "بدء الكشف",
+
+    "approval_status_pending": "بانتظار الرد",
+    "approval_status_approved": "تمت الموافقة",
+    "approval_status_rejected": "مرفوض",
+
+    "no_lines": "لا يوجد بنود بعد",
+    "remove_line": "حذف البند",
+    "add_labor_service_placeholder": "اختر خدمة",
+    "add_labor_technician_placeholder": "اختر فنّي",
+    "total": "الإجمالي",
+    "est_commission": "عمولة تقديرية",
+
+    "payments_none": "لا يوجد عربون",
+    "payments_note": "أي مدفوعات إضافية تُسجَّل عند التسليم",
+
+    "warranty_started": "بدأ الضمان",
+    "warranty_expires": "ينتهي",
+    "warranty_not_started": "فترة الضمان تبدأ من تاريخ التسليم",
+    "warranty_zero_note": "أمر تحت الضمان — بدون تحصيل من العميل",
+
+    "reject_title": "رفض العرض؟",
+    "reject_body": "هيتم تسليم الجهاز كما هو بدون قطع أو خدمة",
+    "reject_fee_label": "تحصيل رسم الكشف",
+    "reject_toast": "تم رفض العرض وتسليم الجهاز",
+    "sent_toast": "تم إرسال العرض للعميل",
+    "approve_toast": "تمت الموافقة — بدأ التنفيذ",
+    "ready_toast": "الجهاز جاهز للتسليم",
+    "deliver_stub_toast": "شاشة التسليم + الفاتورة جايه في خطوة قادمة",
+
+    "negative_stock_warning": "المخزون سالب لـ {{name}} — تم القبول والتعليم للتسوية",
+
+    "part_search_placeholder": "بحث عن قطعة",
+    "stock_label": "المخزون:",
+    "adhoc_part_title": "قطعة غير مسجّلة",
+    "adhoc_part_name": "اسم القطعة",
+    "adhoc_part_price": "السعر",
+
+    "channel_whatsapp": "واتساب",
+    "channel_phone": "تليفون",
+    "channel_in_person": "حضوريًا"
   },
 
   "release": {
