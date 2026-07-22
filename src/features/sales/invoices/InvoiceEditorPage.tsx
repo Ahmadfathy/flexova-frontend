@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
@@ -33,6 +33,12 @@ import type { SalesData, InventoryItem, SalesCustomer } from "./useSalesData";
 import { useEtaGate } from "@/hooks/useEtaGate";
 import { EtaConnectBanner } from "@/features/sales/eta-hub/EtaConnectBanner";
 import { EtaGateNotice } from "@/components/shell/EtaGateNotice";
+// FE_13 §6 hand-off: /wholesale/deliveries navigates here with a prefill instead
+// of duplicating invoice-creation logic — this is the only wholesale-aware code
+// in this file, applied only when that state is present.
+import {
+  settleWholesaleDeliveryInvoicing, type WholesaleInvoicePrefill,
+} from "@/features/wholesale/orders/wholesaleInvoicing";
 
 // ── Local types ──────────────────────────────────────────────────
 
@@ -593,6 +599,9 @@ function ChannelChip({
 
 export function InvoiceEditorPage() {
   const navigate     = useNavigate();
+  const location     = useLocation();
+  const wholesalePrefill = (location.state as { wholesalePrefill?: WholesaleInvoicePrefill } | null)?.wholesalePrefill;
+  const wholesalePrefillApplied = useRef(false);
   const { t, i18n } = useTranslation("sales");
   const { t: tEta }  = useTranslation("eta");
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
@@ -637,6 +646,37 @@ export function InvoiceEditorPage() {
   // only run on first data load
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  // ── FE_13 §6 hand-off from /wholesale/deliveries — seeds customer/warehouse/
+  // lines/notes from the selected delivery note(s) once data has loaded. Applied
+  // exactly once; the customer is only prefilled if it actually exists in this
+  // module's own customer list (some wholesale-only customers don't). ──
+  useEffect(() => {
+    if (!data || !wholesalePrefill || wholesalePrefillApplied.current) return;
+    wholesalePrefillApplied.current = true;
+    const customerValid = data.customers.some(c => c.id === wholesalePrefill.customerId);
+    const warehouseValid = data.warehouses.some(w => w.id === wholesalePrefill.warehouseId);
+    setDraft(d => ({
+      ...d,
+      customer_id:  customerValid ? wholesalePrefill.customerId : d.customer_id,
+      warehouse_id: warehouseValid ? wholesalePrefill.warehouseId : d.warehouse_id,
+      notes:        wholesalePrefill.note || d.notes,
+      lines: wholesalePrefill.lines.length
+        ? wholesalePrefill.lines.map(l => ({
+            _key: `${Date.now()}-${Math.random()}`,
+            item_id: l.item_id,
+            description: "",
+            qty: l.qty,
+            uom_id: l.uom_id,
+            price: l.price,
+            list_price: l.price,
+            price_overridden: false,
+            line_discount: 0,
+            tax_type_id: l.tax_type_id,
+          }))
+        : d.lines,
+    }));
+  }, [data, wholesalePrefill]);
 
   // ── Derived: customer, channel, totals, blockers ───────────────
   const customer = useMemo(
@@ -773,8 +813,11 @@ export function InvoiceEditorPage() {
     await new Promise<void>(r => setTimeout(r, 1000));
     setIsSubmitting(false);
     toast.success(isB2B ? t("editor.submitted_b2b") : t("editor.submitted_b2c"));
+    if (wholesalePrefill) {
+      settleWholesaleDeliveryInvoicing(wholesalePrefill, `INV-${Date.now()}`);
+    }
     navigate("/sales/invoices");
-  }, [canSubmitNow, isB2B, t, navigate]);
+  }, [canSubmitNow, isB2B, t, navigate, wholesalePrefill]);
 
   // ── Branch label derived from selected warehouse ───────────────
   const branchName = useMemo(() => {

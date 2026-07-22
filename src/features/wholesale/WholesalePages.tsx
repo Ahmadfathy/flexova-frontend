@@ -1,5 +1,5 @@
 import {
-  PackageCheck, Truck, Route, Users, Boxes,
+  Truck, Route, Users, Boxes,
 } from "lucide-react";
 import { WholesalePlaceholderPage } from "./WholesalePlaceholderPage";
 export { PriceTiersEditorPage } from "./pricing/PriceTiersEditorPage";
@@ -8,15 +8,10 @@ export { OrdersListPage } from "./orders/OrdersListPage";
 // Same component serves both /wholesale/orders/new and /wholesale/orders/:id
 // (FE_13 §5 — one editor, view becomes read-only once the order leaves "draft").
 export { OrderEditorPage, OrderEditorPage as OrderViewPage } from "./orders/OrderEditorPage";
-
-export function OrderPickPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="order_pick" icon={PackageCheck} />;
-}
+export { OrderPickPage } from "./orders/OrderPickPage";
+export { DeliveriesListPage } from "./orders/DeliveriesListPage";
 
 // ── Delivery notes (FE_13 §6) ────────────────────────────────────────
-export function DeliveriesListPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="deliveries" icon={Truck} />;
-}
 export function DeliveryViewPage() {
   return <WholesalePlaceholderPage ns="wholesale" titleKey="delivery_view" icon={Truck} />;
 }

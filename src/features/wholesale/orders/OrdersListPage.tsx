@@ -36,7 +36,8 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useWholesaleOrders } from "@/stores/wholesaleOrders";
 import { useWholesaleCreditReservations } from "@/stores/wholesaleCreditReservations";
-import { getCustomers, getReps, getRoutes } from "@/lib/mock/wholesale";
+import { useWholesaleCustomers } from "@/stores/wholesaleCustomers";
+import { getReps, getRoutes } from "@/lib/mock/wholesale";
 import { getAvailableCredit } from "@/lib/wholesale/credit";
 import type { SalesOrder, SalesOrderStatus } from "@/types/wholesale";
 
@@ -69,8 +70,8 @@ export function OrdersListPage() {
   const orders = useWholesaleOrders((s) => s.orders);
   const updateOrder = useWholesaleOrders((s) => s.updateOrder);
   const reservations = useWholesaleCreditReservations((s) => s.reservations);
+  const customers = useWholesaleCustomers((s) => s.customers);
 
-  const customers = useMemo(() => getCustomers(), []);
   const reps = useMemo(() => getReps(), []);
   const routes = useMemo(() => getRoutes(), []);
   const customerMap = useMemo(() => Object.fromEntries(customers.map((c) => [c.id, c])), [customers]);

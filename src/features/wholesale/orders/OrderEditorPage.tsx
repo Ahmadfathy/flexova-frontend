@@ -30,8 +30,9 @@ import { useCreditGuard } from "@/hooks/useCreditGuard";
 import { useWholesaleOrders, nextOrderNumber } from "@/stores/wholesaleOrders";
 import { useWholesaleCreditReservations } from "@/stores/wholesaleCreditReservations";
 import { useWholesaleStockReservations } from "@/stores/wholesaleStockReservations";
+import { useWholesaleCustomers } from "@/stores/wholesaleCustomers";
 import {
-  getCustomers, getItems, getUoms, getWarehouses, getReps, getRoutes,
+  getItems, getUoms, getWarehouses, getReps, getRoutes,
   getPriceListLines, getPriceLists,
 } from "@/lib/mock/wholesale";
 import { resolvePrice, type ResolvedPrice } from "@/lib/wholesale/pricing";
@@ -119,7 +120,7 @@ export function OrderEditorPage() {
 
   const existingOrder = !isNew ? orders.find((o) => o.id === id) : undefined;
 
-  const customers = useMemo(() => getCustomers(), []);
+  const customers = useWholesaleCustomers((s) => s.customers);
   const items = useMemo(() => getItems(), []);
   const uoms = useMemo(() => getUoms(), []);
   const warehouses = useMemo(() => getWarehouses().filter((w) => w.type === "storage"), []);

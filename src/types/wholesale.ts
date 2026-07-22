@@ -253,6 +253,10 @@ export interface DeliveryNote {
   warehouse_id: string;
   status: DeliveryNoteStatus;
   receiver_name: string;
+  note?: string;
+  /** Set once a note has been included in an invoice (FE_13 §6) — prevents
+   * double-invoicing the same delivered qty. */
+  invoice_id?: string | null;
   lines: DeliveryNoteLine[];
 }
 

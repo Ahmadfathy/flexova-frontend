@@ -25,8 +25,9 @@ import { useCan } from "@/lib/permissions";
 import { useWholesaleAudit } from "@/stores/wholesaleAudit";
 import { useWholesaleCreditReservations } from "@/stores/wholesaleCreditReservations";
 import { useWholesaleOrders } from "@/stores/wholesaleOrders";
+import { useWholesaleCustomers } from "@/stores/wholesaleCustomers";
 import {
-  getCustomers, getAgingBuckets, getRoutes, getReps,
+  getAgingBuckets, getRoutes, getReps,
 } from "@/lib/mock/wholesale";
 import { getAvailableCredit, getOpenReservations } from "@/lib/wholesale/credit";
 import type { WholesaleCustomer, CreditPolicy } from "@/types/wholesale";
@@ -51,8 +52,8 @@ export function CreditHubPage() {
   const reservations = useWholesaleCreditReservations((s) => s.reservations);
   const releaseReservationInStore = useWholesaleCreditReservations((s) => s.releaseReservation);
   const orders = useWholesaleOrders((s) => s.orders);
+  const customers = useWholesaleCustomers((s) => s.customers);
 
-  const customers = useMemo(() => getCustomers(), []);
   const agingBuckets = useMemo(() => getAgingBuckets(), []);
   const routes = useMemo(() => getRoutes(), []);
   const reps = useMemo(() => getReps(), []);
