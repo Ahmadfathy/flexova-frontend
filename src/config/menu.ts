@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Package, ShoppingCart, Truck, Users, Calculator,
-  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock, Wrench,
+  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock, Wrench, Warehouse,
 } from "lucide-react";
 
 export type MenuGroup = "core" | "sector" | "admin";
@@ -171,6 +171,23 @@ export const MENU: MenuItem[] = [
     order: 11,
     moduleFlag: "repair",
     permission: "repair.access",
+  },
+  {
+    key: "wholesale",
+    icon: Warehouse,
+    route: "/wholesale",
+    group: "sector",
+    order: 12,
+    moduleFlag: "sector.wholesale",
+    permission: "sales.order.view",
+    subItems: [
+      { key: "wh_orders",     route: "/wholesale/orders" },
+      { key: "wh_deliveries", route: "/wholesale/deliveries" },
+      { key: "wh_routes",     route: "/wholesale/routes" },
+      { key: "wh_reps",       route: "/wholesale/reps" },
+      { key: "wh_credit",     route: "/wholesale/credit" },
+      { key: "wh_van_loads",  route: "/wholesale/van-loads" },
+    ],
   },
   {
     key: "permissions",

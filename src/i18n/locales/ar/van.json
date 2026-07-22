@@ -1,0 +1,11 @@
+{
+  "placeholder": {
+    "note": "الشاشة الفعلية جاية في خطوة قادمة"
+  },
+
+  "shift_open":  { "title": "فتح الوردية" },
+  "today":       { "title": "خطة اليوم" },
+  "visit":       { "title": "الزيارة" },
+  "collect":     { "title": "التحصيل" },
+  "shift_close": { "title": "إقفال الوردية" }
+}

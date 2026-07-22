@@ -1,0 +1,20 @@
+{
+  "placeholder": {
+    "note": "الشاشة الفعلية جاية في خطوة قادمة"
+  },
+
+  "orders":           { "title": "طلبات البيع" },
+  "order_new":        { "title": "طلب بيع جديد" },
+  "order_view":       { "title": "طلب البيع" },
+  "order_pick":       { "title": "تجهيز إذن التسليم" },
+  "deliveries":       { "title": "أذون التسليم" },
+  "delivery_view":    { "title": "إذن التسليم" },
+  "routes":           { "title": "المسارات" },
+  "route_editor":     { "title": "المسار" },
+  "reps":             { "title": "متابعة المناديب" },
+  "rep_detail":       { "title": "تفاصيل يوم المندوب" },
+  "credit":           { "title": "التحكم بالائتمان" },
+  "van_loads":        { "title": "تحميل / ترحيل السيارات" },
+  "van_load_detail":  { "title": "مستند تحميل السيارة" },
+  "price_tiers":      { "title": "شرائح الأسعار" }
+}

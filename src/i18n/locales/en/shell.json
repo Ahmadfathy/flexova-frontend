@@ -14,6 +14,14 @@
     "fnb":          "F&B",
     "svc":          "Appointments",
     "repair":       "Repair",
+    "wholesale":    "Wholesale",
+
+    "wh_orders":     "Orders",
+    "wh_deliveries": "Deliveries",
+    "wh_routes":     "Routes",
+    "wh_reps":       "Reps",
+    "wh_credit":     "Credit control",
+    "wh_van_loads":  "Van loads",
 
     "items":              "Items",
     "categories":         "Categories",

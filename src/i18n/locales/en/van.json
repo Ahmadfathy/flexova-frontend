@@ -1,0 +1,11 @@
+{
+  "placeholder": {
+    "note": "The real screen arrives in a later step"
+  },
+
+  "shift_open":  { "title": "Open Shift" },
+  "today":       { "title": "Day Plan" },
+  "visit":       { "title": "Visit" },
+  "collect":     { "title": "Collection" },
+  "shift_close": { "title": "Close Shift" }
+}

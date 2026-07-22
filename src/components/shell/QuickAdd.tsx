@@ -14,9 +14,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MENU, type MenuItem } from "@/config/menu";
 import { QUICK_ADD, type QuickAddAction } from "@/config/quickAdd";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useCreateDispatcher } from "@/stores/createDispatcher";
-
-const isModuleEnabled = (_flag?: string): boolean => true;
 
 interface QuickAddGroup {
   module: MenuItem;
@@ -25,7 +24,7 @@ interface QuickAddGroup {
 
 function useQuickAddGroups(can: ReturnType<typeof useCan>): QuickAddGroup[] {
   const allowed = QUICK_ADD.filter(
-    a => can(a.permission ?? "") && isModuleEnabled(a.moduleFlag)
+    a => can(a.permission ?? "") && isFlagEnabled(a.moduleFlag)
   );
   return MENU
     .map(m => ({ module: m, actions: allowed.filter(a => a.group === m.key) }))

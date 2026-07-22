@@ -114,6 +114,18 @@ import RepairIntakePage from "@/features/repair/RepairIntakePage";
 import WorkOrderDetailPage from "@/features/repair/WorkOrderDetailPage";
 import RepairSettingsPage from "@/features/repair/RepairSettingsPage";
 
+// Wholesale & Distribution — FE_13 — scaffold only (routes + placeholders, no UI logic yet)
+import { WholesaleLayout } from "@/features/wholesale/WholesaleLayout";
+import {
+  OrdersListPage, OrderEditorPage, OrderViewPage, OrderPickPage,
+  DeliveriesListPage, DeliveryViewPage, RoutesListPage, RouteEditorPage,
+  RepsBoardPage, RepDetailPage, CreditHubPage, VanLoadsListPage, VanLoadDetailPage,
+  PriceTiersEditorPage,
+} from "@/features/wholesale/WholesalePages";
+import {
+  VanShiftOpenPage, VanTodayPage, VanVisitPage, VanCollectPage, VanShiftClosePage,
+} from "@/features/wholesale/van/VanPages";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -188,6 +200,17 @@ export default function App() {
           <Route path="board" element={<RepairBoardPage />} />
           <Route path="new" element={<RepairIntakePage />} />
           <Route path=":id" element={<WorkOrderDetailPage />} />
+        </Route>
+
+        {/* Wholesale & Distribution — FE_13 — van field screens reuse PosLayout (generic body),
+            route-scoped, tablet-first. Back-office screens are mounted under AppShell below. */}
+        <Route path="/van/*" element={<PosLayout variant="generic" />}>
+          <Route index element={<Navigate to="today" replace />} />
+          <Route path="shift/open" element={<VanShiftOpenPage />} />
+          <Route path="today" element={<VanTodayPage />} />
+          <Route path="visit/:visitId" element={<VanVisitPage />} />
+          <Route path="customer/:id/collect" element={<VanCollectPage />} />
+          <Route path="shift/close" element={<VanShiftClosePage />} />
         </Route>
 
         <Route element={<AppShell />}>
@@ -309,6 +332,27 @@ export default function App() {
 
           {/* Repair / Work Order — FE_12 — Workshop settings is back-office (spec §7), not PosLayout */}
           <Route path="/repair/settings" element={<RepairSettingsPage />} />
+
+          {/* Wholesale & Distribution — FE_13 — back-office (standard shell) */}
+          <Route path="/wholesale" element={<WholesaleLayout />}>
+            <Route index element={<Navigate to="orders" replace />} />
+            <Route path="orders"          element={<OrdersListPage />} />
+            <Route path="orders/new"      element={<OrderEditorPage />} />
+            <Route path="orders/:id"      element={<OrderViewPage />} />
+            <Route path="orders/:id/pick" element={<OrderPickPage />} />
+            <Route path="deliveries"      element={<DeliveriesListPage />} />
+            <Route path="deliveries/:id"  element={<DeliveryViewPage />} />
+            <Route path="routes"          element={<RoutesListPage />} />
+            <Route path="routes/:id"      element={<RouteEditorPage />} />
+            <Route path="reps"            element={<RepsBoardPage />} />
+            <Route path="reps/:id"        element={<RepDetailPage />} />
+            <Route path="credit"          element={<CreditHubPage />} />
+            <Route path="van-loads"       element={<VanLoadsListPage />} />
+            <Route path="van-loads/:id"   element={<VanLoadDetailPage />} />
+          </Route>
+
+          {/* Price tiers editor — extends FE_01 price lists (spec §11), standalone path */}
+          <Route path="/pricing/lists/:id" element={<PriceTiersEditorPage />} />
 
           {/* Dev tools — pattern library preview */}
           <Route path="/dev/patterns" element={<PatternsPage />} />

@@ -1,0 +1,20 @@
+{
+  "placeholder": {
+    "note": "The real screen arrives in a later step"
+  },
+
+  "orders":           { "title": "Sales Orders" },
+  "order_new":        { "title": "New Sales Order" },
+  "order_view":       { "title": "Sales Order" },
+  "order_pick":       { "title": "Delivery Note — Picking" },
+  "deliveries":       { "title": "Delivery Notes" },
+  "delivery_view":    { "title": "Delivery Note" },
+  "routes":           { "title": "Routes" },
+  "route_editor":     { "title": "Route" },
+  "reps":             { "title": "Rep Monitoring" },
+  "rep_detail":       { "title": "Rep Day Detail" },
+  "credit":           { "title": "Credit Control" },
+  "van_loads":        { "title": "Van Loads & Returns" },
+  "van_load_detail":  { "title": "Van Load" },
+  "price_tiers":      { "title": "Price Tiers" }
+}
