@@ -1,15 +1,10 @@
-import { LockKeyhole, ListChecks, MapPin, HandCoins } from "lucide-react";
+import { LockKeyhole, MapPin, HandCoins } from "lucide-react";
 import { WholesalePlaceholderPage } from "../WholesalePlaceholderPage";
 
 // ── Van (PosLayout, route-scoped) — FE_13 §1.2, §2-3 ──────────────────
 
-export function VanShiftOpenPage() {
-  return <WholesalePlaceholderPage ns="van" titleKey="shift_open" icon={LockKeyhole} padded />;
-}
-
-export function VanTodayPage() {
-  return <WholesalePlaceholderPage ns="van" titleKey="today" icon={ListChecks} padded />;
-}
+export { VanShiftOpenPage } from "./VanShiftOpenPage";
+export { VanTodayPage } from "./VanTodayPage";
 
 export function VanVisitPage() {
   return <WholesalePlaceholderPage ns="van" titleKey="visit" icon={MapPin} padded />;

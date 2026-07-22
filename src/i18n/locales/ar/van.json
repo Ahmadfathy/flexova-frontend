@@ -3,8 +3,61 @@
     "note": "الشاشة الفعلية جاية في خطوة قادمة"
   },
 
-  "shift_open":  { "title": "فتح الوردية" },
-  "today":       { "title": "خطة اليوم" },
+  "sync": {
+    "online": "متصل",
+    "offline": "بلا اتصال · {{n}} معلّقة",
+    "syncing": "جارٍ المزامنة…",
+    "error": "فشل المزامنة — إعادة المحاولة"
+  },
+
+  "shift_open": {
+    "title": "فتح الوردية",
+    "field_van": "السيارة/المخزن",
+    "field_float": "عهدة نقدية افتتاحية",
+    "field_treasury": "الخزينة",
+    "field_note": "ملاحظة",
+    "select_van": "اختر سيارة",
+    "no_vans": "لا توجد سيارات مسندة لك",
+    "submit": "فتح الوردية",
+    "error_van_required": "اختر السيارة/المخزن",
+    "error_float_required": "أدخل العهدة النقدية الافتتاحية",
+    "progress_title": "جارٍ تجهيز يومك…",
+    "progress_body": "تحميل خطة اليوم للعمل بدون اتصال",
+    "step_visits": "زيارات اليوم",
+    "step_van_stock": "مخزون السيارة",
+    "step_items": "الأصناف",
+    "step_price_lists": "قوائم الأسعار والشرائح",
+    "step_customers": "أرصدة وحدود العملاء",
+    "step_payment_methods": "طرق الدفع",
+    "retry": "إعادة المحاولة",
+    "close": "إغلاق",
+    "error_title": "تعذّر تجهيز يومك",
+    "error_body": "حصل خطأ أثناء التحميل — لم يُحفظ أي شيء. حاول مرة أخرى.",
+    "success_toast": "تم فتح الوردية — جاهز للانطلاق"
+  },
+
+  "today": {
+    "title": "خطة اليوم",
+    "stat_visits": "الزيارات",
+    "stat_sales": "مبيعات اليوم",
+    "stat_collections": "تحصيلات اليوم",
+    "stat_van_stock": "بضاعة بالسيارة",
+    "empty_title": "مفيش زيارات النهاردة",
+    "empty_cta": "عميل خارج الخطة",
+    "no_shift_title": "لا توجد وردية مفتوحة",
+    "no_shift_body": "افتح وردية السيارة عشان تشوف خطة اليوم",
+    "no_shift_cta": "فتح الوردية",
+    "permission_required": "لا تملك صلاحية عرض هذه الشاشة",
+    "error_title": "حدث خطأ ما",
+    "error_body": "تعذّر تحميل خطة اليوم",
+    "off_plan_customer": "عميل خارج الخطة",
+    "close_shift": "إقفال الوردية",
+    "search_customer_placeholder": "بحث عن عميل…",
+    "no_customers_found": "لا يوجد عملاء مطابقين",
+    "ad_hoc_visit_added": "تمت إضافة الزيارة",
+    "defer_success": "تم تأجيل الزيارة"
+  },
+
   "visit":       { "title": "الزيارة" },
   "collect":     { "title": "التحصيل" },
   "shift_close": { "title": "إقفال الوردية" },

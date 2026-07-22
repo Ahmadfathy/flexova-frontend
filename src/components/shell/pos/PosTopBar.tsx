@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { Languages, FlaskConical } from "lucide-react";
@@ -25,10 +26,14 @@ interface PosTopBarProps {
   queueCount: number;
   sandbox: boolean;
   hasOpenTicket: boolean;
+  /** Additive slot (FE_13 §2.1) — unused by every other sector; renders
+   * right before the Dashboard pill when a caller supplies one. */
+  syncIndicator?: ReactNode;
 }
 
 export function PosTopBar({
   terminalName, branchName, shiftOpen, cashierName, onToggleShift, queueCount, sandbox, hasOpenTicket,
+  syncIndicator,
 }: PosTopBarProps) {
   const { t } = useTranslation("pos");
   const { lang, setLang } = useAppearance();
@@ -68,7 +73,8 @@ export function PosTopBar({
         {/* ── Spacer ────────────────────────────────────────────── */}
         <div className="flex-1 min-w-0" />
 
-        {/* ── End (order matters): Dashboard pill · journal · terminal · language · fullscreen · exit ── */}
+        {/* ── End (order matters): syncIndicator · Dashboard pill · journal · terminal · language · fullscreen · exit ── */}
+        {syncIndicator}
         <OpenDashboardBtn />
 
         {shiftOpen && isFnb && can("fnb.kds.view") && <KdsBtn />}

@@ -3,8 +3,61 @@
     "note": "The real screen arrives in a later step"
   },
 
-  "shift_open":  { "title": "Open Shift" },
-  "today":       { "title": "Day Plan" },
+  "sync": {
+    "online": "Online",
+    "offline": "Offline · {{n}} pending",
+    "syncing": "Syncing…",
+    "error": "Sync failed — retry"
+  },
+
+  "shift_open": {
+    "title": "Open Shift",
+    "field_van": "Van / warehouse",
+    "field_float": "Opening float",
+    "field_treasury": "Treasury",
+    "field_note": "Note",
+    "select_van": "Select a van",
+    "no_vans": "No vans assigned to you",
+    "submit": "Open shift",
+    "error_van_required": "Select a van",
+    "error_float_required": "Enter the opening float",
+    "progress_title": "Preparing your day…",
+    "progress_body": "Downloading your day plan for offline use",
+    "step_visits": "Day visits",
+    "step_van_stock": "Van stock",
+    "step_items": "Items",
+    "step_price_lists": "Price lists & tiers",
+    "step_customers": "Customer balances & limits",
+    "step_payment_methods": "Payment methods",
+    "retry": "Retry",
+    "close": "Close",
+    "error_title": "Couldn't prepare your day",
+    "error_body": "Something went wrong while downloading — nothing was saved. Try again.",
+    "success_toast": "Shift opened — you're ready to go"
+  },
+
+  "today": {
+    "title": "Day Plan",
+    "stat_visits": "Visits",
+    "stat_sales": "Today's sales",
+    "stat_collections": "Today's collections",
+    "stat_van_stock": "Van stock value",
+    "empty_title": "No visits today",
+    "empty_cta": "Off-plan customer",
+    "no_shift_title": "No open shift",
+    "no_shift_body": "Open your van shift to see today's plan",
+    "no_shift_cta": "Open shift",
+    "permission_required": "You don't have permission to view this",
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load today's plan",
+    "off_plan_customer": "Off-plan customer",
+    "close_shift": "Close shift",
+    "search_customer_placeholder": "Search customers…",
+    "no_customers_found": "No customers found",
+    "ad_hoc_visit_added": "Visit added",
+    "defer_success": "Visit deferred"
+  },
+
   "visit":       { "title": "Visit" },
   "collect":     { "title": "Collection" },
   "shift_close": { "title": "Close Shift" },

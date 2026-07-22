@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LockKeyhole, LayoutGrid } from "lucide-react";
@@ -36,9 +36,12 @@ interface PosLayoutProps {
   /** "pos" (default) keeps the cashier rail+ticket body; "generic" gives sector
    * modules (e.g. F&B) a full-bleed body — they assemble their own chrome. */
   variant?: "pos" | "generic";
+  /** Additive slot (FE_13 §2.1) — only wholesale's /van/* passes this; every
+   * other caller omits it and gets the exact previous top bar unchanged. */
+  syncIndicator?: ReactNode;
 }
 
-export function PosLayout({ variant = "pos" }: PosLayoutProps) {
+export function PosLayout({ variant = "pos", syncIndicator }: PosLayoutProps) {
   const { t } = useTranslation("pos");
   const { lang } = useAppearance();
   const hasOpenTicket = usePosRegister(s => s.lines.length > 0) && variant === "pos";
@@ -67,6 +70,7 @@ export function PosLayout({ variant = "pos" }: PosLayoutProps) {
         queueCount={QUEUE_COUNT}
         sandbox={IS_SANDBOX}
         hasOpenTicket={hasOpenTicket}
+        syncIndicator={syncIndicator}
       />
 
       {shiftOpen ? (

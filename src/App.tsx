@@ -125,6 +125,7 @@ import {
 import {
   VanShiftOpenPage, VanTodayPage, VanVisitPage, VanCollectPage, VanShiftClosePage,
 } from "@/features/wholesale/van/VanPages";
+import { SyncIndicator } from "@/components/van/SyncIndicator";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -204,7 +205,7 @@ export default function App() {
 
         {/* Wholesale & Distribution — FE_13 — van field screens reuse PosLayout (generic body),
             route-scoped, tablet-first. Back-office screens are mounted under AppShell below. */}
-        <Route path="/van/*" element={<PosLayout variant="generic" />}>
+        <Route path="/van/*" element={<PosLayout variant="generic" syncIndicator={<SyncIndicator />} />}>
           <Route index element={<Navigate to="today" replace />} />
           <Route path="shift/open" element={<VanShiftOpenPage />} />
           <Route path="today" element={<VanTodayPage />} />
