@@ -3,6 +3,37 @@
  * src/lib/mock/fixtures/whl.fixtures.json (no invented fields).
  */
 
+// ── Reference data (uoms, items, price list headers) ──────────────────
+
+export interface Uom {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  factor: number;
+  is_base: boolean;
+}
+
+export interface WholesaleItem {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  sku: string;
+  base_uom: string;
+  wholesale_uom: string;
+  min_sale_qty: number;
+  eta_code: string;
+  tax_type_id: string;
+  image: string;
+  _flag?: "eta_code_missing";
+}
+
+export interface WholesalePriceListHeader {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  is_default: boolean;
+}
+
 // ── Price tiers ──────────────────────────────────────────────────────
 
 export interface PriceTier {

@@ -16,5 +16,53 @@
   "credit":           { "title": "التحكم بالائتمان" },
   "van_loads":        { "title": "تحميل / ترحيل السيارات" },
   "van_load_detail":  { "title": "مستند تحميل السيارة" },
-  "price_tiers":      { "title": "شرائح الأسعار" }
+  "price_tiers":      { "title": "شرائح الأسعار" },
+
+  "tier_pill": {
+    "label": "جملة ≥ {{qty}} {{unit}}"
+  },
+
+  "tier_hint": {
+    "banner": "زوّد {{qty}} {{unit}} توصل لسعر {{price}}",
+    "apply": "طبّق"
+  },
+
+  "tier_panel": {
+    "title": "شرائح السعر",
+    "range": "{{from}}–{{to}} {{unit}}",
+    "range_open": "{{from}}+ {{unit}}",
+    "discount_value": "خصم {{pct}}%",
+    "upsell": "زوّد {{qty}} {{unit}} → {{price}}، توفير {{savings}}"
+  },
+
+  "editor": {
+    "subtitle": "شاشة تعديل شرائح السعر",
+    "item_col": "الصنف",
+    "base_price_col": "السعر الأساسي",
+    "ref_unit_col": "الوحدة المرجعية",
+    "expand": "تفاصيل الشرائح",
+    "col_from": "من كمية",
+    "col_to": "إلى كمية",
+    "col_to_hint": "(فارغ = ∞)",
+    "col_mode": "النوع",
+    "mode_price": "سعر",
+    "mode_discount": "خصم %",
+    "col_value": "القيمة",
+    "col_ref_unit": "الوحدة المرجعية",
+    "add_tier": "إضافة شريحة",
+    "remove_tier": "حذف",
+    "no_start_at_one": "الشريحة الأولى المفروض تبدأ من 1",
+    "overlap": "الشريحة دي متداخلة مع الشريحة السابقة ({{from}}–{{to}})",
+    "gap": "في فجوة بين {{from}} و {{to}} — الكميات دي هتاخد سعر القائمة",
+    "copy_to": "نسخ الشرائح إلى…",
+    "copy_dialog_title": "نسخ الشرائح إلى أصناف أخرى",
+    "copy_source_label": "من صنف",
+    "copy_targets_label": "إلى الأصناف",
+    "copy_apply": "نسخ",
+    "copy_success": "تم نسخ الشرائح",
+    "save": "حفظ",
+    "saved": "تم الحفظ",
+    "no_items": "لا توجد أصناف في هذه القائمة",
+    "infinity": "∞"
+  }
 }

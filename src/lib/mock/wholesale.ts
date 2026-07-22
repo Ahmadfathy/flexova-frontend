@@ -2,7 +2,20 @@ import fixtures from "./fixtures/whl.fixtures.json";
 import type {
   SalesOrder, DeliveryNote, Route, Visit, VanStockEntry, VanLoad, VanShift,
   WholesaleCustomer, PriceListLine, CreditReservation, Collection, SyncOp, AgingBucket,
+  Uom, WholesaleItem, WholesalePriceListHeader,
 } from "@/types/wholesale";
+
+export function getUoms(): Uom[] {
+  return fixtures.uoms as Uom[];
+}
+
+export function getItems(): WholesaleItem[] {
+  return fixtures.items as WholesaleItem[];
+}
+
+export function getPriceLists(): WholesalePriceListHeader[] {
+  return fixtures.price_lists as WholesalePriceListHeader[];
+}
 
 export function getOrders(): SalesOrder[] {
   return fixtures.sales_orders as SalesOrder[];

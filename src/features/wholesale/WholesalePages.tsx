@@ -1,7 +1,8 @@
 import {
-  ClipboardList, PackageCheck, Truck, Route, Users, CreditCard, Boxes, Layers,
+  ClipboardList, PackageCheck, Truck, Route, Users, CreditCard, Boxes,
 } from "lucide-react";
 import { WholesalePlaceholderPage } from "./WholesalePlaceholderPage";
+export { PriceTiersEditorPage } from "./pricing/PriceTiersEditorPage";
 
 // ── Sales orders (FE_13 §4-5) ───────────────────────────────────────
 export function OrdersListPage() {
@@ -52,9 +53,4 @@ export function VanLoadsListPage() {
 }
 export function VanLoadDetailPage() {
   return <WholesalePlaceholderPage ns="wholesale" titleKey="van_load_detail" icon={Boxes} />;
-}
-
-// ── Price tiers editor — extends FE_01, standalone /pricing/lists/:id (FE_13 §11) ──
-export function PriceTiersEditorPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="price_tiers" icon={Layers} />;
 }

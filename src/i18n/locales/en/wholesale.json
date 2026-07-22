@@ -16,5 +16,53 @@
   "credit":           { "title": "Credit Control" },
   "van_loads":        { "title": "Van Loads & Returns" },
   "van_load_detail":  { "title": "Van Load" },
-  "price_tiers":      { "title": "Price Tiers" }
+  "price_tiers":      { "title": "Price Tiers" },
+
+  "tier_pill": {
+    "label": "Wholesale ≥ {{qty}} {{unit}}"
+  },
+
+  "tier_hint": {
+    "banner": "Add {{qty}} {{unit}} to reach {{price}}",
+    "apply": "Apply"
+  },
+
+  "tier_panel": {
+    "title": "Price Tiers",
+    "range": "{{from}}–{{to}} {{unit}}",
+    "range_open": "{{from}}+ {{unit}}",
+    "discount_value": "{{pct}}% off",
+    "upsell": "Add {{qty}} {{unit}} → {{price}}, save {{savings}}"
+  },
+
+  "editor": {
+    "subtitle": "Price tiers editor",
+    "item_col": "Item",
+    "base_price_col": "Base price",
+    "ref_unit_col": "Reference unit",
+    "expand": "Tier details",
+    "col_from": "From qty",
+    "col_to": "To qty",
+    "col_to_hint": "(empty = ∞)",
+    "col_mode": "Type",
+    "mode_price": "Price",
+    "mode_discount": "Discount %",
+    "col_value": "Value",
+    "col_ref_unit": "Reference unit",
+    "add_tier": "Add tier",
+    "remove_tier": "Remove",
+    "no_start_at_one": "The first tier should start at 1",
+    "overlap": "This tier overlaps the previous one ({{from}}–{{to}})",
+    "gap": "There's a gap between {{from}} and {{to}} — these quantities take the list price",
+    "copy_to": "Copy tiers to…",
+    "copy_dialog_title": "Copy tiers to other items",
+    "copy_source_label": "From item",
+    "copy_targets_label": "To items",
+    "copy_apply": "Copy",
+    "copy_success": "Tiers copied",
+    "save": "Save",
+    "saved": "Saved",
+    "no_items": "No items in this price list",
+    "infinity": "∞"
+  }
 }
