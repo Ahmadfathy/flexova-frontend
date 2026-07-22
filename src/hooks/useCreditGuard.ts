@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppearance } from "@/stores/appearance";
 import { useAuthStore } from "@/stores/auth";
 import { useCan } from "@/lib/permissions";
 import { formatMoney } from "@/lib/format";
 import { useWholesaleAudit } from "@/stores/wholesaleAudit";
-import { getCreditReservations } from "@/lib/mock/wholesale";
+import { useWholesaleCreditReservations } from "@/stores/wholesaleCreditReservations";
 import { evaluateCreditPolicy } from "@/lib/wholesale/credit";
 import type { WholesaleCustomer, CreditPolicy } from "@/types/wholesale";
 
@@ -39,7 +39,7 @@ export function useCreditGuard(customer: WholesaleCustomer | null | undefined, a
   const authUser = useAuthStore((s) => s.user);
   const appendAudit = useWholesaleAudit((s) => s.append);
 
-  const reservations = useMemo(() => getCreditReservations(), []);
+  const reservations = useWholesaleCreditReservations((s) => s.reservations);
   const [overrideOpen, setOverrideOpen] = useState(false);
   const [overridden, setOverridden] = useState(false);
 

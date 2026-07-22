@@ -2,7 +2,7 @@ import fixtures from "./fixtures/whl.fixtures.json";
 import type {
   SalesOrder, DeliveryNote, Route, Visit, VanStockEntry, VanLoad, VanShift,
   WholesaleCustomer, PriceListLine, CreditReservation, Collection, SyncOp, AgingBucket,
-  Uom, WholesaleItem, WholesalePriceListHeader, Rep, AuditEntry,
+  Uom, WholesaleItem, WholesalePriceListHeader, Rep, AuditEntry, WholesaleWarehouse,
 } from "@/types/wholesale";
 
 export function getUoms(): Uom[] {
@@ -79,4 +79,8 @@ export function getReps(): Rep[] {
 
 export function getAudit(): AuditEntry[] {
   return fixtures.audit as AuditEntry[];
+}
+
+export function getWarehouses(): WholesaleWarehouse[] {
+  return fixtures.warehouses as WholesaleWarehouse[];
 }

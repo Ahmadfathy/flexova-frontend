@@ -53,10 +53,14 @@ const config: Config = {
       keyframes: {
         pulse: { "0%,100%": { opacity: "1", transform: "scale(1)" }, "50%": { opacity: ".4", transform: "scale(.75)" } },
         popin: { from: { opacity: "0", transform: "translateY(-6px)" }, to: { opacity: "1", transform: "none" } },
+        // FE_13 §3.2/§5 "--motion-highlight" — one-time flash when a re-evaluated
+        // tier changes the line price (no CSS var of that name exists elsewhere).
+        "price-flash": { "0%": { backgroundColor: "var(--brand-tint)" }, "100%": { backgroundColor: "transparent" } },
       },
       animation: {
         "eta-pulse": "pulse 1.1s var(--ease,cubic-bezier(.2,.8,.2,1)) infinite",
         popin: "popin .18s var(--ease,cubic-bezier(.2,.8,.2,1))",
+        "price-flash": "price-flash 700ms ease-out",
       },
     },
   },

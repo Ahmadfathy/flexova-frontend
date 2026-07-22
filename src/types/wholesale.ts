@@ -34,6 +34,16 @@ export interface WholesalePriceListHeader {
   is_default: boolean;
 }
 
+export interface WholesaleWarehouse {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  type: "storage" | "van";
+  branch_id: string;
+  rep_id?: string;
+  plate?: string;
+}
+
 // ── Price tiers ──────────────────────────────────────────────────────
 
 export interface PriceTier {

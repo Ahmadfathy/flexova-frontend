@@ -1,20 +1,14 @@
 import {
-  ClipboardList, PackageCheck, Truck, Route, Users, Boxes,
+  PackageCheck, Truck, Route, Users, Boxes,
 } from "lucide-react";
 import { WholesalePlaceholderPage } from "./WholesalePlaceholderPage";
 export { PriceTiersEditorPage } from "./pricing/PriceTiersEditorPage";
 export { CreditHubPage } from "./credit/CreditHubPage";
+export { OrdersListPage } from "./orders/OrdersListPage";
+// Same component serves both /wholesale/orders/new and /wholesale/orders/:id
+// (FE_13 §5 — one editor, view becomes read-only once the order leaves "draft").
+export { OrderEditorPage, OrderEditorPage as OrderViewPage } from "./orders/OrderEditorPage";
 
-// ── Sales orders (FE_13 §4-5) ───────────────────────────────────────
-export function OrdersListPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="orders" icon={ClipboardList} />;
-}
-export function OrderEditorPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="order_new" icon={ClipboardList} />;
-}
-export function OrderViewPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="order_view" icon={ClipboardList} />;
-}
 export function OrderPickPage() {
   return <WholesalePlaceholderPage ns="wholesale" titleKey="order_pick" icon={PackageCheck} />;
 }

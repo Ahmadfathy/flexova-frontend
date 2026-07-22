@@ -23,8 +23,10 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useWholesaleAudit } from "@/stores/wholesaleAudit";
+import { useWholesaleCreditReservations } from "@/stores/wholesaleCreditReservations";
+import { useWholesaleOrders } from "@/stores/wholesaleOrders";
 import {
-  getCustomers, getCreditReservations, getAgingBuckets, getOrder, getRoutes, getReps,
+  getCustomers, getAgingBuckets, getRoutes, getReps,
 } from "@/lib/mock/wholesale";
 import { getAvailableCredit, getOpenReservations } from "@/lib/wholesale/credit";
 import type { WholesaleCustomer, CreditPolicy } from "@/types/wholesale";
@@ -46,9 +48,11 @@ export function CreditHubPage() {
   const { lang } = useAppearance();
   const can = useCan();
   const appendAudit = useWholesaleAudit((s) => s.append);
+  const reservations = useWholesaleCreditReservations((s) => s.reservations);
+  const releaseReservationInStore = useWholesaleCreditReservations((s) => s.releaseReservation);
+  const orders = useWholesaleOrders((s) => s.orders);
 
   const customers = useMemo(() => getCustomers(), []);
-  const reservations = useMemo(() => getCreditReservations(), []);
   const agingBuckets = useMemo(() => getAgingBuckets(), []);
   const routes = useMemo(() => getRoutes(), []);
   const reps = useMemo(() => getReps(), []);
@@ -56,7 +60,6 @@ export function CreditHubPage() {
   const [tab, setTab] = useState<TabKey>("over_limit");
   const [limitOverrides, setLimitOverrides] = useState<Record<string, number>>({});
   const [frozen, setFrozen] = useState<Set<string>>(new Set());
-  const [releasedIds, setReleasedIds] = useState<Set<string>>(new Set());
   const [editLimitTarget, setEditLimitTarget] = useState<WholesaleCustomer | null>(null);
   const [limitInput, setLimitInput] = useState("");
 
@@ -121,19 +124,19 @@ export function CreditHubPage() {
   }
 
   function releaseReservation(reservationId: string) {
-    setReleasedIds((prev) => new Set(prev).add(reservationId));
+    releaseReservationInStore(reservationId);
   }
 
   const openReservationRows = useMemo(
     () => reservations
-      .filter((r) => r.status === "reserved" && !releasedIds.has(r.id))
+      .filter((r) => r.status === "reserved")
       .map((r) => {
         const customer = customers.find((c) => c.id === r.customer_id);
-        const order = getOrder(r.order_id);
+        const order = orders.find((o) => o.id === r.order_id);
         const ageDays = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 86400000);
         return { reservation: r, customer, order, ageDays };
       }),
-    [reservations, releasedIds, customers],
+    [reservations, customers, orders],
   );
 
   return (
