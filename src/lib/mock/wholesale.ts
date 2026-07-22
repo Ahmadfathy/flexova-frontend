@@ -2,7 +2,7 @@ import fixtures from "./fixtures/whl.fixtures.json";
 import type {
   SalesOrder, DeliveryNote, Route, Visit, VanStockEntry, VanLoad, VanShift,
   WholesaleCustomer, PriceListLine, CreditReservation, Collection, SyncOp, AgingBucket,
-  Uom, WholesaleItem, WholesalePriceListHeader,
+  Uom, WholesaleItem, WholesalePriceListHeader, Rep, AuditEntry,
 } from "@/types/wholesale";
 
 export function getUoms(): Uom[] {
@@ -71,4 +71,12 @@ export function getSyncQueue(): SyncOp[] {
 
 export function getAgingBuckets(): AgingBucket[] {
   return fixtures.aging_buckets as AgingBucket[];
+}
+
+export function getReps(): Rep[] {
+  return fixtures.reps as Rep[];
+}
+
+export function getAudit(): AuditEntry[] {
+  return fixtures.audit as AuditEntry[];
 }

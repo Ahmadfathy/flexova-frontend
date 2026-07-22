@@ -1,8 +1,9 @@
 import {
-  ClipboardList, PackageCheck, Truck, Route, Users, CreditCard, Boxes,
+  ClipboardList, PackageCheck, Truck, Route, Users, Boxes,
 } from "lucide-react";
 import { WholesalePlaceholderPage } from "./WholesalePlaceholderPage";
 export { PriceTiersEditorPage } from "./pricing/PriceTiersEditorPage";
+export { CreditHubPage } from "./credit/CreditHubPage";
 
 // ── Sales orders (FE_13 §4-5) ───────────────────────────────────────
 export function OrdersListPage() {
@@ -40,11 +41,6 @@ export function RepsBoardPage() {
 }
 export function RepDetailPage() {
   return <WholesalePlaceholderPage ns="wholesale" titleKey="rep_detail" icon={Users} />;
-}
-
-// ── Credit control hub (FE_13 §9) ─────────────────────────────────────
-export function CreditHubPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="credit" icon={CreditCard} />;
 }
 
 // ── Van loads / returns (FE_13 §10) ───────────────────────────────────

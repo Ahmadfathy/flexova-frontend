@@ -293,3 +293,25 @@ export interface SyncOp {
   reason_ar?: string;
   reason_en?: string;
 }
+
+// ── Reps ───────────────────────────────────────────────────────────────
+
+export interface Rep {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  van_id: string;
+  commission_scheme_id: string;
+}
+
+// ── Audit ────────────────────────────────────────────────────────────
+
+export interface AuditEntry {
+  id: string;
+  at: string;
+  user: string;
+  action: string;
+  entity: string;
+  detail_ar: string;
+  detail_en: string;
+}
