@@ -1,5 +1,5 @@
 import {
-  Truck, Route, Users, Boxes,
+  Truck, Users, Boxes,
 } from "lucide-react";
 import { WholesalePlaceholderPage } from "./WholesalePlaceholderPage";
 export { PriceTiersEditorPage } from "./pricing/PriceTiersEditorPage";
@@ -10,18 +10,12 @@ export { OrdersListPage } from "./orders/OrdersListPage";
 export { OrderEditorPage, OrderEditorPage as OrderViewPage } from "./orders/OrderEditorPage";
 export { OrderPickPage } from "./orders/OrderPickPage";
 export { DeliveriesListPage } from "./orders/DeliveriesListPage";
+export { RoutesListPage } from "./routes/RoutesListPage";
+export { RouteEditorPage } from "./routes/RouteEditorPage";
 
 // ── Delivery notes (FE_13 §6) ────────────────────────────────────────
 export function DeliveryViewPage() {
   return <WholesalePlaceholderPage ns="wholesale" titleKey="delivery_view" icon={Truck} />;
-}
-
-// ── Routes (FE_13 §7) ─────────────────────────────────────────────────
-export function RoutesListPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="routes" icon={Route} />;
-}
-export function RouteEditorPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="route_editor" icon={Route} />;
 }
 
 // ── Rep monitoring (FE_13 §8) ─────────────────────────────────────────

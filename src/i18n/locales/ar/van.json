@@ -7,5 +7,26 @@
   "today":       { "title": "خطة اليوم" },
   "visit":       { "title": "الزيارة" },
   "collect":     { "title": "التحصيل" },
-  "shift_close": { "title": "إقفال الوردية" }
+  "shift_close": { "title": "إقفال الوردية" },
+
+  "visit_status": {
+    "scheduled": "مجدولة",
+    "sold": "تمّت — بيع",
+    "no_order": "تمّت — بلا طلب",
+    "closed": "مقفول",
+    "deferred": "متأجّلة"
+  },
+
+  "visit_card": {
+    "owed": "عليه",
+    "available": "المتاح",
+    "last_visit": "آخر زيارة",
+    "start_visit": "ابدأ الزيارة",
+    "call": "اتصال",
+    "whatsapp": "واتساب",
+    "defer": "تأجيل",
+    "defer_reason_placeholder": "السبب",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء"
+  }
 }

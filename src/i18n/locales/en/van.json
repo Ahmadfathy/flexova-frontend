@@ -7,5 +7,26 @@
   "today":       { "title": "Day Plan" },
   "visit":       { "title": "Visit" },
   "collect":     { "title": "Collection" },
-  "shift_close": { "title": "Close Shift" }
+  "shift_close": { "title": "Close Shift" },
+
+  "visit_status": {
+    "scheduled": "Scheduled",
+    "sold": "Done — sold",
+    "no_order": "Done — no order",
+    "closed": "Closed",
+    "deferred": "Deferred"
+  },
+
+  "visit_card": {
+    "owed": "Owed",
+    "available": "Available",
+    "last_visit": "Last visit",
+    "start_visit": "Start visit",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "defer": "Defer",
+    "defer_reason_placeholder": "Reason",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  }
 }

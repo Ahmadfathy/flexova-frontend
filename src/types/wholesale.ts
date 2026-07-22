@@ -329,3 +329,11 @@ export interface AuditEntry {
   detail_ar: string;
   detail_en: string;
 }
+
+// ── No-order reasons (visit close reasons) ─────────────────────────────
+
+export interface NoOrderReason {
+  id: string;
+  name_ar: string;
+  name_en: string;
+}
