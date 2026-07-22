@@ -1,0 +1,257 @@
+{
+  "_meta": {
+    "module": "wholesale",
+    "version": "1.0",
+    "currency": "EGP",
+    "today": "2026-07-21",
+    "depends_on": "inventory.fixtures.json (items/uoms/warehouses) · sales.fixtures.json (invoices/eta) · crm.fixtures.json (customers) · accounting.fixtures.json (treasuries/AR) · hr.fixtures.json (commission engine)",
+    "flags": { "sector.wholesale": true, "crm": true, "hr": true },
+    "notes": "Covers all visit statuses, all 3 credit policies, tier gap + tier overlap for validation demos, partial delivery, van load dispute, offline queue, and one item missing eta_code (flag-don't-block)."
+  },
+
+  "uoms": [
+    { "id": "uom_pc", "name_ar": "قطعة", "name_en": "Piece", "factor": 1, "is_base": true },
+    { "id": "uom_carton", "name_ar": "كرتونة", "name_en": "Carton", "factor": 12, "is_base": false },
+    { "id": "uom_pallet", "name_ar": "باليتة", "name_en": "Pallet", "factor": 480, "is_base": false }
+  ],
+
+  "items": [
+    { "id": "it_rice", "name_ar": "أرز مصري فاخر ٥ كجم", "name_en": "Egyptian Rice 5kg", "sku": "RC-5000", "base_uom": "uom_pc", "wholesale_uom": "uom_carton", "min_sale_qty": 12, "eta_code": "EG-100234", "tax_type_id": "tax_t1", "image": "/img/items/rice.webp" },
+    { "id": "it_oil", "name_ar": "زيت ذرة ٢.٢٥ لتر", "name_en": "Corn Oil 2.25L", "sku": "OL-2250", "base_uom": "uom_pc", "wholesale_uom": "uom_carton", "min_sale_qty": 12, "eta_code": "EG-100571", "tax_type_id": "tax_t1", "image": "/img/items/oil.webp" },
+    { "id": "it_tea", "name_ar": "شاي ٢٥٠ جم", "name_en": "Tea 250g", "sku": "TE-0250", "base_uom": "uom_pc", "wholesale_uom": "uom_carton", "min_sale_qty": 24, "eta_code": "EG-100882", "tax_type_id": "tax_t1", "image": "/img/items/tea.webp" },
+    { "id": "it_sugar", "name_ar": "سكر ١ كجم", "name_en": "Sugar 1kg", "sku": "SG-1000", "base_uom": "uom_pc", "wholesale_uom": "uom_carton", "min_sale_qty": 24, "eta_code": "", "tax_type_id": "tax_t1", "image": "/img/items/sugar.webp", "_flag": "eta_code_missing" },
+    { "id": "it_pasta", "name_ar": "مكرونة ٤٠٠ جم", "name_en": "Pasta 400g", "sku": "PS-0400", "base_uom": "uom_pc", "wholesale_uom": "uom_carton", "min_sale_qty": 24, "eta_code": "EG-101204", "tax_type_id": "tax_t1", "image": "/img/items/pasta.webp" }
+  ],
+
+  "warehouses": [
+    { "id": "wh_main", "name_ar": "المخزن الرئيسي", "name_en": "Main Warehouse", "type": "storage", "branch_id": "br_main" },
+    { "id": "wh_van_01", "name_ar": "سيارة ١ — أحمد", "name_en": "Van 1 — Ahmed", "type": "van", "branch_id": "br_main", "rep_id": "emp_ahmed", "plate": "ق ط ن ٤٥٢٣" },
+    { "id": "wh_van_02", "name_ar": "سيارة ٢ — سعيد", "name_en": "Van 2 — Said", "type": "van", "branch_id": "br_main", "rep_id": "emp_said", "plate": "س ب ع ١١٩٨" }
+  ],
+
+  "reps": [
+    { "id": "emp_ahmed", "name_ar": "أحمد صابر", "name_en": "Ahmed Saber", "van_id": "wh_van_01", "commission_scheme_id": "cs_collection_2pct" },
+    { "id": "emp_said", "name_ar": "سعيد منير", "name_en": "Said Mounir", "van_id": "wh_van_02", "commission_scheme_id": "cs_collection_2pct" }
+  ],
+
+  "price_lists": [
+    { "id": "pl_retail", "name_ar": "التجزئة", "name_en": "Retail", "is_default": true },
+    { "id": "pl_wholesale", "name_ar": "الجملة", "name_en": "Wholesale", "is_default": false },
+    { "id": "pl_key_account", "name_ar": "عملاء مميزون", "name_en": "Key Accounts", "is_default": false }
+  ],
+
+  "price_list_lines": [
+    {
+      "price_list_id": "pl_wholesale", "item_id": "it_rice", "base_price": 52.0, "tier_uom": "uom_carton",
+      "tiers": [
+        { "id": "tr_r1", "from_qty": 1, "to_qty": 2, "mode": "price", "value": 52.0 },
+        { "id": "tr_r2", "from_qty": 3, "to_qty": 9, "mode": "price", "value": 48.5 },
+        { "id": "tr_r3", "from_qty": 10, "to_qty": null, "mode": "price", "value": 45.0 }
+      ]
+    },
+    {
+      "price_list_id": "pl_wholesale", "item_id": "it_oil", "base_price": 158.0, "tier_uom": "uom_carton",
+      "tiers": [
+        { "id": "tr_o1", "from_qty": 1, "to_qty": 4, "mode": "price", "value": 158.0 },
+        { "id": "tr_o2", "from_qty": 5, "to_qty": null, "mode": "discount_pct", "value": 6.5 }
+      ]
+    },
+    {
+      "price_list_id": "pl_wholesale", "item_id": "it_tea", "base_price": 58.0, "tier_uom": "uom_carton",
+      "_validation_demo": "gap",
+      "tiers": [
+        { "id": "tr_t1", "from_qty": 1, "to_qty": 5, "mode": "price", "value": 58.0 },
+        { "id": "tr_t2", "from_qty": 8, "to_qty": null, "mode": "price", "value": 53.0 }
+      ]
+    },
+    {
+      "price_list_id": "pl_wholesale", "item_id": "it_pasta", "base_price": 22.0, "tier_uom": "uom_carton",
+      "_validation_demo": "overlap",
+      "tiers": [
+        { "id": "tr_p1", "from_qty": 1, "to_qty": 6, "mode": "price", "value": 22.0 },
+        { "id": "tr_p2", "from_qty": 5, "to_qty": null, "mode": "price", "value": 19.5 }
+      ]
+    },
+    {
+      "price_list_id": "pl_wholesale", "item_id": "it_sugar", "base_price": 34.0, "tier_uom": "uom_carton",
+      "tiers": [
+        { "id": "tr_s1", "from_qty": 1, "to_qty": null, "mode": "price", "value": 34.0 }
+      ]
+    },
+    {
+      "price_list_id": "pl_key_account", "item_id": "it_rice", "base_price": 44.0, "tier_uom": "uom_carton",
+      "tiers": [ { "id": "tr_kr1", "from_qty": 1, "to_qty": null, "mode": "price", "value": 44.0 } ]
+    }
+  ],
+
+  "customers": [
+    { "id": "cu_baraka", "name_ar": "بقالة البركة", "name_en": "Al-Baraka Grocery", "type": "b2b", "trn": "512300111", "phone": "01001234567", "address_ar": "شارع الترعة — شبرا", "price_list_id": "pl_wholesale", "credit_limit": 50000, "credit_policy": "warn", "net_days": 30, "ar_balance": 12400, "reserved": 0, "route_id": "rt_shobra" },
+    { "id": "cu_noor", "name_ar": "سوبر ماركت النور", "name_en": "Al-Noor Supermarket", "type": "b2b", "trn": "512300222", "phone": "01112345678", "address_ar": "ش جسر السويس", "price_list_id": "pl_key_account", "credit_limit": 120000, "credit_policy": "override", "net_days": 45, "ar_balance": 96500, "reserved": 18000, "route_id": "rt_shobra" },
+    { "id": "cu_amal", "name_ar": "مؤسسة الأمل للتوزيع", "name_en": "Al-Amal Distribution", "type": "b2b", "trn": "512300333", "phone": "01223456789", "address_ar": "المرج البلد", "price_list_id": "pl_wholesale", "credit_limit": 30000, "credit_policy": "block", "net_days": 15, "ar_balance": 31200, "reserved": 0, "route_id": "rt_marg", "_flag": "over_limit" },
+    { "id": "cu_salam", "name_ar": "بقالة السلام", "name_en": "Al-Salam Grocery", "type": "b2b", "trn": "", "phone": "01098765432", "address_ar": "المرج الجديدة", "price_list_id": "pl_wholesale", "credit_limit": 15000, "credit_policy": "warn", "net_days": 30, "ar_balance": 3200, "reserved": 0, "route_id": "rt_marg", "_flag": "trn_missing" },
+    { "id": "cu_hoda", "name_ar": "ماركت هدى", "name_en": "Hoda Market", "type": "b2b", "trn": "512300444", "phone": "01555512345", "address_ar": "عزبة النخل", "price_list_id": "pl_wholesale", "credit_limit": 20000, "credit_policy": "warn", "net_days": 30, "ar_balance": 0, "reserved": 0, "route_id": "rt_marg" }
+  ],
+
+  "routes": [
+    { "id": "rt_shobra", "name_ar": "مسار شبرا", "name_en": "Shobra Route", "rep_id": "emp_ahmed", "branch_id": "br_main", "visit_days": ["SU", "TU", "TH"], "status": "active", "customers": [ { "customer_id": "cu_baraka", "sequence": 1 }, { "customer_id": "cu_noor", "sequence": 2 } ] },
+    { "id": "rt_marg", "name_ar": "مسار المرج", "name_en": "Marg Route", "rep_id": "emp_said", "branch_id": "br_main", "visit_days": ["MO", "WE"], "status": "active", "customers": [ { "customer_id": "cu_amal", "sequence": 1 }, { "customer_id": "cu_salam", "sequence": 2 }, { "customer_id": "cu_hoda", "sequence": 3 } ] }
+  ],
+
+  "visits": [
+    { "id": "vs_001", "date": "2026-07-21", "route_id": "rt_shobra", "rep_id": "emp_ahmed", "customer_id": "cu_baraka", "sequence": 1, "status": "sold", "doc_id": "so_1201", "note": "" },
+    { "id": "vs_002", "date": "2026-07-21", "route_id": "rt_shobra", "rep_id": "emp_ahmed", "customer_id": "cu_noor", "sequence": 2, "status": "scheduled", "doc_id": null, "note": "" },
+    { "id": "vs_003", "date": "2026-07-21", "route_id": "rt_marg", "rep_id": "emp_said", "customer_id": "cu_amal", "sequence": 1, "status": "no_order", "no_order_reason": "credit_exceeded", "doc_id": null, "note": "تجاوز حد الائتمان — تم تكليف تحصيل" },
+    { "id": "vs_004", "date": "2026-07-21", "route_id": "rt_marg", "rep_id": "emp_said", "customer_id": "cu_salam", "sequence": 2, "status": "closed", "no_order_reason": "shop_closed", "doc_id": null, "note": "المحل مقفول" },
+    { "id": "vs_005", "date": "2026-07-21", "route_id": "rt_marg", "rep_id": "emp_said", "customer_id": "cu_hoda", "sequence": 3, "status": "deferred", "no_order_reason": "reschedule", "doc_id": null, "note": "طلب الزيارة بكرة" },
+    { "id": "vs_006", "date": "2026-07-20", "route_id": "rt_shobra", "rep_id": "emp_ahmed", "customer_id": "cu_baraka", "sequence": 1, "status": "sold", "doc_id": "so_1198", "note": "" }
+  ],
+
+  "van_stock": [
+    { "warehouse_id": "wh_van_01", "item_id": "it_rice", "qty_base": 480, "avg_cost": 41.0 },
+    { "warehouse_id": "wh_van_01", "item_id": "it_oil", "qty_base": 144, "avg_cost": 132.0 },
+    { "warehouse_id": "wh_van_01", "item_id": "it_tea", "qty_base": 0, "avg_cost": 47.0 },
+    { "warehouse_id": "wh_van_01", "item_id": "it_sugar", "qty_base": 240, "avg_cost": 28.5 },
+    { "warehouse_id": "wh_van_02", "item_id": "it_rice", "qty_base": 240, "avg_cost": 41.0 },
+    { "warehouse_id": "wh_van_02", "item_id": "it_pasta", "qty_base": 360, "avg_cost": 16.0 }
+  ],
+
+  "van_loads": [
+    {
+      "id": "vl_5501", "type": "load", "number": "VL-5501", "date": "2026-07-21", "rep_id": "emp_ahmed",
+      "from_warehouse": "wh_main", "to_warehouse": "wh_van_01", "shift_id": "sh_van_301", "status": "received",
+      "lines": [
+        { "item_id": "it_rice", "uom_id": "uom_carton", "qty_sent": 40, "qty_received": 40 },
+        { "item_id": "it_oil", "uom_id": "uom_carton", "qty_sent": 12, "qty_received": 12 },
+        { "item_id": "it_sugar", "uom_id": "uom_carton", "qty_sent": 20, "qty_received": 20 }
+      ]
+    },
+    {
+      "id": "vl_5502", "type": "load", "number": "VL-5502", "date": "2026-07-21", "rep_id": "emp_said",
+      "from_warehouse": "wh_main", "to_warehouse": "wh_van_02", "shift_id": "sh_van_302", "status": "dispute",
+      "lines": [
+        { "item_id": "it_rice", "uom_id": "uom_carton", "qty_sent": 20, "qty_received": 20 },
+        { "item_id": "it_pasta", "uom_id": "uom_carton", "qty_sent": 32, "qty_received": 30, "variance": -2 }
+      ],
+      "_flag": "dispute_open"
+    },
+    {
+      "id": "vl_5499", "type": "return", "number": "VR-5499", "date": "2026-07-20", "rep_id": "emp_ahmed",
+      "from_warehouse": "wh_van_01", "to_warehouse": "wh_main", "shift_id": "sh_van_299", "status": "received",
+      "lines": [ { "item_id": "it_rice", "uom_id": "uom_carton", "qty_sent": 8, "qty_received": 8 } ]
+    }
+  ],
+
+  "shifts": [
+    {
+      "id": "sh_van_301", "type": "van", "rep_id": "emp_ahmed", "warehouse_id": "wh_van_01", "treasury_id": "tr_cash_main",
+      "opened_at": "2026-07-21T07:40:00", "closed_at": null, "status": "open",
+      "opening_float": 2000, "cash_sales": 6840, "collections": 9200, "expected_cash": 18040,
+      "pending_sync_count": 0
+    },
+    {
+      "id": "sh_van_299", "type": "van", "rep_id": "emp_ahmed", "warehouse_id": "wh_van_01", "treasury_id": "tr_cash_main",
+      "opened_at": "2026-07-20T07:35:00", "closed_at": "2026-07-20T18:12:00", "status": "closed_with_variance",
+      "opening_float": 2000, "cash_sales": 9120, "collections": 4500, "expected_cash": 15620, "declared_cash": 15570, "cash_variance": -50,
+      "goods_variance": [ { "item_id": "it_oil", "expected_base": 36, "counted_base": 35, "variance_base": -1, "reason": "damaged" } ],
+      "commission_estimate": 90.0,
+      "settlement_status": "pending_approval"
+    }
+  ],
+
+  "sales_orders": [
+    {
+      "id": "so_1201", "number": "WH-SO-1201", "date": "2026-07-21", "customer_id": "cu_baraka", "warehouse_id": "wh_main",
+      "delivery_date": "2026-07-23", "rep_id": "emp_ahmed", "route_id": "rt_shobra", "price_list_id": "pl_wholesale",
+      "status": "approved", "credit_reservation_id": "cr_9001",
+      "lines": [
+        { "item_id": "it_rice", "qty": 10, "uom_id": "uom_carton", "unit_price": 45.0, "tier_id": "tr_r3", "discount": 0, "tax_type_id": "tax_t1", "line_total": 5400.0 },
+        { "item_id": "it_oil", "qty": 5, "uom_id": "uom_carton", "unit_price": 147.73, "tier_id": "tr_o2", "discount": 0, "tax_type_id": "tax_t1", "line_total": 8863.8 }
+      ],
+      "totals": { "subtotal": 14263.8, "discount": 0, "taxable_base": 14263.8, "tax": 1996.93, "grand_total": 16260.73 },
+      "delivered_pct": 0
+    },
+    {
+      "id": "so_1200", "number": "WH-SO-1200", "date": "2026-07-20", "customer_id": "cu_noor", "warehouse_id": "wh_main",
+      "delivery_date": "2026-07-22", "rep_id": "emp_ahmed", "route_id": "rt_shobra", "price_list_id": "pl_key_account",
+      "status": "partial", "credit_reservation_id": "cr_9000",
+      "lines": [
+        { "item_id": "it_rice", "qty": 30, "uom_id": "uom_carton", "unit_price": 44.0, "tier_id": "tr_kr1", "discount": 0, "tax_type_id": "tax_t1", "line_total": 15840.0 }
+      ],
+      "totals": { "subtotal": 15840.0, "discount": 0, "taxable_base": 15840.0, "tax": 2217.6, "grand_total": 18057.6 },
+      "delivered_pct": 60
+    },
+    {
+      "id": "so_1199", "number": "WH-SO-1199", "date": "2026-07-19", "customer_id": "cu_hoda", "warehouse_id": "wh_main",
+      "delivery_date": "2026-07-20", "rep_id": "emp_said", "route_id": "rt_marg", "price_list_id": "pl_wholesale",
+      "status": "invoiced", "credit_reservation_id": null, "invoice_id": "inv_2210",
+      "lines": [ { "item_id": "it_pasta", "qty": 8, "uom_id": "uom_carton", "unit_price": 19.5, "tier_id": "tr_p2", "discount": 0, "tax_type_id": "tax_t1", "line_total": 1872.0 } ],
+      "totals": { "subtotal": 1872.0, "discount": 0, "taxable_base": 1872.0, "tax": 262.08, "grand_total": 2134.08 },
+      "delivered_pct": 100
+    },
+    {
+      "id": "so_1198", "number": "WH-SO-1198", "date": "2026-07-18", "customer_id": "cu_salam", "warehouse_id": "wh_main",
+      "delivery_date": "2026-07-19", "rep_id": "emp_said", "route_id": "rt_marg", "price_list_id": "pl_wholesale",
+      "status": "draft", "credit_reservation_id": null,
+      "lines": [ { "item_id": "it_tea", "qty": 6, "uom_id": "uom_carton", "unit_price": 58.0, "tier_id": null, "discount": 0, "tax_type_id": "tax_t1", "line_total": 4176.0, "_flag": "tier_gap" } ],
+      "totals": { "subtotal": 4176.0, "discount": 0, "taxable_base": 4176.0, "tax": 584.64, "grand_total": 4760.64 },
+      "delivered_pct": 0
+    },
+    {
+      "id": "so_1197", "number": "WH-SO-1197", "date": "2026-07-17", "customer_id": "cu_amal", "warehouse_id": "wh_main",
+      "delivery_date": "2026-07-18", "rep_id": "emp_said", "route_id": "rt_marg", "price_list_id": "pl_wholesale",
+      "status": "cancelled", "credit_reservation_id": null, "cancel_reason": "تجاوز حد الائتمان — سياسة منع",
+      "lines": [ { "item_id": "it_sugar", "qty": 10, "uom_id": "uom_carton", "unit_price": 34.0, "tier_id": "tr_s1", "discount": 0, "tax_type_id": "tax_t1", "line_total": 4080.0 } ],
+      "totals": { "subtotal": 4080.0, "discount": 0, "taxable_base": 4080.0, "tax": 571.2, "grand_total": 4651.2 },
+      "delivered_pct": 0
+    }
+  ],
+
+  "delivery_notes": [
+    {
+      "id": "dn_3301", "number": "WH-DN-3301", "order_id": "so_1200", "date": "2026-07-21", "warehouse_id": "wh_main",
+      "status": "delivered", "receiver_name": "محمود — أمين مخزن النور",
+      "lines": [ { "item_id": "it_rice", "uom_id": "uom_carton", "qty_ordered": 30, "qty_delivered_before": 0, "qty_picked": 18, "qty_remaining": 12 } ]
+    },
+    {
+      "id": "dn_3300", "number": "WH-DN-3300", "order_id": "so_1199", "date": "2026-07-20", "warehouse_id": "wh_main",
+      "status": "delivered", "receiver_name": "هدى",
+      "lines": [ { "item_id": "it_pasta", "uom_id": "uom_carton", "qty_ordered": 8, "qty_delivered_before": 0, "qty_picked": 8, "qty_remaining": 0 } ]
+    }
+  ],
+
+  "credit_reservations": [
+    { "id": "cr_9001", "customer_id": "cu_baraka", "order_id": "so_1201", "amount": 16260.73, "status": "reserved", "created_at": "2026-07-21T09:12:00" },
+    { "id": "cr_9000", "customer_id": "cu_noor", "order_id": "so_1200", "amount": 18000.0, "status": "reserved", "created_at": "2026-07-20T11:05:00" }
+  ],
+
+  "collections": [
+    { "id": "col_7701", "number": "WH-COL-7701", "date": "2026-07-21", "customer_id": "cu_baraka", "rep_id": "emp_ahmed", "shift_id": "sh_van_301", "amount": 9200, "payment_method": "pm_cash", "allocations": [ { "invoice_id": "inv_2201", "amount": 6200 }, { "invoice_id": "inv_2205", "amount": 3000 } ], "unallocated": 0 },
+    { "id": "col_7700", "number": "WH-COL-7700", "date": "2026-07-20", "customer_id": "cu_noor", "rep_id": "emp_ahmed", "shift_id": "sh_van_299", "amount": 4500, "payment_method": "pm_transfer", "allocations": [ { "invoice_id": "inv_2190", "amount": 3500 } ], "unallocated": 1000, "_flag": "on_account" }
+  ],
+
+  "sync_queue": [
+    { "id": "q_0001", "op": "sale", "shift_id": "sh_van_301", "client_uuid": "8f3c-1a90-44de", "created_at": "2026-07-21T11:42:00", "status": "synced" },
+    { "id": "q_0002", "op": "collection", "shift_id": "sh_van_301", "client_uuid": "b21e-77aa-90c4", "created_at": "2026-07-21T12:05:00", "status": "synced" },
+    { "id": "q_0003", "op": "visit_update", "shift_id": "sh_van_302", "client_uuid": "cc90-2211-7ffe", "created_at": "2026-07-21T12:30:00", "status": "pending" },
+    { "id": "q_0004", "op": "sale", "shift_id": "sh_van_302", "client_uuid": "dd41-8802-1b6a", "created_at": "2026-07-21T12:34:00", "status": "rejected", "reason_ar": "الصنف مش متاح برصيد السيارة وقت المزامنة", "reason_en": "Item not available in van stock at sync time" }
+  ],
+
+  "no_order_reasons": [
+    { "id": "shop_closed", "name_ar": "المحل مقفول", "name_en": "Shop closed" },
+    { "id": "no_need", "name_ar": "لا يحتاج", "name_en": "No need" },
+    { "id": "price_rejected", "name_ar": "رفض السعر", "name_en": "Price rejected" },
+    { "id": "credit_exceeded", "name_ar": "تجاوز حد الائتمان", "name_en": "Credit limit exceeded" },
+    { "id": "reschedule", "name_ar": "طلب تأجيل", "name_en": "Requested reschedule" }
+  ],
+
+  "aging_buckets": [
+    { "customer_id": "cu_noor", "current": 40000, "d1_30": 32000, "d31_60": 18500, "d60_plus": 6000 },
+    { "customer_id": "cu_amal", "current": 5200, "d1_30": 9000, "d31_60": 8000, "d60_plus": 9000 },
+    { "customer_id": "cu_baraka", "current": 12400, "d1_30": 0, "d31_60": 0, "d60_plus": 0 }
+  ],
+
+  "audit": [
+    { "id": "au_501", "at": "2026-07-20T14:22:00", "user": "u_owner", "action": "sales.credit.override", "entity": "so_1200", "detail_ar": "تجاوز حد ائتمان النور بمبلغ 14,500 ج.م", "detail_en": "Credit override for Al-Noor by EGP 14,500" },
+    { "id": "au_502", "at": "2026-07-19T09:10:00", "user": "u_manager", "action": "crm.credit.limit.manage", "entity": "cu_amal", "detail_ar": "تعديل حد الائتمان من 25,000 إلى 30,000", "detail_en": "Credit limit changed 25,000 → 30,000" }
+  ]
+}
