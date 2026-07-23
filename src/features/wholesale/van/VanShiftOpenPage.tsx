@@ -21,7 +21,7 @@ import { getWarehouses, getReps, getRoutes } from "@/lib/mock/wholesale";
 import {
   BUNDLE_STEPS, fetchBundleStepData, saveBundle, estimateBundleSizeBytes, formatBytes,
   type VanBundle, type BundleStepKey,
-} from "@/lib/wholesale/offlineBundle";
+} from "@/lib/van/offline";
 import accountingFixtures from "@/lib/mock/fixtures/accounting.fixtures.json";
 
 interface Treasury { id: string; name_ar: string; name_en: string; type: string; branch_id: string; }

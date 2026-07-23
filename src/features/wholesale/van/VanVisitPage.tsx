@@ -40,6 +40,7 @@ import {
   getItems, getUoms, getPriceListLines, getVanStock, getNoOrderReasons,
 } from "@/lib/mock/wholesale";
 import { resolvePrice, fromBase, type ResolvedPrice } from "@/lib/wholesale/pricing";
+import { getAvailableCredit } from "@/lib/wholesale/credit";
 import type {
   WholesaleCustomer, WholesaleItem, Uom, PriceListLine, VanStockEntry,
 } from "@/types/wholesale";
@@ -276,7 +277,18 @@ export function VanVisitPage() {
 
     addSale(sale);
     updateVisit(activeVisit.id, { status: "sold", doc_id: sale.id });
-    enqueueSync({ op: "sale", shift_id: currentShift?.id ?? "", client_uuid: crypto.randomUUID() });
+
+    // Conflict-policy snapshots (FE_13 §15) — re-validated against current
+    // price/credit data when this op is actually synced.
+    const creditAmount = result.tenders.pm_credit ?? 0;
+    enqueueSync({
+      op: "sale",
+      shift_id: currentShift?.id ?? "",
+      client_uuid: crypto.randomUUID(),
+      customer_id: activeVisit.customer_id,
+      price_snapshot: lines.map((l) => ({ item_id: l.item_id, uom_id: l.uom_id, qty: l.qty, price: l.price })),
+      credit_snapshot: creditAmount > 0 && customer ? getAvailableCredit(customer, reservations) : undefined,
+    });
     if (currentShift) postSaleCash(currentShift.id, result.tenders.pm_cash ?? 0);
 
     setCart([]);

@@ -1,6 +1,4 @@
-import {
-  Truck, Users, Boxes,
-} from "lucide-react";
+import { Truck } from "lucide-react";
 import { WholesalePlaceholderPage } from "./WholesalePlaceholderPage";
 export { PriceTiersEditorPage } from "./pricing/PriceTiersEditorPage";
 export { CreditHubPage } from "./credit/CreditHubPage";
@@ -19,17 +17,9 @@ export function DeliveryViewPage() {
 }
 
 // ── Rep monitoring (FE_13 §8) ─────────────────────────────────────────
-export function RepsBoardPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="reps" icon={Users} />;
-}
-export function RepDetailPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="rep_detail" icon={Users} />;
-}
+export { RepsBoardPage } from "./reps/RepsBoardPage";
+export { RepDetailPage } from "./reps/RepDetailPage";
 
 // ── Van loads / returns (FE_13 §10) ───────────────────────────────────
-export function VanLoadsListPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="van_loads" icon={Boxes} />;
-}
-export function VanLoadDetailPage() {
-  return <WholesalePlaceholderPage ns="wholesale" titleKey="van_load_detail" icon={Boxes} />;
-}
+export { VanLoadsListPage } from "./van-loads/VanLoadsListPage";
+export { VanLoadDetailPage } from "./van-loads/VanLoadDetailPage";

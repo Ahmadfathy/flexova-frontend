@@ -156,6 +156,9 @@ export interface VanLoad {
   shift_id: string;
   status: VanLoadStatus;
   lines: VanLoadLine[];
+  /** FE_13 §10 — how a dispute was resolved: adjusted the sent qty to match
+   * what actually arrived, or accepted the variance (with a reason) as-is. */
+  resolution?: { type: "adjust_sent" | "accept_variance"; reason: string; resolved_at: string };
   _flag?: "dispute_open";
 }
 
@@ -186,8 +189,13 @@ export interface VanShift {
   cash_variance?: number;
   goods_variance?: GoodsVariance[];
   commission_estimate?: number;
-  settlement_status?: "pending_approval" | string;
+  settlement_status?: "pending_approval" | "approved" | string;
   pending_sync_count?: number;
+  /** User id who closed/settled the shift — SoD (FE_13 §8): the variance
+   * approver must be a different user. */
+  settled_by?: string;
+  /** User id who approved a variance settlement, once approved. */
+  approved_by?: string;
 }
 
 // ── Sales orders & delivery notes ────────────────────────────────────
@@ -297,8 +305,19 @@ export interface Collection {
 export type SyncOpKind = "sale" | "collection" | "visit_update" | "return";
 export type SyncOpStatus = "synced" | "pending" | "rejected";
 
+export interface SyncOpPriceLine {
+  item_id: string;
+  uom_id: string;
+  qty: number;
+  price: number;
+}
+
 export interface SyncOp {
   id: string;
+  /** Per-shift, terminal-style numbering (FE_13 §15 — "reused from FE_09"),
+   * e.g. `sh_van_301-OP-4`. Distinct from `client_uuid`, which is the
+   * idempotency key; this is just a human-readable sequence. */
+  number: string;
   op: SyncOpKind;
   shift_id: string;
   client_uuid: string;
@@ -306,6 +325,13 @@ export interface SyncOp {
   status: SyncOpStatus;
   reason_ar?: string;
   reason_en?: string;
+  /** Conflict-policy snapshots (FE_13 §15) — price list at bundle-load time,
+   * re-validated against the *current* price list on sync. Only "sale" ops
+   * carry one; a mismatch rejects the op with a plain-Arabic reason. */
+  customer_id?: string;
+  price_snapshot?: SyncOpPriceLine[];
+  /** Available credit at commit time, for sale ops that used a credit tender. */
+  credit_snapshot?: number;
 }
 
 // ── Reps ───────────────────────────────────────────────────────────────

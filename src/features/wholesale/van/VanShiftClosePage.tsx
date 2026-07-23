@@ -14,6 +14,7 @@ import { ZReportDialog } from "./ZReportDialog";
 
 import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
+import { useAuthStore } from "@/stores/auth";
 import { useVanSession } from "@/stores/vanSession";
 import { useWholesaleVanShifts } from "@/stores/wholesaleVanShifts";
 import { useWholesaleVanLoads, nextVanLoadNumber } from "@/stores/wholesaleVanLoads";
@@ -42,6 +43,7 @@ export function VanShiftClosePage() {
 
   const session = useVanSession();
   const closeVanSession = useVanSession((s) => s.closeVanSession);
+  const currentUserId = useAuthStore((s) => s.user?.id) ?? "u_dev";
   const shifts = useWholesaleVanShifts((s) => s.shifts);
   const closeShift = useWholesaleVanShifts((s) => s.closeShift);
   const loads = useWholesaleVanLoads((s) => s.loads);
@@ -173,6 +175,7 @@ export function VanShiftClosePage() {
       goods_variance,
       commission_estimate: commission?.amount ?? 0,
       settlement_status: hasVariance ? "pending_approval" : undefined,
+      settled_by: currentUserId,
     });
 
     const returnLines = goodsVarianceRows

@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/patterns/EmptyState";
 import { ErrorState } from "@/components/patterns/ErrorState";
 import { Skeleton } from "@/components/patterns/Skeletons";
 import { VisitCard } from "@/components/van/VisitCard";
+import { RejectedOpsDrawer } from "@/components/van/RejectedOpsDrawer";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -58,12 +59,15 @@ export function VanTodayPage() {
   const reservations = useWholesaleCreditReservations((s) => s.reservations);
   const orders = useWholesaleOrders((s) => s.orders);
   const enqueueSync = useWholesaleSyncQueue((s) => s.enqueue);
+  const syncEntries = useWholesaleSyncQueue((s) => s.entries);
   const noOrderReasons = useMemo(() => getNoOrderReasons(), []);
+  const rejectedCount = useMemo(() => syncEntries.filter((e) => e.status === "rejected").length, [syncEntries]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [forcedEmpty, setForcedEmpty] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [rejectedOpen, setRejectedOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -178,7 +182,14 @@ export function VanTodayPage() {
             {route ? (lang === "ar" ? route.name_ar : route.name_en) : "—"}
             <span className="text-muted-foreground font-normal">· {formatDate(today)}</span>
           </div>
-          <span className="text-sm text-muted-foreground">{rep ? (lang === "ar" ? rep.name_ar : rep.name_en) : "—"}</span>
+          <div className="flex items-center gap-2">
+            {rejectedCount > 0 && (
+              <Button variant="outline" size="sm" className="h-8 border-danger/30 text-danger-text" onClick={() => setRejectedOpen(true)}>
+                {t("rejected_ops.trigger", { n: rejectedCount })}
+              </Button>
+            )}
+            <span className="text-sm text-muted-foreground">{rep ? (lang === "ar" ? rep.name_ar : rep.name_en) : "—"}</span>
+          </div>
         </div>
       </div>
 
@@ -245,6 +256,8 @@ export function VanTodayPage() {
           {t("today.close_shift")}
         </Button>
       </div>
+
+      <RejectedOpsDrawer open={rejectedOpen} onOpenChange={setRejectedOpen} />
     </div>
   );
 }

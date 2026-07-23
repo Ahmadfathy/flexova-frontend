@@ -230,10 +230,10 @@
   ],
 
   "sync_queue": [
-    { "id": "q_0001", "op": "sale", "shift_id": "sh_van_301", "client_uuid": "8f3c-1a90-44de", "created_at": "2026-07-21T11:42:00", "status": "synced" },
-    { "id": "q_0002", "op": "collection", "shift_id": "sh_van_301", "client_uuid": "b21e-77aa-90c4", "created_at": "2026-07-21T12:05:00", "status": "synced" },
-    { "id": "q_0003", "op": "visit_update", "shift_id": "sh_van_302", "client_uuid": "cc90-2211-7ffe", "created_at": "2026-07-21T12:30:00", "status": "pending" },
-    { "id": "q_0004", "op": "sale", "shift_id": "sh_van_302", "client_uuid": "dd41-8802-1b6a", "created_at": "2026-07-21T12:34:00", "status": "rejected", "reason_ar": "الصنف مش متاح برصيد السيارة وقت المزامنة", "reason_en": "Item not available in van stock at sync time" }
+    { "id": "q_0001", "number": "sh_van_301-OP-1", "op": "sale", "shift_id": "sh_van_301", "client_uuid": "8f3c-1a90-44de", "created_at": "2026-07-21T11:42:00", "status": "synced" },
+    { "id": "q_0002", "number": "sh_van_301-OP-2", "op": "collection", "shift_id": "sh_van_301", "client_uuid": "b21e-77aa-90c4", "created_at": "2026-07-21T12:05:00", "status": "synced" },
+    { "id": "q_0003", "number": "sh_van_302-OP-1", "op": "visit_update", "shift_id": "sh_van_302", "client_uuid": "cc90-2211-7ffe", "created_at": "2026-07-21T12:30:00", "status": "pending" },
+    { "id": "q_0004", "number": "sh_van_302-OP-2", "op": "sale", "shift_id": "sh_van_302", "client_uuid": "dd41-8802-1b6a", "created_at": "2026-07-21T12:34:00", "status": "rejected", "reason_ar": "الصنف مش متاح برصيد السيارة وقت المزامنة", "reason_en": "Item not available in van stock at sync time" }
   ],
 
   "no_order_reasons": [

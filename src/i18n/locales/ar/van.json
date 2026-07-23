@@ -10,6 +10,17 @@
     "error": "فشل المزامنة — إعادة المحاولة"
   },
 
+  "rejected_ops": {
+    "title": "عمليات مرفوضة",
+    "trigger": "{{n}} مرفوضة",
+    "empty": "لا توجد عمليات مرفوضة",
+    "op_sale": "بيع",
+    "op_collection": "تحصيل",
+    "op_visit_update": "تحديث زيارة",
+    "op_return": "مرتجع",
+    "fix_action": "إعادة المحاولة"
+  },
+
   "shift_open": {
     "title": "فتح الوردية",
     "field_van": "السيارة/المخزن",

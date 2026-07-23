@@ -10,6 +10,17 @@
     "error": "Sync failed — retry"
   },
 
+  "rejected_ops": {
+    "title": "Rejected operations",
+    "trigger": "{{n}} rejected",
+    "empty": "No rejected operations",
+    "op_sale": "Sale",
+    "op_collection": "Collection",
+    "op_visit_update": "Visit update",
+    "op_return": "Return",
+    "fix_action": "Retry"
+  },
+
   "shift_open": {
     "title": "Open Shift",
     "field_van": "Van / warehouse",

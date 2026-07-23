@@ -22,7 +22,12 @@ interface WholesaleVanShiftsState {
     goods_variance: GoodsVariance[];
     commission_estimate: number;
     settlement_status?: string;
+    settled_by: string;
   }) => void;
+  /** FE_13 §8 — approves a variance settlement. SoD is enforced by the caller
+   * (the approve button is disabled/blocked before this ever runs); this just
+   * records who approved it. */
+  approveVariance: (shiftId: string, approvedBy: string) => void;
 }
 
 export const useWholesaleVanShifts = create<WholesaleVanShiftsState>()(
@@ -50,6 +55,12 @@ export const useWholesaleVanShifts = create<WholesaleVanShiftsState>()(
       closeShift: (shiftId, result) =>
         set((s) => ({
           shifts: s.shifts.map((sh) => (sh.id === shiftId ? { ...sh, ...result } : sh)),
+        })),
+      approveVariance: (shiftId, approvedBy) =>
+        set((s) => ({
+          shifts: s.shifts.map((sh) =>
+            sh.id === shiftId ? { ...sh, settlement_status: "approved", approved_by: approvedBy } : sh,
+          ),
         })),
     }),
     { name: "flexova.wholesale.van_shifts" },
