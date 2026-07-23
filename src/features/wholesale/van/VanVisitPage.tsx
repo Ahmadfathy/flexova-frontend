@@ -34,6 +34,7 @@ import { useWholesaleVisits } from "@/stores/wholesaleVisits";
 import { useWholesaleCustomers } from "@/stores/wholesaleCustomers";
 import { useWholesaleCreditReservations } from "@/stores/wholesaleCreditReservations";
 import { useWholesaleSyncQueue } from "@/stores/wholesaleSyncQueue";
+import { useWholesaleVanShifts } from "@/stores/wholesaleVanShifts";
 import { useWholesaleVanSales, nextVanSaleNumber, type VanSale, type VanSaleLine } from "@/stores/wholesaleVanSales";
 import {
   getItems, getUoms, getPriceListLines, getVanStock, getNoOrderReasons,
@@ -105,6 +106,12 @@ export function VanVisitPage() {
   const enqueueSync = useWholesaleSyncQueue((s) => s.enqueue);
   const sales = useWholesaleVanSales((s) => s.sales);
   const addSale = useWholesaleVanSales((s) => s.addSale);
+  const shifts = useWholesaleVanShifts((s) => s.shifts);
+  const postSaleCash = useWholesaleVanShifts((s) => s.postSaleCash);
+  const currentShift = useMemo(
+    () => shifts.find((s) => s.rep_id === session.repId && s.status === "open"),
+    [shifts, session.repId],
+  );
 
   const items = useMemo(() => getItems(), []);
   const uoms = useMemo(() => getUoms(), []);
@@ -213,7 +220,7 @@ export function VanVisitPage() {
   function confirmNoOrder() {
     if (!noOrderReason) return;
     updateVisit(activeVisit.id, { status: "no_order", no_order_reason: noOrderReason });
-    enqueueSync({ op: "visit_update", shift_id: session.vanWarehouseId ?? "", client_uuid: crypto.randomUUID() });
+    enqueueSync({ op: "visit_update", shift_id: currentShift?.id ?? "", client_uuid: crypto.randomUUID() });
     toast.success(t("visit.no_order_success"));
     navigate("/van/today");
   }
@@ -259,6 +266,7 @@ export function VanVisitPage() {
       visit_id: activeVisit.id,
       customer_id: activeVisit.customer_id,
       rep_id: activeVisit.rep_id,
+      shift_id: currentShift?.id ?? "",
       date: todayStr(),
       lines,
       totals: { subtotal: totals.subtotal, discount: totals.discount, taxable_base: totals.taxableBase, tax: totals.tax, grand_total: totals.grandTotal },
@@ -268,7 +276,8 @@ export function VanVisitPage() {
 
     addSale(sale);
     updateVisit(activeVisit.id, { status: "sold", doc_id: sale.id });
-    enqueueSync({ op: "sale", shift_id: session.vanWarehouseId ?? "", client_uuid: crypto.randomUUID() });
+    enqueueSync({ op: "sale", shift_id: currentShift?.id ?? "", client_uuid: crypto.randomUUID() });
+    if (currentShift) postSaleCash(currentShift.id, result.tenders.pm_cash ?? 0);
 
     setCart([]);
     setReceiptSale(sale);

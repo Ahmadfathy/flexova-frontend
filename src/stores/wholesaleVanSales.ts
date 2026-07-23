@@ -25,6 +25,7 @@ export interface VanSale {
   visit_id: string;
   customer_id: string;
   rep_id: string;
+  shift_id: string;
   date: string;
   lines: VanSaleLine[];
   totals: VanSaleTotals;
