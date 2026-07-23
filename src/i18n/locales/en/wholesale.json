@@ -3,6 +3,18 @@
     "note": "The real screen arrives in a later step"
   },
 
+  "allocation": {
+    "title": "Allocate to invoices",
+    "auto_fill": "Auto-fill (oldest first)",
+    "col_number": "Invoice #",
+    "col_date": "Date",
+    "col_total": "Total",
+    "col_outstanding": "Outstanding",
+    "col_allocated": "Allocated",
+    "unallocated": "Unallocated",
+    "no_invoices": "No open invoices for this customer"
+  },
+
   "orders": {
     "title": "Sales Orders",
     "new": "New order",

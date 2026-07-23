@@ -88,7 +88,31 @@
     "receipt_needs_eta_fix": "صنف واحد أو أكثر بدون كود ETA — هذه الفاتورة معلّمة لإصلاح ETA",
     "receipt_tenders": "الدفع"
   },
-  "collect":     { "title": "التحصيل" },
+  "collect": {
+    "title": "التحصيل",
+    "not_found": "العميل غير موجود",
+    "back": "رجوع",
+    "fields_title": "تفاصيل التحصيل",
+    "field_amount": "المبلغ",
+    "field_method": "طريقة الدفع",
+    "field_note": "ملاحظة",
+    "select_method": "اختر طريقة الدفع",
+    "allocation_title": "تخصيص على الفواتير",
+    "error_amount_required": "أدخل المبلغ المحصَّل",
+    "error_method_required": "اختر طريقة الدفع",
+    "submit": "حفظ التحصيل",
+    "success_toast": "تم تسجيل التحصيل",
+    "commission_basis": "أساس العمولة",
+    "on_account_label": "على الحساب",
+    "on_account_confirm_title": "ترك جزء غير مخصَّص؟",
+    "on_account_confirm_body": "{{amount}} لن يُطبَّق على أي فاتورة وسيبقى على حساب العميل. هل تريد الاستمرار؟",
+    "on_account_confirm_action": "تأكيد — على الحساب",
+    "receipt_close": "إغلاق",
+    "receipt_print": "طباعة (80مم)",
+    "receipt_print_toast": "جارٍ الطباعة…",
+    "receipt_on_account": "{{amount}} باقي على الحساب — لم يُطبَّق على أي فاتورة",
+    "col_method": "الطريقة"
+  },
   "shift_close": { "title": "إقفال الوردية" },
 
   "visit_status": {

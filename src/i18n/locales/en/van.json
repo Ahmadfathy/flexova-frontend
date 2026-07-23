@@ -88,7 +88,31 @@
     "receipt_needs_eta_fix": "One or more items are missing an ETA code — this invoice is flagged for an ETA fix",
     "receipt_tenders": "Payment"
   },
-  "collect":     { "title": "Collection" },
+  "collect": {
+    "title": "Collection",
+    "not_found": "Customer not found",
+    "back": "Back",
+    "fields_title": "Collection details",
+    "field_amount": "Amount",
+    "field_method": "Payment method",
+    "field_note": "Note",
+    "select_method": "Select a payment method",
+    "allocation_title": "Invoice allocation",
+    "error_amount_required": "Enter the collected amount",
+    "error_method_required": "Select a payment method",
+    "submit": "Save collection",
+    "success_toast": "Collection recorded",
+    "commission_basis": "Commission basis",
+    "on_account_label": "On account",
+    "on_account_confirm_title": "Leave part unallocated?",
+    "on_account_confirm_body": "{{amount}} won't be applied to any invoice and will stay on the customer's account. Continue?",
+    "on_account_confirm_action": "Confirm — on account",
+    "receipt_close": "Close",
+    "receipt_print": "Print (80mm)",
+    "receipt_print_toast": "Printing…",
+    "receipt_on_account": "{{amount}} left on account — not applied to any invoice",
+    "col_method": "Method"
+  },
   "shift_close": { "title": "Close Shift" },
 
   "visit_status": {

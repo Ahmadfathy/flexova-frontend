@@ -5,8 +5,9 @@ import type { WholesaleCustomer } from "@/types/wholesale";
 
 interface WholesaleCustomersState {
   customers: WholesaleCustomer[];
-  /** Invoicing converts a released reservation into real AR (FE_13 §6) — the
-   * only place `ar_balance` changes; approval only ever touches reservations. */
+  /** Invoicing converts a released reservation into real AR (FE_13 §6, +ar_balance);
+   * a collection reduces it back (FE_13 §3.4, -ar_balance). Approval itself only
+   * ever touches reservations, never this field directly. */
   adjustArBalance: (customerId: string, delta: number) => void;
 }
 
