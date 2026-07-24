@@ -107,7 +107,9 @@ export function CostTab({ mo }: CostTabProps) {
                       <td className="px-3 py-2 tabular-nums">{formatMoney(l.unit_cost, lang)}</td>
                       <td className="px-3 py-2 tabular-nums font-medium">{formatMoney(l.qty * l.unit_cost, lang)}</td>
                       <td className="px-3 py-2 text-xs text-muted-foreground whitespace-nowrap">
-                        {l.type === "manual" ? t("mo.movement_type_manual") : t("mo.movement_type_backflush")}
+                        {l.type === "manual" ? t("mo.movement_type_manual")
+                          : l.type === "reversal" ? t("mo.movement_type_reversal")
+                          : t("mo.movement_type_backflush")}
                       </td>
                     </tr>
                   ))}

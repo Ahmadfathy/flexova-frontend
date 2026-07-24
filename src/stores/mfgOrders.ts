@@ -1,8 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getManufacturingOrders } from "@/lib/mock/mfg";
-import type { BomComponent, ManufacturingOrder, MoStage, MfgOverhead, LaborEntry, MaterialIssue } from "@/types/mfg";
+import { getManufacturingOrders, getItems } from "@/lib/mock/mfg";
+import type {
+  BomComponent, ManufacturingOrder, MoStage, MfgOverhead, LaborEntry, MaterialIssue, ScrapEntry,
+} from "@/types/mfg";
 import { isMoCancellable } from "@/features/mfg/orders/moStatus";
+import { computeReceiptPreview, round2 } from "@/features/mfg/orders/costing";
+import { useMfgItemStock } from "@/stores/mfgItemStock";
 
 export interface AddLaborInput {
   stage_id: string;
@@ -14,6 +18,19 @@ export interface AddLaborInput {
 export interface AddManualIssueInput {
   stage_id: string;
   lines: { item_id: string; qty: number; unit_cost: number }[];
+}
+
+export interface ReceiveFinishedInput {
+  qty_good: number;
+  to_wh: string;
+}
+
+export interface RecordScrapInput {
+  stage_id: string;
+  item_id: string;
+  qty: number;
+  reason_id: string;
+  note?: string;
 }
 
 function patchStage(mo: ManufacturingOrder, stageId: string, patch: Partial<MoStage>): MoStage[] {
@@ -61,8 +78,9 @@ let seq = 1;
 
 interface MfgOrdersState {
   orders: Record<string, ManufacturingOrder>;
-  /** Cancel after issue = reversing entries (no delete) per FE_14 §7.7 — here we only
-   * flip status since material issues aren't modeled as reversible ledger lines yet. */
+  /** Cancel after issue = reversing entries, never delete (FE_14 §7.7). Only `manual`-type
+   * issues are reversible — a `backflush` issue always accompanies a completed receipt, so
+   * that material already left WIP into Inventory-Finished and has nothing left to return. */
   cancelOrder: (id: string) => void;
   /** New draft MO with a frozen copy of the source Order BOM (FE_14 §11.4) — lifecycle
    * fields (stages/issues/labor/scrap/receipts/cost) reset, customer link dropped. */
@@ -90,6 +108,14 @@ interface MfgOrdersState {
    * (FE_14 §7.3). Increments `materials` by this issue's cost — never recomputed from
    * scratch, so a fixture MO's historical materials figure stays intact. */
   addManualMaterialIssue: (moId: string, input: AddManualIssueInput) => void;
+  /** FE_14 §7.5 — backflush-issues raw per Order BOM (backflush mode only), computes
+   * overhead fresh from the formula, records the receipt at the new order-average unit
+   * cost, updates the finished item's weighted-average (mfgItemStock), and moves status
+   * to partial/done. */
+  receiveFinished: (moId: string, input: ReceiveFinishedInput) => void;
+  /** FE_14 §7.6 — no separate journal entry; scrap stays inside WIP (materials is never
+   * reduced for it), only the informational `scrap_effect` readout is recomputed. */
+  recordScrap: (moId: string, input: RecordScrapInput) => void;
 }
 
 export const useMfgOrders = create<MfgOrdersState>()(
@@ -100,7 +126,33 @@ export const useMfgOrders = create<MfgOrdersState>()(
       cancelOrder: (id) => set((s) => {
         const o = s.orders[id];
         if (!o || !isMoCancellable(o.status)) return s;
-        return { orders: { ...s.orders, [id]: { ...o, status: "cancelled" } } };
+
+        const reversible = o.material_issues.filter((mi) => mi.type === "manual");
+        let material_issues = o.material_issues;
+        let materials = o.cost_summary.materials;
+
+        if (reversible.length > 0) {
+          const reversalLines = reversible.flatMap((mi) => mi.lines).map((l) => ({ ...l, qty: -l.qty }));
+          const reversedAmount = round2(reversalLines.reduce((sum, l) => sum + Math.abs(l.qty) * l.unit_cost, 0));
+          const reversal: MaterialIssue = { id: `mi_${Date.now()}_${seq++}`, type: "reversal", lines: reversalLines };
+          material_issues = [...o.material_issues, reversal];
+          materials = round2(materials - reversedAmount);
+        }
+
+        const total = round2(materials + o.cost_summary.labor + o.cost_summary.overhead);
+        const unit_cost = o.cost_summary.received > 0 ? round2(total / o.cost_summary.received) : 0;
+
+        return {
+          orders: {
+            ...s.orders,
+            [id]: {
+              ...o,
+              status: "cancelled",
+              material_issues,
+              cost_summary: { ...o.cost_summary, materials, total, unit_cost },
+            },
+          },
+        };
       }),
 
       duplicateOrder: (id) => {
@@ -231,6 +283,80 @@ export const useMfgOrders = create<MfgOrdersState>()(
         const material_issues = [...o.material_issues, issue];
         const materials = o.cost_summary.materials + issueCost;
         return { orders: { ...s.orders, [moId]: retotal({ ...o, material_issues, cost_summary: { ...o.cost_summary, materials } }) } };
+      }),
+
+      receiveFinished: (moId, input) => set((s) => {
+        const o = s.orders[moId];
+        if (!o) return s;
+        const remaining = o.qty_ordered - o.qty_received;
+        const qtyGood = Math.min(input.qty_good, remaining);
+        if (qtyGood <= 0) return s;
+
+        const items = getItems();
+        const preview = computeReceiptPreview(o, items, qtyGood);
+
+        let material_issues = o.material_issues;
+        if (preview.issueLines.length > 0) {
+          const issue: MaterialIssue = {
+            id: `mi_${Date.now()}_${seq++}`,
+            type: "backflush",
+            receipt_id: `fr_${Date.now()}_${seq++}`,
+            lines: preview.issueLines,
+          };
+          material_issues = [...material_issues, issue];
+        }
+
+        const receipt = {
+          id: `fr_${Date.now()}_${seq++}`,
+          qty_good: qtyGood,
+          to_wh: input.to_wh,
+          unit_cost: preview.unitCostAfter,
+          date: new Date().toISOString(),
+        };
+
+        useMfgItemStock.getState().receiveFinishedItem(o.output_item_id, input.to_wh, qtyGood, preview.unitCostAfter);
+
+        return {
+          orders: {
+            ...s.orders,
+            [moId]: {
+              ...o,
+              status: preview.newStatus,
+              qty_received: preview.newQtyReceived,
+              material_issues,
+              finished_receipts: [...o.finished_receipts, receipt],
+              overhead: { ...o.overhead, computed: preview.overheadAmount },
+              cost_summary: {
+                ...o.cost_summary,
+                materials: preview.materialsAfter,
+                overhead: preview.overheadAmount,
+                total: preview.totalAfter,
+                unit_cost: preview.unitCostAfter,
+                received: preview.newQtyReceived,
+              },
+            },
+          },
+        };
+      }),
+
+      recordScrap: (moId, input) => set((s) => {
+        const o = s.orders[moId];
+        if (!o) return s;
+        const entry: ScrapEntry = {
+          id: `sc_${Date.now()}_${seq++}`,
+          stage_id: input.stage_id,
+          item_id: input.item_id,
+          qty: input.qty,
+          reason_id: input.reason_id,
+          note: input.note,
+        };
+        const scrap = [...o.scrap, entry];
+        const items = getItems();
+        const scrap_effect = round2(scrap.reduce((sum, sc) => {
+          const item = items.find((i) => i.id === sc.item_id);
+          return sum + sc.qty * (item?.avg_cost ?? 0);
+        }, 0));
+        return { orders: { ...s.orders, [moId]: { ...o, scrap, cost_summary: { ...o.cost_summary, scrap_effect } } } };
       }),
     }),
     { name: "flexova.mfg.orders" }

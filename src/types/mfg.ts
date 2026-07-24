@@ -82,7 +82,9 @@ export interface MaterialIssueLine {
 
 export interface MaterialIssue {
   id: string;
-  type: "backflush" | "manual";
+  /** "reversal" = cancel-after-issue (FE_14 §7.7) — same shape, negative `qty` per line,
+   * appended (never mutates/deletes the original issue). */
+  type: "backflush" | "manual" | "reversal";
   receipt_id?: string;
   /** Set for manual issues raised from a specific stage (FE_14 §7.3, advanced/manual mode). */
   stage_id?: string;

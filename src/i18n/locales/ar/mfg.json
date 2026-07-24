@@ -225,7 +225,37 @@
     "col_subtotal": "الإجمالي الفرعي",
     "col_date": "التاريخ",
     "col_stage": "المرحلة",
-    "col_reason": "السبب"
+    "col_reason": "السبب",
+    "movement_overhead": "Overhead",
+    "movement_type_reversal": "عكس قيد",
+
+    "receive_modal_title": "استلام تام",
+    "receive_qty_label": "الكمية الجيدة المستلمة",
+    "receive_qty_hint": "المتبقي: {{n}}",
+    "receive_qty_required": "أدخل كمية أكبر من صفر",
+    "receive_qty_max": "لا يمكن أن تتجاوز الكمية المتبقية ({{n}})",
+    "receive_wh_label": "مخزن التام",
+    "receive_preview_title": "معاينة التكلفة",
+    "receive_unit_cost_preview": "متوسط تكلفة الوحدة بعد الاستلام",
+    "receive_item_avg_update": "متوسط تكلفة {{item}} بعد الاستلام",
+    "receive_journal_title": "قيد الترحيل التلقائي",
+    "receive_balanced": "متوازن — مدين = دائن",
+    "receive_confirm": "تأكيد الاستلام",
+    "receive_saved_toast": "تم استلام {{qty}} وحدة — الحالة: {{status}}",
+
+    "scrap_button": "تسجيل هالك",
+    "scrap_modal_title": "تسجيل هالك — {{stage}}",
+    "scrap_item_label": "الصنف",
+    "scrap_qty_label": "الكمية",
+    "scrap_reason_label": "السبب",
+    "scrap_reason_placeholder": "اختر سبب الهالك",
+    "scrap_note_label": "ملاحظة (اختياري)",
+    "scrap_note_placeholder": "تفاصيل إضافية...",
+    "scrap_item_required": "اختر الصنف",
+    "scrap_qty_required": "أدخل كمية أكبر من صفر",
+    "scrap_reason_required": "سبب الهالك مطلوب",
+    "scrap_saved_toast": "تم تسجيل الهالك",
+    "scrap_no_effect_note": "لا يوجد قيد محاسبي منفصل — يبقى الهالك داخل تحت التشغيل ويرفع متوسط تكلفة الوحدة"
   },
 
   "bom": {

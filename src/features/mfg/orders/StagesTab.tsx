@@ -16,6 +16,7 @@ import { getEmployees, hourlyRate } from "@/lib/mock/hr";
 import type { ManufacturingOrder, MoStage } from "@/types/mfg";
 import { ActionButton } from "./ActionButton";
 import { ManualIssueDialog } from "./ManualIssueDialog";
+import { RecordScrapDialog } from "./RecordScrapDialog";
 
 const STAGE_PILL: Record<MoStage["status"], PillVariant> = {
   pending: "inactive",
@@ -54,10 +55,12 @@ export function StagesTab({ mo }: StagesTabProps) {
 
   const canExecute = can("mfg.order.execute");
   const canIssue = can("mfg.material.issue");
+  const canScrap = can("mfg.scrap.record");
   const noPermissionTooltip = t("mo.no_permission_tooltip");
 
   const [laborForms, setLaborForms] = useState<Record<string, LaborFormState>>({});
   const [issueDialogStage, setIssueDialogStage] = useState<MoStage | null>(null);
+  const [scrapDialogStage, setScrapDialogStage] = useState<MoStage | null>(null);
 
   function laborForm(stageId: string): LaborFormState {
     return laborForms[stageId] ?? EMPTY_LABOR_FORM;
@@ -235,9 +238,9 @@ export function StagesTab({ mo }: StagesTabProps) {
               )}
             </div>
 
-            {/* Manual material issue — advanced, only in manual issue mode */}
-            {mo.issue_mode === "manual" && (
-              <div className="pt-2 border-t border-border">
+            {/* Manual material issue — advanced, only in manual issue mode; Record scrap always available */}
+            <div className="pt-2 border-t border-border flex items-center gap-2">
+              {mo.issue_mode === "manual" && (
                 <ActionButton
                   label={t("mo.issue_button")}
                   onClick={() => setIssueDialogStage(stage)}
@@ -245,8 +248,15 @@ export function StagesTab({ mo }: StagesTabProps) {
                   tooltip={noPermissionTooltip}
                   variant="outline"
                 />
-              </div>
-            )}
+              )}
+              <ActionButton
+                label={t("mo.scrap_button")}
+                onClick={() => setScrapDialogStage(stage)}
+                disabled={!canScrap}
+                tooltip={noPermissionTooltip}
+                variant="outline"
+              />
+            </div>
           </div>
         );
       })}
@@ -258,6 +268,16 @@ export function StagesTab({ mo }: StagesTabProps) {
           mo={mo}
           stageId={issueDialogStage.id}
           stageName={issueDialogStage.name_ar}
+        />
+      )}
+
+      {scrapDialogStage && (
+        <RecordScrapDialog
+          open={!!scrapDialogStage}
+          onOpenChange={(o) => !o && setScrapDialogStage(null)}
+          mo={mo}
+          stageId={scrapDialogStage.id}
+          stageName={scrapDialogStage.name_ar}
         />
       )}
     </div>

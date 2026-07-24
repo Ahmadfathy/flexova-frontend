@@ -30,6 +30,7 @@ import { useMoDetail } from "./useMoDetail";
 import { ActionButton as HeaderActionButton } from "./ActionButton";
 import { StagesTab } from "./StagesTab";
 import { CostTab } from "./CostTab";
+import { FinishedReceiptDialog } from "./FinishedReceiptDialog";
 
 type TabKey = "overview" | "bom" | "stages" | "cost";
 
@@ -71,6 +72,7 @@ export function MoDetailPage() {
   const [newLineItem, setNewLineItem] = useState("");
   const [approveOpen, setApproveOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
+  const [receiveOpen, setReceiveOpen] = useState(false);
 
   useEffect(() => {
     if (mo && !notesInit) { setNotesDraft(mo.notes ?? ""); setNotesInit(true); }
@@ -129,9 +131,6 @@ export function MoDetailPage() {
   function handleStart() {
     startOrder(mo!.id);
     toast.success(t("mo.start_success"));
-  }
-  function handleReceive() {
-    toast.info(t("mo.receive_pending_toast"));
   }
   function handleCancel() {
     cancelOrder(mo!.id);
@@ -201,7 +200,7 @@ export function MoDetailPage() {
             {(mo.status === "in_progress" || mo.status === "partial") && (
               <HeaderActionButton
                 label={t("mo.receive")}
-                onClick={handleReceive}
+                onClick={() => setReceiveOpen(true)}
                 disabled={!canReceivePermission}
                 tooltip={t("mo.no_permission_tooltip")}
               />
@@ -455,6 +454,10 @@ export function MoDetailPage() {
         confirmLabel={t("orders.action_cancel")}
         onConfirm={handleCancel}
       />
+
+      {receiveOpen && (
+        <FinishedReceiptDialog open={receiveOpen} onOpenChange={setReceiveOpen} mo={mo} />
+      )}
     </div>
   );
 }

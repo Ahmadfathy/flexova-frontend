@@ -225,7 +225,37 @@
     "col_subtotal": "Subtotal",
     "col_date": "Date",
     "col_stage": "Stage",
-    "col_reason": "Reason"
+    "col_reason": "Reason",
+    "movement_overhead": "Overhead",
+    "movement_type_reversal": "Reversal",
+
+    "receive_modal_title": "Receive finished",
+    "receive_qty_label": "Good qty received",
+    "receive_qty_hint": "Remaining: {{n}}",
+    "receive_qty_required": "Enter a quantity greater than zero",
+    "receive_qty_max": "Can't exceed the remaining quantity ({{n}})",
+    "receive_wh_label": "Finished warehouse",
+    "receive_preview_title": "Cost preview",
+    "receive_unit_cost_preview": "Unit cost after receipt",
+    "receive_item_avg_update": "{{item}} avg cost after receipt",
+    "receive_journal_title": "Auto-posting entry",
+    "receive_balanced": "Balanced — debit = credit",
+    "receive_confirm": "Confirm receipt",
+    "receive_saved_toast": "Received {{qty}} units — status: {{status}}",
+
+    "scrap_button": "Record scrap",
+    "scrap_modal_title": "Record scrap — {{stage}}",
+    "scrap_item_label": "Item",
+    "scrap_qty_label": "Quantity",
+    "scrap_reason_label": "Reason",
+    "scrap_reason_placeholder": "Select a scrap reason",
+    "scrap_note_label": "Note (optional)",
+    "scrap_note_placeholder": "Additional detail...",
+    "scrap_item_required": "Select an item",
+    "scrap_qty_required": "Enter a quantity greater than zero",
+    "scrap_reason_required": "A scrap reason is required",
+    "scrap_saved_toast": "Scrap recorded",
+    "scrap_no_effect_note": "No separate journal entry — scrap stays inside WIP and raises the finished unit cost"
   },
 
   "bom": {
