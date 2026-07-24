@@ -117,12 +117,61 @@
     "start": "بدء التشغيل",
     "receive": "استلام تام",
     "cancel": "إلغاء",
+    "back_to_list": "الرجوع لأوامر التشغيل",
+
+    "tab_overview": "نظرة عامة",
+    "tab_bom": "قائمة الخامات",
+
     "running_cost": "التكلفة الجارية",
+    "materials": "الخامات",
+    "labor": "العمالة",
+    "overhead": "Overhead",
+    "total": "الإجمالي",
     "scrap_effect": "أثر الهالك",
     "unit_cost": "متوسط تكلفة الوحدة",
+    "progress_label": "المستلم / المطلوب",
+
     "shortage": "خامة أقل من المطلوب",
+    "shortage_line": "{{item}}: يلزم {{required}}، المتاح {{available}}",
+
     "add_labor": "إضافة عمالة",
-    "record_scrap": "تسجيل هالك"
+    "record_scrap": "تسجيل هالك",
+
+    "product_label": "المنتج التام",
+    "qty_label": "الكمية",
+    "customer_label": "أمر بيع مرتبط",
+    "warehouses_label": "المخازن",
+    "issue_mode_label": "وضع الصرف",
+    "notes_label": "ملاحظات",
+    "notes_placeholder": "أضف ملاحظة...",
+    "notes_save": "حفظ الملاحظة",
+    "notes_saved_toast": "تم حفظ الملاحظة",
+
+    "no_permission_tooltip": "ليس لديك صلاحية لهذا الإجراء",
+    "approve_confirm_title": "اعتماد أمر التشغيل؟",
+    "approve_confirm_body": "بعد الاعتماد يمكن بدء التشغيل. نقص الخامة لا يمنع الاعتماد.",
+    "approve_success": "تم اعتماد الأمر",
+    "start_success": "تم بدء التشغيل",
+    "receive_pending_toast": "شاشة استلام التام تصل في خطوة لاحقة",
+
+    "permission_required": "ليس لديك صلاحية لعرض هذا الأمر",
+    "not_found_title": "أمر التشغيل غير موجود",
+    "not_found_body": "الرابط غير صحيح أو تم حذف الأمر",
+    "error_title": "حدث خطأ ما",
+    "error_body": "تعذّر تحميل أمر التشغيل",
+    "offline_note": "غير متصل — البيانات كما في آخر مزامنة",
+
+    "bom_title": "قائمة الخامات (Order BOM)",
+    "bom_col_item": "الصنف",
+    "bom_col_qty": "الكمية",
+    "bom_col_uom": "الوحدة",
+    "bom_col_scrap": "% هالك متوقّع",
+    "bom_col_available": "المتاح بالمخزن",
+    "bom_readonly_note": "قابلة للتعديل أثناء المسودة فقط — عودة للمسودة لتعديل القائمة",
+    "bom_add_line": "+ إضافة بند",
+    "bom_item_placeholder": "اختر صنف",
+    "bom_save": "حفظ تعديلات القائمة",
+    "bom_saved_toast": "تم حفظ قائمة الخامات"
   },
 
   "bom": {

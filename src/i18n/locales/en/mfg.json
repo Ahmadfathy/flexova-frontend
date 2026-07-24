@@ -117,12 +117,61 @@
     "start": "Start production",
     "receive": "Receive finished",
     "cancel": "Cancel",
+    "back_to_list": "Back to manufacturing orders",
+
+    "tab_overview": "Overview",
+    "tab_bom": "BOM",
+
     "running_cost": "Running cost",
+    "materials": "Materials",
+    "labor": "Labor",
+    "overhead": "Overhead",
+    "total": "Total",
     "scrap_effect": "Scrap effect",
     "unit_cost": "Avg unit cost",
+    "progress_label": "Received / Ordered",
+
     "shortage": "Material below required",
+    "shortage_line": "{{item}}: needs {{required}}, {{available}} available",
+
     "add_labor": "Add labor",
-    "record_scrap": "Record scrap"
+    "record_scrap": "Record scrap",
+
+    "product_label": "Finished product",
+    "qty_label": "Quantity",
+    "customer_label": "Linked customer order",
+    "warehouses_label": "Warehouses",
+    "issue_mode_label": "Issue mode",
+    "notes_label": "Notes",
+    "notes_placeholder": "Add a note...",
+    "notes_save": "Save note",
+    "notes_saved_toast": "Note saved",
+
+    "no_permission_tooltip": "You don't have permission for this action",
+    "approve_confirm_title": "Approve this manufacturing order?",
+    "approve_confirm_body": "Production can start once approved. Material shortage never blocks approval.",
+    "approve_success": "Order approved",
+    "start_success": "Production started",
+    "receive_pending_toast": "Finished receipt screen arrives in a later step",
+
+    "permission_required": "You don't have permission to view this order",
+    "not_found_title": "Manufacturing order not found",
+    "not_found_body": "The link is invalid or the order was deleted",
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load the manufacturing order",
+    "offline_note": "Offline — data as of last sync",
+
+    "bom_title": "Order BOM",
+    "bom_col_item": "Item",
+    "bom_col_qty": "Qty",
+    "bom_col_uom": "UOM",
+    "bom_col_scrap": "Expected scrap %",
+    "bom_col_available": "Available in stock",
+    "bom_readonly_note": "Editable only while draft — return to draft to edit the list",
+    "bom_add_line": "+ Add line",
+    "bom_item_placeholder": "Select an item",
+    "bom_save": "Save BOM changes",
+    "bom_saved_toast": "Order BOM saved"
   },
 
   "bom": {

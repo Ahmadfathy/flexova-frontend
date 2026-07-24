@@ -155,6 +155,8 @@ export interface ManufacturingOrder {
   finished_receipts: FinishedReceipt[];
   cost_summary: CostSummary;
   material_shortage?: MaterialShortage[];
+  /** Free-text note (FE_14 §7.1) — not in the v1 fixture, set/edited from the Overview tab. */
+  notes?: string;
 }
 
 export interface MfgDashboardAlert {

@@ -43,6 +43,14 @@ interface MfgOrdersState {
   /** New MO from the §6 New MO drawer — `order_bom`/`stages` are the caller's own copy
    * (either from a template or built free), never a live reference into the template. */
   createOrder: (input: CreateMoInput) => ManufacturingOrder;
+  /** draft → approved. Flag-don't-block (FE_14 §7.1/§8): material shortage never blocks this. */
+  approveOrder: (id: string) => void;
+  /** approved → in_progress (the header's "Start production" action). */
+  startOrder: (id: string) => void;
+  setNotes: (id: string, notes: string) => void;
+  /** Order BOM is editable only while `draft` (FE_14 §7.2/§7.7) — enforced here too, not
+   * just in the UI, so a stale draft-mode form can't slip an edit through post-approval. */
+  updateOrderBom: (id: string, order_bom: BomComponent[]) => void;
 }
 
 export const useMfgOrders = create<MfgOrdersState>()(
@@ -109,6 +117,30 @@ export const useMfgOrders = create<MfgOrdersState>()(
         set((s) => ({ orders: { ...s.orders, [mo.id]: mo } }));
         return mo;
       },
+
+      approveOrder: (id) => set((s) => {
+        const o = s.orders[id];
+        if (!o || o.status !== "draft") return s;
+        return { orders: { ...s.orders, [id]: { ...o, status: "approved" } } };
+      }),
+
+      startOrder: (id) => set((s) => {
+        const o = s.orders[id];
+        if (!o || o.status !== "approved") return s;
+        return { orders: { ...s.orders, [id]: { ...o, status: "in_progress" } } };
+      }),
+
+      setNotes: (id, notes) => set((s) => {
+        const o = s.orders[id];
+        if (!o) return s;
+        return { orders: { ...s.orders, [id]: { ...o, notes } } };
+      }),
+
+      updateOrderBom: (id, order_bom) => set((s) => {
+        const o = s.orders[id];
+        if (!o || o.status !== "draft") return s;
+        return { orders: { ...s.orders, [id]: { ...o, order_bom } } };
+      }),
     }),
     { name: "flexova.mfg.orders" }
   )
