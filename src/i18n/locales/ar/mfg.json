@@ -261,9 +261,71 @@
   "bom": {
     "title": "قوالب BOM",
     "new": "+ قالب BOM",
+    "count": "{{n}} قالب",
+    "search_placeholder": "بحث بالاسم",
     "ref_qty": "كمية الإنتاج المرجعية",
     "overhead": "overhead افتراضي",
     "expected_scrap": "هالك متوقّع",
-    "stages": "مراحل افتراضية"
+    "stages": "مراحل افتراضية",
+
+    "col_product": "المنتج التام",
+    "col_components": "عدد المكوّنات",
+    "col_overhead": "overhead الافتراضي",
+    "col_status": "الحالة",
+    "col_actions": "إجراءات",
+    "status_active": "نشط",
+    "status_archived": "مؤرشف",
+
+    "overhead_fixed": "قيمة ثابتة: {{value}} ج.م",
+    "overhead_percent": "{{value}}% من الخامات",
+    "overhead_rate_hours": "{{value}} ج.م / ساعة",
+
+    "action_edit": "تعديل",
+    "action_clone": "تكرار",
+    "action_archive": "أرشفة",
+    "action_restore": "استعادة",
+    "archive_toast": "تم أرشفة القالب",
+    "restore_toast": "تمت استعادة القالب",
+    "clone_toast": "تم إنشاء نسخة: {{name}}",
+
+    "empty_title": "لا توجد قوالب BOM بعد",
+    "empty_body": "ابدأ بإنشاء أول قالب",
+    "no_results_title": "لا توجد نتائج",
+    "no_results_body": "جرّب تغيير كلمة البحث",
+    "clear_filters": "مسح البحث",
+    "error_title": "حدث خطأ ما",
+    "error_body": "تعذّر تحميل قوالب BOM",
+    "offline_note": "غير متصل — البيانات كما في آخر مزامنة",
+    "permission_required": "ليس لديك صلاحية لعرض قوالب BOM",
+    "permission_required_manage": "ليس لديك صلاحية لتعديل قوالب BOM",
+
+    "editor_title_new": "قالب BOM جديد",
+    "editor_title_edit": "تعديل قالب BOM",
+    "not_found_title": "القالب غير موجود",
+    "not_found_body": "الرابط غير صحيح أو تم حذف القالب",
+    "back_to_list": "الرجوع لقوالب BOM",
+
+    "tab_basic": "أساسي",
+    "tab_components": "المكوّنات والمراحل",
+
+    "overhead_method_label": "طريقة الحساب",
+    "overhead_value_label": "القيمة",
+    "overhead_method_fixed": "قيمة ثابتة",
+    "overhead_method_percent": "% من الخامات",
+    "overhead_method_rate_hours": "لكل ساعة",
+
+    "components_title": "المكوّنات",
+    "stage_add": "+ إضافة مرحلة",
+    "stage_placeholder": "اسم المرحلة",
+    "stage_remove": "حذف المرحلة",
+
+    "save": "حفظ",
+    "save_as_copy": "حفظ كنسخة",
+
+    "product_required": "المنتج التام مطلوب",
+    "ref_qty_required": "كمية الإنتاج المرجعية يجب أن تكون أكبر من صفر",
+    "components_required": "يجب إضافة مكوّن واحد على الأقل",
+    "saved_toast": "تم حفظ القالب",
+    "saved_as_copy_toast": "تم حفظ نسخة جديدة: {{name}}"
   }
 }

@@ -17,7 +17,8 @@ import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
-import { getManufacturingOrders, getBomTemplates, getItems, getDashboard } from "@/lib/mock/mfg";
+import { getManufacturingOrders, getItems, getDashboard } from "@/lib/mock/mfg";
+import { useMfgBomTemplates } from "@/stores/mfgBomTemplates";
 import { useMfgDashboard } from "./useMfgDashboard";
 
 const OPEN_STATUSES = new Set(["draft", "approved", "in_progress", "partial"]);
@@ -29,6 +30,7 @@ export function MfgDashboardPage() {
   const can = useCan();
 
   const { loading, error, isOffline, forcedEmpty, reload } = useMfgDashboard();
+  const bomTemplatesMap = useMfgBomTemplates((s) => s.templates);
 
   const forcedNoResults = useMemo(
     () => new URLSearchParams(window.location.search).get("mock") === "no_results",
@@ -73,7 +75,7 @@ export function MfgDashboardPage() {
   }
 
   const mos = forcedEmpty ? [] : getManufacturingOrders();
-  const bomTemplates = forcedEmpty ? [] : getBomTemplates();
+  const bomTemplates = forcedEmpty ? [] : Object.values(bomTemplatesMap);
   const items = getItems();
 
   const isEmpty = forcedEmpty || (mos.length === 0 && bomTemplates.length === 0);

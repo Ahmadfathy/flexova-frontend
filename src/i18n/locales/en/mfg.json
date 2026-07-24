@@ -261,9 +261,71 @@
   "bom": {
     "title": "BOM Templates",
     "new": "+ BOM template",
+    "count": "{{n}} templates",
+    "search_placeholder": "Search by name",
     "ref_qty": "Reference qty",
     "overhead": "Default overhead",
     "expected_scrap": "Expected scrap",
-    "stages": "Default stages"
+    "stages": "Default stages",
+
+    "col_product": "Finished product",
+    "col_components": "Components",
+    "col_overhead": "Default overhead",
+    "col_status": "Status",
+    "col_actions": "Actions",
+    "status_active": "Active",
+    "status_archived": "Archived",
+
+    "overhead_fixed": "Fixed: {{value}} EGP",
+    "overhead_percent": "{{value}}% of materials",
+    "overhead_rate_hours": "{{value}} EGP / hour",
+
+    "action_edit": "Edit",
+    "action_clone": "Clone",
+    "action_archive": "Archive",
+    "action_restore": "Restore",
+    "archive_toast": "Template archived",
+    "restore_toast": "Template restored",
+    "clone_toast": "Created a copy: {{name}}",
+
+    "empty_title": "No BOM templates yet",
+    "empty_body": "Start by creating your first template",
+    "no_results_title": "No results",
+    "no_results_body": "Try changing the search term",
+    "clear_filters": "Clear search",
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load BOM templates",
+    "offline_note": "Offline — data as of last sync",
+    "permission_required": "You don't have permission to view BOM templates",
+    "permission_required_manage": "You don't have permission to manage BOM templates",
+
+    "editor_title_new": "New BOM template",
+    "editor_title_edit": "Edit BOM template",
+    "not_found_title": "Template not found",
+    "not_found_body": "The link is invalid or the template was deleted",
+    "back_to_list": "Back to BOM templates",
+
+    "tab_basic": "Basic",
+    "tab_components": "Components & stages",
+
+    "overhead_method_label": "Calculation method",
+    "overhead_value_label": "Value",
+    "overhead_method_fixed": "Fixed",
+    "overhead_method_percent": "% of materials",
+    "overhead_method_rate_hours": "Per hour",
+
+    "components_title": "Components",
+    "stage_add": "+ Add stage",
+    "stage_placeholder": "Stage name",
+    "stage_remove": "Remove stage",
+
+    "save": "Save",
+    "save_as_copy": "Save as copy",
+
+    "product_required": "Finished product is required",
+    "ref_qty_required": "Reference qty must be greater than zero",
+    "components_required": "At least one component is required",
+    "saved_toast": "Template saved",
+    "saved_as_copy_toast": "Saved a new copy: {{name}}"
   }
 }

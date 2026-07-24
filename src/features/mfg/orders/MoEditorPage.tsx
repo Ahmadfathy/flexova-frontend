@@ -16,7 +16,8 @@ import { cn } from "@/lib/utils";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useMfgOrders } from "@/stores/mfgOrders";
-import { getItems, getWarehouses, getBomTemplates } from "@/lib/mock/mfg";
+import { useMfgBomTemplates } from "@/stores/mfgBomTemplates";
+import { getItems, getWarehouses } from "@/lib/mock/mfg";
 import type { BomComponent, MoStage, MfgOverhead } from "@/types/mfg";
 
 interface EditableLine extends BomComponent {
@@ -41,7 +42,11 @@ export function MoEditorPage() {
 
   const items = useMemo(() => getItems(), []);
   const warehouses = useMemo(() => getWarehouses(), []);
-  const bomTemplates = useMemo(() => getBomTemplates(), []);
+  const bomTemplatesMap = useMfgBomTemplates((s) => s.templates);
+  const bomTemplates = useMemo(
+    () => Object.values(bomTemplatesMap).filter((bt) => bt.status === "active"),
+    [bomTemplatesMap]
+  );
   const manufacturedItems = useMemo(() => items.filter((i) => i.item_type === "manufactured"), [items]);
 
   const defaultRaw = warehouses.find((w) => w.id === "wh_raw") ?? warehouses.find((w) => w.type === "storage");
