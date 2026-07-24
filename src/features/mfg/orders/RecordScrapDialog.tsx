@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { useAppearance } from "@/stores/appearance";
+import { useCan } from "@/lib/permissions";
 import { useMfgOrders } from "@/stores/mfgOrders";
 import { getItems, getScrapReasons } from "@/lib/mock/mfg";
 import type { ManufacturingOrder } from "@/types/mfg";
@@ -26,6 +27,7 @@ interface RecordScrapDialogProps {
 export function RecordScrapDialog({ open, onOpenChange, mo, stageId, stageName }: RecordScrapDialogProps) {
   const { t } = useTranslation("mfg");
   const { lang } = useAppearance();
+  const can = useCan();
   const recordScrap = useMfgOrders((s) => s.recordScrap);
 
   const items = useMemo(() => getItems(), []);
@@ -72,7 +74,7 @@ export function RecordScrapDialog({ open, onOpenChange, mo, stageId, stageName }
       footer={
         <>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("new.cancel")}</Button>
-          <Button tone="danger" onClick={handleConfirm}>{t("mo.scrap_button")}</Button>
+          <Button tone="danger" onClick={handleConfirm} disabled={!can("mfg.scrap.record")}>{t("mo.scrap_button")}</Button>
         </>
       }
     >

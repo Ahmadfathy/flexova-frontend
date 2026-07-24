@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { useAppearance } from "@/stores/appearance";
+import { useCan } from "@/lib/permissions";
 import { useMfgOrders } from "@/stores/mfgOrders";
 import { getItems } from "@/lib/mock/mfg";
 import type { ManufacturingOrder } from "@/types/mfg";
@@ -35,6 +36,7 @@ interface ManualIssueDialogProps {
 export function ManualIssueDialog({ open, onOpenChange, mo, stageId, stageName }: ManualIssueDialogProps) {
   const { t } = useTranslation("mfg");
   const { lang } = useAppearance();
+  const can = useCan();
   const addManualMaterialIssue = useMfgOrders((s) => s.addManualMaterialIssue);
   const items = getItems();
 
@@ -92,7 +94,7 @@ export function ManualIssueDialog({ open, onOpenChange, mo, stageId, stageName }
       footer={
         <>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>{t("new.cancel")}</Button>
-          <Button onClick={handleConfirm}>{t("mo.issue_confirm")}</Button>
+          <Button onClick={handleConfirm} disabled={!can("mfg.material.issue")}>{t("mo.issue_confirm")}</Button>
         </>
       }
     >

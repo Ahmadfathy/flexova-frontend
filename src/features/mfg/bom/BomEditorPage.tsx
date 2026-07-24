@@ -183,19 +183,28 @@ export function BomEditorPage() {
     }
   }
 
-  if (!can("mfg.bom.manage")) {
+  if (!can("mfg.bom.view")) {
     return (
       <div className="max-w-md w-full mx-auto flex flex-col items-center gap-3 py-20 text-center">
-        <p className="text-sm text-muted-foreground">{t("bom.permission_required_manage")}</p>
+        <p className="text-sm text-muted-foreground">{t("bom.permission_required")}</p>
       </div>
     );
   }
+
+  const canManage = can("mfg.bom.manage");
 
   return (
     <div className="space-y-4 pb-6">
       <PageHeader
         title={isNew ? t("bom.editor_title_new") : t("bom.editor_title_edit")}
-        alert={isOffline ? <OfflineBanner message={t("bom.offline_note")} /> : undefined}
+        alert={
+          isOffline ? <OfflineBanner message={t("bom.offline_note")} /> :
+          !canManage ? (
+            <p className="text-sm text-muted-foreground rounded border border-border bg-muted/40 px-4 py-2">
+              {t("bom.permission_required_manage")}
+            </p>
+          ) : undefined
+        }
       />
 
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabKey)}>
@@ -354,9 +363,9 @@ export function BomEditorPage() {
       <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
         <Button variant="ghost" onClick={handleCancel}>{t("new.cancel")}</Button>
         {!isNew && (
-          <Button variant="outline" onClick={handleSaveAsCopy}>{t("bom.save_as_copy")}</Button>
+          <Button variant="outline" onClick={handleSaveAsCopy} disabled={!canManage}>{t("bom.save_as_copy")}</Button>
         )}
-        <Button onClick={handleSave}>{t("bom.save")}</Button>
+        <Button onClick={handleSave} disabled={!canManage}>{t("bom.save")}</Button>
       </div>
     </div>
   );

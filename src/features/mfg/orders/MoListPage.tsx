@@ -195,9 +195,11 @@ export function MoListPage() {
             <RowActionItem icon={Eye} onClick={() => navigate(`/mfg/orders/${mo.id}`)}>
               {t("orders.action_open")}
             </RowActionItem>
-            <RowActionItem icon={Copy} onClick={() => handleDuplicate(mo)}>
-              {t("orders.action_duplicate")}
-            </RowActionItem>
+            {can("mfg.order.create") && (
+              <RowActionItem icon={Copy} onClick={() => handleDuplicate(mo)}>
+                {t("orders.action_duplicate")}
+              </RowActionItem>
+            )}
             {can("mfg.order.create") && isMoCancellable(mo.status) && (
               <RowActionItem icon={Ban} destructive onClick={() => setCancelTarget(mo)}>
                 {t("orders.action_cancel")}

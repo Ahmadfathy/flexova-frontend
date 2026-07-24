@@ -66,12 +66,19 @@ const SEED_ORDERS: Record<string, ManufacturingOrder> = Object.fromEntries(
   getManufacturingOrders().map((o) => [o.id, o])
 );
 
+/** Per-branch numbering (FE_14 golden rule #4), mirroring repair's `WO-B1-1001` convention
+ * (rpr.fixtures.json's `settings.wo_numbering.prefix`) — the branch code lives in the
+ * prefix itself. The seed fixture's MO-0101/0102/0103 predate this convention (plain
+ * sequential, no branch segment) and are left as-is; only newly created MOs get it. */
+const MFG_BRANCH_CODE = "B1";
+
 function nextNumber(orders: Record<string, ManufacturingOrder>): string {
   const max = Object.values(orders).reduce((m, o) => {
-    const n = parseInt(o.number.replace(/\D/g, ""), 10);
+    const match = o.number.match(/(\d+)$/);
+    const n = match ? parseInt(match[1], 10) : NaN;
     return Number.isFinite(n) ? Math.max(m, n) : m;
   }, 0);
-  return `MO-${String(max + 1).padStart(4, "0")}`;
+  return `MO-${MFG_BRANCH_CODE}-${String(max + 1).padStart(4, "0")}`;
 }
 
 let seq = 1;
