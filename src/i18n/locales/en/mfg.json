@@ -16,7 +16,16 @@
     "awaiting": "Awaiting start",
     "wip_value": "WIP value",
     "scrap_month": "Scrap this month",
-    "overdue": "Overdue"
+    "overdue": "Overdue",
+    "alerts_title": "Alerts",
+    "no_alerts": "No alerts right now",
+    "shortage_alert": "{{item}} low for an approved order",
+    "empty_title": "Create your first BOM template",
+    "empty_body": "No manufacturing orders or BOM templates yet",
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load dashboard data",
+    "offline_note": "Offline — data as of last sync",
+    "permission_required": "You don't have permission to view the manufacturing dashboard"
   },
 
   "orders": {
