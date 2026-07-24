@@ -15,6 +15,7 @@
     "svc":          "المواعيد",
     "repair":       "الصيانة",
     "wholesale":    "الجملة",
+    "mfg":          "التصنيع",
 
     "wh_orders":     "طلبات البيع",
     "wh_deliveries": "أذون التسليم",
@@ -22,6 +23,10 @@
     "wh_reps":       "المناديب",
     "wh_credit":     "التحكم بالائتمان",
     "wh_van_loads":  "تحميل السيارات",
+
+    "mfg_dashboard": "لوحة التحكم",
+    "mfg_orders":    "أوامر التشغيل",
+    "mfg_bom":       "قوالب BOM",
 
     "items":              "الأصناف",
     "categories":         "الفئات",

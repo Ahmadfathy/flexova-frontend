@@ -1,0 +1,61 @@
+{
+  "title": "التصنيع",
+
+  "placeholder": {
+    "note": "الشاشة الفعلية تصل في خطوة لاحقة"
+  },
+
+  "tabs": {
+    "orders": "أوامر التشغيل",
+    "bom": "قوالب BOM"
+  },
+
+  "dash": {
+    "title": "لوحة تحكم التصنيع",
+    "in_progress": "قيد التشغيل",
+    "awaiting": "بانتظار البدء",
+    "wip_value": "قيمة تحت التشغيل",
+    "scrap_month": "هالك الشهر",
+    "overdue": "متأخّرة"
+  },
+
+  "orders": {
+    "title": "أوامر التشغيل",
+    "new": "+ أمر تشغيل"
+  },
+
+  "new": {
+    "title": "أمر تشغيل جديد",
+    "product": "المنتج التام",
+    "qty": "الكمية",
+    "from_template": "من قالب",
+    "build_free": "بناء حر",
+    "linked_order": "أمر بيع مرتبط",
+    "issue_mode": "وضع الصرف",
+    "backflush": "آلي عند الإنهاء",
+    "manual": "إذن يدوي"
+  },
+
+  "mo": {
+    "title": "أمر التشغيل",
+    "approve": "اعتماد",
+    "start": "بدء التشغيل",
+    "receive": "استلام تام",
+    "cancel": "إلغاء",
+    "running_cost": "التكلفة الجارية",
+    "scrap_effect": "أثر الهالك",
+    "unit_cost": "متوسط تكلفة الوحدة",
+    "shortage": "خامة أقل من المطلوب",
+    "add_labor": "إضافة عمالة",
+    "record_scrap": "تسجيل هالك"
+  },
+
+  "bom": {
+    "title": "قوالب BOM",
+    "new": "+ قالب BOM",
+    "ref_qty": "كمية الإنتاج المرجعية",
+    "overhead": "overhead افتراضي",
+    "expected_scrap": "هالك متوقّع",
+    "stages": "مراحل افتراضية"
+  }
+}

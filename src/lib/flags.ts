@@ -3,10 +3,11 @@
  * Unregistered flags default to enabled, matching prior modules that never
  * had a real gate — only registered keys below are actually toggleable.
  */
-export type FlagKey = "sector.wholesale" | "hr";
+export type FlagKey = "sector.wholesale" | "mfg.enabled" | "hr";
 
 const FLAGS: Record<FlagKey, boolean> = {
   "sector.wholesale": import.meta.env.DEV,
+  "mfg.enabled": import.meta.env.DEV,
   "hr": true,
 };
 

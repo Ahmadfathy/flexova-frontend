@@ -127,6 +127,12 @@ import {
 } from "@/features/wholesale/van/VanPages";
 import { SyncIndicator } from "@/components/van/SyncIndicator";
 
+// Manufacturing — FE_14 — scaffold only (routes + placeholders, no UI logic yet)
+import { MfgLayout } from "@/features/mfg/MfgLayout";
+import {
+  MfgDashboardPage, MoListPage, MoEditorPage, MoDetailPage, BomListPage, BomEditorPage,
+} from "@/features/mfg/MfgPages";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -350,6 +356,18 @@ export default function App() {
             <Route path="credit"          element={<CreditHubPage />} />
             <Route path="van-loads"       element={<VanLoadsListPage />} />
             <Route path="van-loads/:id"   element={<VanLoadDetailPage />} />
+          </Route>
+
+          {/* Manufacturing — FE_14 — back-office (standard shell) */}
+          <Route path="/mfg" element={<MfgLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard"   element={<MfgDashboardPage />} />
+            <Route path="orders"      element={<MoListPage />} />
+            <Route path="orders/new"  element={<MoEditorPage />} />
+            <Route path="orders/:id"  element={<MoDetailPage />} />
+            <Route path="bom"         element={<BomListPage />} />
+            <Route path="bom/new"     element={<BomEditorPage />} />
+            <Route path="bom/:id"     element={<BomEditorPage />} />
           </Route>
 
           {/* Price tiers editor — extends FE_01 price lists (spec §11), standalone path */}

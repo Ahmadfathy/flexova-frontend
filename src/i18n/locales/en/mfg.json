@@ -1,0 +1,61 @@
+{
+  "title": "Manufacturing",
+
+  "placeholder": {
+    "note": "The real screen arrives in a later step"
+  },
+
+  "tabs": {
+    "orders": "Orders",
+    "bom": "BOM Templates"
+  },
+
+  "dash": {
+    "title": "Manufacturing dashboard",
+    "in_progress": "In progress",
+    "awaiting": "Awaiting start",
+    "wip_value": "WIP value",
+    "scrap_month": "Scrap this month",
+    "overdue": "Overdue"
+  },
+
+  "orders": {
+    "title": "Manufacturing Orders",
+    "new": "+ manufacturing order"
+  },
+
+  "new": {
+    "title": "New manufacturing order",
+    "product": "Finished product",
+    "qty": "Quantity",
+    "from_template": "From template",
+    "build_free": "Build free",
+    "linked_order": "Linked customer order",
+    "issue_mode": "Issue mode",
+    "backflush": "Backflush",
+    "manual": "Manual issue"
+  },
+
+  "mo": {
+    "title": "Manufacturing order",
+    "approve": "Approve",
+    "start": "Start production",
+    "receive": "Receive finished",
+    "cancel": "Cancel",
+    "running_cost": "Running cost",
+    "scrap_effect": "Scrap effect",
+    "unit_cost": "Avg unit cost",
+    "shortage": "Material below required",
+    "add_labor": "Add labor",
+    "record_scrap": "Record scrap"
+  },
+
+  "bom": {
+    "title": "BOM Templates",
+    "new": "+ BOM template",
+    "ref_qty": "Reference qty",
+    "overhead": "Default overhead",
+    "expected_scrap": "Expected scrap",
+    "stages": "Default stages"
+  }
+}

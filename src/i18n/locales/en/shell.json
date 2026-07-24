@@ -15,6 +15,7 @@
     "svc":          "Appointments",
     "repair":       "Repair",
     "wholesale":    "Wholesale",
+    "mfg":          "Manufacturing",
 
     "wh_orders":     "Orders",
     "wh_deliveries": "Deliveries",
@@ -22,6 +23,10 @@
     "wh_reps":       "Reps",
     "wh_credit":     "Credit control",
     "wh_van_loads":  "Van loads",
+
+    "mfg_dashboard": "Dashboard",
+    "mfg_orders":    "Orders",
+    "mfg_bom":       "BOM Templates",
 
     "items":              "Items",
     "categories":         "Categories",
