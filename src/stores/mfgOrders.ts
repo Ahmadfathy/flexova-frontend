@@ -1,8 +1,22 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getManufacturingOrders } from "@/lib/mock/mfg";
-import type { ManufacturingOrder } from "@/types/mfg";
+import type { BomComponent, ManufacturingOrder, MoStage, MfgOverhead } from "@/types/mfg";
 import { isMoCancellable } from "@/features/mfg/orders/moStatus";
+
+export interface CreateMoInput {
+  output_item_id: string;
+  qty_ordered: number;
+  source_template_id: string | null;
+  customer_order_id: string | null;
+  wh_raw: string;
+  wh_wip: string;
+  wh_finished: string;
+  issue_mode: "backflush" | "manual";
+  order_bom: BomComponent[];
+  stages: MoStage[];
+  overhead: MfgOverhead;
+}
 
 const SEED_ORDERS: Record<string, ManufacturingOrder> = Object.fromEntries(
   getManufacturingOrders().map((o) => [o.id, o])
@@ -26,6 +40,9 @@ interface MfgOrdersState {
   /** New draft MO with a frozen copy of the source Order BOM (FE_14 §11.4) — lifecycle
    * fields (stages/issues/labor/scrap/receipts/cost) reset, customer link dropped. */
   duplicateOrder: (id: string) => ManufacturingOrder | null;
+  /** New MO from the §6 New MO drawer — `order_bom`/`stages` are the caller's own copy
+   * (either from a template or built free), never a live reference into the template. */
+  createOrder: (input: CreateMoInput) => ManufacturingOrder;
 }
 
 export const useMfgOrders = create<MfgOrdersState>()(
@@ -64,6 +81,33 @@ export const useMfgOrders = create<MfgOrdersState>()(
 
         set((s) => ({ orders: { ...s.orders, [copy.id]: copy } }));
         return copy;
+      },
+
+      createOrder: (input) => {
+        const mo: ManufacturingOrder = {
+          id: `mo_${Date.now()}_${seq++}`,
+          number: nextNumber(get().orders),
+          output_item_id: input.output_item_id,
+          qty_ordered: input.qty_ordered,
+          qty_received: 0,
+          source_template_id: input.source_template_id,
+          customer_order_id: input.customer_order_id,
+          wh_raw: input.wh_raw,
+          wh_wip: input.wh_wip,
+          wh_finished: input.wh_finished,
+          issue_mode: input.issue_mode,
+          status: "draft",
+          order_bom: input.order_bom,
+          stages: input.stages,
+          material_issues: [],
+          labor_entries: [],
+          overhead: input.overhead,
+          scrap: [],
+          finished_receipts: [],
+          cost_summary: { materials: 0, labor: 0, overhead: 0, scrap_effect: 0, total: 0, received: 0, unit_cost: 0 },
+        };
+        set((s) => ({ orders: { ...s.orders, [mo.id]: mo } }));
+        return mo;
       },
     }),
     { name: "flexova.mfg.orders" }
