@@ -27,8 +27,11 @@ import type { BomComponent } from "@/types/mfg";
 import { moStatusPillVariant, isMoCancellable } from "./moStatus";
 import { resolveLineAvailability } from "./shortage";
 import { useMoDetail } from "./useMoDetail";
+import { ActionButton as HeaderActionButton } from "./ActionButton";
+import { StagesTab } from "./StagesTab";
+import { CostTab } from "./CostTab";
 
-type TabKey = "overview" | "bom";
+type TabKey = "overview" | "bom" | "stages" | "cost";
 
 interface EditableLine extends BomComponent {
   _key: string;
@@ -40,37 +43,6 @@ function DetailSkeleton() {
       <Skeleton className="h-32 w-full rounded-lg" />
       <Skeleton className="h-80 w-full rounded-lg" />
     </div>
-  );
-}
-
-interface HeaderActionProps {
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-  tooltip?: string;
-  danger?: boolean;
-}
-
-function HeaderActionButton({ label, onClick, disabled, tooltip, danger }: HeaderActionProps) {
-  const button = (
-    <Button
-      size="sm"
-      variant={danger ? "outline" : undefined}
-      tone={danger ? "danger" : undefined}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {label}
-    </Button>
-  );
-  if (!disabled || !tooltip) return button;
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild><span tabIndex={0}>{button}</span></TooltipTrigger>
-        <TooltipContent>{tooltip}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }
 
@@ -280,6 +252,12 @@ export function MoDetailPage() {
           <TabsTrigger value="bom" className="h-7 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
             {t("mo.tab_bom")}
           </TabsTrigger>
+          <TabsTrigger value="stages" className="h-7 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+            {t("mo.tab_stages")}
+          </TabsTrigger>
+          <TabsTrigger value="cost" className="h-7 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+            {t("mo.tab_cost")}
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview */}
@@ -445,6 +423,16 @@ export function MoDetailPage() {
               <Button size="sm" onClick={handleSaveBom}>{t("mo.bom_save")}</Button>
             </>
           )}
+        </TabsContent>
+
+        {/* Stages */}
+        <TabsContent value="stages" className="mt-3">
+          <StagesTab mo={mo} />
+        </TabsContent>
+
+        {/* Cost */}
+        <TabsContent value="cost" className="mt-3">
+          <CostTab mo={mo} />
         </TabsContent>
       </Tabs>
 

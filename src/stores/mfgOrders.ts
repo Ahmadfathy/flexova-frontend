@@ -1,8 +1,35 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getManufacturingOrders } from "@/lib/mock/mfg";
-import type { BomComponent, ManufacturingOrder, MoStage, MfgOverhead } from "@/types/mfg";
+import type { BomComponent, ManufacturingOrder, MoStage, MfgOverhead, LaborEntry, MaterialIssue } from "@/types/mfg";
 import { isMoCancellable } from "@/features/mfg/orders/moStatus";
+
+export interface AddLaborInput {
+  stage_id: string;
+  employee_id: string | null;
+  hours: number;
+  cost: number;
+}
+
+export interface AddManualIssueInput {
+  stage_id: string;
+  lines: { item_id: string; qty: number; unit_cost: number }[];
+}
+
+function patchStage(mo: ManufacturingOrder, stageId: string, patch: Partial<MoStage>): MoStage[] {
+  return mo.stages.map((st) => (st.id === stageId ? { ...st, ...patch } : st));
+}
+
+/** Recomputes `total`/`unit_cost` from the four cost components — never re-derives
+ * `materials`/`overhead` themselves (those only change via their own dedicated actions,
+ * e.g. `addManualMaterialIssue`), so a fixture's pre-baked historical total is never
+ * silently overwritten by a generic recompute-from-scratch formula. */
+function retotal(mo: ManufacturingOrder): ManufacturingOrder {
+  const { materials, labor, overhead } = mo.cost_summary;
+  const total = materials + labor + overhead;
+  const unit_cost = mo.cost_summary.received > 0 ? total / mo.cost_summary.received : 0;
+  return { ...mo, cost_summary: { ...mo.cost_summary, total, unit_cost } };
+}
 
 export interface CreateMoInput {
   output_item_id: string;
@@ -51,6 +78,18 @@ interface MfgOrdersState {
   /** Order BOM is editable only while `draft` (FE_14 §7.2/§7.7) — enforced here too, not
    * just in the UI, so a stale draft-mode form can't slip an edit through post-approval. */
   updateOrderBom: (id: string, order_bom: BomComponent[]) => void;
+  /** pending → in_progress, stamps `started_at`. */
+  startStage: (moId: string, stageId: string) => void;
+  /** in_progress → done, stamps `ended_at`. */
+  endStage: (moId: string, stageId: string) => void;
+  assignStage: (moId: string, stageId: string, employeeId: string | null) => void;
+  /** Inline "add labor" (FE_14 §7.3) — cost is the caller's own (HR day-rate × hours,
+   * or a manual figure when HR is absent/ambiguous); this action only books it. */
+  addLaborEntry: (moId: string, input: AddLaborInput) => void;
+  /** Advanced manual material issue for a stage, only meaningful when issue_mode=manual
+   * (FE_14 §7.3). Increments `materials` by this issue's cost — never recomputed from
+   * scratch, so a fixture MO's historical materials figure stays intact. */
+  addManualMaterialIssue: (moId: string, input: AddManualIssueInput) => void;
 }
 
 export const useMfgOrders = create<MfgOrdersState>()(
@@ -140,6 +179,58 @@ export const useMfgOrders = create<MfgOrdersState>()(
         const o = s.orders[id];
         if (!o || o.status !== "draft") return s;
         return { orders: { ...s.orders, [id]: { ...o, order_bom } } };
+      }),
+
+      startStage: (moId, stageId) => set((s) => {
+        const o = s.orders[moId];
+        const stage = o?.stages.find((st) => st.id === stageId);
+        if (!o || !stage || stage.status !== "pending") return s;
+        const now = new Date().toISOString();
+        return { orders: { ...s.orders, [moId]: { ...o, stages: patchStage(o, stageId, { status: "in_progress", started_at: now }) } } };
+      }),
+
+      endStage: (moId, stageId) => set((s) => {
+        const o = s.orders[moId];
+        const stage = o?.stages.find((st) => st.id === stageId);
+        if (!o || !stage || stage.status !== "in_progress") return s;
+        const now = new Date().toISOString();
+        return { orders: { ...s.orders, [moId]: { ...o, stages: patchStage(o, stageId, { status: "done", ended_at: now }) } } };
+      }),
+
+      assignStage: (moId, stageId, employeeId) => set((s) => {
+        const o = s.orders[moId];
+        if (!o) return s;
+        return { orders: { ...s.orders, [moId]: { ...o, stages: patchStage(o, stageId, { assignee_id: employeeId }) } } };
+      }),
+
+      addLaborEntry: (moId, input) => set((s) => {
+        const o = s.orders[moId];
+        if (!o) return s;
+        const entry: LaborEntry = {
+          id: `le_${Date.now()}_${seq++}`,
+          employee_id: input.employee_id,
+          stage_id: input.stage_id,
+          hours: input.hours,
+          cost: input.cost,
+        };
+        const labor_entries = [...o.labor_entries, entry];
+        const labor = labor_entries.reduce((sum, l) => sum + l.cost, 0);
+        return { orders: { ...s.orders, [moId]: retotal({ ...o, labor_entries, cost_summary: { ...o.cost_summary, labor } }) } };
+      }),
+
+      addManualMaterialIssue: (moId, input) => set((s) => {
+        const o = s.orders[moId];
+        if (!o) return s;
+        const issue: MaterialIssue = {
+          id: `mi_${Date.now()}_${seq++}`,
+          type: "manual",
+          stage_id: input.stage_id,
+          lines: input.lines.map((l) => ({ item_id: l.item_id, qty: l.qty, from_wh: o.wh_raw, unit_cost: l.unit_cost })),
+        };
+        const issueCost = issue.lines.reduce((sum, l) => sum + l.qty * l.unit_cost, 0);
+        const material_issues = [...o.material_issues, issue];
+        const materials = o.cost_summary.materials + issueCost;
+        return { orders: { ...s.orders, [moId]: retotal({ ...o, material_issues, cost_summary: { ...o.cost_summary, materials } }) } };
       }),
     }),
     { name: "flexova.mfg.orders" }
