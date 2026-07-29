@@ -1,0 +1,182 @@
+{
+  "_meta": {
+    "module": "play",
+    "version": "1.0",
+    "currency": "EGP",
+    "depends_on": "pos (shift/tender/e-receipt/ETA), inventory (service items + products/BOM), hr (commission optional), crm (customer optional)",
+    "notes": "Session-with-Segments is the spine. Counters are DERIVED from start/stop timestamps (terminal clock), never stored mutable. Time line = service item (carries eta_code/tax). Reuses FE_09 tender/grid, FE_10 check→document. Timestamps are ISO with +02:00 (Africa/Cairo). now_ref anchors the live-counter fixtures.",
+    "now_ref": "2026-07-23T20:15:00+02:00"
+  },
+
+  "sector_settings": {
+    "prepaid_cafeteria_billing": "separate",
+    "peak_crossing_notify": "silent",
+    "prepaid_block_threshold_min": 5,
+    "hr_commission_enabled": false
+  },
+
+  "service_items": [
+    { "id": "svc_ps5",     "name_ar": "تشغيل بلايستيشن 5", "name_en": "PlayStation 5 time", "type": "service", "tax_type": "T1", "eta_code": "EG-1010101" },
+    { "id": "svc_ps4",     "name_ar": "تشغيل بلايستيشن 4", "name_en": "PlayStation 4 time", "type": "service", "tax_type": "T1", "eta_code": "EG-1010102" },
+    { "id": "svc_billiard","name_ar": "بلياردو",            "name_en": "Billiards time",     "type": "service", "tax_type": "T1", "eta_code": "EG-1010103" },
+    { "id": "svc_pingpong","name_ar": "بينج بونج",          "name_en": "Ping-pong time",     "type": "service", "tax_type": "T1", "eta_code": "" , "_flag": "missing_eta_code" },
+    { "id": "svc_kids",    "name_ar": "كارت كيدز إريا",     "name_en": "Kids area ticket",   "type": "service", "tax_type": "T1", "eta_code": "EG-1010104" }
+  ],
+
+  "rate_plans": [
+    {
+      "id": "rp_ps", "name_ar": "خطة البلايستيشن", "name_en": "PlayStation plan",
+      "unit": "hour", "rounding": "ceil", "min_units": 1,
+      "rules": [
+        { "id": "rr_ps_off_single", "price_per_unit": 30.00, "window": null,                                            "play_mode": "single", "priority": 1 },
+        { "id": "rr_ps_off_double", "price_per_unit": 45.00, "window": null,                                            "play_mode": "double", "priority": 1 },
+        { "id": "rr_ps_peak_single","price_per_unit": 40.00, "window": { "days": ["FR","SA"], "from": "18:00", "to": "23:59" }, "play_mode": "single", "priority": 5 },
+        { "id": "rr_ps_peak_double","price_per_unit": 60.00, "window": { "days": ["FR","SA"], "from": "18:00", "to": "23:59" }, "play_mode": "double", "priority": 5 },
+        { "id": "rr_ps_peak_wd",    "price_per_unit": 40.00, "window": { "days": ["SU","MO","TU","WE","TH"], "from": "18:00", "to": "23:59" }, "play_mode": "single", "priority": 4 }
+      ],
+      "prepaid_blocks": [
+        { "id": "blk_ps_30", "name_ar": "نص ساعة", "name_en": "30 min", "duration_min": 30, "price": 20.00, "validity_window": null },
+        { "id": "blk_ps_60", "name_ar": "ساعة",   "name_en": "1 hour", "duration_min": 60, "price": 35.00, "validity_window": null }
+      ]
+    },
+    {
+      "id": "rp_billiard", "name_ar": "خطة البلياردو", "name_en": "Billiards plan",
+      "unit": "hour", "rounding": "ceil", "min_units": 1,
+      "rules": [
+        { "id": "rr_bl_off", "price_per_unit": 50.00, "window": null, "play_mode": null, "priority": 1 },
+        { "id": "rr_bl_peak","price_per_unit": 70.00, "window": { "days": ["FR","SA"], "from": "18:00", "to": "23:59" }, "play_mode": null, "priority": 5 }
+      ],
+      "prepaid_blocks": []
+    },
+    {
+      "id": "rp_pingpong", "name_ar": "خطة البينج بونج", "name_en": "Ping-pong plan",
+      "unit": "30m", "rounding": "ceil", "min_units": 1,
+      "rules": [ { "id": "rr_pp_flat", "price_per_unit": 25.00, "window": null, "play_mode": null, "priority": 1 } ],
+      "prepaid_blocks": []
+    },
+    {
+      "id": "rp_kids", "name_ar": "خطة الكيدز", "name_en": "Kids plan",
+      "unit": "hour", "rounding": "ceil", "min_units": 1,
+      "rules": [ { "id": "rr_kids_flat", "price_per_unit": 50.00, "window": null, "play_mode": null, "priority": 1 } ],
+      "prepaid_blocks": [
+        { "id": "blk_kids_60", "name_ar": "كارت ساعة", "name_en": "1-hour card", "duration_min": 60, "price": 50.00, "validity_window": null }
+      ]
+    }
+  ],
+
+  "device_types": [
+    { "id": "dt_ps5",     "name_ar": "بلايستيشن 5", "name_en": "PlayStation 5", "occupancy": "station", "rate_plan_id": "rp_ps",       "service_item_id": "svc_ps5",     "icon": "gamepad-2", "color": "brand",  "play_mode_tags": ["single","double"] },
+    { "id": "dt_ps4",     "name_ar": "بلايستيشن 4", "name_en": "PlayStation 4", "occupancy": "station", "rate_plan_id": "rp_ps",       "service_item_id": "svc_ps4",     "icon": "gamepad", "color": "neutral", "play_mode_tags": ["single","double"] },
+    { "id": "dt_billiard","name_ar": "بلياردو",      "name_en": "Billiards",     "occupancy": "station", "rate_plan_id": "rp_billiard", "service_item_id": "svc_billiard","icon": "circle-dot", "color": "success", "play_mode_tags": [] },
+    { "id": "dt_pingpong","name_ar": "بينج بونج",    "name_en": "Ping-pong",     "occupancy": "station", "rate_plan_id": "rp_pingpong", "service_item_id": "svc_pingpong","icon": "table-2", "color": "warning", "play_mode_tags": [] },
+    { "id": "dt_kids",    "name_ar": "كيدز إريا",    "name_en": "Kids area",      "occupancy": "ticket",  "rate_plan_id": "rp_kids",     "service_item_id": "svc_kids",    "icon": "baby",    "color": "brand",   "play_mode_tags": [] }
+  ],
+
+  "devices": [
+    { "id": "dev_ps5_1", "name": "PS5-1", "device_type_id": "dt_ps5",      "branch_id": "br_main", "state": "busy",         "notes": "" },
+    { "id": "dev_ps5_2", "name": "PS5-2", "device_type_id": "dt_ps5",      "branch_id": "br_main", "state": "busy",         "notes": "" },
+    { "id": "dev_ps4_1", "name": "PS4-1", "device_type_id": "dt_ps4",      "branch_id": "br_main", "state": "free",         "notes": "" },
+    { "id": "dev_ps4_2", "name": "PS4-2", "device_type_id": "dt_ps4",      "branch_id": "br_main", "state": "busy",         "notes": "" },
+    { "id": "dev_bl_1",  "name": "بلياردو 1", "device_type_id": "dt_billiard","branch_id": "br_main", "state": "paused",    "notes": "" },
+    { "id": "dev_bl_2",  "name": "بلياردو 2", "device_type_id": "dt_billiard","branch_id": "br_main", "state": "reserved",  "notes": "محجوز باسم أحمد 21:00" },
+    { "id": "dev_pp_1",  "name": "بينج بونج 1","device_type_id": "dt_pingpong","branch_id": "br_main","state": "out_of_service", "notes": "مضرب مكسور" }
+  ],
+
+  "sessions": [
+    {
+      "id": "ses_1", "mode": "postpaid", "state": "active",
+      "device_id": "dev_ps5_1", "device_type_id": "dt_ps5",
+      "customer": null, "supervisor_id": null, "play_mode": "double",
+      "check_id": "chk_1",
+      "segments": [
+        { "id": "seg_1a", "device_id": "dev_ps5_1", "start": "2026-07-23T17:40:00+02:00", "stop": "2026-07-23T18:00:00+02:00", "rule_id": "rr_ps_off_double", "price_per_unit": 45.00, "_note": "off-peak segment before 18:00 crossing" },
+        { "id": "seg_1b", "device_id": "dev_ps5_1", "start": "2026-07-23T18:00:00+02:00", "stop": null,                        "rule_id": "rr_ps_peak_double", "price_per_unit": 60.00, "_note": "auto-split at 18:00 peak boundary; still running" }
+      ],
+      "_flag": "peak_crossing_autosplit"
+    },
+    {
+      "id": "ses_2", "mode": "prepaid", "state": "active",
+      "device_id": "dev_ps5_2", "device_type_id": "dt_ps5",
+      "customer": null, "supervisor_id": null, "play_mode": "single",
+      "block_id": "blk_ps_60", "block_duration_min": 60, "prepaid_receipt_id": "rcpt_ps5_2",
+      "check_id": "chk_2",
+      "segments": [
+        { "id": "seg_2a", "device_id": "dev_ps5_2", "start": "2026-07-23T19:18:00+02:00", "stop": null, "rule_id": null, "price_per_unit": 0, "_note": "prepaid countdown; time already paid; ends ~20:18, threshold alert at 20:13" }
+      ],
+      "_flag": "prepaid_countdown_nearing_threshold"
+    },
+    {
+      "id": "ses_3", "mode": "postpaid", "state": "active",
+      "device_id": "dev_ps4_2", "device_type_id": "dt_ps4",
+      "customer": { "name": "كريم", "phone": "01234567890" }, "supervisor_id": null, "play_mode": "single",
+      "check_id": "chk_3",
+      "segments": [
+        { "id": "seg_3a", "device_id": "dev_ps5_1_prev", "start": "2026-07-23T19:30:00+02:00", "stop": "2026-07-23T19:50:00+02:00", "rule_id": "rr_ps_peak_wd", "price_per_unit": 40.00, "_note": "started on PS5 (transferred out)" },
+        { "id": "seg_3b", "device_id": "dev_ps4_2",     "start": "2026-07-23T19:50:00+02:00", "stop": null,                        "rule_id": "rr_ps_off_single", "price_per_unit": 30.00, "_note": "transferred to PS4 at its own (lower) rate" }
+      ],
+      "_flag": "transfer_across_types"
+    },
+    {
+      "id": "ses_4", "mode": "postpaid", "state": "paused",
+      "device_id": "dev_bl_1", "device_type_id": "dt_billiard",
+      "customer": null, "supervisor_id": null, "play_mode": null,
+      "check_id": "chk_4",
+      "segments": [
+        { "id": "seg_4a", "device_id": "dev_bl_1", "start": "2026-07-23T19:00:00+02:00", "stop": "2026-07-23T19:35:00+02:00", "rule_id": "rr_bl_peak", "price_per_unit": 70.00, "_note": "paused; gap not billed until resume" }
+      ],
+      "_flag": "paused_session"
+    },
+    {
+      "id": "ses_5", "mode": "prepaid", "state": "active",
+      "device_id": null, "device_type_id": "dt_kids",
+      "customer": { "name": "أم يوسف", "phone": "01098765432" }, "supervisor_id": null, "play_mode": null,
+      "block_id": "blk_kids_60", "block_duration_min": 60, "prepaid_receipt_id": "rcpt_kids_1",
+      "check_id": "chk_5",
+      "segments": [
+        { "id": "seg_5a", "device_id": null, "start": "2026-07-23T19:55:00+02:00", "stop": null, "rule_id": null, "price_per_unit": 0, "_note": "ticket/pool session — no physical device" }
+      ],
+      "_flag": "ticket_pool_no_device"
+    },
+    {
+      "id": "ses_6", "mode": "postpaid", "state": "paid",
+      "device_id": "dev_bl_2_prev", "device_type_id": "dt_billiard",
+      "customer": null, "supervisor_id": null, "play_mode": null,
+      "check_id": "chk_6", "document_id": "inv_play_0007", "eta_status": "queued",
+      "segments": [
+        { "id": "seg_6a", "device_id": "dev_bl_2_prev", "start": "2026-07-23T16:00:00+02:00", "stop": "2026-07-23T17:10:00+02:00", "rule_id": "rr_bl_off", "price_per_unit": 50.00, "billable_units": 2, "subtotal": 100.00, "_note": "70min → ceil to 2 hours" }
+      ],
+      "_flag": "closed_with_rounding_ceil"
+    },
+    {
+      "id": "ses_7", "mode": "postpaid", "state": "cancelled",
+      "device_id": "dev_ps4_1_prev", "device_type_id": "dt_ps4",
+      "customer": null, "supervisor_id": null, "play_mode": "single",
+      "check_id": "chk_7", "document_id": "inv_play_0006", "eta_status": "reversed",
+      "cancel_reason": "العميل مشي من غير ما يلعب", "reversal_doc_id": "cn_play_0002",
+      "segments": [
+        { "id": "seg_7a", "device_id": "dev_ps4_1_prev", "start": "2026-07-23T15:00:00+02:00", "stop": "2026-07-23T15:05:00+02:00", "rule_id": "rr_ps_off_single", "price_per_unit": 30.00, "_note": "cancelled after issue → reversal not delete" }
+      ],
+      "_flag": "cancelled_reversal"
+    }
+  ],
+
+  "checks": [
+    { "id": "chk_1", "session_id": "ses_1", "cafeteria_lines": [ { "product_id": "prd_pepsi", "name_ar": "بيبسي", "qty": 2, "unit_price": 15.00, "line_total": 30.00 } ], "_note": "postpaid: time + cafeteria billed together at end" },
+    { "id": "chk_2", "session_id": "ses_2", "cafeteria_lines": [ { "product_id": "prd_chips", "name_ar": "شيبسي", "qty": 1, "unit_price": 10.00, "line_total": 10.00 } ], "_note": "prepaid + separate: cafeteria billed at end, time already paid" },
+    { "id": "chk_3", "session_id": "ses_3", "cafeteria_lines": [] },
+    { "id": "chk_4", "session_id": "ses_4", "cafeteria_lines": [] },
+    { "id": "chk_5", "session_id": "ses_5", "cafeteria_lines": [ { "product_id": "prd_juice", "name_ar": "عصير", "qty": 1, "unit_price": 12.00, "line_total": 12.00 } ] },
+    { "id": "chk_6", "session_id": "ses_6", "cafeteria_lines": [], "closed": true },
+    { "id": "chk_7", "session_id": "ses_7", "cafeteria_lines": [], "closed": true }
+  ],
+
+  "products": [
+    { "id": "prd_pepsi", "name_ar": "بيبسي", "name_en": "Pepsi", "price": 15.00, "has_bom": false },
+    { "id": "prd_chips", "name_ar": "شيبسي", "name_en": "Chips", "price": 10.00, "has_bom": false },
+    { "id": "prd_juice", "name_ar": "عصير طازة", "name_en": "Fresh juice", "price": 12.00, "has_bom": true, "_flag": "bom_flag_aware" }
+  ],
+
+  "branches": [ { "id": "br_main", "name_ar": "الفرع الرئيسي", "name_en": "Main branch", "num_prefix": "MN" } ],
+
+  "shift": { "id": "shift_1", "branch_id": "br_main", "terminal_id": "term_1", "state": "open", "opened_at": "2026-07-23T14:00:00+02:00", "cashier_id": "emp_hassan" }
+}
