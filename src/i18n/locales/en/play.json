@@ -1,0 +1,82 @@
+{
+  "title": "Play",
+
+  "floor": {
+    "title": "Floor"
+  },
+  "device": {
+    "free": "Free",
+    "busy": "Busy",
+    "reserved": "Reserved",
+    "oos": "Out of service"
+  },
+  "running_total": "Running",
+  "new_session": "＋ New session",
+
+  "start": "Start",
+  "start_pay": "Start & pay",
+  "mode": {
+    "postpaid": "Open counter",
+    "prepaid": "Prepaid block"
+  },
+  "pick_block": "Pick block",
+
+  "add_cafe": "＋ Cafeteria",
+  "transfer": "Transfer",
+  "pause": "Pause",
+  "resume": "Resume",
+  "end": "End & bill",
+  "cancel": "Cancel",
+
+  "transfer_sheet": {
+    "pick": "Pick a free device"
+  },
+
+  "extend": "Extend",
+  "overflow": "Open counter",
+  "block_ending": "Block ending soon",
+
+  "reserve": "Reserve",
+  "maintenance": "Maintenance",
+
+  "cancel_reason": "Cancellation reason",
+
+  "dt": {
+    "title": "Device types",
+    "occupancy": "Occupancy",
+    "station": "Station",
+    "ticket": "Ticket",
+    "service_item": "Service item (ETA)"
+  },
+  "dev": {
+    "title": "Devices",
+    "bulk": "Bulk add"
+  },
+  "rate": {
+    "title": "Rate plans",
+    "unit": "Pricing unit",
+    "rounding": "Rounding",
+    "min": "Minimum",
+    "rule": "Rate rule",
+    "window": "Window",
+    "peak": "Peak",
+    "priority": "Priority",
+    "block": "Prepaid block",
+    "effective_now": "Effective now"
+  },
+  "set": {
+    "title": "Sector settings",
+    "prepaid_cafe": "Prepaid cafeteria billing",
+    "separate": "Separate",
+    "combined": "Combined",
+    "peak_notify": "Peak-crossing notice",
+    "silent": "Silent",
+    "notify": "Notify",
+    "block_threshold": "Block near-empty (min)"
+  },
+  "log": {
+    "title": "Session log",
+    "duration": "Duration",
+    "segments": "Segments"
+  }
+}

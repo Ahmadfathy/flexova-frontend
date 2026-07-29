@@ -45,10 +45,12 @@ import arVan         from "./locales/ar/van.json";
 import enVan         from "./locales/en/van.json";
 import arMfg         from "./locales/ar/mfg.json";
 import enMfg         from "./locales/en/mfg.json";
+import arPlay        from "./locales/ar/play.json";
+import enPlay        from "./locales/en/play.json";
 
 i18n.use(initReactI18next).init({
   lng: "ar", fallbackLng: "ar",
-  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc", "repair", "wholesale", "van", "mfg"],
+  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc", "repair", "wholesale", "van", "mfg", "play"],
   defaultNS: "common",
   resources: {
     ar: {
@@ -56,14 +58,14 @@ i18n.use(initReactI18next).init({
       inventory: arInventory, sales: arSales, purchasing: arPurchasing,
       finance: arFinance, crm: arCrm, hr: arHr, reports: arReports, admin: arAdmin,
       auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos, fnb: arFnb, svc: arSvc, repair: arRepair,
-      wholesale: arWholesale, van: arVan, mfg: arMfg,
+      wholesale: arWholesale, van: arVan, mfg: arMfg, play: arPlay,
     },
     en: {
       common: enCommon, shell: enShell, settings: enSettings,
       inventory: enInventory, sales: enSales, purchasing: enPurchasing,
       finance: enFinance, crm: enCrm, hr: enHr, reports: enReports, admin: enAdmin,
       auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos, fnb: enFnb, svc: enSvc, repair: enRepair,
-      wholesale: enWholesale, van: enVan, mfg: enMfg,
+      wholesale: enWholesale, van: enVan, mfg: enMfg, play: enPlay,
     },
   },
   interpolation: { escapeValue: false },

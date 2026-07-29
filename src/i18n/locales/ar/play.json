@@ -1,0 +1,82 @@
+{
+  "title": "بلاي",
+
+  "floor": {
+    "title": "صالة التشغيل"
+  },
+  "device": {
+    "free": "فاضي",
+    "busy": "مشغول",
+    "reserved": "محجوز",
+    "oos": "خارج الخدمة"
+  },
+  "running_total": "الجاري",
+  "new_session": "＋ جلسة جديدة",
+
+  "start": "ابدأ",
+  "start_pay": "ابدأ وادفع",
+  "mode": {
+    "postpaid": "عدّاد مفتوح",
+    "prepaid": "بلوك مدفوع"
+  },
+  "pick_block": "اختر البلوك",
+
+  "add_cafe": "＋ كافيتيريا",
+  "transfer": "تحويل",
+  "pause": "إيقاف مؤقت",
+  "resume": "استئناف",
+  "end": "إنهاء وحساب",
+  "cancel": "إلغاء",
+
+  "transfer_sheet": {
+    "pick": "اختر جهاز فاضي"
+  },
+
+  "extend": "تمديد",
+  "overflow": "عدّاد مفتوح",
+  "block_ending": "البلوك قرب يخلص",
+
+  "reserve": "حجز",
+  "maintenance": "صيانة",
+
+  "cancel_reason": "سبب الإلغاء",
+
+  "dt": {
+    "title": "أنواع الأجهزة",
+    "occupancy": "نمط الإشغال",
+    "station": "محطة",
+    "ticket": "تذكرة",
+    "service_item": "الصنف الخدمي (ETA)"
+  },
+  "dev": {
+    "title": "الأجهزة",
+    "bulk": "إضافة دفعة"
+  },
+  "rate": {
+    "title": "خطط التسعير",
+    "unit": "وحدة التسعير",
+    "rounding": "التقريب",
+    "min": "الحد الأدنى",
+    "rule": "قاعدة السعر",
+    "window": "النافذة",
+    "peak": "سعر الذروة",
+    "priority": "الأولوية",
+    "block": "بلوك مدفوع مقدّم",
+    "effective_now": "السعر الساري الآن"
+  },
+  "set": {
+    "title": "إعدادات النمط",
+    "prepaid_cafe": "فوترة كافيتيريا المدفوع مقدّماً",
+    "separate": "منفصلة",
+    "combined": "مجمّعة",
+    "peak_notify": "تنبيه دخول الذروة",
+    "silent": "صامت",
+    "notify": "تنبيه",
+    "block_threshold": "تنبيه قرب خلوص البلوك (دقائق)"
+  },
+  "log": {
+    "title": "سجلّ الجلسات",
+    "duration": "المدة",
+    "segments": "الشرائح"
+  }
+}
