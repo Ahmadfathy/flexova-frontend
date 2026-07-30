@@ -29,6 +29,9 @@ const AppearanceSettingsPage = lazy(() =>
 // Play — FE_15 — back-office settings (standard shell, not PosLayout)
 const PlayDeviceTypesPage = lazy(() => import("@/features/play/settings/DeviceTypesPage"));
 const PlayDevicesPage = lazy(() => import("@/features/play/settings/DevicesPage"));
+const PlayRatePlansPage = lazy(() => import("@/features/play/settings/RatePlansPage"));
+const PlayRatePlanEditorPage = lazy(() => import("@/features/play/settings/RatePlanEditorPage"));
+const PlaySectorSettingsPage = lazy(() => import("@/features/play/settings/SectorSettingsPage"));
 
 // Inventory
 import { InventoryLayout } from "@/features/inventory/InventoryLayout";
@@ -409,6 +412,38 @@ export default function App() {
               element={
                 <Suspense fallback={<PageFallback />}>
                   <PlayDevicesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="play/rate-plans"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <PlayRatePlansPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="play/rate-plans/new"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <PlayRatePlanEditorPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="play/rate-plans/:id"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <PlayRatePlanEditorPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="play"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <PlaySectorSettingsPage />
                 </Suspense>
               }
             />
