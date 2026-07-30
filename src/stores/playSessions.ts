@@ -99,6 +99,16 @@ interface PlaySessionsState {
     sessionId: string,
     resolvedSegment: { rule_id: string | null; price_per_unit: number }
   ) => void;
+  /**
+   * End & Bill (§5.7), step 1 + final state: closes the last open segment at `now` (if one is
+   * still running — a paused session's is already closed) and transitions straight to `paid`.
+   * No intermediate persisted `closing` state: nothing else in this module reads/branches on
+   * it today, and the "awaiting payment" moment is already handled by `TenderModal`'s own
+   * open/settle cycle in the caller (mirrors `ReleaseWorkOrderDialog`/`PrepaidExtendModal`,
+   * neither of which persists a transient status either). `documentId`/`etaStatus` are
+   * attached here since the caller already built/filed the `PlayDocument` by this point.
+   */
+  endSession: (sessionId: string, documentId: string, etaStatus: string) => void;
 }
 
 export const usePlaySessions = create<PlaySessionsState>()(
@@ -259,6 +269,21 @@ export const usePlaySessions = create<PlaySessionsState>()(
               mode: "postpaid",
               segments: [...session.segments.slice(0, -1), closedSeg, newSegment],
             },
+          },
+        };
+      }),
+
+      endSession: (sessionId, documentId, etaStatus) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || (session.state !== "active" && session.state !== "paused")) return s;
+        const lastSeg = session.segments[session.segments.length - 1];
+        const segments = lastSeg && lastSeg.stop === null
+          ? [...session.segments.slice(0, -1), { ...lastSeg, stop: new Date().toISOString() }]
+          : session.segments;
+        return {
+          sessions: {
+            ...s.sessions,
+            [sessionId]: { ...session, state: "paid", segments, document_id: documentId, eta_status: etaStatus },
           },
         };
       }),

@@ -211,3 +211,33 @@ describe("usePlaySessions — Prepaid Extend (§5.6)", () => {
     expect(usePlaySessions.getState().sessions.ses_test.segments).toHaveLength(1);
   });
 });
+
+describe("usePlaySessions — endSession (§5.7)", () => {
+  it("closes the running segment and transitions active → paid", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().endSession("ses_test", "doc_1", "valid");
+    const s = usePlaySessions.getState().sessions.ses_test;
+    expect(s.state).toBe("paid");
+    expect(s.segments[0].stop).not.toBeNull();
+    expect(s.document_id).toBe("doc_1");
+    expect(s.eta_status).toBe("valid");
+  });
+
+  it("transitions paused → paid without touching the already-closed segment", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().pauseSession("ses_test");
+    const closedStop = usePlaySessions.getState().sessions.ses_test.segments[0].stop;
+    usePlaySessions.getState().endSession("ses_test", "doc_2", "queued");
+    const s = usePlaySessions.getState().sessions.ses_test;
+    expect(s.state).toBe("paid");
+    expect(s.segments[0].stop).toBe(closedStop); // untouched — already closed by pause
+    expect(s.document_id).toBe("doc_2");
+  });
+
+  it("is a no-op on an already-paid session", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().endSession("ses_test", "doc_1", "valid");
+    usePlaySessions.getState().endSession("ses_test", "doc_2", "valid");
+    expect(usePlaySessions.getState().sessions.ses_test.document_id).toBe("doc_1");
+  });
+});

@@ -48,3 +48,19 @@ describe("usePlayChecks — addCafeteriaLine (§5.4)", () => {
     expect(usePlayChecks.getState().checks.chk_missing).toBeUndefined();
   });
 });
+
+describe("usePlayChecks — closeCheck (§5.7)", () => {
+  beforeEach(() => {
+    usePlayChecks.setState({ checks: { chk_test: seedCheck() } });
+  });
+
+  it("flips closed to true", () => {
+    usePlayChecks.getState().closeCheck("chk_test");
+    expect(usePlayChecks.getState().checks.chk_test.closed).toBe(true);
+  });
+
+  it("is a no-op for an unknown check id", () => {
+    usePlayChecks.getState().closeCheck("chk_missing");
+    expect(usePlayChecks.getState().checks.chk_missing).toBeUndefined();
+  });
+});

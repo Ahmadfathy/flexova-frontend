@@ -80,7 +80,25 @@
 
     "extend_modal_title": "تمديد الجلسة — {{name}}",
     "block_ended_message": "خلص وقت البلوك المدفوع مقدّماً",
-    "overflow_toast": "تم التحويل إلى عدّاد مفتوح"
+    "overflow_toast": "تم التحويل إلى عدّاد مفتوح",
+
+    "end_bill_title": "إنهاء وحساب — {{name}}",
+    "end_bill_lines_title": "بنود الفاتورة",
+    "end_bill_time_total": "إجمالي الوقت",
+    "end_bill_grand_total": "الإجمالي الكلي",
+    "end_bill_confirm": "تأكيد ودفع",
+    "end_bill_missing_eta_warning": "الصنف الخدمي لهذا الجهاز بدون كود إلكتروني — هتنتهي الجلسة عادي وهيتأجل الإصدار الإلكتروني فقط",
+    "end_bill_receipt_title": "تم إنهاء الجلسة",
+    "end_bill_issued": "تم إصدار الإيصال الإلكتروني",
+    "end_bill_queued": "الإيصال الإلكتروني في قائمة الانتظار — الموعد النهائي خلال {{hours}} ساعة",
+    "end_bill_flagged": "تم إنهاء الجلسة، لكن الإصدار الإلكتروني معلّق بسبب نقص الكود",
+
+    "print_80mm": "طباعة (80مم)",
+    "print_toast": "جاري الطباعة…",
+    "done": "تم",
+
+    "doc_type_e_invoice": "فاتورة إلكترونية",
+    "doc_type_e_receipt": "إيصال إلكتروني"
   },
   "device": {
     "free": "فاضي",

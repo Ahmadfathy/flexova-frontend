@@ -21,6 +21,7 @@ import {
 import { TransferSessionSheet } from "./TransferSessionSheet";
 import { CafeteriaOverlay } from "./CafeteriaOverlay";
 import { PrepaidExtendModal } from "./PrepaidExtendModal";
+import { EndBillDialog } from "./EndBillDialog";
 
 interface SessionCardDrawerProps {
   open: boolean;
@@ -53,6 +54,7 @@ export function SessionCardDrawer({
   const [transferOpen, setTransferOpen] = useState(false);
   const [cafeteriaOpen, setCafeteriaOpen] = useState(false);
   const [extendOpen, setExtendOpen] = useState(false);
+  const [endBillOpen, setEndBillOpen] = useState(false);
   const canTransfer = session.state === "active" && device !== null;
   const canExtend = session.mode === "prepaid" && session.state === "active";
 
@@ -223,7 +225,7 @@ export function SessionCardDrawer({
               {t("pause")}
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={handleStub}>
+          <Button variant="outline" size="sm" onClick={() => setEndBillOpen(true)}>
             <Receipt className="h-4 w-4 me-1.5" />
             {t("end")}
           </Button>
@@ -270,6 +272,17 @@ export function SessionCardDrawer({
           ratePlan={ratePlan}
         />
       )}
+
+      <EndBillDialog
+        open={endBillOpen}
+        onOpenChange={setEndBillOpen}
+        session={session}
+        device={device}
+        deviceType={deviceType}
+        ratePlan={ratePlan}
+        check={check}
+        onDone={() => onOpenChange(false)}
+      />
     </DrawerShell>
   );
 }

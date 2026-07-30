@@ -14,6 +14,7 @@ interface CrmCustomer {
   name_ar: string;
   name_en: string;
   phone: string;
+  trn?: string;
 }
 
 const CUSTOMERS = crmFixtures.customers as CrmCustomer[];
@@ -26,7 +27,8 @@ interface PlayCustomerPickerProps {
 
 /** Quick-pick a customer for a session (§5.2) — same CRM search + quick-add shape as
  * `RprCustomerPicker`/POS's `CustomerPickerDialog`, but Play's `Session.customer` is only
- * `{ name, phone }` (no CRM id), so picking just maps the CRM record down to that shape. */
+ * `{ name, phone, trn? }` (no CRM id), so picking just maps the CRM record down to that shape
+ * — `trn` rides along so End & Bill (§5.7) can tell B2C from B2B. */
 export function PlayCustomerPicker({ open, onOpenChange, onPick }: PlayCustomerPickerProps) {
   const { t } = useTranslation("play");
   const { t: tCommon } = useTranslation("common");
@@ -46,7 +48,7 @@ export function PlayCustomerPicker({ open, onOpenChange, onPick }: PlayCustomerP
                 key={c.id}
                 value={`${c.name_ar} ${c.name_en} ${c.phone}`}
                 onSelect={() => {
-                  onPick({ name: lang === "ar" ? c.name_ar : c.name_en, phone: c.phone });
+                  onPick({ name: lang === "ar" ? c.name_ar : c.name_en, phone: c.phone, trn: c.trn || undefined });
                   onOpenChange(false);
                 }}
               >

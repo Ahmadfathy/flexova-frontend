@@ -80,7 +80,25 @@
 
     "extend_modal_title": "Extend session — {{name}}",
     "block_ended_message": "The prepaid block's time has ended",
-    "overflow_toast": "Switched to open counter"
+    "overflow_toast": "Switched to open counter",
+
+    "end_bill_title": "End & bill — {{name}}",
+    "end_bill_lines_title": "Invoice lines",
+    "end_bill_time_total": "Time total",
+    "end_bill_grand_total": "Grand total",
+    "end_bill_confirm": "Confirm & pay",
+    "end_bill_missing_eta_warning": "This device's service item has no e-invoicing code — the session will end normally; only electronic issuance will be put on hold",
+    "end_bill_receipt_title": "Session ended",
+    "end_bill_issued": "E-receipt issued",
+    "end_bill_queued": "E-receipt queued — window closes in {{hours}}h",
+    "end_bill_flagged": "Session ended, but electronic issuance is on hold due to a missing code",
+
+    "print_80mm": "Print (80mm)",
+    "print_toast": "Printing…",
+    "done": "Done",
+
+    "doc_type_e_invoice": "E-invoice",
+    "doc_type_e_receipt": "E-receipt"
   },
   "device": {
     "free": "Free",

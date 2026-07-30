@@ -93,6 +93,10 @@ export interface TimeSegment {
 export interface SessionCustomer {
   name: string;
   phone: string;
+  /** Not a fixture field — threaded through from the picked CRM customer's own `trn` (§5.7
+   * needs "B2B when the customer has a TRN"; CRM customers already carry one, Play's
+   * walk-in-shaped customer just never had anywhere to keep it until now). */
+  trn?: string;
 }
 
 export interface Session {

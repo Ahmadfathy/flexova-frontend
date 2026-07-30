@@ -27,6 +27,10 @@ interface PlayChecksState {
    * that product is already on the check (tap-to-add, mirroring F&B/POS grid taps). Never
    * blocks on `product.has_bom` (flag-don't-block) — it only stamps `has_bom` onto the line. */
   addCafeteriaLine: (checkId: string, product: Product) => void;
+  /** §5.7 — flips the check `closed` once End & Bill has filed its document. Purely a record
+   * flag; nothing currently reads it besides this store, mirroring how `Check.closed` sat
+   * unused in the type since the type-layer step until a real closer showed up. */
+  closeCheck: (checkId: string) => void;
 }
 
 export const usePlayChecks = create<PlayChecksState>()(
@@ -63,6 +67,12 @@ export const usePlayChecks = create<PlayChecksState>()(
           cafeteria_lines = [...check.cafeteria_lines, line];
         }
         return { checks: { ...s.checks, [checkId]: { ...check, cafeteria_lines } } };
+      }),
+
+      closeCheck: (checkId) => set((s) => {
+        const check = s.checks[checkId];
+        if (!check) return s;
+        return { checks: { ...s.checks, [checkId]: { ...check, closed: true } } };
       }),
     }),
     { name: "flexova.play.checks" }
