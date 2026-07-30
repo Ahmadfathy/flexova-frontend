@@ -60,6 +60,13 @@
     "cafeteria_title": "الكافيتيريا",
     "cafeteria_empty": "لا توجد أصناف كافيتيريا",
     "cafeteria_total": "إجمالي الكافيتيريا",
+    "cafeteria_billing_separate_note": "الوقت مدفوع مسبقاً — هيتم حساب الكافيتيريا بعد انتهاء الجلسة",
+    "cafeteria_billing_combined_note": "هيتم حساب الكافيتيريا مع الوقت في نفس الفاتورة النهائية",
+
+    "cafeteria_overlay_title": "إضافة كافيتيريا",
+    "cafeteria_search_placeholder": "بحث عن صنف",
+    "cafeteria_no_products": "لا توجد أصناف كافيتيريا معرّفة",
+    "cafeteria_bom_note": "صنف يعتمد على وصفة (BOM)",
 
     "paused_toast": "تم إيقاف الجلسة مؤقتاً",
     "resumed_toast": "تم استئناف الجلسة",

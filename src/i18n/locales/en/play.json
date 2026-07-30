@@ -60,6 +60,13 @@
     "cafeteria_title": "Cafeteria",
     "cafeteria_empty": "No cafeteria lines",
     "cafeteria_total": "Cafeteria total",
+    "cafeteria_billing_separate_note": "Time is already paid — cafeteria will be billed once the session ends",
+    "cafeteria_billing_combined_note": "Cafeteria will be billed together with time in the final invoice",
+
+    "cafeteria_overlay_title": "Add cafeteria",
+    "cafeteria_search_placeholder": "Search products",
+    "cafeteria_no_products": "No cafeteria products defined",
+    "cafeteria_bom_note": "BOM-based product",
 
     "paused_toast": "Session paused",
     "resumed_toast": "Session resumed",

@@ -95,6 +95,32 @@ describe("usePlaySessions — pause/resume/splitDueSegments", () => {
     const splitIds = usePlaySessions.getState().splitDueSegments(() => testPlan, afterBoundary);
     expect(splitIds).toHaveLength(0);
   });
+
+  it("splitDueSegments never re-prices a prepaid session's flat, already-paid segment", () => {
+    usePlaySessions.setState({
+      sessions: {
+        ses_prepaid: {
+          id: "ses_prepaid", mode: "prepaid", state: "active",
+          device_id: "dev_test", device_type_id: "dt_test",
+          customer: null, supervisor_id: null, play_mode: null,
+          check_id: "chk_test", block_id: "blk_test", block_duration_min: 60,
+          segments: [{
+            id: "seg_prepaid", device_id: "dev_test",
+            start: "2026-07-24T17:40:00+02:00", stop: null,
+            rule_id: null, price_per_unit: 0,
+          }],
+        },
+      },
+      clock: 0,
+    });
+    const afterBoundary = new Date("2026-07-24T18:05:00+02:00"); // well past the 18:00 peak boundary
+    const splitIds = usePlaySessions.getState().splitDueSegments(() => testPlan, afterBoundary);
+    expect(splitIds).toHaveLength(0);
+    const segments = usePlaySessions.getState().sessions.ses_prepaid.segments;
+    expect(segments).toHaveLength(1);
+    expect(segments[0].price_per_unit).toBe(0);
+    expect(segments[0].stop).toBeNull();
+  });
 });
 
 describe("usePlaySessions — transferSession (§5.5)", () => {

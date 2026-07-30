@@ -122,6 +122,11 @@ export interface CafeteriaLine {
   qty: number;
   unit_price: number;
   line_total: number;
+  /** Not a fixture field — set once at add-time from `Product.has_bom`, mirroring F&B's own
+   * `FnbCheckLine.eta_code_missing` convention (a flag carried from product to line, never
+   * blocking, never re-derived afterward). BOM depletion itself isn't modeled for Play (no
+   * ingredient-stock store here); this only marks the line as BOM-based for display. */
+  has_bom?: boolean;
 }
 
 export interface Check {

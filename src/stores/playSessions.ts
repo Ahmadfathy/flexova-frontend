@@ -55,11 +55,13 @@ interface PlaySessionsState {
   ) => void;
   /**
    * Peak/off-peak auto-split (§6) — background, no cashier action. Called once per shared tick
-   * (never per-card) from FloorGridPage. For every `active` session with a still-open segment,
-   * splits it at every rate-window boundary crossed since it opened (via the real rate engine's
-   * `splitOnBoundary`, never reimplemented here). `resolveRatePlan` is injected by the caller so
-   * this store never needs to import `usePlayRatePlans`/`usePlayDeviceTypes` directly. Returns
-   * the ids of sessions that were actually split, so the caller can toast if configured to.
+   * (never per-card) from FloorGridPage. For every `active`, POSTPAID session with a still-open
+   * segment, splits it at every rate-window boundary crossed since it opened (via the real rate
+   * engine's `splitOnBoundary`, never reimplemented here). Prepaid sessions are never split —
+   * their time is a flat already-paid block, immune to peak/off-peak windows. `resolveRatePlan`
+   * is injected by the caller so this store never needs to import `usePlayRatePlans`/
+   * `usePlayDeviceTypes` directly. Returns the ids of sessions that were actually split, so the
+   * caller can toast if configured to.
    */
   splitDueSegments: (resolveRatePlan: (deviceTypeId: string) => RatePlan | undefined, now: Date) => string[];
   /**
@@ -150,6 +152,11 @@ export const usePlaySessions = create<PlaySessionsState>()(
           const sessions = { ...s.sessions };
           for (const [id, session] of Object.entries(sessions)) {
             if (session.state !== "active") continue;
+            // Prepaid time is a flat, already-paid block — peak/off-peak windows never apply
+            // to it (fixtures' own convention: a prepaid session is always one unsplit segment
+            // at price_per_unit 0, e.g. ses_2/ses_5). Splitting it would wrongly re-price the
+            // piece via the rate plan's real rules.
+            if (session.mode === "prepaid") continue;
             const lastSeg = session.segments[session.segments.length - 1];
             if (!lastSeg || lastSeg.stop !== null) continue;
             const ratePlan = resolveRatePlan(session.device_type_id);

@@ -9,14 +9,17 @@ import { Button } from "@/components/ui/button";
 import { formatMoney, formatTime } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { usePlayDevices } from "@/stores/playDevices";
 import { usePlaySessions } from "@/stores/playSessions";
+import { usePlaySectorSettings } from "@/stores/playSectorSettings";
 import { resolveRule, sessionTotal } from "@/features/play/rate-engine";
 import type { Check, Device, DeviceType, RatePlan, Session } from "@/features/play/types";
 import {
   cafeteriaTotal, computeRunningTotal, elapsedMs, formatDuration, remainingMsForPrepaid,
 } from "./sessionDisplay";
 import { TransferSessionSheet } from "./TransferSessionSheet";
+import { CafeteriaOverlay } from "./CafeteriaOverlay";
 
 interface SessionCardDrawerProps {
   open: boolean;
@@ -47,7 +50,13 @@ export function SessionCardDrawer({
   const updateDevice = usePlayDevices((s) => s.updateDevice);
 
   const [transferOpen, setTransferOpen] = useState(false);
+  const [cafeteriaOpen, setCafeteriaOpen] = useState(false);
   const canTransfer = session.state === "active" && device !== null;
+
+  // §5.4: feature-flag-aware — if the products/F&B module is off, the button is hidden
+  // entirely and a time-only session runs normally (never an error, never degraded).
+  const cafeteriaEnabled = isFlagEnabled("fnb");
+  const prepaidCafeteriaBilling = usePlaySectorSettings((s) => s.prepaidCafeteriaBilling);
 
   const now = new Date();
 
@@ -175,14 +184,21 @@ export function SessionCardDrawer({
           ) : (
             <p className="text-sm text-muted-foreground">{t("floor.cafeteria_empty")}</p>
           )}
+          {session.mode === "prepaid" && (
+            <p className="text-xs text-muted-foreground">
+              {t(prepaidCafeteriaBilling === "combined" ? "floor.cafeteria_billing_combined_note" : "floor.cafeteria_billing_separate_note")}
+            </p>
+          )}
         </div>
 
         {/* Actions */}
         <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-          <Button variant="outline" size="sm" onClick={handleStub}>
-            <Coffee className="h-4 w-4 me-1.5" />
-            {t("add_cafe")}
-          </Button>
+          {cafeteriaEnabled && check && (
+            <Button variant="outline" size="sm" onClick={() => setCafeteriaOpen(true)}>
+              <Coffee className="h-4 w-4 me-1.5" />
+              {t("add_cafe")}
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={() => setTransferOpen(true)} disabled={!canTransfer}>
             <ArrowLeftRight className="h-4 w-4 me-1.5" />
             {t("transfer")}
@@ -224,6 +240,14 @@ export function SessionCardDrawer({
           onOpenChange={setTransferOpen}
           session={session}
           currentDevice={device}
+        />
+      )}
+
+      {cafeteriaEnabled && check && (
+        <CafeteriaOverlay
+          open={cafeteriaOpen}
+          onOpenChange={setCafeteriaOpen}
+          check={check}
         />
       )}
     </DrawerShell>
