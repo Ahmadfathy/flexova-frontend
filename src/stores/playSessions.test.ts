@@ -96,3 +96,39 @@ describe("usePlaySessions — pause/resume/splitDueSegments", () => {
     expect(splitIds).toHaveLength(0);
   });
 });
+
+describe("usePlaySessions — transferSession (§5.5)", () => {
+  beforeEach(() => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+  });
+
+  it("closes the old segment and opens a new one on the target device at the target's rate", () => {
+    usePlaySessions.getState().transferSession("ses_test", "dev_target", "dt_target", { rule_id: "peak", price_per_unit: 60 });
+    const s = usePlaySessions.getState().sessions.ses_test;
+
+    expect(s.state).toBe("active");
+    expect(s.device_id).toBe("dev_target");
+    expect(s.device_type_id).toBe("dt_target");
+    expect(s.segments).toHaveLength(2);
+
+    // Old segment: unchanged device/rate, now closed — a future invoice still bills it at
+    // the ORIGINAL device's rate, not the new one.
+    expect(s.segments[0].device_id).toBe("dev_test");
+    expect(s.segments[0].price_per_unit).toBe(30);
+    expect(s.segments[0].stop).not.toBeNull();
+
+    // New segment: the target device, priced by the target's own rate (a PS4→PS5 transfer
+    // costing more is correct and intended — this is exactly that shape).
+    expect(s.segments[1].device_id).toBe("dev_target");
+    expect(s.segments[1].price_per_unit).toBe(60);
+    expect(s.segments[1].stop).toBeNull();
+  });
+
+  it("is a no-op when the session is paused (no running segment to close)", () => {
+    usePlaySessions.getState().pauseSession("ses_test");
+    usePlaySessions.getState().transferSession("ses_test", "dev_target", "dt_target", { rule_id: "peak", price_per_unit: 60 });
+    const s = usePlaySessions.getState().sessions.ses_test;
+    expect(s.device_id).toBe("dev_test");
+    expect(s.segments).toHaveLength(1);
+  });
+});

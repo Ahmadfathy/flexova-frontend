@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Coffee, ArrowLeftRight, Pause, Play, Receipt, XCircle, Lock } from "lucide-react";
@@ -15,6 +16,7 @@ import type { Check, Device, DeviceType, RatePlan, Session } from "@/features/pl
 import {
   cafeteriaTotal, computeRunningTotal, elapsedMs, formatDuration, remainingMsForPrepaid,
 } from "./sessionDisplay";
+import { TransferSessionSheet } from "./TransferSessionSheet";
 
 interface SessionCardDrawerProps {
   open: boolean;
@@ -43,6 +45,9 @@ export function SessionCardDrawer({
   const pauseSession = usePlaySessions((s) => s.pauseSession);
   const resumeSession = usePlaySessions((s) => s.resumeSession);
   const updateDevice = usePlayDevices((s) => s.updateDevice);
+
+  const [transferOpen, setTransferOpen] = useState(false);
+  const canTransfer = session.state === "active" && device !== null;
 
   const now = new Date();
 
@@ -178,7 +183,7 @@ export function SessionCardDrawer({
             <Coffee className="h-4 w-4 me-1.5" />
             {t("add_cafe")}
           </Button>
-          <Button variant="outline" size="sm" onClick={handleStub}>
+          <Button variant="outline" size="sm" onClick={() => setTransferOpen(true)} disabled={!canTransfer}>
             <ArrowLeftRight className="h-4 w-4 me-1.5" />
             {t("transfer")}
           </Button>
@@ -212,6 +217,15 @@ export function SessionCardDrawer({
           </p>
         )}
       </div>
+
+      {device && (
+        <TransferSessionSheet
+          open={transferOpen}
+          onOpenChange={setTransferOpen}
+          session={session}
+          currentDevice={device}
+        />
+      )}
     </DrawerShell>
   );
 }

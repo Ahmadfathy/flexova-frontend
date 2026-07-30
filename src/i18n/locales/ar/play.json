@@ -65,7 +65,11 @@
     "resumed_toast": "تم استئناف الجلسة",
     "cancel_permission_required": "ليس لديك صلاحية لإلغاء الجلسة",
 
-    "peak_crossing_toast": "{{name}} — دخلت الذروة"
+    "peak_crossing_toast": "{{name}} — دخلت الذروة",
+
+    "transfer_confirm": "تأكيد التحويل",
+    "transfer_no_free_devices": "لا توجد أجهزة فاضية للتحويل إليها",
+    "transfer_toast": "تم التحويل إلى {{name}}"
   },
   "device": {
     "free": "فاضي",

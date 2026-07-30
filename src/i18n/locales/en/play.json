@@ -65,7 +65,11 @@
     "resumed_toast": "Session resumed",
     "cancel_permission_required": "You don't have permission to cancel sessions",
 
-    "peak_crossing_toast": "{{name}} — entered peak pricing"
+    "peak_crossing_toast": "{{name}} — entered peak pricing",
+
+    "transfer_confirm": "Confirm transfer",
+    "transfer_no_free_devices": "No free devices available to transfer to",
+    "transfer_toast": "Transferred to {{name}}"
   },
   "device": {
     "free": "Free",

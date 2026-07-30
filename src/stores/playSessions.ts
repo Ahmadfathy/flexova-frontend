@@ -62,6 +62,22 @@ interface PlaySessionsState {
    * the ids of sessions that were actually split, so the caller can toast if configured to.
    */
   splitDueSegments: (resolveRatePlan: (deviceTypeId: string) => RatePlan | undefined, now: Date) => string[];
+  /**
+   * Transfer (§5.5): closes the running segment on the old device and opens a new one on
+   * `targetDeviceId`, priced by whatever rule the caller already resolved against the TARGET
+   * device type's rate plan (a PS4→PS5 transfer costing more is correct and intended — each
+   * segment keeps its own device/rule/price, so a future invoice naturally gets one line per
+   * device at that device's own rate). `session.device_id`/`device_type_id` move to the target
+   * so later lookups (rate plan, drawer title, ...) resolve against where the session is NOW.
+   * Device state flips (old → free, new → busy) and the check moving are the caller's job —
+   * the check never referenced a device in the first place, so it "moves" for free.
+   */
+  transferSession: (
+    sessionId: string,
+    targetDeviceId: string,
+    targetDeviceTypeId: string,
+    resolvedSegment: { rule_id: string | null; price_per_unit: number }
+  ) => void;
 }
 
 export const usePlaySessions = create<PlaySessionsState>()(
@@ -148,6 +164,35 @@ export const usePlaySessions = create<PlaySessionsState>()(
         });
         return splitIds;
       },
+
+      transferSession: (sessionId, targetDeviceId, targetDeviceTypeId, resolvedSegment) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || session.state !== "active") return s;
+        const lastSeg = session.segments[session.segments.length - 1];
+        if (!lastSeg || lastSeg.stop !== null) return s;
+
+        const now = new Date().toISOString();
+        const closedSeg = { ...lastSeg, stop: now };
+        const newSegment = {
+          id: nextId("seg"),
+          device_id: targetDeviceId,
+          start: now,
+          stop: null,
+          rule_id: resolvedSegment.rule_id,
+          price_per_unit: resolvedSegment.price_per_unit,
+        };
+        return {
+          sessions: {
+            ...s.sessions,
+            [sessionId]: {
+              ...session,
+              device_id: targetDeviceId,
+              device_type_id: targetDeviceTypeId,
+              segments: [...session.segments.slice(0, -1), closedSeg, newSegment],
+            },
+          },
+        };
+      }),
     }),
     { name: "flexova.play.sessions", partialize: (s) => ({ sessions: s.sessions }) }
   )
