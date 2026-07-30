@@ -50,7 +50,22 @@
     "no_rate_rule_error": "تعذّر تحديد سعر لهذا الجهاز — راجع خطة التسعير",
     "session_started_toast": "تم بدء الجلسة",
     "receipt_issued_toast": "تم إصدار الإيصال الإلكتروني",
-    "receipt_queued_toast": "الإيصال الإلكتروني في قائمة الانتظار — سيتم الإرسال عند الاتصال"
+    "receipt_queued_toast": "الإيصال الإلكتروني في قائمة الانتظار — سيتم الإرسال عند الاتصال",
+
+    "session_title": "جلسة — {{name}}",
+    "elapsed_label": "الوقت المنقضي",
+    "remaining_label": "المتبقي",
+    "segment_running": "جارٍ الآن",
+
+    "cafeteria_title": "الكافيتيريا",
+    "cafeteria_empty": "لا توجد أصناف كافيتيريا",
+    "cafeteria_total": "إجمالي الكافيتيريا",
+
+    "paused_toast": "تم إيقاف الجلسة مؤقتاً",
+    "resumed_toast": "تم استئناف الجلسة",
+    "cancel_permission_required": "ليس لديك صلاحية لإلغاء الجلسة",
+
+    "peak_crossing_toast": "{{name}} — دخلت الذروة"
   },
   "device": {
     "free": "فاضي",

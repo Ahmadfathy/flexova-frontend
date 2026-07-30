@@ -50,7 +50,22 @@
     "no_rate_rule_error": "Couldn't resolve a price for this device — check its rate plan",
     "session_started_toast": "Session started",
     "receipt_issued_toast": "E-receipt issued",
-    "receipt_queued_toast": "E-receipt queued — will send once connected"
+    "receipt_queued_toast": "E-receipt queued — will send once connected",
+
+    "session_title": "Session — {{name}}",
+    "elapsed_label": "Elapsed",
+    "remaining_label": "Remaining",
+    "segment_running": "Running now",
+
+    "cafeteria_title": "Cafeteria",
+    "cafeteria_empty": "No cafeteria lines",
+    "cafeteria_total": "Cafeteria total",
+
+    "paused_toast": "Session paused",
+    "resumed_toast": "Session resumed",
+    "cancel_permission_required": "You don't have permission to cancel sessions",
+
+    "peak_crossing_toast": "{{name}} — entered peak pricing"
   },
   "device": {
     "free": "Free",

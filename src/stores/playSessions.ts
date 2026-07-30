@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getSessions } from "@/lib/mock/play";
-import type { PlayMode, Session, SessionCustomer, SessionMode } from "@/features/play/types";
+import { splitOnBoundary } from "@/features/play/rate-engine";
+import type { PlayMode, RatePlan, Session, SessionCustomer, SessionMode } from "@/features/play/types";
 
 const SEED_SESSIONS: Record<string, Session> = Object.fromEntries(
   getSessions().map((s) => [s.id, s])
@@ -41,6 +42,26 @@ interface PlaySessionsState {
    * the caller's job (separate stores), matching how FloorGridPage already reads across
    * devices/deviceTypes/ratePlans/sessions independently rather than one store owning all of it. */
   startSession: (input: StartSessionInput) => Session;
+  /** Pause (§5.3/§6): closes the running segment at `now` — the gap starting here is simply
+   * never part of any segment, so it can never be billed. Device state flip is the caller's job. */
+  pauseSession: (sessionId: string) => void;
+  /** Resume (§5.3/§6): opens a brand-new segment at `now`, priced by whatever rule the caller
+   * already resolved for the current moment (mirrors `startSession`'s `firstSegment` — the rate
+   * engine call itself belongs to the caller, this store only ever stores the result). */
+  resumeSession: (
+    sessionId: string,
+    deviceId: string | null,
+    resolvedSegment: { rule_id: string | null; price_per_unit: number }
+  ) => void;
+  /**
+   * Peak/off-peak auto-split (§6) — background, no cashier action. Called once per shared tick
+   * (never per-card) from FloorGridPage. For every `active` session with a still-open segment,
+   * splits it at every rate-window boundary crossed since it opened (via the real rate engine's
+   * `splitOnBoundary`, never reimplemented here). `resolveRatePlan` is injected by the caller so
+   * this store never needs to import `usePlayRatePlans`/`usePlayDeviceTypes` directly. Returns
+   * the ids of sessions that were actually split, so the caller can toast if configured to.
+   */
+  splitDueSegments: (resolveRatePlan: (deviceTypeId: string) => RatePlan | undefined, now: Date) => string[];
 }
 
 export const usePlaySessions = create<PlaySessionsState>()(
@@ -76,6 +97,56 @@ export const usePlaySessions = create<PlaySessionsState>()(
         };
         set((s) => ({ sessions: { ...s.sessions, [session.id]: session } }));
         return session;
+      },
+
+      pauseSession: (sessionId) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || session.state !== "active") return s;
+        const lastSeg = session.segments[session.segments.length - 1];
+        if (!lastSeg || lastSeg.stop !== null) return s;
+        const segments = [...session.segments.slice(0, -1), { ...lastSeg, stop: new Date().toISOString() }];
+        return { sessions: { ...s.sessions, [sessionId]: { ...session, state: "paused", segments } } };
+      }),
+
+      resumeSession: (sessionId, deviceId, resolvedSegment) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || session.state !== "paused") return s;
+        const newSegment = {
+          id: nextId("seg"),
+          device_id: deviceId,
+          start: new Date().toISOString(),
+          stop: null,
+          rule_id: resolvedSegment.rule_id,
+          price_per_unit: resolvedSegment.price_per_unit,
+        };
+        return {
+          sessions: {
+            ...s.sessions,
+            [sessionId]: { ...session, state: "active", segments: [...session.segments, newSegment] },
+          },
+        };
+      }),
+
+      splitDueSegments: (resolveRatePlan, now) => {
+        const splitIds: string[] = [];
+        set((s) => {
+          let changed = false;
+          const sessions = { ...s.sessions };
+          for (const [id, session] of Object.entries(sessions)) {
+            if (session.state !== "active") continue;
+            const lastSeg = session.segments[session.segments.length - 1];
+            if (!lastSeg || lastSeg.stop !== null) continue;
+            const ratePlan = resolveRatePlan(session.device_type_id);
+            if (!ratePlan) continue;
+            const pieces = splitOnBoundary(lastSeg, ratePlan, session.play_mode, now);
+            if (pieces.length <= 1) continue;
+            sessions[id] = { ...session, segments: [...session.segments.slice(0, -1), ...pieces] };
+            splitIds.push(id);
+            changed = true;
+          }
+          return changed ? { sessions } : s;
+        });
+        return splitIds;
       },
     }),
     { name: "flexova.play.sessions", partialize: (s) => ({ sessions: s.sessions }) }

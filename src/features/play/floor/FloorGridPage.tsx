@@ -21,11 +21,13 @@ import { usePlayDeviceTypes } from "@/stores/playDeviceTypes";
 import { usePlayRatePlans } from "@/stores/playRatePlans";
 import { usePlaySessions } from "@/stores/playSessions";
 import { usePlayChecks } from "@/stores/playChecks";
+import { usePlaySectorSettings } from "@/stores/playSectorSettings";
 import { getShift } from "@/lib/mock/play";
-import type { Device, DeviceState, DeviceType, Session } from "@/features/play/types";
+import type { Device, DeviceState, DeviceType, RatePlan, Session } from "@/features/play/types";
 import { DEVICE_TYPE_ICONS } from "@/features/play/settings/deviceTypeOptions";
 import { DeviceCard } from "./DeviceCard";
 import { StartSessionSheet } from "./StartSessionSheet";
+import { SessionCardDrawer } from "./SessionCardDrawer";
 import {
   computeRunningTotal, elapsedMs, findDeviceSession, findTicketSessions, formatDuration, remainingMsForPrepaid,
 } from "./sessionDisplay";
@@ -71,14 +73,44 @@ export default function FloorGridPage() {
 
   const { loading, error, isOffline, forcedEmpty, reload } = useFloorGrid();
 
+  const splitDueSegments = usePlaySessions((s) => s.splitDueSegments);
+
   const [typeFilter, setTypeFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
   const [startTarget, setStartTarget] = useState<{ device: Device | null; deviceType: DeviceType } | null>(null);
+  const [openSessionId, setOpenSessionId] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = setInterval(tick, 1000);
+    const id = setInterval(() => {
+      tick();
+
+      // Peak/off-peak auto-split (§6) — background, no cashier action. Reads fresh state via
+      // getState() rather than closing over this render's `deviceTypes`/`ratePlans`, so the
+      // interval never needs to be torn down and recreated when those change.
+      const now = new Date();
+      const dtMap = usePlayDeviceTypes.getState().deviceTypes;
+      const rpMap = usePlayRatePlans.getState().ratePlans;
+      const splitIds = splitDueSegments((deviceTypeId): RatePlan | undefined => {
+        const dt = dtMap[deviceTypeId];
+        return dt ? rpMap[dt.rate_plan_id] : undefined;
+      }, now);
+
+      if (splitIds.length > 0 && usePlaySectorSettings.getState().peakCrossingNotify === "notify") {
+        const devicesMap = usePlayDevices.getState().devices;
+        const sessionsMap = usePlaySessions.getState().sessions;
+        for (const sid of splitIds) {
+          const s = sessionsMap[sid];
+          if (!s) continue;
+          const dt = dtMap[s.device_type_id];
+          const name = s.device_id
+            ? (devicesMap[s.device_id]?.name ?? s.device_id)
+            : (dt ? (lang === "ar" ? dt.name_ar : dt.name_en) : s.device_type_id);
+          toast.info(t("floor.peak_crossing_toast", { name }));
+        }
+      }
+    }, 1000);
     return () => clearInterval(id);
-  }, [tick]);
+  }, [tick, splitDueSegments, t, lang]);
 
   const forcedNoResults = useMemo(
     () => new URLSearchParams(window.location.search).get("mock") === "no_results",
@@ -140,7 +172,7 @@ export default function FloorGridPage() {
     return Object.values(checks).find((c) => c.session_id === session.id);
   }
 
-  function handleBusyTap() {
+  function handleStubTap() {
     toast.info(t("floor.stub_toast"));
   }
 
@@ -152,6 +184,10 @@ export default function FloorGridPage() {
 
   function handleNewTicketSessionTap(dt: DeviceType) {
     setStartTarget({ device: null, deviceType: dt });
+  }
+
+  function openSessionDrawer(sessionId: string) {
+    setOpenSessionId(sessionId);
   }
 
   function clearFilters() {
@@ -194,7 +230,11 @@ export default function FloorGridPage() {
         runningTotalText={runningTotalText}
         hasCafeteria={(check?.cafeteria_lines.length ?? 0) > 0}
         note={device.notes || undefined}
-        onClick={device.state === "free" ? () => handleFreeDeviceTap(device) : handleBusyTap}
+        onClick={
+          device.state === "free" ? () => handleFreeDeviceTap(device)
+          : (device.state === "busy" || device.state === "paused") && session ? () => openSessionDrawer(session.id)
+          : handleStubTap
+        }
       />
     );
   }
@@ -297,7 +337,7 @@ export default function FloorGridPage() {
                               counterDirection={session.mode === "prepaid" ? "down" : "up"}
                               runningTotalText={total !== null ? formatMoney(total, lang) : undefined}
                               hasCafeteria={(check?.cafeteria_lines.length ?? 0) > 0}
-                              onClick={handleBusyTap}
+                              onClick={() => openSessionDrawer(session.id)}
                             />
                           </div>
                         );
@@ -320,6 +360,26 @@ export default function FloorGridPage() {
           deviceType={startTarget.deviceType}
         />
       )}
+
+      {openSessionId && sessions[openSessionId] && (() => {
+        const openSession = sessions[openSessionId];
+        const openDeviceType = deviceTypes[openSession.device_type_id];
+        if (!openDeviceType) return null;
+        const openDevice = openSession.device_id ? devices[openSession.device_id] ?? null : null;
+        const openRatePlan = ratePlans[openDeviceType.rate_plan_id];
+        const openCheck = checkFor(openSession);
+        return (
+          <SessionCardDrawer
+            open={!!openSessionId}
+            onOpenChange={(o) => !o && setOpenSessionId(null)}
+            session={openSession}
+            device={openDevice}
+            deviceType={openDeviceType}
+            ratePlan={openRatePlan}
+            check={openCheck}
+          />
+        );
+      })()}
     </div>
   );
 }
