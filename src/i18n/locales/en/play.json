@@ -76,7 +76,11 @@
 
     "transfer_confirm": "Confirm transfer",
     "transfer_no_free_devices": "No free devices available to transfer to",
-    "transfer_toast": "Transferred to {{name}}"
+    "transfer_toast": "Transferred to {{name}}",
+
+    "extend_modal_title": "Extend session — {{name}}",
+    "block_ended_message": "The prepaid block's time has ended",
+    "overflow_toast": "Switched to open counter"
   },
   "device": {
     "free": "Free",

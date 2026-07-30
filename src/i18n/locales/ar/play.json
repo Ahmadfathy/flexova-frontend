@@ -76,7 +76,11 @@
 
     "transfer_confirm": "تأكيد التحويل",
     "transfer_no_free_devices": "لا توجد أجهزة فاضية للتحويل إليها",
-    "transfer_toast": "تم التحويل إلى {{name}}"
+    "transfer_toast": "تم التحويل إلى {{name}}",
+
+    "extend_modal_title": "تمديد الجلسة — {{name}}",
+    "block_ended_message": "خلص وقت البلوك المدفوع مقدّماً",
+    "overflow_toast": "تم التحويل إلى عدّاد مفتوح"
   },
   "device": {
     "free": "فاضي",

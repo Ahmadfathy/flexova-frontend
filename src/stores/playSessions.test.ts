@@ -158,3 +158,56 @@ describe("usePlaySessions — transferSession (§5.5)", () => {
     expect(s.segments).toHaveLength(1);
   });
 });
+
+function seedPrepaidSession(): Session {
+  return {
+    id: "ses_prepaid", mode: "prepaid", state: "active",
+    device_id: "dev_test", device_type_id: "dt_test",
+    customer: null, supervisor_id: null, play_mode: null,
+    check_id: "chk_test", block_id: "blk_30", block_duration_min: 30, prepaid_receipt_id: "rcpt_1",
+    segments: [{
+      id: "seg_prepaid", device_id: "dev_test",
+      start: "2026-07-24T17:40:00+02:00", stop: null,
+      rule_id: null, price_per_unit: 0,
+    }],
+  };
+}
+
+describe("usePlaySessions — Prepaid Extend (§5.6)", () => {
+  beforeEach(() => {
+    usePlaySessions.setState({ sessions: { ses_prepaid: seedPrepaidSession() }, clock: 0 });
+  });
+
+  it("extendPrepaidBlock tops up the budget without touching the segment", () => {
+    usePlaySessions.getState().extendPrepaidBlock("ses_prepaid", 60, "rcpt_2");
+    const s = usePlaySessions.getState().sessions.ses_prepaid;
+    expect(s.block_duration_min).toBe(90); // 30 + 60
+    expect(s.prepaid_receipt_id).toBe("rcpt_2");
+    expect(s.segments).toHaveLength(1); // still one continuous segment, never split
+    expect(s.segments[0].stop).toBeNull();
+    expect(s.segments[0].price_per_unit).toBe(0);
+  });
+
+  it("extendPrepaidBlock is a no-op on a postpaid session", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().extendPrepaidBlock("ses_test", 60, "rcpt_2");
+    expect(usePlaySessions.getState().sessions.ses_test.block_duration_min).toBeUndefined();
+  });
+
+  it("convertToOpenCounter closes the prepaid segment and opens a real-rate postpaid one", () => {
+    usePlaySessions.getState().convertToOpenCounter("ses_prepaid", { rule_id: "off", price_per_unit: 30 });
+    const s = usePlaySessions.getState().sessions.ses_prepaid;
+    expect(s.mode).toBe("postpaid");
+    expect(s.segments).toHaveLength(2);
+    expect(s.segments[0].price_per_unit).toBe(0); // prepaid time already paid, unchanged
+    expect(s.segments[0].stop).not.toBeNull();
+    expect(s.segments[1].price_per_unit).toBe(30); // overflow priced by the rate engine from now
+    expect(s.segments[1].stop).toBeNull();
+  });
+
+  it("convertToOpenCounter is a no-op on an already-postpaid session", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().convertToOpenCounter("ses_test", { rule_id: "off", price_per_unit: 30 });
+    expect(usePlaySessions.getState().sessions.ses_test.segments).toHaveLength(1);
+  });
+});

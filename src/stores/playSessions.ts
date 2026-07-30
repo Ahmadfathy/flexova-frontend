@@ -80,6 +80,25 @@ interface PlaySessionsState {
     targetDeviceTypeId: string,
     resolvedSegment: { rule_id: string | null; price_per_unit: number }
   ) => void;
+  /**
+   * Prepaid Extend — "Extend with a new block" (§5.6): tops up the paid budget by
+   * `additionalMinutes` (a new prepaid block's duration) rather than closing/reopening a
+   * segment — prepaid time is a single, never-split segment (§6), so extending it is just
+   * growing the budget `remainingMsForPrepaid` counts down against. `newReceiptId` replaces
+   * the stored `prepaid_receipt_id` (the type has room for only the latest one).
+   */
+  extendPrepaidBlock: (sessionId: string, additionalMinutes: number, newReceiptId: string) => void;
+  /**
+   * Prepaid Extend — "Switch to open counter" (§5.6): converts the session to postpaid
+   * overflow. Closes the running (still price_per_unit: 0) segment and opens a new one priced
+   * by whatever rule the caller already resolved for the moment — from here it behaves exactly
+   * like any postpaid session (counts up, bills the check, participates in peak-crossing
+   * auto-split going forward).
+   */
+  convertToOpenCounter: (
+    sessionId: string,
+    resolvedSegment: { rule_id: string | null; price_per_unit: number }
+  ) => void;
 }
 
 export const usePlaySessions = create<PlaySessionsState>()(
@@ -195,6 +214,49 @@ export const usePlaySessions = create<PlaySessionsState>()(
               ...session,
               device_id: targetDeviceId,
               device_type_id: targetDeviceTypeId,
+              segments: [...session.segments.slice(0, -1), closedSeg, newSegment],
+            },
+          },
+        };
+      }),
+
+      extendPrepaidBlock: (sessionId, additionalMinutes, newReceiptId) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || session.mode !== "prepaid" || session.state !== "active") return s;
+        return {
+          sessions: {
+            ...s.sessions,
+            [sessionId]: {
+              ...session,
+              block_duration_min: (session.block_duration_min ?? 0) + additionalMinutes,
+              prepaid_receipt_id: newReceiptId,
+            },
+          },
+        };
+      }),
+
+      convertToOpenCounter: (sessionId, resolvedSegment) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || session.mode !== "prepaid" || session.state !== "active") return s;
+        const lastSeg = session.segments[session.segments.length - 1];
+        if (!lastSeg || lastSeg.stop !== null) return s;
+
+        const now = new Date().toISOString();
+        const closedSeg = { ...lastSeg, stop: now };
+        const newSegment = {
+          id: nextId("seg"),
+          device_id: session.device_id,
+          start: now,
+          stop: null,
+          rule_id: resolvedSegment.rule_id,
+          price_per_unit: resolvedSegment.price_per_unit,
+        };
+        return {
+          sessions: {
+            ...s.sessions,
+            [sessionId]: {
+              ...session,
+              mode: "postpaid",
               segments: [...session.segments.slice(0, -1), closedSeg, newSegment],
             },
           },

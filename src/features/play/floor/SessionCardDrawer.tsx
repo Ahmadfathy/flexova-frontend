@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Coffee, ArrowLeftRight, Pause, Play, Receipt, XCircle, Lock } from "lucide-react";
+import { Coffee, ArrowLeftRight, Pause, Play, Receipt, XCircle, Lock, Timer } from "lucide-react";
 
 import { DrawerShell } from "@/components/patterns/DrawerShell";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import {
 } from "./sessionDisplay";
 import { TransferSessionSheet } from "./TransferSessionSheet";
 import { CafeteriaOverlay } from "./CafeteriaOverlay";
+import { PrepaidExtendModal } from "./PrepaidExtendModal";
 
 interface SessionCardDrawerProps {
   open: boolean;
@@ -51,7 +52,9 @@ export function SessionCardDrawer({
 
   const [transferOpen, setTransferOpen] = useState(false);
   const [cafeteriaOpen, setCafeteriaOpen] = useState(false);
+  const [extendOpen, setExtendOpen] = useState(false);
   const canTransfer = session.state === "active" && device !== null;
+  const canExtend = session.mode === "prepaid" && session.state === "active";
 
   // §5.4: feature-flag-aware — if the products/F&B module is off, the button is hidden
   // entirely and a time-only session runs normally (never an error, never degraded).
@@ -203,6 +206,12 @@ export function SessionCardDrawer({
             <ArrowLeftRight className="h-4 w-4 me-1.5" />
             {t("transfer")}
           </Button>
+          {canExtend && (
+            <Button variant="outline" size="sm" onClick={() => setExtendOpen(true)}>
+              <Timer className="h-4 w-4 me-1.5" />
+              {t("extend")}
+            </Button>
+          )}
           {session.state === "paused" ? (
             <Button variant="outline" size="sm" onClick={handleResume}>
               <Play className="h-4 w-4 me-1.5" />
@@ -248,6 +257,17 @@ export function SessionCardDrawer({
           open={cafeteriaOpen}
           onOpenChange={setCafeteriaOpen}
           check={check}
+        />
+      )}
+
+      {canExtend && (
+        <PrepaidExtendModal
+          open={extendOpen}
+          onOpenChange={setExtendOpen}
+          session={session}
+          device={device}
+          deviceType={deviceType}
+          ratePlan={ratePlan}
         />
       )}
     </DrawerShell>

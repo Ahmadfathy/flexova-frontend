@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { UtensilsCrossed, ArrowUp, ArrowDown } from "lucide-react";
+import { UtensilsCrossed, ArrowUp, ArrowDown, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { DeviceState } from "@/features/play/types";
 
@@ -20,6 +20,10 @@ interface DeviceCardProps {
   counterDirection?: "up" | "down";
   runningTotalText?: string;
   hasCafeteria?: boolean;
+  /** Prepaid remaining time dropped below `prepaid_block_threshold_min` (§5.6) — a semantic
+   * warning highlight layered on top of whatever `state` color already applies (the device is
+   * still plain "busy", this is purely a time-based overlay). */
+  nearEmpty?: boolean;
   note?: string;
   onClick?: () => void;
 }
@@ -28,7 +32,7 @@ interface DeviceCardProps {
  * computed by the caller from the shared tick, never a per-card timer), running total, and
  * a small cafeteria badge. Also reused for the ticket-zone's active-ticket mini-cards. */
 export function DeviceCard({
-  name, Icon, state, stateLabel, counterText, counterDirection, runningTotalText, hasCafeteria, note, onClick,
+  name, Icon, state, stateLabel, counterText, counterDirection, runningTotalText, hasCafeteria, nearEmpty, note, onClick,
 }: DeviceCardProps) {
   return (
     <button
@@ -36,12 +40,18 @@ export function DeviceCard({
       onClick={onClick}
       className={cn(
         "relative flex flex-col items-center justify-center gap-1 rounded-lg border-2 p-3 text-center shadow-sm transition-colors min-h-[112px]",
-        DEVICE_STATE_TILE[state]
+        DEVICE_STATE_TILE[state],
+        nearEmpty && "ring-2 ring-warning ring-offset-1 animate-pulse"
       )}
     >
       {hasCafeteria && (
         <span className="absolute -top-2 -end-2 h-6 w-6 rounded-full bg-warning text-on-brand flex items-center justify-center shadow">
           <UtensilsCrossed className="h-3 w-3" />
+        </span>
+      )}
+      {nearEmpty && (
+        <span className="absolute -top-2 -start-2 h-6 w-6 rounded-full bg-warning text-on-brand flex items-center justify-center shadow">
+          <AlertTriangle className="h-3 w-3" />
         </span>
       )}
 

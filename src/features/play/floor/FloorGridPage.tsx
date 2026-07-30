@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -28,6 +28,7 @@ import { DEVICE_TYPE_ICONS } from "@/features/play/settings/deviceTypeOptions";
 import { DeviceCard } from "./DeviceCard";
 import { StartSessionSheet } from "./StartSessionSheet";
 import { SessionCardDrawer } from "./SessionCardDrawer";
+import { PrepaidExtendModal } from "./PrepaidExtendModal";
 import {
   computeRunningTotal, elapsedMs, findDeviceSession, findTicketSessions, formatDuration, remainingMsForPrepaid,
 } from "./sessionDisplay";
@@ -70,6 +71,7 @@ export default function FloorGridPage() {
 
   const gridDensity = usePosTerminalSettings((s) => s.gridDensity);
   const setGridDensity = usePosTerminalSettings((s) => s.setGridDensity);
+  const prepaidBlockThresholdMin = usePlaySectorSettings((s) => s.prepaidBlockThresholdMin);
 
   const { loading, error, isOffline, forcedEmpty, reload } = useFloorGrid();
 
@@ -79,6 +81,11 @@ export default function FloorGridPage() {
   const [stateFilter, setStateFilter] = useState("all");
   const [startTarget, setStartTarget] = useState<{ device: Device | null; deviceType: DeviceType } | null>(null);
   const [openSessionId, setOpenSessionId] = useState<string | null>(null);
+  const [extendTarget, setExtendTarget] = useState<string | null>(null);
+  // Tracks which prepaid sessions already got their auto-raised Extend modal for the CURRENT
+  // zero-crossing, so it fires once per crossing (not every tick) but can fire again after a
+  // later extend runs out a second time (cleared once remaining time is positive again).
+  const zeroNotifiedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -95,9 +102,10 @@ export default function FloorGridPage() {
         return dt ? rpMap[dt.rate_plan_id] : undefined;
       }, now);
 
+      const devicesMap = usePlayDevices.getState().devices;
+      const sessionsMap = usePlaySessions.getState().sessions;
+
       if (splitIds.length > 0 && usePlaySectorSettings.getState().peakCrossingNotify === "notify") {
-        const devicesMap = usePlayDevices.getState().devices;
-        const sessionsMap = usePlaySessions.getState().sessions;
         for (const sid of splitIds) {
           const s = sessionsMap[sid];
           if (!s) continue;
@@ -106,6 +114,21 @@ export default function FloorGridPage() {
             ? (devicesMap[s.device_id]?.name ?? s.device_id)
             : (dt ? (lang === "ar" ? dt.name_ar : dt.name_en) : s.device_type_id);
           toast.info(t("floor.peak_crossing_toast", { name }));
+        }
+      }
+
+      // Prepaid Extend (§5.6) — raise the modal once a prepaid session's remaining time hits
+      // zero. Background, driven by the same shared tick, no per-card timer.
+      for (const s of Object.values(sessionsMap)) {
+        if (s.mode !== "prepaid" || s.state !== "active") continue;
+        const remaining = remainingMsForPrepaid(s, now);
+        if (remaining <= 0) {
+          if (!zeroNotifiedRef.current.has(s.id)) {
+            zeroNotifiedRef.current.add(s.id);
+            setExtendTarget((current) => current ?? s.id);
+          }
+        } else {
+          zeroNotifiedRef.current.delete(s.id);
         }
       }
     }, 1000);
@@ -205,11 +228,14 @@ export default function FloorGridPage() {
     let counterText: string | undefined;
     let counterDirection: "up" | "down" | undefined;
     let runningTotalText: string | undefined;
+    let nearEmpty = false;
 
     if (session) {
       if (session.mode === "prepaid") {
-        counterText = formatDuration(remainingMsForPrepaid(session, now));
+        const remaining = remainingMsForPrepaid(session, now);
+        counterText = formatDuration(remaining);
         counterDirection = "down";
+        nearEmpty = remaining > 0 && remaining <= prepaidBlockThresholdMin * 60_000;
       } else {
         counterText = formatDuration(elapsedMs(session, now));
         counterDirection = "up";
@@ -229,6 +255,7 @@ export default function FloorGridPage() {
         counterDirection={counterDirection}
         runningTotalText={runningTotalText}
         hasCafeteria={(check?.cafeteria_lines.length ?? 0) > 0}
+        nearEmpty={nearEmpty}
         note={device.notes || undefined}
         onClick={
           device.state === "free" ? () => handleFreeDeviceTap(device)
@@ -325,6 +352,8 @@ export default function FloorGridPage() {
                           ? remainingMsForPrepaid(session, now)
                           : elapsedMs(session, now);
                         const total = computeRunningTotal(session, ratePlan, check, now);
+                        const nearEmpty = session.mode === "prepaid"
+                          && elapsedOrRemaining > 0 && elapsedOrRemaining <= prepaidBlockThresholdMin * 60_000;
 
                         return (
                           <div key={session.id} className="w-32">
@@ -337,6 +366,7 @@ export default function FloorGridPage() {
                               counterDirection={session.mode === "prepaid" ? "down" : "up"}
                               runningTotalText={total !== null ? formatMoney(total, lang) : undefined}
                               hasCafeteria={(check?.cafeteria_lines.length ?? 0) > 0}
+                              nearEmpty={nearEmpty}
                               onClick={() => openSessionDrawer(session.id)}
                             />
                           </div>
@@ -377,6 +407,24 @@ export default function FloorGridPage() {
             deviceType={openDeviceType}
             ratePlan={openRatePlan}
             check={openCheck}
+          />
+        );
+      })()}
+
+      {extendTarget && sessions[extendTarget] && (() => {
+        const extendSession = sessions[extendTarget];
+        const extendDeviceType = deviceTypes[extendSession.device_type_id];
+        if (!extendDeviceType) return null;
+        const extendDevice = extendSession.device_id ? devices[extendSession.device_id] ?? null : null;
+        const extendRatePlan = ratePlans[extendDeviceType.rate_plan_id];
+        return (
+          <PrepaidExtendModal
+            open={!!extendTarget}
+            onOpenChange={(o) => !o && setExtendTarget(null)}
+            session={extendSession}
+            device={extendDevice}
+            deviceType={extendDeviceType}
+            ratePlan={extendRatePlan}
           />
         );
       })()}
