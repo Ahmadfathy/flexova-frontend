@@ -378,6 +378,53 @@
   "log": {
     "title": "سجلّ الجلسات",
     "duration": "المدة",
-    "segments": "الشرائح"
+    "segments": "الشرائح",
+
+    "permission_required": "ليس لديك صلاحية عرض سجلّ الجلسات",
+    "error_title": "حدث خطأ ما",
+    "error_body": "تعذّر تحميل سجلّ الجلسات",
+    "offline_note": "غير متصل — البيانات معروضة من آخر مزامنة",
+    "empty_title": "لا توجد جلسات بعد",
+    "empty_body": "هتظهر هنا الجلسات بعد ما تتقفل",
+    "no_results_title": "لا توجد نتائج",
+    "no_results_body": "جرّب تغيير الفلاتر",
+    "clear_filters": "مسح الفلاتر",
+
+    "filter_date_from": "من تاريخ",
+    "filter_date_to": "إلى تاريخ",
+    "filter_device_type": "نوع الجهاز",
+    "filter_device_type_all": "كل الأنواع",
+    "filter_status": "الحالة",
+    "filter_status_all": "كل الحالات",
+    "filter_mode": "النمط",
+    "filter_mode_all": "كل الأنماط",
+
+    "col_date": "التاريخ",
+    "col_device": "الجهاز",
+    "col_mode": "النمط",
+    "col_duration": "المدة",
+    "col_total": "الإجمالي",
+    "col_status": "الحالة",
+    "col_eta": "الإيصال الإلكتروني",
+
+    "status_paid": "مدفوعة",
+    "status_cancelled": "ملغاة",
+
+    "eta_issued": "صادر",
+    "eta_queued": "قيد الانتظار",
+    "eta_flagged": "معلّق (كود ناقص)",
+    "eta_reversed": "معكوس",
+
+    "seg_device": "الجهاز",
+    "seg_window": "النافذة",
+    "seg_rate": "السعر",
+    "seg_units": "الوحدات",
+    "seg_subtotal": "الإجمالي الفرعي",
+    "window_flat": "خارج الذروة (دائم)",
+    "window_prepaid": "مدفوع مقدّماً (بدون تحصيل)",
+
+    "page_info": "{{from}}–{{to}} من {{total}}",
+    "prev_page": "السابق",
+    "next_page": "التالي"
   }
 }

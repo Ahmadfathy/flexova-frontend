@@ -378,6 +378,53 @@
   "log": {
     "title": "Session log",
     "duration": "Duration",
-    "segments": "Segments"
+    "segments": "Segments",
+
+    "permission_required": "You don't have permission to view the session log",
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load the session log",
+    "offline_note": "Offline — showing data as of last sync",
+    "empty_title": "No sessions yet",
+    "empty_body": "Ended sessions will show up here once devices start closing out",
+    "no_results_title": "No results",
+    "no_results_body": "Try changing the filters",
+    "clear_filters": "Clear filters",
+
+    "filter_date_from": "From date",
+    "filter_date_to": "To date",
+    "filter_device_type": "Device type",
+    "filter_device_type_all": "All types",
+    "filter_status": "Status",
+    "filter_status_all": "All statuses",
+    "filter_mode": "Mode",
+    "filter_mode_all": "All modes",
+
+    "col_date": "Date",
+    "col_device": "Device",
+    "col_mode": "Mode",
+    "col_duration": "Duration",
+    "col_total": "Total",
+    "col_status": "Status",
+    "col_eta": "E-receipt",
+
+    "status_paid": "Paid",
+    "status_cancelled": "Cancelled",
+
+    "eta_issued": "Issued",
+    "eta_queued": "Queued",
+    "eta_flagged": "On hold (missing code)",
+    "eta_reversed": "Reversed",
+
+    "seg_device": "Device",
+    "seg_window": "Window",
+    "seg_rate": "Rate",
+    "seg_units": "Units",
+    "seg_subtotal": "Subtotal",
+    "window_flat": "Off-peak (always)",
+    "window_prepaid": "Prepaid (no charge)",
+
+    "page_info": "{{from}}–{{to}} of {{total}}",
+    "prev_page": "Previous",
+    "next_page": "Next"
   }
 }

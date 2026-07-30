@@ -32,6 +32,7 @@ const PlayDevicesPage = lazy(() => import("@/features/play/settings/DevicesPage"
 const PlayRatePlansPage = lazy(() => import("@/features/play/settings/RatePlansPage"));
 const PlayRatePlanEditorPage = lazy(() => import("@/features/play/settings/RatePlanEditorPage"));
 const PlaySectorSettingsPage = lazy(() => import("@/features/play/settings/SectorSettingsPage"));
+const PlaySessionLogPage = lazy(() => import("@/features/play/sessions/SessionLogPage"));
 
 // Inventory
 import { InventoryLayout } from "@/features/inventory/InventoryLayout";
@@ -221,7 +222,9 @@ export default function App() {
         </Route>
 
         {/* Play (time-based) — FE_15 — reuses PosLayout (generic body). Bare `/play` is the
-            Floor Grid itself (FE_15 §2 IA); `/play/sessions` (back-office log) is a later step. */}
+            Floor Grid itself (FE_15 §2 IA); `/play/sessions` (back-office log, §9) is mounted
+            separately below under AppShell — same precedent as `/repair/settings`, a static
+            path that outranks this block's own `/play/*` splat. */}
         <Route path="/play/*" element={<PosLayout variant="generic" syncIndicator={<PlaySyncIndicator />} />}>
           <Route index element={<FloorGridPage />} />
         </Route>
@@ -356,6 +359,16 @@ export default function App() {
 
           {/* Repair / Work Order — FE_12 — Workshop settings is back-office (spec §7), not PosLayout */}
           <Route path="/repair/settings" element={<RepairSettingsPage />} />
+
+          {/* Play (time-based) — FE_15 — Session log is back-office (spec §9), not PosLayout */}
+          <Route
+            path="/play/sessions"
+            element={
+              <Suspense fallback={<PageFallback />}>
+                <PlaySessionLogPage />
+              </Suspense>
+            }
+          />
 
           {/* Wholesale & Distribution — FE_13 — back-office (standard shell) */}
           <Route path="/wholesale" element={<WholesaleLayout />}>

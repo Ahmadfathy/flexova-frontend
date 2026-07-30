@@ -117,6 +117,11 @@ export interface Session {
   eta_status?: string;
   cancel_reason?: string;
   reversal_doc_id?: string;
+  /** Not a fixture field — stamped at start-time from the terminal's `getShift().cashier_id`
+   * (§9 needs "cashier sees own" row-scope on the Session log). Existing seeded fixture
+   * sessions predate this and are simply left unset — treated as visible to everyone rather
+   * than hidden from all scoped views, since they can't be attributed to any cashier. */
+  opened_by?: string;
   _flag?: string;
 }
 

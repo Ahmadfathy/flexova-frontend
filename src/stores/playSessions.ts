@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getSessions } from "@/lib/mock/play";
+import { getSessions, getShift } from "@/lib/mock/play";
 import { splitOnBoundary } from "@/features/play/rate-engine";
 import type { PlayMode, RatePlan, Session, SessionCustomer, SessionMode } from "@/features/play/types";
 
@@ -149,6 +149,7 @@ export const usePlaySessions = create<PlaySessionsState>()(
           ...(input.block_id !== undefined && { block_id: input.block_id }),
           ...(input.block_duration_min !== undefined && { block_duration_min: input.block_duration_min }),
           ...(input.prepaid_receipt_id !== undefined && { prepaid_receipt_id: input.prepaid_receipt_id }),
+          opened_by: getShift().cashier_id,
         };
         set((s) => ({ sessions: { ...s.sessions, [session.id]: session } }));
         return session;
