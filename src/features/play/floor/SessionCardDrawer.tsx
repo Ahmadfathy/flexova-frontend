@@ -22,6 +22,7 @@ import { TransferSessionSheet } from "./TransferSessionSheet";
 import { CafeteriaOverlay } from "./CafeteriaOverlay";
 import { PrepaidExtendModal } from "./PrepaidExtendModal";
 import { EndBillDialog } from "./EndBillDialog";
+import { CancelSessionDialog } from "./CancelSessionDialog";
 
 interface SessionCardDrawerProps {
   open: boolean;
@@ -55,6 +56,7 @@ export function SessionCardDrawer({
   const [cafeteriaOpen, setCafeteriaOpen] = useState(false);
   const [extendOpen, setExtendOpen] = useState(false);
   const [endBillOpen, setEndBillOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
   const canTransfer = session.state === "active" && device !== null;
   const canExtend = session.mode === "prepaid" && session.state === "active";
 
@@ -111,10 +113,6 @@ export function SessionCardDrawer({
     resumeSession(session.id, session.device_id, { rule_id: rule.id, price_per_unit: rule.price_per_unit });
     setDeviceState("busy");
     toast.success(t("floor.resumed_toast"));
-  }
-
-  function handleStub() {
-    toast.info(t("floor.stub_toast"));
   }
 
   return (
@@ -231,7 +229,7 @@ export function SessionCardDrawer({
           </Button>
           <Button
             variant="ghost" size="sm" className="text-danger hover:text-danger hover:bg-danger-tint"
-            onClick={handleStub}
+            onClick={() => setCancelOpen(true)}
             disabled={!canCancel}
           >
             <XCircle className="h-4 w-4 me-1.5" />
@@ -280,6 +278,15 @@ export function SessionCardDrawer({
         device={device}
         deviceType={deviceType}
         ratePlan={ratePlan}
+        check={check}
+        onDone={() => onOpenChange(false)}
+      />
+
+      <CancelSessionDialog
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
+        session={session}
+        device={device}
         check={check}
         onDone={() => onOpenChange(false)}
       />

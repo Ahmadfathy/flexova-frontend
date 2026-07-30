@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/patterns/EmptyState";
 import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton } from "@/components/patterns/Skeletons";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -29,6 +30,7 @@ import { DeviceCard } from "./DeviceCard";
 import { StartSessionSheet } from "./StartSessionSheet";
 import { SessionCardDrawer } from "./SessionCardDrawer";
 import { PrepaidExtendModal } from "./PrepaidExtendModal";
+import { ReserveDeviceDialog } from "./ReserveDeviceDialog";
 import {
   computeRunningTotal, elapsedMs, findDeviceSession, findTicketSessions, formatDuration, remainingMsForPrepaid,
 } from "./sessionDisplay";
@@ -59,6 +61,7 @@ export default function FloorGridPage() {
   const navigate = useNavigate();
 
   const devices = usePlayDevices((s) => s.devices);
+  const updateDevice = usePlayDevices((s) => s.updateDevice);
   const deviceTypes = usePlayDeviceTypes((s) => s.deviceTypes);
   const ratePlans = usePlayRatePlans((s) => s.ratePlans);
   const sessions = usePlaySessions((s) => s.sessions);
@@ -82,6 +85,10 @@ export default function FloorGridPage() {
   const [startTarget, setStartTarget] = useState<{ device: Device | null; deviceType: DeviceType } | null>(null);
   const [openSessionId, setOpenSessionId] = useState<string | null>(null);
   const [extendTarget, setExtendTarget] = useState<string | null>(null);
+  const [reserveTarget, setReserveTarget] = useState<Device | null>(null);
+  const [maintenanceTarget, setMaintenanceTarget] = useState<Device | null>(null);
+  const [restoreTarget, setRestoreTarget] = useState<Device | null>(null);
+  const canMaintain = can("play.device.maintain");
   // Tracks which prepaid sessions already got their auto-raised Extend modal for the CURRENT
   // zero-crossing, so it fires once per crossing (not every tick) but can fire again after a
   // later extend runs out a second time (cleared once remaining time is positive again).
@@ -199,10 +206,20 @@ export default function FloorGridPage() {
     toast.info(t("floor.stub_toast"));
   }
 
-  function handleFreeDeviceTap(device: Device) {
+  /** Free devices AND reserved devices both tap straight into the normal Start sheet (§5.8 —
+   * "on arrival → Start"); nothing entered on the Reserve dialog is read back, this is the
+   * exact same 2-tap postpaid / pay-to-start prepaid flow either way. */
+  function handleStartTap(device: Device) {
     const dt = deviceTypes[device.device_type_id];
     if (!dt) return;
     setStartTarget({ device, deviceType: dt });
+  }
+
+  function deviceSaveInput(device: Device, overrides: Partial<Pick<Device, "state" | "notes">>) {
+    return {
+      name: device.name, device_type_id: device.device_type_id, branch_id: device.branch_id,
+      state: device.state, notes: device.notes, ...overrides,
+    };
   }
 
   function handleNewTicketSessionTap(dt: DeviceType) {
@@ -258,10 +275,21 @@ export default function FloorGridPage() {
         nearEmpty={nearEmpty}
         note={device.notes || undefined}
         onClick={
-          device.state === "free" ? () => handleFreeDeviceTap(device)
+          device.state === "free" ? () => handleStartTap(device)
+          : device.state === "reserved" ? () => handleStartTap(device)
           : (device.state === "busy" || device.state === "paused") && session ? () => openSessionDrawer(session.id)
+          : device.state === "out_of_service" ? () => setRestoreTarget(device)
           : handleStubTap
         }
+        menu={
+          device.state === "free"
+            ? [
+                { label: t("reserve"), onSelect: () => setReserveTarget(device) },
+                { label: t("maintenance"), onSelect: () => setMaintenanceTarget(device) },
+              ]
+            : undefined
+        }
+        menuLabel={t("floor.device_menu")}
       />
     );
   }
@@ -410,6 +438,43 @@ export default function FloorGridPage() {
           />
         );
       })()}
+
+      {reserveTarget && (
+        <ReserveDeviceDialog
+          open={!!reserveTarget}
+          onOpenChange={(o) => !o && setReserveTarget(null)}
+          device={reserveTarget}
+        />
+      )}
+
+      <ConfirmDialog
+        open={!!maintenanceTarget}
+        onOpenChange={(o) => !o && setMaintenanceTarget(null)}
+        title={maintenanceTarget ? t("floor.maintenance_title", { name: maintenanceTarget.name }) : ""}
+        description={t("floor.maintenance_body")}
+        confirmTone="warning"
+        confirmLabel={t("maintenance")}
+        onConfirm={() => {
+          if (!maintenanceTarget) return;
+          updateDevice(maintenanceTarget.id, deviceSaveInput(maintenanceTarget, { state: "out_of_service" }));
+          toast.success(t("floor.maintenance_toast"));
+          setMaintenanceTarget(null);
+        }}
+      />
+
+      <ConfirmDialog
+        open={!!restoreTarget}
+        onOpenChange={(o) => !o && setRestoreTarget(null)}
+        title={restoreTarget ? t("floor.restore_title", { name: restoreTarget.name }) : ""}
+        description={canMaintain ? t("floor.restore_body") : t("floor.restore_permission_required")}
+        confirmLabel={t("floor.restore_confirm")}
+        onConfirm={canMaintain ? () => {
+          if (!restoreTarget) return;
+          updateDevice(restoreTarget.id, deviceSaveInput(restoreTarget, { state: "free", notes: "" }));
+          toast.success(t("floor.restore_toast"));
+          setRestoreTarget(null);
+        } : undefined}
+      />
 
       {extendTarget && sessions[extendTarget] && (() => {
         const extendSession = sessions[extendTarget];

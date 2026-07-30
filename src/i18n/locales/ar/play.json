@@ -98,7 +98,33 @@
     "done": "تم",
 
     "doc_type_e_invoice": "فاتورة إلكترونية",
-    "doc_type_e_receipt": "إيصال إلكتروني"
+    "doc_type_e_receipt": "إيصال إلكتروني",
+
+    "device_menu": "إجراءات إضافية",
+
+    "reserve_title": "حجز — {{name}}",
+    "reserve_name": "اسم العميل",
+    "reserve_name_required": "اسم العميل مطلوب",
+    "reserve_phone": "رقم الهاتف",
+    "reserve_time": "الوقت المتوقع للحضور",
+    "reserve_note": "محجوز باسم {{name}} — الساعة {{time}}",
+    "reserve_note_with_phone": "محجوز باسم {{name}} ({{phone}}) — الساعة {{time}}",
+    "reserve_toast": "تم حجز الجهاز",
+
+    "maintenance_title": "إرسال للصيانة — {{name}}",
+    "maintenance_body": "الجهاز هيتحول لـ«خارج الخدمة» ومش هيقبل جلسات جديدة لحد ما يرجع فاضي.",
+    "maintenance_toast": "تم إرسال الجهاز للصيانة",
+
+    "restore_title": "استعادة الجهاز — {{name}}",
+    "restore_body": "هيرجع الجهاز «فاضي» وجاهز لجلسات جديدة.",
+    "restore_permission_required": "ليس لديك صلاحية استعادة جهاز من الصيانة",
+    "restore_confirm": "استعادة",
+    "restore_toast": "تم استعادة الجهاز",
+
+    "cancel_session_title": "إلغاء الجلسة",
+    "cancel_session_body": "هيتم إلغاء الجلسة وتحرير الجهاز. لو كان في إيصال إلكتروني صادر، هيتم عمل إشعار عكسي بدل حذفه.",
+    "cancel_session_confirm": "تأكيد الإلغاء",
+    "cancel_session_toast": "تم إلغاء الجلسة"
   },
   "device": {
     "free": "فاضي",

@@ -98,7 +98,33 @@
     "done": "Done",
 
     "doc_type_e_invoice": "E-invoice",
-    "doc_type_e_receipt": "E-receipt"
+    "doc_type_e_receipt": "E-receipt",
+
+    "device_menu": "More actions",
+
+    "reserve_title": "Reserve — {{name}}",
+    "reserve_name": "Customer name",
+    "reserve_name_required": "Customer name is required",
+    "reserve_phone": "Phone",
+    "reserve_time": "Expected arrival time",
+    "reserve_note": "Reserved for {{name}} — {{time}}",
+    "reserve_note_with_phone": "Reserved for {{name}} ({{phone}}) — {{time}}",
+    "reserve_toast": "Device reserved",
+
+    "maintenance_title": "Send to maintenance — {{name}}",
+    "maintenance_body": "The device will switch to \"Out of service\" and refuse new sessions until restored.",
+    "maintenance_toast": "Device sent to maintenance",
+
+    "restore_title": "Restore device — {{name}}",
+    "restore_body": "The device will return to \"Free\" and be ready for new sessions.",
+    "restore_permission_required": "You don't have permission to restore a device from maintenance",
+    "restore_confirm": "Restore",
+    "restore_toast": "Device restored",
+
+    "cancel_session_title": "Cancel session",
+    "cancel_session_body": "The session will be cancelled and the device freed. If an e-receipt was already issued, a reversal will be posted instead of deleting it.",
+    "cancel_session_confirm": "Confirm cancel",
+    "cancel_session_toast": "Session cancelled"
   },
   "device": {
     "free": "Free",

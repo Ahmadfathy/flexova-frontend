@@ -241,3 +241,39 @@ describe("usePlaySessions — endSession (§5.7)", () => {
     expect(usePlaySessions.getState().sessions.ses_test.document_id).toBe("doc_1");
   });
 });
+
+describe("usePlaySessions — cancelSession (§5.9)", () => {
+  it("transitions active → cancelled with a reason, no reversal fields when none is passed", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().cancelSession("ses_test", "العميل مشي");
+    const s = usePlaySessions.getState().sessions.ses_test;
+    expect(s.state).toBe("cancelled");
+    expect(s.cancel_reason).toBe("العميل مشي");
+    expect(s.reversal_doc_id).toBeUndefined();
+    expect(s.eta_status).toBeUndefined();
+  });
+
+  it("records the reversal doc id and flips eta_status to reversed when one is passed", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().cancelSession("ses_test", "no-show", "cn_play_1");
+    const s = usePlaySessions.getState().sessions.ses_test;
+    expect(s.state).toBe("cancelled");
+    expect(s.reversal_doc_id).toBe("cn_play_1");
+    expect(s.eta_status).toBe("reversed");
+  });
+
+  it("also cancels a paused session", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().pauseSession("ses_test");
+    usePlaySessions.getState().cancelSession("ses_test", "reason");
+    expect(usePlaySessions.getState().sessions.ses_test.state).toBe("cancelled");
+  });
+
+  it("is a no-op on an already-paid or already-cancelled session", () => {
+    usePlaySessions.setState({ sessions: { ses_test: seedSession() }, clock: 0 });
+    usePlaySessions.getState().endSession("ses_test", "doc_1", "valid");
+    usePlaySessions.getState().cancelSession("ses_test", "too late");
+    expect(usePlaySessions.getState().sessions.ses_test.state).toBe("paid");
+    expect(usePlaySessions.getState().sessions.ses_test.cancel_reason).toBeUndefined();
+  });
+});

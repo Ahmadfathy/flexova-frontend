@@ -109,6 +109,14 @@ interface PlaySessionsState {
    * attached here since the caller already built/filed the `PlayDocument` by this point.
    */
   endSession: (sessionId: string, documentId: string, etaStatus: string) => void;
+  /**
+   * Cancel (§5.9): active/paused → `cancelled`, reason recorded. `reversalDocId` is passed
+   * only when the caller already determined an e-receipt had been issued (prepaid's
+   * pay-to-start) and filed a reversal for it — in that case `eta_status` also flips to
+   * `"reversed"` (mirrors the fixtures' own seeded `ses_7`). A plain postpaid session that
+   * never issued anything cancels with neither.
+   */
+  cancelSession: (sessionId: string, reason: string, reversalDocId?: string) => void;
 }
 
 export const usePlaySessions = create<PlaySessionsState>()(
@@ -284,6 +292,22 @@ export const usePlaySessions = create<PlaySessionsState>()(
           sessions: {
             ...s.sessions,
             [sessionId]: { ...session, state: "paid", segments, document_id: documentId, eta_status: etaStatus },
+          },
+        };
+      }),
+
+      cancelSession: (sessionId, reason, reversalDocId) => set((s) => {
+        const session = s.sessions[sessionId];
+        if (!session || (session.state !== "active" && session.state !== "paused")) return s;
+        return {
+          sessions: {
+            ...s.sessions,
+            [sessionId]: {
+              ...session,
+              state: "cancelled",
+              cancel_reason: reason,
+              ...(reversalDocId !== undefined && { reversal_doc_id: reversalDocId, eta_status: "reversed" }),
+            },
           },
         };
       }),
