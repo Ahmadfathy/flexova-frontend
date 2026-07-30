@@ -26,6 +26,10 @@ const AppearanceSettingsPage = lazy(() =>
   import("@/features/settings/AppearanceSettings").then(m => ({ default: m.AppearanceSettings }))
 );
 
+// Play — FE_15 — back-office settings (standard shell, not PosLayout)
+const PlayDeviceTypesPage = lazy(() => import("@/features/play/settings/DeviceTypesPage"));
+const PlayDevicesPage = lazy(() => import("@/features/play/settings/DevicesPage"));
+
 // Inventory
 import { InventoryLayout } from "@/features/inventory/InventoryLayout";
 import {
@@ -389,6 +393,22 @@ export default function App() {
               element={
                 <Suspense fallback={<PageFallback />}>
                   <AppearanceSettingsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="play/device-types"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <PlayDeviceTypesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="play/devices"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <PlayDevicesPage />
                 </Suspense>
               }
             />
