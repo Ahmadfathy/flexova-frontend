@@ -20,10 +20,12 @@ import { usePlayDevices } from "@/stores/playDevices";
 import { usePlayDeviceTypes } from "@/stores/playDeviceTypes";
 import { usePlayRatePlans } from "@/stores/playRatePlans";
 import { usePlaySessions } from "@/stores/playSessions";
-import { getShift, getChecks } from "@/lib/mock/play";
-import type { Device, DeviceState, Session } from "@/features/play/types";
+import { usePlayChecks } from "@/stores/playChecks";
+import { getShift } from "@/lib/mock/play";
+import type { Device, DeviceState, DeviceType, Session } from "@/features/play/types";
 import { DEVICE_TYPE_ICONS } from "@/features/play/settings/deviceTypeOptions";
 import { DeviceCard } from "./DeviceCard";
+import { StartSessionSheet } from "./StartSessionSheet";
 import {
   computeRunningTotal, elapsedMs, findDeviceSession, findTicketSessions, formatDuration, remainingMsForPrepaid,
 } from "./sessionDisplay";
@@ -62,6 +64,7 @@ export default function FloorGridPage() {
   // every tick so cards recompute their live numbers — the ONE shared interval lives below,
   // there is no per-card timer anywhere.
   usePlaySessions((s) => s.clock);
+  const checks = usePlayChecks((s) => s.checks);
 
   const gridDensity = usePosTerminalSettings((s) => s.gridDensity);
   const setGridDensity = usePosTerminalSettings((s) => s.setGridDensity);
@@ -70,6 +73,7 @@ export default function FloorGridPage() {
 
   const [typeFilter, setTypeFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
+  const [startTarget, setStartTarget] = useState<{ device: Device | null; deviceType: DeviceType } | null>(null);
 
   useEffect(() => {
     const id = setInterval(tick, 1000);
@@ -133,11 +137,21 @@ export default function FloorGridPage() {
   }
 
   function checkFor(session: Session) {
-    return getChecks().find((c) => c.session_id === session.id);
+    return Object.values(checks).find((c) => c.session_id === session.id);
   }
 
-  function handleTap() {
+  function handleBusyTap() {
     toast.info(t("floor.stub_toast"));
+  }
+
+  function handleFreeDeviceTap(device: Device) {
+    const dt = deviceTypes[device.device_type_id];
+    if (!dt) return;
+    setStartTarget({ device, deviceType: dt });
+  }
+
+  function handleNewTicketSessionTap(dt: DeviceType) {
+    setStartTarget({ device: null, deviceType: dt });
   }
 
   function clearFilters() {
@@ -180,7 +194,7 @@ export default function FloorGridPage() {
         runningTotalText={runningTotalText}
         hasCafeteria={(check?.cafeteria_lines.length ?? 0) > 0}
         note={device.notes || undefined}
-        onClick={handleTap}
+        onClick={device.state === "free" ? () => handleFreeDeviceTap(device) : handleBusyTap}
       />
     );
   }
@@ -255,7 +269,7 @@ export default function FloorGridPage() {
                     <div className="flex flex-wrap gap-3">
                       <button
                         type="button"
-                        onClick={handleTap}
+                        onClick={() => handleNewTicketSessionTap(dt)}
                         className="flex flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-border p-3 text-center min-h-[112px] w-32 text-muted-foreground hover:border-brand/40 hover:text-foreground transition-colors"
                       >
                         <Plus className="h-5 w-5" />
@@ -283,7 +297,7 @@ export default function FloorGridPage() {
                               counterDirection={session.mode === "prepaid" ? "down" : "up"}
                               runningTotalText={total !== null ? formatMoney(total, lang) : undefined}
                               hasCafeteria={(check?.cafeteria_lines.length ?? 0) > 0}
-                              onClick={handleTap}
+                              onClick={handleBusyTap}
                             />
                           </div>
                         );
@@ -295,6 +309,16 @@ export default function FloorGridPage() {
             </div>
           )}
         </div>
+      )}
+
+      {startTarget && (
+        <StartSessionSheet
+          key={startTarget.device?.id ?? `dt-${startTarget.deviceType.id}`}
+          open={!!startTarget}
+          onOpenChange={(o) => !o && setStartTarget(null)}
+          device={startTarget.device}
+          deviceType={startTarget.deviceType}
+        />
       )}
     </div>
   );

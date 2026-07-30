@@ -27,7 +27,30 @@
     "sync_syncing": "Syncing",
     "sync_synced": "Synced",
 
-    "stub_toast": "Available in a later step"
+    "stub_toast": "Available in a later step",
+
+    "start_sheet_title": "Start session — {{name}}",
+    "mode_label": "Session mode",
+    "collect_permission_required": "You don't have permission to collect payment",
+    "block_required": "Pick a prepaid block",
+    "no_blocks": "No prepaid blocks defined for this device",
+
+    "customer_label": "Customer",
+    "customer_walkin": "Walk-in",
+    "customer_pick": "Pick customer",
+    "customer_clear": "Remove customer",
+    "customer_search_placeholder": "Search by name or phone",
+    "customer_add_new": "Add new customer",
+
+    "supervisor_label": "Supervisor",
+    "supervisor_none": "No supervisor",
+
+    "play_mode_label": "Play mode",
+
+    "no_rate_rule_error": "Couldn't resolve a price for this device — check its rate plan",
+    "session_started_toast": "Session started",
+    "receipt_issued_toast": "E-receipt issued",
+    "receipt_queued_toast": "E-receipt queued — will send once connected"
   },
   "device": {
     "free": "Free",

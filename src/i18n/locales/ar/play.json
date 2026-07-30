@@ -27,7 +27,30 @@
     "sync_syncing": "مزامنة",
     "sync_synced": "متزامن",
 
-    "stub_toast": "هتتفعّل في خطوة لاحقة"
+    "stub_toast": "هتتفعّل في خطوة لاحقة",
+
+    "start_sheet_title": "بدء جلسة — {{name}}",
+    "mode_label": "نمط الجلسة",
+    "collect_permission_required": "ليس لديك صلاحية لتحصيل الدفع",
+    "block_required": "اختر بلوك مدفوع مقدّماً",
+    "no_blocks": "لا توجد بلوكات مدفوعة مقدّماً لهذا الجهاز",
+
+    "customer_label": "العميل",
+    "customer_walkin": "زبون عابر",
+    "customer_pick": "اختيار عميل",
+    "customer_clear": "إزالة العميل",
+    "customer_search_placeholder": "بحث بالاسم أو الرقم",
+    "customer_add_new": "إضافة عميل جديد",
+
+    "supervisor_label": "المشرف",
+    "supervisor_none": "بدون مشرف",
+
+    "play_mode_label": "نمط اللعب",
+
+    "no_rate_rule_error": "تعذّر تحديد سعر لهذا الجهاز — راجع خطة التسعير",
+    "session_started_toast": "تم بدء الجلسة",
+    "receipt_issued_toast": "تم إصدار الإيصال الإلكتروني",
+    "receipt_queued_toast": "الإيصال الإلكتروني في قائمة الانتظار — سيتم الإرسال عند الاتصال"
   },
   "device": {
     "free": "فاضي",
