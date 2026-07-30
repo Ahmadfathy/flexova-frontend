@@ -121,6 +121,10 @@ import RepairIntakePage from "@/features/repair/RepairIntakePage";
 import WorkOrderDetailPage from "@/features/repair/WorkOrderDetailPage";
 import RepairSettingsPage from "@/features/repair/RepairSettingsPage";
 
+// Play (time-based) — FE_15 — reuses PosLayout (generic variant); Floor Grid (§4) this step
+import FloorGridPage from "@/features/play/floor/FloorGridPage";
+import { PlaySyncIndicator } from "@/components/play/PlaySyncIndicator";
+
 // Wholesale & Distribution — FE_13 — scaffold only (routes + placeholders, no UI logic yet)
 import { WholesaleLayout } from "@/features/wholesale/WholesaleLayout";
 import {
@@ -214,6 +218,12 @@ export default function App() {
           <Route path="board" element={<RepairBoardPage />} />
           <Route path="new" element={<RepairIntakePage />} />
           <Route path=":id" element={<WorkOrderDetailPage />} />
+        </Route>
+
+        {/* Play (time-based) — FE_15 — reuses PosLayout (generic body). Bare `/play` is the
+            Floor Grid itself (FE_15 §2 IA); `/play/sessions` (back-office log) is a later step. */}
+        <Route path="/play/*" element={<PosLayout variant="generic" syncIndicator={<PlaySyncIndicator />} />}>
+          <Route index element={<FloorGridPage />} />
         </Route>
 
         {/* Wholesale & Distribution — FE_13 — van field screens reuse PosLayout (generic body),

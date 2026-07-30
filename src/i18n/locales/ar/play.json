@@ -2,7 +2,32 @@
   "title": "بلاي",
 
   "floor": {
-    "title": "صالة التشغيل"
+    "title": "صالة التشغيل",
+
+    "filter_type": "نوع الجهاز",
+    "filter_type_all": "كل الأنواع",
+    "filter_state": "الحالة",
+    "filter_state_all": "كل الحالات",
+
+    "empty_title": "لا توجد أجهزة بعد",
+    "empty_body": "أضف أجهزة من الإعدادات",
+    "empty_action": "الإعدادات",
+    "no_results_title": "لا توجد نتائج",
+    "no_results_body": "جرّب تغيير الفلاتر",
+    "clear_filters": "مسح الفلاتر",
+    "error_title": "حدث خطأ ما",
+    "error_body": "تعذّر تحميل صالة التشغيل",
+    "offline_note": "غير متصل — العدادات شغّالة محلياً وهتتزامن عند الاتصال",
+    "permission_required": "ليس لديك صلاحية لتشغيل صالة اللعب",
+
+    "ticket_zone_title": "منطقة التذاكر",
+    "active_count": "{{n}} نشطة",
+
+    "sync_local": "محلي",
+    "sync_syncing": "مزامنة",
+    "sync_synced": "متزامن",
+
+    "stub_toast": "هتتفعّل في خطوة لاحقة"
   },
   "device": {
     "free": "فاضي",

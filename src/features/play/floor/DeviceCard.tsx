@@ -1,0 +1,64 @@
+import type { LucideIcon } from "lucide-react";
+import { UtensilsCrossed, ArrowUp, ArrowDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { DeviceState } from "@/features/play/types";
+
+export const DEVICE_STATE_TILE: Record<DeviceState, string> = {
+  free: "bg-card border-border text-foreground hover:border-brand/40",
+  busy: "bg-brand border-brand text-on-brand",
+  reserved: "bg-warning-tint border-warning text-warning-text",
+  paused: "bg-warning-tint border-warning text-warning-text",
+  out_of_service: "bg-danger-tint border-danger text-danger-text",
+};
+
+interface DeviceCardProps {
+  name: string;
+  Icon: LucideIcon;
+  state: DeviceState;
+  stateLabel: string;
+  counterText?: string;
+  counterDirection?: "up" | "down";
+  runningTotalText?: string;
+  hasCafeteria?: boolean;
+  note?: string;
+  onClick?: () => void;
+}
+
+/** One device tile on the Floor Grid — semantic color per state, live counter (already
+ * computed by the caller from the shared tick, never a per-card timer), running total, and
+ * a small cafeteria badge. Also reused for the ticket-zone's active-ticket mini-cards. */
+export function DeviceCard({
+  name, Icon, state, stateLabel, counterText, counterDirection, runningTotalText, hasCafeteria, note, onClick,
+}: DeviceCardProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "relative flex flex-col items-center justify-center gap-1 rounded-lg border-2 p-3 text-center shadow-sm transition-colors min-h-[112px]",
+        DEVICE_STATE_TILE[state]
+      )}
+    >
+      {hasCafeteria && (
+        <span className="absolute -top-2 -end-2 h-6 w-6 rounded-full bg-warning text-on-brand flex items-center justify-center shadow">
+          <UtensilsCrossed className="h-3 w-3" />
+        </span>
+      )}
+
+      <Icon className="h-5 w-5 opacity-80" />
+      <span className="text-sm font-semibold truncate max-w-full">{name}</span>
+      <span className="text-[11px] opacity-80">{stateLabel}</span>
+
+      {counterText && (
+        <span className="inline-flex items-center gap-0.5 text-sm font-bold tabular-nums" dir="ltr">
+          {counterDirection === "down" ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />}
+          {counterText}
+        </span>
+      )}
+      {runningTotalText && (
+        <span className="text-xs font-semibold tabular-nums">{runningTotalText}</span>
+      )}
+      {note && <span className="text-[10px] truncate max-w-full opacity-80">{note}</span>}
+    </button>
+  );
+}

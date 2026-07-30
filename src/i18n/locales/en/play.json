@@ -2,7 +2,32 @@
   "title": "Play",
 
   "floor": {
-    "title": "Floor"
+    "title": "Floor",
+
+    "filter_type": "Device type",
+    "filter_type_all": "All types",
+    "filter_state": "State",
+    "filter_state_all": "All states",
+
+    "empty_title": "No devices yet",
+    "empty_body": "Add devices from settings",
+    "empty_action": "Settings",
+    "no_results_title": "No results",
+    "no_results_body": "Try changing the filters",
+    "clear_filters": "Clear filters",
+    "error_title": "Something went wrong",
+    "error_body": "Couldn't load the floor",
+    "offline_note": "Offline — counters keep running locally and will sync once connected",
+    "permission_required": "You don't have permission to operate the floor",
+
+    "ticket_zone_title": "Ticket / pool zone",
+    "active_count": "{{n}} active",
+
+    "sync_local": "Local",
+    "sync_syncing": "Syncing",
+    "sync_synced": "Synced",
+
+    "stub_toast": "Available in a later step"
   },
   "device": {
     "free": "Free",
