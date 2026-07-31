@@ -12,10 +12,12 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { usePlaySessions } from "@/stores/playSessions";
+import { usePlayChecks } from "@/stores/playChecks";
 import { usePosRegister } from "@/stores/posRegister";
 import { TenderModal } from "@/features/pos/TenderModal";
 import { resolveRule } from "@/features/play/rate-engine";
 import { remainingMsForPrepaid } from "./sessionDisplay";
+import { EndBillDialog } from "./EndBillDialog";
 import type { Device, DeviceType, RatePlan, Session } from "@/features/play/types";
 
 interface PrepaidExtendModalProps {
@@ -43,10 +45,12 @@ export function PrepaidExtendModal({ open, onOpenChange, session, device, device
   const extendPrepaidBlock = usePlaySessions((s) => s.extendPrepaidBlock);
   const convertToOpenCounter = usePlaySessions((s) => s.convertToOpenCounter);
   const setPosCustomer = usePosRegister((s) => s.setCustomer);
+  const check = usePlayChecks((s) => s.checks[session.check_id]);
 
   const blocks = useMemo(() => ratePlan?.prepaid_blocks ?? [], [ratePlan]);
   const [blockId, setBlockId] = useState(session.block_id && blocks.some((b) => b.id === session.block_id) ? session.block_id : (blocks[0]?.id ?? ""));
   const [tenderOpen, setTenderOpen] = useState(false);
+  const [endBillOpen, setEndBillOpen] = useState(false);
 
   const selectedBlock = blocks.find((b) => b.id === blockId);
   const targetName = device ? device.name : (lang === "ar" ? deviceType.name_ar : deviceType.name_en);
@@ -84,13 +88,13 @@ export function PrepaidExtendModal({ open, onOpenChange, session, device, device
   }
 
   function handleEnd() {
-    toast.info(t("floor.stub_toast"));
+    setEndBillOpen(true);
   }
 
   return (
     <>
       <ModalShell
-        open={open}
+        open={open && !endBillOpen}
         onOpenChange={onOpenChange}
         title={t("floor.extend_modal_title", { name: targetName })}
         size="sm"
@@ -142,6 +146,17 @@ export function PrepaidExtendModal({ open, onOpenChange, session, device, device
           onSettle={handleTenderSettle}
         />
       )}
+
+      <EndBillDialog
+        open={endBillOpen}
+        onOpenChange={(o) => { if (!o) setEndBillOpen(false); }}
+        session={session}
+        device={device}
+        deviceType={deviceType}
+        ratePlan={ratePlan}
+        check={check}
+        onDone={() => onOpenChange(false)}
+      />
     </>
   );
 }

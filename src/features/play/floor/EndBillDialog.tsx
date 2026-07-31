@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Flag, Printer } from "lucide-react";
+import { Flag, Lock, Printer } from "lucide-react";
 
 import { ModalShell } from "@/components/patterns/ModalShell";
 import { Button } from "@/components/ui/button";
 
 import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
+import { useCan } from "@/lib/permissions";
 import { usePlayDevices } from "@/stores/playDevices";
 import { usePlaySessions } from "@/stores/playSessions";
 import { usePlayChecks } from "@/stores/playChecks";
@@ -50,6 +51,8 @@ interface TenderSettleResult {
 export function EndBillDialog({ open, onOpenChange, session, device, deviceType, ratePlan, check, onDone }: EndBillDialogProps) {
   const { t } = useTranslation("play");
   const { lang } = useAppearance();
+  const can = useCan();
+  const canCollect = can("play.collect");
 
   const devices = usePlayDevices((s) => s.devices);
   const updateDevice = usePlayDevices((s) => s.updateDevice);
@@ -167,7 +170,7 @@ export function EndBillDialog({ open, onOpenChange, session, device, deviceType,
           ) : (
             <>
               <Button variant="ghost" onClick={handleClose}>{t("cancel")}</Button>
-              <Button onClick={handleOpenTender}>{t("floor.end_bill_confirm")}</Button>
+              <Button onClick={handleOpenTender} disabled={!canCollect}>{t("floor.end_bill_confirm")}</Button>
             </>
           )
         }
@@ -237,6 +240,11 @@ export function EndBillDialog({ open, onOpenChange, session, device, deviceType,
             {missingEtaCode && (
               <p className="text-xs text-warning-text bg-warning-tint rounded px-3 py-2 flex items-center gap-1.5">
                 <Flag className="h-3 w-3 shrink-0" /> {t("floor.end_bill_missing_eta_warning")}
+              </p>
+            )}
+            {!canCollect && (
+              <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Lock className="h-3 w-3" /> {t("floor.collect_permission_required")}
               </p>
             )}
           </div>

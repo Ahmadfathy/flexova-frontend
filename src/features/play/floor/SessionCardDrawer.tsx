@@ -36,9 +36,7 @@ interface SessionCardDrawerProps {
 
 /** Session Card drawer (FE_15 §5.3). Segments/cafeteria/running-total/counter are all read
  * live from props recomputed by `FloorGridPage` every shared tick — this component itself
- * holds no timer. Pause/Resume are real (§6); +Cafeteria/Transfer/End & bill/Cancel are stubs
- * (their own screens are later steps), matching how the Start Session step left busy-device
- * taps stubbed until this step gave them a real drawer. */
+ * holds no timer. */
 export function SessionCardDrawer({
   open, onOpenChange, session, device, deviceType, ratePlan, check,
 }: SessionCardDrawerProps) {
