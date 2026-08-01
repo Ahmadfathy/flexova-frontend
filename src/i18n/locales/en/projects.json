@@ -146,11 +146,17 @@
   },
 
   "overview": {
+    "title": "Profitability",
     "hours": "Actual vs estimated hours",
     "cost": "Actual cost vs budget",
     "revenue": "Invoiced revenue",
     "margin": "Estimated margin",
-    "no_budget": "No estimate — add a budget to compare"
+    "no_budget": "No estimate — add a budget to compare",
+    "close_open_work_warning": "This project still has {{n}} open item(s) — submitted or approved-but-unbilled time/expenses. You can close anyway; this will be logged."
+  },
+
+  "detail": {
+    "not_found": "Project not found"
   },
 
   "action": {

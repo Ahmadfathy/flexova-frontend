@@ -1,12 +1,10 @@
-import { LayoutDashboard, ListTree, Clock, Receipt, FileText, CalendarClock, Users } from "lucide-react";
+import { ListTree, Clock, Receipt, FileText, CalendarClock, Users } from "lucide-react";
 import { ProjectsPlaceholderPage } from "../ProjectsPlaceholderPage";
 
 // Each tab is a real nested route under `/projects/:id` (ModuleTabs is router-bound).
-// Prompts 3/4/5/8/9 replace these placeholders with the real screens.
+// Prompts 4/5/8/9 replace the remaining placeholders with the real screens.
 
-export function ProjectOverviewPage() {
-  return <ProjectsPlaceholderPage titleKey="tab.overview" icon={LayoutDashboard} bare />;
-}
+export { ProjectOverviewPage } from "./ProjectOverviewPage";
 
 export function ProjectMilestonesPage() {
   return <ProjectsPlaceholderPage titleKey="tab.milestones" icon={ListTree} bare />;
