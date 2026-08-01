@@ -2,17 +2,21 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   getProjects, getProjectClients, getMilestones as getFixtureMilestones, getRetainers,
+  getTimeEntries as getFixtureTimeEntries, getExpenses as getFixtureExpenses,
 } from "@/lib/mock/projects";
 import { useProjectsAudit } from "@/stores/projectsAudit";
 import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import type {
   Project, ProjectClient, Milestone, Retainer, ProjectStatus, BillingModel, TeamMember,
+  TimeEntry, Expense,
 } from "@/features/projects/types";
 
 const SEED_PROJECTS: Record<string, Project> = Object.fromEntries(getProjects().map((p) => [p.id, p]));
 const SEED_CLIENTS: Record<string, ProjectClient> = Object.fromEntries(getProjectClients().map((c) => [c.id, c]));
 const SEED_MILESTONES: Record<string, Milestone> = Object.fromEntries(getFixtureMilestones().map((m) => [m.id, m]));
 const SEED_RETAINERS: Record<string, Retainer> = Object.fromEntries(getRetainers().map((r) => [r.id, r]));
+const SEED_TIME_ENTRIES: Record<string, TimeEntry> = Object.fromEntries(getFixtureTimeEntries().map((e) => [e.id, e]));
+const SEED_EXPENSES: Record<string, Expense> = Object.fromEntries(getFixtureExpenses().map((e) => [e.id, e]));
 
 let seq = 1;
 
@@ -70,11 +74,52 @@ function projectRequester(project: Project): string {
   return lead?.employee_id ?? project.team[0]?.employee_id ?? CURRENT_EMPLOYEE_ID;
 }
 
+export interface ManualTimeEntryInput {
+  project_id: string;
+  milestone_id: string | null;
+  date: string;
+  manual_minutes: number;
+  description_ar: string;
+  billable: boolean;
+}
+
+export interface TimerStopInput {
+  project_id: string;
+  milestone_id: string | null;
+  date: string;
+  start_ts: string;
+  stop_ts: string;
+  description_ar: string;
+  billable: boolean;
+}
+
+export interface TimeEntryEditInput {
+  project_id: string;
+  milestone_id: string | null;
+  date: string;
+  manual_minutes: number | null;
+  description_ar: string;
+  billable: boolean;
+}
+
+export interface ExpenseFormInput {
+  description_ar: string;
+  amount: number;
+  billable: boolean;
+  markup: number;
+  milestone_id: string | null;
+  stock_item_id?: string | null;
+}
+
 interface ProjectsState {
   projects: Record<string, Project>;
   clients: Record<string, ProjectClient>;
   milestones: Record<string, Milestone>;
   retainers: Record<string, Retainer>;
+  time_entries: Record<string, TimeEntry>;
+  expenses: Record<string, Expense>;
+  /** Entries/expenses created while `?mock=offline` — cleared on the next reconcile (kickoff §7.6: queue + idempotent reconcile). */
+  pendingSyncIds: string[];
 
   addClient: (input: Omit<ProjectClient, "id">) => ProjectClient;
   createProject: (input: CreateProjectInput) => Project;
@@ -90,6 +135,16 @@ interface ProjectsState {
   approveMilestone: (id: string) => { ok: true; sodWarning: boolean } | { ok: false };
   deleteMilestone: (id: string) => void;
   reorderMilestones: (projectId: string, orderedIds: string[]) => void;
+
+  addManualTimeEntry: (input: ManualTimeEntryInput, offline?: boolean) => TimeEntry;
+  addTimerTimeEntry: (input: TimerStopInput, offline?: boolean) => TimeEntry;
+  updateTimeEntry: (id: string, input: TimeEntryEditInput) => void;
+  submitTimeEntries: (ids: string[]) => void;
+
+  addExpense: (projectId: string, input: ExpenseFormInput, offline?: boolean) => Expense;
+  updateExpense: (id: string, input: ExpenseFormInput) => void;
+
+  reconcilePendingSync: () => void;
 }
 
 export const useProjectsStore = create<ProjectsState>()(
@@ -99,6 +154,9 @@ export const useProjectsStore = create<ProjectsState>()(
       clients: SEED_CLIENTS,
       milestones: SEED_MILESTONES,
       retainers: SEED_RETAINERS,
+      time_entries: SEED_TIME_ENTRIES,
+      expenses: SEED_EXPENSES,
+      pendingSyncIds: [],
 
       addClient: (input) => {
         const client: ProjectClient = { id: `cl_${Date.now()}_${seq++}`, ...input };
@@ -276,6 +334,132 @@ export const useProjectsStore = create<ProjectsState>()(
         });
         return { milestones: updated };
       }),
+
+      addManualTimeEntry: (input, offline) => {
+        const id = `te_${Date.now()}_${seq++}`;
+        const entry: TimeEntry = {
+          id,
+          project_id: input.project_id,
+          milestone_id: input.milestone_id,
+          employee_id: CURRENT_EMPLOYEE_ID,
+          date: input.date,
+          source: "manual",
+          start_ts: null,
+          stop_ts: null,
+          manual_minutes: input.manual_minutes,
+          description_ar: input.description_ar,
+          billable: input.billable,
+          state: "draft",
+          rate_resolved: null,
+          rate_source: null,
+          invoiced: false,
+          invoice_id: null,
+        };
+        set((s) => ({
+          time_entries: { ...s.time_entries, [id]: entry },
+          pendingSyncIds: offline ? [...s.pendingSyncIds, id] : s.pendingSyncIds,
+        }));
+        return entry;
+      },
+
+      addTimerTimeEntry: (input, offline) => {
+        const id = `te_${Date.now()}_${seq++}`;
+        const entry: TimeEntry = {
+          id,
+          project_id: input.project_id,
+          milestone_id: input.milestone_id,
+          employee_id: CURRENT_EMPLOYEE_ID,
+          date: input.date,
+          source: "timer",
+          start_ts: input.start_ts,
+          stop_ts: input.stop_ts,
+          manual_minutes: null,
+          description_ar: input.description_ar,
+          billable: input.billable,
+          state: "draft",
+          rate_resolved: null,
+          rate_source: null,
+          invoiced: false,
+          invoice_id: null,
+        };
+        set((s) => ({
+          time_entries: { ...s.time_entries, [id]: entry },
+          pendingSyncIds: offline ? [...s.pendingSyncIds, id] : s.pendingSyncIds,
+        }));
+        return entry;
+      },
+
+      updateTimeEntry: (id, input) => set((s) => {
+        const e = s.time_entries[id];
+        if (!e || e.state !== "draft") return s;
+        return {
+          time_entries: {
+            ...s.time_entries,
+            [id]: {
+              ...e,
+              project_id: input.project_id,
+              milestone_id: input.milestone_id,
+              date: input.date,
+              description_ar: input.description_ar,
+              billable: input.billable,
+              // Timer-origin duration stays timestamp-derived — manual_minutes only applies to manual entries.
+              manual_minutes: e.source === "manual" ? input.manual_minutes : e.manual_minutes,
+            },
+          },
+        };
+      }),
+
+      submitTimeEntries: (ids) => set((s) => {
+        const updated = { ...s.time_entries };
+        ids.forEach((id) => {
+          const e = updated[id];
+          if (e && e.state === "draft" && e.employee_id === CURRENT_EMPLOYEE_ID) {
+            updated[id] = { ...e, state: "submitted" };
+          }
+        });
+        return { time_entries: updated };
+      }),
+
+      addExpense: (projectId, input, offline) => {
+        const id = `ex_${Date.now()}_${seq++}`;
+        const expense: Expense = {
+          id,
+          project_id: projectId,
+          milestone_id: input.milestone_id,
+          description_ar: input.description_ar,
+          amount: input.amount,
+          billable: input.billable,
+          markup: input.markup,
+          invoiced: false,
+          invoice_id: null,
+          stock_item_id: input.stock_item_id ?? null,
+        };
+        set((s) => ({
+          expenses: { ...s.expenses, [id]: expense },
+          pendingSyncIds: offline ? [...s.pendingSyncIds, id] : s.pendingSyncIds,
+        }));
+        return expense;
+      },
+
+      updateExpense: (id, input) => set((s) => {
+        const e = s.expenses[id];
+        if (!e || e.invoiced) return s;
+        return {
+          expenses: {
+            ...s.expenses,
+            [id]: {
+              ...e,
+              description_ar: input.description_ar,
+              amount: input.amount,
+              billable: input.billable,
+              markup: input.markup,
+              milestone_id: input.milestone_id,
+            },
+          },
+        };
+      }),
+
+      reconcilePendingSync: () => set((s) => (s.pendingSyncIds.length === 0 ? s : { pendingSyncIds: [] })),
     }),
     { name: "flexova.projects" }
   )

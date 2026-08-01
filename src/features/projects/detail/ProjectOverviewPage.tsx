@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Wallet, TrendingUp, TrendingDown } from "lucide-react";
@@ -14,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useProjectsStore } from "@/stores/projectsStore";
+import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
 import { useMockState } from "../useMockState";
 import { computeProjectLedger } from "./ledger";
 
@@ -35,9 +37,26 @@ export function ProjectOverviewPage() {
 
   const project = useProjectsStore((s) => s.projects[id]);
   const clients = useProjectsStore((s) => s.clients);
+  const allTimeEntries = useProjectsStore((s) => s.time_entries);
+  const allExpenses = useProjectsStore((s) => s.expenses);
   const { loading, error, isOffline, reload } = useMockState();
 
   const canFinancials = can("projects.financials");
+
+  const entries = useMemo(
+    () => Object.values(allTimeEntries).filter((e) => e.project_id === id),
+    [allTimeEntries, id]
+  );
+  const expenses = useMemo(
+    () => Object.values(allExpenses).filter((e) => e.project_id === id),
+    [allExpenses, id]
+  );
+  const invoices = useMemo(() => getProjectInvoices(id), [id]);
+  const employees = useMemo(() => getProjectEmployees(), []);
+  const ledger = useMemo(
+    () => computeProjectLedger(entries, expenses, invoices, employees),
+    [entries, expenses, invoices, employees]
+  );
 
   if (loading) {
     return (
@@ -60,7 +79,6 @@ export function ProjectOverviewPage() {
   const clientLabel = client ? (lang === "ar" ? client.name_ar : client.name_en) : "—";
   const dateRange = `${formatDate(project.start_date)} → ${project.actual_end ? formatDate(project.actual_end) : project.target_end ? formatDate(project.target_end) : "—"}`;
 
-  const ledger = computeProjectLedger(project.id);
   const hasEstimate = (project.budget_estimated ?? 0) > 0 || (project.hours_estimated ?? 0) > 0;
 
   const hoursPct = project.hours_estimated ? Math.round((ledger.hoursActual / project.hours_estimated) * 100) : 0;

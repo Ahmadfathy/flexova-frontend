@@ -206,12 +206,37 @@
       "approved": "Approved",
       "rejected": "Rejected"
     },
-    "timer_switched": "Previous timer stopped and saved"
+    "timer_switched": "Previous timer stopped and saved",
+    "description": "Description",
+    "project": "Project",
+    "milestone": "Milestone",
+    "date": "Date",
+    "no_active": "No timer running",
+    "running_since": "Running since {{time}}",
+    "select_all_drafts": "Select all drafts",
+    "selected": "{{n}} selected",
+    "empty_title": "No time logged yet",
+    "empty_body": "Start the timer or add a row.",
+    "locked_hint": "Locked — already submitted or approved",
+    "sync_local": "Local — pending sync",
+    "new_entry": "Add row",
+    "edit_entry": "Edit entry",
+    "rate_pending": "Pending",
+    "submitted_toast": "Submitted for approval",
+    "minutes_required": "Minutes must be greater than 0",
+    "switch": "Switch project"
   },
 
   "expense": {
     "title": "Expenses",
-    "markup": "Markup"
+    "markup": "Markup",
+    "description": "Description",
+    "amount": "Amount",
+    "invoiced": "Invoiced",
+    "add": "Add expense",
+    "edit": "Edit expense",
+    "empty_title": "No expenses yet",
+    "markup_locked": "Requires markup permission"
   },
 
   "appr": {

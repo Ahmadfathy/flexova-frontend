@@ -15,6 +15,7 @@ import { useCan } from "@/lib/permissions";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { useProjectsAudit } from "@/stores/projectsAudit";
 import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
+import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
 import { computeProjectLedger } from "./ledger";
 import type { ProjectStatus } from "@/features/projects/types";
 
@@ -42,6 +43,8 @@ export function ProjectDetailLayout() {
   const holdProject = useProjectsStore((s) => s.holdProject);
   const closeProject = useProjectsStore((s) => s.closeProject);
   const cloneProject = useProjectsStore((s) => s.cloneProject);
+  const allTimeEntries = useProjectsStore((s) => s.time_entries);
+  const allExpenses = useProjectsStore((s) => s.expenses);
   const appendAudit = useProjectsAudit((s) => s.append);
 
   const [holdOpen, setHoldOpen] = useState(false);
@@ -50,7 +53,14 @@ export function ProjectDetailLayout() {
   const canClose = can("projects.project.close");
   const canCreate = can("projects.project.create");
 
-  const openWork = useMemo(() => (project ? computeProjectLedger(project.id).openWork : []), [project]);
+  const openWork = useMemo(() => {
+    if (!project) return [];
+    const entries = Object.values(allTimeEntries).filter((e) => e.project_id === project.id);
+    const expenses = Object.values(allExpenses).filter((e) => e.project_id === project.id);
+    const invoices = getProjectInvoices(project.id);
+    const employees = getProjectEmployees();
+    return computeProjectLedger(entries, expenses, invoices, employees).openWork;
+  }, [project, allTimeEntries, allExpenses]);
 
   if (!project) {
     return (

@@ -206,12 +206,37 @@
       "approved": "معتمد",
       "rejected": "مرفوض"
     },
-    "timer_switched": "تم إيقاف العدّاد السابق وحفظه"
+    "timer_switched": "تم إيقاف العدّاد السابق وحفظه",
+    "description": "الوصف",
+    "project": "المشروع",
+    "milestone": "المرحلة",
+    "date": "التاريخ",
+    "no_active": "مفيش عدّاد شغّال",
+    "running_since": "شغّال من {{time}}",
+    "select_all_drafts": "اختيار كل المسودات",
+    "selected": "{{n}} مُختار",
+    "empty_title": "مفيش وقت مسجّل لسه",
+    "empty_body": "ابدأ العدّاد أو أضف صف يدوي.",
+    "locked_hint": "مقفول — تم إرساله أو اعتماده بالفعل",
+    "sync_local": "محلي — في انتظار المزامنة",
+    "new_entry": "إضافة يدوية",
+    "edit_entry": "تعديل الإدخال",
+    "rate_pending": "معلّق",
+    "submitted_toast": "تم الإرسال للاعتماد",
+    "minutes_required": "الدقائق لازم تكون أكبر من صفر",
+    "switch": "تبديل المشروع"
   },
 
   "expense": {
     "title": "المصاريف",
-    "markup": "هامش"
+    "markup": "هامش",
+    "description": "الوصف",
+    "amount": "المبلغ",
+    "invoiced": "مفوتر",
+    "add": "إضافة مصروف",
+    "edit": "تعديل المصروف",
+    "empty_title": "مفيش مصاريف لسه",
+    "markup_locked": "يحتاج صلاحية الهامش"
   },
 
   "appr": {
