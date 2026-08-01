@@ -1,0 +1,146 @@
+{
+  "_meta": {
+    "module": "projects",
+    "version": "1.0",
+    "currency": "EGP",
+    "depends_on": "crm.fixtures.json (customers) · hr.fixtures.json (employees + rates) · inventory.fixtures.json (stock-item expenses) · accounting.fixtures.json (treasuries)",
+    "notes": "Brief 7 Project-based services. Covers: fixed / t&m / retainer / mixed billing; milestone optional; timer + manual time entries (billable/non-billable, all states); rate resolution project>role>employee; expenses with markup=0; retainer draw; invoices with per-line source_id; SoD self-approval flag. Actuals are ledger-derived — figures below are illustrative pre-computed views for the mock layer.",
+    "rate_resolution_rule": "project > role > employee; per-entry override wins over all.",
+    "labels_per_tenant": { "project_singular_ar": "قضية", "project_singular_en": "Case" }
+  },
+
+  "clients": [
+    { "id": "cl_masria", "name_ar": "المصرية للتوريدات", "name_en": "Al-Masria Supplies", "type": "b2b", "trn": "512300987" },
+    { "id": "cl_delta", "name_ar": "شركة دلتا للمقاولات", "name_en": "Delta Contracting Co.", "type": "b2b", "trn": "598712345" },
+    { "id": "cl_horizon", "name_ar": "أفق للتسويق الرقمي", "name_en": "Horizon Digital Marketing", "type": "b2b", "trn": "504456789" },
+    { "id": "cl_fardy", "name_ar": "أحمد صابر (موكّل فردي)", "name_en": "Ahmed Saber (individual)", "type": "b2c", "trn": null }
+  ],
+
+  "employees": [
+    { "id": "emp_layla", "name_ar": "ليلى منصور", "name_en": "Layla Mansour", "role": "senior_associate", "cost_rate": 120.00, "default_bill_rate": 350.00 },
+    { "id": "emp_karim", "name_ar": "كريم فؤاد", "name_en": "Karim Fouad", "role": "engineer", "cost_rate": 90.00, "default_bill_rate": 250.00 },
+    { "id": "emp_nour", "name_ar": "نور حسن", "name_en": "Nour Hassan", "role": "junior", "cost_rate": 55.00, "default_bill_rate": 150.00 },
+    { "id": "emp_manager", "name_ar": "سامي عبد الرحمن (مدير)", "name_en": "Sami Abdel-Rahman (manager)", "role": "manager", "cost_rate": 0, "default_bill_rate": 0 }
+  ],
+
+  "role_rates": [
+    { "role": "senior_associate", "bill_rate": 400.00 },
+    { "role": "engineer", "bill_rate": 300.00 },
+    { "role": "junior", "bill_rate": 160.00 }
+  ],
+
+  "treasuries": [
+    { "id": "tr_cash_main", "name_ar": "خزينة المكتب", "name_en": "Office Cash", "type": "cash" },
+    { "id": "tr_bank_nbe", "name_ar": "حساب البنك الأهلي", "name_en": "NBE Account", "type": "bank" }
+  ],
+
+  "projects": [
+    {
+      "id": "prj_law_777", "code": "CASE-2026-777", "title_ar": "قضية المصرية للتوريدات — نزاع تجاري",
+      "title_en": "Al-Masria commercial dispute", "type_label": "case",
+      "client_id": "cl_masria", "status": "active", "billing_model": "tm",
+      "scope_ar": "تمثيل قانوني في نزاع تجاري + صياغة مذكرات + حضور جلسات.",
+      "team": [
+        { "employee_id": "emp_layla", "project_role": "lead" },
+        { "employee_id": "emp_nour", "project_role": "support" }
+      ],
+      "budget_estimated": 120000.00, "hours_estimated": 300,
+      "start_date": "2026-04-01", "target_end": "2026-09-30", "actual_end": null,
+      "project_bill_rate": null,
+      "actuals_view": { "hours_actual": 68.5, "cost_actual": 8140.00, "revenue_invoiced": 22400.00, "margin_est": 14260.00 },
+      "milestones_optional": true
+    },
+    {
+      "id": "prj_eng_512", "code": "PRJ-2026-512", "title_ar": "مشروع دلتا — تصميم إنشائي (مراحل)",
+      "title_en": "Delta structural design (phased)", "type_label": "project",
+      "client_id": "cl_delta", "status": "active", "billing_model": "fixed",
+      "scope_ar": "تصميم إنشائي متعدد المراحل: دراسة مبدئية → تصميم تفصيلي → إشراف.",
+      "team": [
+        { "employee_id": "emp_karim", "project_role": "lead" },
+        { "employee_id": "emp_nour", "project_role": "support" }
+      ],
+      "budget_estimated": 200000.00, "hours_estimated": 500,
+      "start_date": "2026-03-15", "target_end": "2026-11-30", "actual_end": null,
+      "project_bill_rate": null,
+      "actuals_view": { "hours_actual": 210.0, "cost_actual": 19500.00, "revenue_invoiced": 80000.00, "margin_est": 60500.00 }
+    },
+    {
+      "id": "prj_mkt_310", "code": "PRJ-2026-310", "title_ar": "حملة أفق — تسويق رقمي (دفعة مقدمة)",
+      "title_en": "Horizon retainer campaign", "type_label": "campaign",
+      "client_id": "cl_horizon", "status": "active", "billing_model": "retainer",
+      "scope_ar": "إدارة حملات شهرية مقابل دفعة مقدمة تُخصم منها.",
+      "team": [ { "employee_id": "emp_layla", "project_role": "lead" } ],
+      "budget_estimated": 60000.00, "hours_estimated": 160,
+      "start_date": "2026-06-01", "target_end": "2026-12-31", "actual_end": null,
+      "project_bill_rate": 450.00,
+      "retainer_id": "ret_horizon",
+      "actuals_view": { "hours_actual": 24.0, "cost_actual": 2880.00, "revenue_drawn": 10800.00, "margin_est": 7920.00 }
+    },
+    {
+      "id": "prj_mix_finish", "code": "PRJ-2026-410", "title_ar": "مشروع تشطيبات — مخلوط (ثابت + وقت)",
+      "title_en": "Finishing project (mixed)", "type_label": "project",
+      "client_id": "cl_delta", "status": "active", "billing_model": "mixed",
+      "scope_ar": "مرحلة تصميم بمبلغ ثابت + إشراف يومي بالوقت والخامات.",
+      "team": [ { "employee_id": "emp_karim", "project_role": "lead" } ],
+      "budget_estimated": 90000.00, "hours_estimated": 220,
+      "start_date": "2026-05-01", "target_end": "2026-10-31", "actual_end": null,
+      "actuals_view": { "hours_actual": 40.0, "cost_actual": 3600.00, "revenue_invoiced": 35000.00, "margin_est": 12400.00 }
+    },
+    {
+      "id": "prj_draft_new", "code": "PRJ-2026-999", "title_ar": "استشارة جديدة (مسودة)",
+      "title_en": "New consulting (draft)", "type_label": "project",
+      "client_id": "cl_fardy", "status": "draft", "billing_model": "tm",
+      "scope_ar": "لسه مسودة، من غير تفعيل.",
+      "team": [], "budget_estimated": null, "hours_estimated": null,
+      "start_date": "2026-07-20", "target_end": null, "actual_end": null,
+      "actuals_view": { "hours_actual": 0, "cost_actual": 0, "revenue_invoiced": 0, "margin_est": 0 }
+    }
+  ],
+
+  "milestones": [
+    { "id": "ms_eng_1", "project_id": "prj_eng_512", "sequence": 1, "name_ar": "دراسة مبدئية", "name_en": "Preliminary study", "billing_type": "fixed", "fixed_amount": 40000.00, "hours_estimated": 100, "target_date": "2026-05-15", "state": "invoiced" },
+    { "id": "ms_eng_2", "project_id": "prj_eng_512", "sequence": 2, "name_ar": "تصميم تفصيلي", "name_en": "Detailed design", "billing_type": "fixed", "fixed_amount": 100000.00, "hours_estimated": 250, "target_date": "2026-08-31", "state": "approved" },
+    { "id": "ms_eng_3", "project_id": "prj_eng_512", "sequence": 3, "name_ar": "الإشراف", "name_en": "Supervision", "billing_type": "fixed", "fixed_amount": 60000.00, "hours_estimated": 150, "target_date": "2026-11-30", "state": "in_progress" },
+    { "id": "ms_mix_1", "project_id": "prj_mix_finish", "sequence": 1, "name_ar": "تصميم (ثابت)", "name_en": "Design (fixed)", "billing_type": "fixed", "fixed_amount": 35000.00, "hours_estimated": 80, "target_date": "2026-06-15", "state": "invoiced" },
+    { "id": "ms_mix_2", "project_id": "prj_mix_finish", "sequence": 2, "name_ar": "إشراف يومي (بالوقت)", "name_en": "Daily supervision (T&M)", "billing_type": "tm", "fixed_amount": null, "hours_estimated": 140, "target_date": "2026-10-31", "state": "in_progress" }
+  ],
+
+  "time_entries": [
+    { "id": "te_1", "project_id": "prj_law_777", "milestone_id": null, "employee_id": "emp_layla", "date": "2026-07-14", "source": "timer", "start_ts": "2026-07-14T09:05:00", "stop_ts": "2026-07-14T12:35:00", "manual_minutes": null, "description_ar": "صياغة مذكرة دفاع", "billable": true, "state": "approved", "rate_resolved": 400.00, "rate_source": "role", "invoiced": true, "invoice_id": "inv_tm_1" },
+    { "id": "te_2", "project_id": "prj_law_777", "milestone_id": null, "employee_id": "emp_nour", "date": "2026-07-15", "source": "manual", "start_ts": null, "stop_ts": null, "manual_minutes": 180, "description_ar": "مراجعة مستندات", "billable": true, "state": "approved", "rate_resolved": 160.00, "rate_source": "role", "invoiced": true, "invoice_id": "inv_tm_1" },
+    { "id": "te_3", "project_id": "prj_law_777", "milestone_id": null, "employee_id": "emp_layla", "date": "2026-07-18", "source": "timer", "start_ts": "2026-07-18T10:00:00", "stop_ts": "2026-07-18T13:00:00", "manual_minutes": null, "description_ar": "حضور جلسة", "billable": true, "state": "approved", "rate_resolved": 400.00, "rate_source": "role", "invoiced": false, "invoice_id": null },
+    { "id": "te_4", "project_id": "prj_law_777", "milestone_id": null, "employee_id": "emp_nour", "date": "2026-07-19", "source": "manual", "start_ts": null, "stop_ts": null, "manual_minutes": 90, "description_ar": "اجتماع داخلي (غير قابل للفوترة)", "billable": false, "state": "approved", "rate_resolved": null, "rate_source": null, "invoiced": false, "invoice_id": null },
+    { "id": "te_5", "project_id": "prj_eng_512", "milestone_id": "ms_eng_3", "employee_id": "emp_karim", "date": "2026-07-20", "source": "timer", "start_ts": "2026-07-20T08:30:00", "stop_ts": "2026-07-20T16:30:00", "manual_minutes": null, "description_ar": "إشراف موقع", "billable": true, "state": "submitted", "rate_resolved": null, "rate_source": null, "invoiced": false, "invoice_id": null },
+    { "id": "te_6", "project_id": "prj_mkt_310", "milestone_id": null, "employee_id": "emp_layla", "date": "2026-07-21", "source": "timer", "start_ts": "2026-07-21T11:00:00", "stop_ts": "2026-07-21T15:00:00", "manual_minutes": null, "description_ar": "إدارة حملة إعلانية", "billable": true, "state": "approved", "rate_resolved": 450.00, "rate_source": "project", "invoiced": false, "invoice_id": null, "_note": "rate from project_bill_rate (project wins over role)" },
+    { "id": "te_7", "project_id": "prj_law_777", "milestone_id": null, "employee_id": "emp_layla", "date": "2026-07-22", "source": "manual", "start_ts": null, "stop_ts": null, "manual_minutes": 120, "description_ar": "مكالمة موكّل", "billable": true, "state": "draft", "rate_resolved": null, "rate_source": null, "invoiced": false, "invoice_id": null },
+    { "id": "te_8", "project_id": "prj_mix_finish", "milestone_id": "ms_mix_2", "employee_id": "emp_karim", "date": "2026-07-22", "source": "timer", "start_ts": "2026-07-22T09:00:00", "stop_ts": null, "manual_minutes": null, "description_ar": "عدّاد شغّال حالياً", "billable": true, "state": "draft", "rate_resolved": null, "rate_source": null, "invoiced": false, "invoice_id": null, "_flag": "active_timer" },
+    { "id": "te_9", "project_id": "prj_eng_512", "milestone_id": "ms_eng_3", "employee_id": "emp_manager", "date": "2026-07-20", "source": "manual", "start_ts": null, "stop_ts": null, "manual_minutes": 60, "description_ar": "مراجعة (اعتمدها بنفسه — SoD flag)", "billable": true, "state": "approved", "rate_resolved": 0, "rate_source": "employee", "invoiced": false, "invoice_id": null, "_flag": "sod_self_approved" }
+  ],
+
+  "expenses": [
+    { "id": "ex_1", "project_id": "prj_law_777", "milestone_id": null, "description_ar": "رسوم محكمة", "amount": 1500.00, "billable": true, "markup": 0, "invoiced": true, "invoice_id": "inv_tm_1" },
+    { "id": "ex_2", "project_id": "prj_law_777", "milestone_id": null, "description_ar": "مواصلات (غير قابل للفوترة)", "amount": 300.00, "billable": false, "markup": 0, "invoiced": false, "invoice_id": null },
+    { "id": "ex_3", "project_id": "prj_eng_512", "milestone_id": "ms_eng_3", "description_ar": "طباعة مخططات", "amount": 800.00, "billable": true, "markup": 0, "invoiced": false, "invoice_id": null, "stock_item_id": null },
+    { "id": "ex_4", "project_id": "prj_mix_finish", "milestone_id": "ms_mix_2", "description_ar": "خامات من المخزون (flag-aware)", "amount": 2200.00, "billable": true, "markup": 0, "invoiced": false, "invoice_id": null, "stock_item_id": "it_paint" }
+  ],
+
+  "retainers": [
+    { "id": "ret_horizon", "client_id": "cl_horizon", "project_id": "prj_mkt_310", "opening_amount": 30000.00, "balance": 19200.00, "low_threshold": 5000.00, "draws": [ { "date": "2026-06-30", "amount": 6000.00, "ref": "draw_jun" }, { "date": "2026-07-25", "amount": 4800.00, "ref": "draw_jul", "against_entries": ["te_6"] } ] }
+  ],
+
+  "invoices": [
+    { "id": "inv_ms_1", "number": "PRJ-INV-1001", "project_id": "prj_eng_512", "client_id": "cl_delta", "date": "2026-05-18", "billing_source": "milestone", "status": "posted", "lines": [ { "source": "milestone", "source_id": "ms_eng_1", "description_ar": "دراسة مبدئية (مرحلة 1)", "amount": 40000.00 } ], "totals": { "subtotal": 40000.00, "tax": 5600.00, "grand_total": 45600.00 } },
+    { "id": "inv_ms_2", "number": "PRJ-INV-1002", "project_id": "prj_mix_finish", "client_id": "cl_delta", "date": "2026-06-18", "billing_source": "milestone", "status": "posted", "lines": [ { "source": "milestone", "source_id": "ms_mix_1", "description_ar": "تصميم (مرحلة ثابتة)", "amount": 35000.00 } ], "totals": { "subtotal": 35000.00, "tax": 4900.00, "grand_total": 39900.00 } },
+    { "id": "inv_tm_1", "number": "PRJ-INV-1003", "project_id": "prj_law_777", "client_id": "cl_masria", "date": "2026-07-16", "billing_source": "tm", "status": "posted", "lines": [ { "source": "time", "source_id": "te_1", "description_ar": "ليلى — صياغة مذكرة (3.5 س × 400)", "amount": 1400.00 }, { "source": "time", "source_id": "te_2", "description_ar": "نور — مراجعة (3 س × 160)", "amount": 480.00 }, { "source": "expense", "source_id": "ex_1", "description_ar": "رسوم محكمة", "amount": 1500.00 } ], "totals": { "subtotal": 3380.00, "tax": 473.20, "grand_total": 3853.20 } }
+  ],
+
+  "appointments": [
+    { "id": "ap_1", "project_id": "prj_law_777", "client_id": "cl_masria", "title_ar": "جلسة محكمة", "start_ts": "2026-08-05T10:00:00", "end_ts": "2026-08-05T12:00:00" },
+    { "id": "ap_2", "project_id": "prj_eng_512", "client_id": "cl_delta", "title_ar": "معاينة موقع", "start_ts": "2026-08-02T09:00:00", "end_ts": "2026-08-02T11:00:00" }
+  ],
+
+  "documents": [
+    { "id": "doc_1", "project_id": "prj_law_777", "milestone_id": null, "name_ar": "عقد التوريد.pdf", "category_ar": "عقود", "uploaded_by": "emp_layla", "date": "2026-04-02" },
+    { "id": "doc_2", "project_id": "prj_eng_512", "milestone_id": "ms_eng_2", "name_ar": "المخططات التفصيلية.dwg", "category_ar": "مخططات", "uploaded_by": "emp_karim", "date": "2026-07-10" }
+  ]
+}
