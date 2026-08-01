@@ -16,6 +16,7 @@
     "repair":       "Repair",
     "wholesale":    "Wholesale",
     "mfg":          "Manufacturing",
+    "projects":     "Projects",
 
     "wh_orders":     "Orders",
     "wh_deliveries": "Deliveries",
@@ -27,6 +28,10 @@
     "mfg_dashboard": "Dashboard",
     "mfg_orders":    "Orders",
     "mfg_bom":       "BOM Templates",
+
+    "prj_billing":    "Billing prep",
+    "prj_time":       "Time",
+    "prj_approvals":  "Time approvals",
 
     "items":              "Items",
     "categories":         "Categories",

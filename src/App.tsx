@@ -145,6 +145,14 @@ import {
   MfgDashboardPage, MoListPage, MoEditorPage, MoDetailPage, BomListPage, BomEditorPage,
 } from "@/features/mfg/MfgPages";
 
+// Project-Based Services — FE_16 — scaffold only (routes + placeholders, no UI logic yet)
+import { ProjectsLayout } from "@/features/projects/ProjectsLayout";
+import {
+  ProjectsListPage, ProjectEditorPage, BillingHubPage, PersonalTimePage, TimeApprovalsPage,
+  ProjectDetailLayout, ProjectOverviewPage, ProjectMilestonesPage, ProjectTimePage,
+  ProjectInvoicesPage, ProjectDocumentsPage, ProjectAppointmentsPage, ProjectTeamPage,
+} from "@/features/projects/ProjectsPages";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -399,6 +407,24 @@ export default function App() {
             <Route path="bom/new"     element={<BomEditorPage />} />
             <Route path="bom/:id"     element={<BomEditorPage />} />
           </Route>
+
+          {/* Project-Based Services — FE_16 — back-office (standard shell, not PosLayout) */}
+          <Route path="/projects" element={<ProjectsLayout />}>
+            <Route index          element={<ProjectsListPage />} />
+            <Route path="new"     element={<ProjectEditorPage />} />
+            <Route path="billing" element={<BillingHubPage />} />
+            <Route path=":id" element={<ProjectDetailLayout />}>
+              <Route index                element={<ProjectOverviewPage />} />
+              <Route path="milestones"    element={<ProjectMilestonesPage />} />
+              <Route path="time"          element={<ProjectTimePage />} />
+              <Route path="invoices"      element={<ProjectInvoicesPage />} />
+              <Route path="documents"     element={<ProjectDocumentsPage />} />
+              <Route path="appointments"  element={<ProjectAppointmentsPage />} />
+              <Route path="team"          element={<ProjectTeamPage />} />
+            </Route>
+          </Route>
+          <Route path="/time"           element={<PersonalTimePage />} />
+          <Route path="/time/approvals" element={<TimeApprovalsPage />} />
 
           {/* Price tiers editor — extends FE_01 price lists (spec §11), standalone path */}
           <Route path="/pricing/lists/:id" element={<PriceTiersEditorPage />} />

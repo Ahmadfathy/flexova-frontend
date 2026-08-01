@@ -1,0 +1,131 @@
+{
+  "title": "Projects",
+  "new": "New project",
+  "placeholder": {
+    "note": "Screen under construction — coming in a later build step."
+  },
+
+  "filters": {
+    "status": "Status",
+    "billing": "Billing model"
+  },
+
+  "status": {
+    "draft": "Draft",
+    "active": "Active",
+    "on_hold": "On hold",
+    "closed": "Closed",
+    "archived": "Archived",
+    "cancelled": "Cancelled"
+  },
+
+  "billing": {
+    "fixed": "Fixed-fee milestone",
+    "tm": "Time & materials",
+    "retainer": "Retainer",
+    "mixed": "Mixed"
+  },
+
+  "col": {
+    "hours": "Hours actual/est.",
+    "margin": "Est. margin"
+  },
+
+  "tab": {
+    "overview": "Overview",
+    "milestones": "Milestones",
+    "time": "Time & expenses",
+    "invoices": "Invoices",
+    "documents": "Documents",
+    "appointments": "Appointments",
+    "team": "Team"
+  },
+
+  "overview": {
+    "hours": "Actual vs estimated hours",
+    "cost": "Actual cost vs budget",
+    "revenue": "Invoiced revenue",
+    "margin": "Estimated margin",
+    "no_budget": "No estimate — add a budget to compare"
+  },
+
+  "action": {
+    "activate": "Activate",
+    "hold": "Hold",
+    "close": "Close"
+  },
+
+  "ms": {
+    "title": "Milestones",
+    "new": "New milestone",
+    "request": "Request approval",
+    "approve": "Approve",
+    "bill": "Bill",
+    "state": {
+      "draft": "Draft",
+      "in_progress": "In progress",
+      "approved": "Approved",
+      "invoiced": "Invoiced"
+    },
+    "bill_locked": "Approve the milestone before billing",
+    "empty": "No milestones — bills directly from time"
+  },
+
+  "time": {
+    "title": "Time",
+    "start": "Start timer",
+    "stop": "Stop",
+    "manual": "Add row",
+    "minutes": "Minutes",
+    "billable": "Billable",
+    "submit": "Submit for approval",
+    "state": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "timer_switched": "Previous timer stopped and saved"
+  },
+
+  "expense": {
+    "title": "Expenses",
+    "markup": "Markup"
+  },
+
+  "appr": {
+    "title": "Time approvals",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reason": "Rejection reason",
+    "bulk": "Approve all",
+    "self": "You can't approve your own time",
+    "empty": "Nothing pending approval"
+  },
+
+  "bill": {
+    "title": "Billing prep",
+    "tab_ms": "Milestone",
+    "tab_tm": "Time & materials",
+    "tab_ret": "Retainer",
+    "generate": "Generate invoice",
+    "select_lines": "Select lines to bill",
+    "draw": "Draw from balance",
+    "topup": "Balance low — top up",
+    "empty": "No approved work ready to bill"
+  },
+
+  "doc": {
+    "upload": "Upload document",
+    "category": "Category"
+  },
+
+  "appt": {
+    "new": "New appointment"
+  },
+
+  "team": {
+    "add": "Add member",
+    "role": "Project role"
+  }
+}

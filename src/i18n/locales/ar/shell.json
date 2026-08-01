@@ -16,6 +16,7 @@
     "repair":       "الصيانة",
     "wholesale":    "الجملة",
     "mfg":          "التصنيع",
+    "projects":     "المشاريع",
 
     "wh_orders":     "طلبات البيع",
     "wh_deliveries": "أذون التسليم",
@@ -27,6 +28,10 @@
     "mfg_dashboard": "لوحة التحكم",
     "mfg_orders":    "أوامر التشغيل",
     "mfg_bom":       "قوالب BOM",
+
+    "prj_billing":    "تجهيز الفواتير",
+    "prj_time":       "الوقت",
+    "prj_approvals":  "اعتماد الساعات",
 
     "items":              "الأصناف",
     "categories":         "الفئات",

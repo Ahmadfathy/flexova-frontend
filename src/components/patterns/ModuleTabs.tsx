@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 interface Tab {
   label: string;
   href: string;
+  /** Exact-match only (NavLink `end`) — needed when a sibling tab's route is a prefix of this one. */
+  end?: boolean;
 }
 
 interface ModuleTabsProps {
@@ -22,10 +24,11 @@ export function ModuleTabs({ tabs, className }: ModuleTabsProps) {
   return (
     /* TabsList */
     <div className={cn("inline-flex h-10 items-center rounded bg-muted p-1 text-muted-foreground mb-6 overflow-x-auto max-w-full", className)}>
-      {tabs.map(({ label, href }) => (
+      {tabs.map(({ label, href, end }) => (
         <NavLink
           key={href}
           to={href}
+          end={end}
           className={({ isActive }) =>
             cn(
               /* TabsTrigger */
