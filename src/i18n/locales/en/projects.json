@@ -275,7 +275,17 @@
     "select_lines": "Select lines to bill",
     "draw": "Draw from balance",
     "topup": "Balance low — top up",
-    "empty": "No approved work ready to bill"
+    "empty": "No approved work ready to bill",
+    "generated_toast": "Invoice {{number}} posted",
+    "draw_success": "{{amount}} drawn from the retainer",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "grand_total": "Grand total"
+  },
+
+  "ret": {
+    "balance": "Balance",
+    "opening": "Opening amount"
   },
 
   "doc": {

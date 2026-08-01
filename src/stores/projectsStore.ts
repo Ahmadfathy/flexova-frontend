@@ -3,14 +3,16 @@ import { persist } from "zustand/middleware";
 import {
   getProjects, getProjectClients, getMilestones as getFixtureMilestones, getRetainers,
   getTimeEntries as getFixtureTimeEntries, getExpenses as getFixtureExpenses,
+  getProjectInvoices as getFixtureInvoices,
   getProjectEmployee, getRoleRate,
 } from "@/lib/mock/projects";
 import { useProjectsAudit } from "@/stores/projectsAudit";
 import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { resolveRate } from "@/features/projects/time/rateResolution";
+import { timeEntryBilledAmount, expenseBilledAmount, computeInvoiceTotals, round2 } from "@/features/projects/detail/ledger";
 import type {
   Project, ProjectClient, Milestone, Retainer, ProjectStatus, BillingModel, TeamMember,
-  TimeEntry, Expense,
+  TimeEntry, Expense, ProjectInvoice, InvoiceLine, RetainerDraw,
 } from "@/features/projects/types";
 
 const SEED_PROJECTS: Record<string, Project> = Object.fromEntries(getProjects().map((p) => [p.id, p]));
@@ -19,6 +21,16 @@ const SEED_MILESTONES: Record<string, Milestone> = Object.fromEntries(getFixture
 const SEED_RETAINERS: Record<string, Retainer> = Object.fromEntries(getRetainers().map((r) => [r.id, r]));
 const SEED_TIME_ENTRIES: Record<string, TimeEntry> = Object.fromEntries(getFixtureTimeEntries().map((e) => [e.id, e]));
 const SEED_EXPENSES: Record<string, Expense> = Object.fromEntries(getFixtureExpenses().map((e) => [e.id, e]));
+const SEED_INVOICES: Record<string, ProjectInvoice> = Object.fromEntries(getFixtureInvoices().map((i) => [i.id, i]));
+
+function nextInvoiceNumber(invoices: Record<string, ProjectInvoice>): string {
+  const max = Object.values(invoices).reduce((m, inv) => {
+    const match = inv.number.match(/(\d+)$/);
+    const n = match ? parseInt(match[1], 10) : NaN;
+    return Number.isFinite(n) ? Math.max(m, n) : m;
+  }, 1000);
+  return `PRJ-INV-${max + 1}`;
+}
 
 let seq = 1;
 
@@ -124,6 +136,7 @@ interface ProjectsState {
   retainers: Record<string, Retainer>;
   time_entries: Record<string, TimeEntry>;
   expenses: Record<string, Expense>;
+  invoices: Record<string, ProjectInvoice>;
   /** Entries/expenses created while `?mock=offline` — cleared on the next reconcile (kickoff §7.6: queue + idempotent reconcile). */
   pendingSyncIds: string[];
 
@@ -154,6 +167,13 @@ interface ProjectsState {
   addExpense: (projectId: string, input: ExpenseFormInput, offline?: boolean) => Expense;
   updateExpense: (id: string, input: ExpenseFormInput) => void;
 
+  /** Fixed-fee milestones only (spec §9.3) — creates + posts (auto-posting) in one step, flips milestones to `invoiced`. */
+  generateMilestoneInvoice: (projectId: string, milestoneIds: string[]) => ProjectInvoice | null;
+  /** Approved+billable+un-invoiced time/expenses only (spec §9.4) — partial line selection, each line keeps its source_id. */
+  generateTmInvoice: (projectId: string, timeEntryIds: string[], expenseIds: string[]) => ProjectInvoice | null;
+  /** Reduces the retainer balance directly — no invoice, no new receivable (spec §9.5). */
+  drawRetainer: (retainerId: string, timeEntryIds: string[], expenseIds: string[]) => { ok: true; amount: number } | { ok: false; reason: "not_found" | "no_lines" };
+
   reconcilePendingSync: () => void;
 }
 
@@ -166,6 +186,7 @@ export const useProjectsStore = create<ProjectsState>()(
       retainers: SEED_RETAINERS,
       time_entries: SEED_TIME_ENTRIES,
       expenses: SEED_EXPENSES,
+      invoices: SEED_INVOICES,
       pendingSyncIds: [],
 
       addClient: (input) => {
@@ -512,6 +533,142 @@ export const useProjectsStore = create<ProjectsState>()(
           },
         };
       }),
+
+      generateMilestoneInvoice: (projectId, milestoneIds) => {
+        const state = get();
+        const project = state.projects[projectId];
+        if (!project) return null;
+
+        const selected = milestoneIds
+          .map((id) => state.milestones[id])
+          .filter((m): m is Milestone => !!m && m.project_id === projectId && m.state === "approved" && m.billing_type === "fixed");
+        if (selected.length === 0) return null;
+
+        const lines: InvoiceLine[] = selected.map((m) => ({
+          source: "milestone",
+          source_id: m.id,
+          description_ar: m.name_ar,
+          amount: m.fixed_amount ?? 0,
+        }));
+
+        const id = `inv_${Date.now()}_${seq++}`;
+        const invoice: ProjectInvoice = {
+          id,
+          number: nextInvoiceNumber(state.invoices),
+          project_id: projectId,
+          client_id: project.client_id,
+          date: new Date().toISOString().slice(0, 10),
+          billing_source: "milestone",
+          status: "posted",
+          lines,
+          totals: computeInvoiceTotals(lines.map((l) => l.amount)),
+        };
+
+        set((s) => ({
+          invoices: { ...s.invoices, [id]: invoice },
+          milestones: {
+            ...s.milestones,
+            ...Object.fromEntries(selected.map((m) => [m.id, { ...m, state: "invoiced" as const }])),
+          },
+        }));
+        return invoice;
+      },
+
+      generateTmInvoice: (projectId, timeEntryIds, expenseIds) => {
+        const state = get();
+        const project = state.projects[projectId];
+        if (!project) return null;
+
+        const entries = timeEntryIds
+          .map((id) => state.time_entries[id])
+          .filter((e): e is TimeEntry => !!e && e.project_id === projectId && e.state === "approved" && e.billable && !e.invoiced);
+        const expenseItems = expenseIds
+          .map((id) => state.expenses[id])
+          .filter((x): x is Expense => !!x && x.project_id === projectId && x.billable && !x.invoiced);
+        if (entries.length === 0 && expenseItems.length === 0) return null;
+
+        const timeLines: InvoiceLine[] = entries.map((e) => ({
+          source: "time",
+          source_id: e.id,
+          description_ar: e.description_ar || "وقت",
+          amount: timeEntryBilledAmount(e),
+        }));
+        const expenseLines: InvoiceLine[] = expenseItems.map((x) => ({
+          source: "expense",
+          source_id: x.id,
+          description_ar: x.description_ar,
+          amount: expenseBilledAmount(x),
+        }));
+        const lines = [...timeLines, ...expenseLines];
+
+        const id = `inv_${Date.now()}_${seq++}`;
+        const invoice: ProjectInvoice = {
+          id,
+          number: nextInvoiceNumber(state.invoices),
+          project_id: projectId,
+          client_id: project.client_id,
+          date: new Date().toISOString().slice(0, 10),
+          billing_source: "tm",
+          status: "posted",
+          lines,
+          totals: computeInvoiceTotals(lines.map((l) => l.amount)),
+        };
+
+        set((s) => ({
+          invoices: { ...s.invoices, [id]: invoice },
+          time_entries: {
+            ...s.time_entries,
+            ...Object.fromEntries(entries.map((e) => [e.id, { ...e, invoiced: true, invoice_id: id }])),
+          },
+          expenses: {
+            ...s.expenses,
+            ...Object.fromEntries(expenseItems.map((x) => [x.id, { ...x, invoiced: true, invoice_id: id }])),
+          },
+        }));
+        return invoice;
+      },
+
+      drawRetainer: (retainerId, timeEntryIds, expenseIds) => {
+        const state = get();
+        const retainer = state.retainers[retainerId];
+        if (!retainer) return { ok: false, reason: "not_found" };
+
+        const entries = timeEntryIds
+          .map((id) => state.time_entries[id])
+          .filter((e): e is TimeEntry => !!e && e.project_id === retainer.project_id && e.state === "approved" && e.billable && !e.invoiced);
+        const expenseItems = expenseIds
+          .map((id) => state.expenses[id])
+          .filter((x): x is Expense => !!x && x.project_id === retainer.project_id && x.billable && !x.invoiced);
+        if (entries.length === 0 && expenseItems.length === 0) return { ok: false, reason: "no_lines" };
+
+        const amount = round2(
+          entries.reduce((sum, e) => sum + timeEntryBilledAmount(e), 0) +
+          expenseItems.reduce((sum, x) => sum + expenseBilledAmount(x), 0)
+        );
+
+        const draw: RetainerDraw = {
+          date: new Date().toISOString().slice(0, 10),
+          amount,
+          ref: `draw_${Date.now()}_${seq++}`,
+          against_entries: [...entries.map((e) => e.id), ...expenseItems.map((x) => x.id)],
+        };
+
+        set((s) => ({
+          retainers: {
+            ...s.retainers,
+            [retainerId]: { ...retainer, balance: round2(retainer.balance - amount), draws: [...retainer.draws, draw] },
+          },
+          time_entries: {
+            ...s.time_entries,
+            ...Object.fromEntries(entries.map((e) => [e.id, { ...e, invoiced: true }])),
+          },
+          expenses: {
+            ...s.expenses,
+            ...Object.fromEntries(expenseItems.map((x) => [x.id, { ...x, invoiced: true }])),
+          },
+        }));
+        return { ok: true, amount };
+      },
 
       reconcilePendingSync: () => set((s) => (s.pendingSyncIds.length === 0 ? s : { pendingSyncIds: [] })),
     }),

@@ -1,14 +1,9 @@
-import { Receipt } from "lucide-react";
-import { ProjectsPlaceholderPage } from "./ProjectsPlaceholderPage";
-
 // ── Projects list + create (spec §4) — Prompt 2 ────────────────────────────
 export { ProjectsListPage } from "./list/ProjectsListPage";
 export { ProjectEditorPage } from "./new/ProjectEditorPage";
 
 // ── Billing prep hub (spec §9) — Prompt 8 ──────────────────────────────────
-export function BillingHubPage() {
-  return <ProjectsPlaceholderPage titleKey="bill.title" icon={Receipt} />;
-}
+export { BillingHubPage } from "./billing/BillingHubPage";
 
 // ── Personal time (spec §7) — Prompt 5 ─────────────────────────────────────
 export { PersonalTimePage } from "./PersonalTimePage";

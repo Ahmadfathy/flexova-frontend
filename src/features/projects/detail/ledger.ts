@@ -22,6 +22,25 @@ export function entryHours(e: TimeEntry): number {
   return 0; // active timer, no stop_ts yet — not counted until stopped
 }
 
+/** Billed amount for an approved time entry — hours × the rate resolved at approval (spec §8.3). */
+export function timeEntryBilledAmount(e: TimeEntry): number {
+  return round2(entryHours(e) * (e.rate_resolved ?? 0));
+}
+
+/** Billed amount for an expense — cost plus markup% (spec §9.4/§7.9, markup defaults 0). */
+export function expenseBilledAmount(x: Expense): number {
+  return round2(x.amount * (1 + x.markup / 100));
+}
+
+/** Flat VAT rate used across FE_16 invoice totals — derived from the fixture's own posted invoices (14% throughout). */
+export const VAT_RATE = 0.14;
+
+export function computeInvoiceTotals(lineAmounts: number[]): { subtotal: number; tax: number; grand_total: number } {
+  const subtotal = round2(lineAmounts.reduce((sum, a) => sum + a, 0));
+  const tax = round2(subtotal * VAT_RATE);
+  return { subtotal, tax, grand_total: round2(subtotal + tax) };
+}
+
 export interface OpenWorkItem {
   kind: "time" | "expense";
   id: string;
