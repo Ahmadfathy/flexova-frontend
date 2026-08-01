@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 import {
   getProjects, getProjectClients, getMilestones as getFixtureMilestones, getRetainers,
 } from "@/lib/mock/projects";
+import { useProjectsAudit } from "@/stores/projectsAudit";
+import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import type {
   Project, ProjectClient, Milestone, Retainer, ProjectStatus, BillingModel, TeamMember,
 } from "@/features/projects/types";
@@ -53,6 +55,21 @@ export interface CreateProjectInput {
 
 export type ActivateResult = { ok: true } | { ok: false; reason: "retainer_required" | "not_found" };
 
+export interface MilestoneFormInput {
+  name_ar: string;
+  name_en: string;
+  billing_type: Milestone["billing_type"];
+  fixed_amount: number | null;
+  hours_estimated: number | null;
+  target_date: string | null;
+  notes?: string;
+}
+
+function projectRequester(project: Project): string {
+  const lead = project.team.find((m) => m.project_role.toLowerCase().includes("lead"));
+  return lead?.employee_id ?? project.team[0]?.employee_id ?? CURRENT_EMPLOYEE_ID;
+}
+
 interface ProjectsState {
   projects: Record<string, Project>;
   clients: Record<string, ProjectClient>;
@@ -65,6 +82,14 @@ interface ProjectsState {
   holdProject: (id: string) => void;
   closeProject: (id: string) => void;
   cloneProject: (id: string) => Project | null;
+
+  addMilestone: (projectId: string, input: MilestoneFormInput) => Milestone;
+  updateMilestone: (id: string, input: MilestoneFormInput) => void;
+  requestMilestoneApproval: (id: string) => void;
+  /** Approve is never blocked by SoD (kickoff invariant #7: warn + append-only audit, not a hard block). */
+  approveMilestone: (id: string) => { ok: true; sodWarning: boolean } | { ok: false };
+  deleteMilestone: (id: string) => void;
+  reorderMilestones: (projectId: string, orderedIds: string[]) => void;
 }
 
 export const useProjectsStore = create<ProjectsState>()(
@@ -188,6 +213,69 @@ export const useProjectsStore = create<ProjectsState>()(
 
         return copy;
       },
+
+      addMilestone: (projectId, input) => {
+        const siblings = Object.values(get().milestones).filter((m) => m.project_id === projectId);
+        const sequence = siblings.reduce((max, m) => Math.max(max, m.sequence), 0) + 1;
+        const id = `ms_${Date.now()}_${seq++}`;
+        const milestone: Milestone = { id, project_id: projectId, sequence, state: "draft", ...input };
+        set((s) => ({ milestones: { ...s.milestones, [id]: milestone } }));
+        return milestone;
+      },
+
+      updateMilestone: (id, input) => set((s) => {
+        const m = s.milestones[id];
+        if (!m) return s;
+        return { milestones: { ...s.milestones, [id]: { ...m, ...input } } };
+      }),
+
+      requestMilestoneApproval: (id) => set((s) => {
+        const m = s.milestones[id];
+        const project = m ? s.projects[m.project_id] : undefined;
+        if (!m || !project || m.state !== "draft") return s;
+        return {
+          milestones: {
+            ...s.milestones,
+            [id]: { ...m, state: "in_progress", requested_by: projectRequester(project) },
+          },
+        };
+      }),
+
+      approveMilestone: (id) => {
+        const m = get().milestones[id];
+        if (!m || m.state !== "in_progress") return { ok: false };
+
+        const sodWarning = !!m.requested_by && m.requested_by === CURRENT_EMPLOYEE_ID;
+        set((s) => ({ milestones: { ...s.milestones, [id]: { ...m, state: "approved" } } }));
+
+        if (sodWarning) {
+          useProjectsAudit.getState().append({
+            user: CURRENT_EMPLOYEE_ID,
+            action: "projects.milestone.self_approved",
+            entity: id,
+            detail_ar: `اعتماد ذاتي: نفس الشخص طلب واعتمد المرحلة ${m.name_ar}`,
+            detail_en: `Self-approval: the same person requested and approved milestone ${m.name_en}`,
+          });
+        }
+
+        return { ok: true, sodWarning };
+      },
+
+      deleteMilestone: (id) => set((s) => {
+        const m = s.milestones[id];
+        if (!m || m.state !== "draft") return s;
+        const { [id]: _removed, ...rest } = s.milestones;
+        return { milestones: rest };
+      }),
+
+      reorderMilestones: (projectId, orderedIds) => set((s) => {
+        const updated = { ...s.milestones };
+        orderedIds.forEach((mid, i) => {
+          const m = updated[mid];
+          if (m && m.project_id === projectId) updated[mid] = { ...m, sequence: i + 1 };
+        });
+        return { milestones: updated };
+      }),
     }),
     { name: "flexova.projects" }
   )

@@ -92,6 +92,8 @@ export interface Milestone {
   target_date: string | null;
   state: MilestoneState;
   notes?: string;
+  /** Set when "request approval" is actioned (defaults to the project's lead employee) — drives the SoD approver≠requester check. */
+  requested_by?: string;
 }
 
 export interface TimeEntry {

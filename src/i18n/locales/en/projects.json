@@ -178,7 +178,18 @@
       "invoiced": "Invoiced"
     },
     "bill_locked": "Approve the milestone before billing",
-    "empty": "No milestones — bills directly from time"
+    "empty": "No milestones — bills directly from time",
+    "notes": "Notes",
+    "sod_warning": "You requested and approved this milestone yourself — logged for audit.",
+    "delete_title": "Delete this milestone?",
+    "delete_body": "This can only be done while still in draft.",
+    "approve_title": "Approve this milestone?",
+    "approve_body": "Once approved, it becomes billable.",
+    "request_success": "Approval requested",
+    "approve_success": "Milestone approved",
+    "delete_success": "Milestone deleted",
+    "drawer_title_new": "New milestone",
+    "drawer_title_edit": "Edit milestone"
   },
 
   "time": {
