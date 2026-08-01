@@ -247,7 +247,23 @@
     "reason": "سبب الرفض",
     "bulk": "اعتماد الكل",
     "self": "مينفعش تعتمد ساعاتك بنفسك",
-    "empty": "مفيش ساعات في انتظار الاعتماد"
+    "empty": "مفيش ساعات في انتظار الاعتماد",
+    "employee": "الموظف",
+    "all_employees": "كل الموظفين",
+    "all_projects": "كل المشاريع",
+    "billable_all": "الكل",
+    "billable_yes": "قابل للفوترة فقط",
+    "billable_no": "غير قابل للفوترة فقط",
+    "hours": "الساعات",
+    "rate": "السعر (معاينة)",
+    "select_all": "اختيار كل المعلّق",
+    "approve_success": "تم اعتماد الإدخال",
+    "reject_success": "تم رفض الإدخال",
+    "bulk_success": "تم اعتماد {{n}} إدخال",
+    "reason_placeholder": "اشرح سبب الرفض…",
+    "reason_required": "السبب مطلوب",
+    "bulk_confirm_title": "اعتماد {{n}} إدخال؟",
+    "bulk_confirm_body": "هيتم تحديد السعر لكل إدخال وتبقى جاهزة للفوترة."
   },
 
   "bill": {

@@ -3,9 +3,11 @@ import { persist } from "zustand/middleware";
 import {
   getProjects, getProjectClients, getMilestones as getFixtureMilestones, getRetainers,
   getTimeEntries as getFixtureTimeEntries, getExpenses as getFixtureExpenses,
+  getProjectEmployee, getRoleRate,
 } from "@/lib/mock/projects";
 import { useProjectsAudit } from "@/stores/projectsAudit";
 import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
+import { resolveRate } from "@/features/projects/time/rateResolution";
 import type {
   Project, ProjectClient, Milestone, Retainer, ProjectStatus, BillingModel, TeamMember,
   TimeEntry, Expense,
@@ -102,6 +104,10 @@ export interface TimeEntryEditInput {
   billable: boolean;
 }
 
+export type TimeApprovalResult =
+  | { ok: true }
+  | { ok: false; reason: "self_approval" | "not_submitted" };
+
 export interface ExpenseFormInput {
   description_ar: string;
   amount: number;
@@ -140,6 +146,10 @@ interface ProjectsState {
   addTimerTimeEntry: (input: TimerStopInput, offline?: boolean) => TimeEntry;
   updateTimeEntry: (id: string, input: TimeEntryEditInput) => void;
   submitTimeEntries: (ids: string[]) => void;
+  /** SoD guard (kickoff invariant #7): blocked, not just warned, when approver === entry owner — logs an append-only audit entry either way. */
+  approveTimeEntry: (id: string) => TimeApprovalResult;
+  rejectTimeEntry: (id: string, reason: string) => void;
+  bulkApproveTimeEntries: (ids: string[]) => { approvedCount: number; blockedCount: number };
 
   addExpense: (projectId: string, input: ExpenseFormInput, offline?: boolean) => Expense;
   updateExpense: (id: string, input: ExpenseFormInput) => void;
@@ -419,6 +429,50 @@ export const useProjectsStore = create<ProjectsState>()(
         });
         return { time_entries: updated };
       }),
+
+      approveTimeEntry: (id) => {
+        const e = get().time_entries[id];
+        if (!e || e.state !== "submitted") return { ok: false, reason: "not_submitted" };
+
+        if (e.employee_id === CURRENT_EMPLOYEE_ID) {
+          useProjectsAudit.getState().append({
+            user: CURRENT_EMPLOYEE_ID,
+            action: "projects.time.self_approval_blocked",
+            entity: id,
+            detail_ar: `تم منع اعتماد ذاتي لساعات: ${e.description_ar || id}`,
+            detail_en: `Blocked self-approval attempt on time entry: ${e.description_ar || id}`,
+          });
+          return { ok: false, reason: "self_approval" };
+        }
+
+        const project = get().projects[e.project_id];
+        const employee = getProjectEmployee(e.employee_id);
+        const resolved = resolveRate(project, employee, getRoleRate);
+        const rate_resolved = e.billable ? resolved.rate : null;
+        const rate_source = e.billable ? resolved.source : null;
+
+        set((s) => ({
+          time_entries: { ...s.time_entries, [id]: { ...e, state: "approved", rate_resolved, rate_source } },
+        }));
+        return { ok: true };
+      },
+
+      rejectTimeEntry: (id, reason) => set((s) => {
+        const e = s.time_entries[id];
+        if (!e || e.state !== "submitted") return s;
+        return { time_entries: { ...s.time_entries, [id]: { ...e, state: "rejected", reject_reason: reason } } };
+      }),
+
+      bulkApproveTimeEntries: (ids) => {
+        let approvedCount = 0;
+        let blockedCount = 0;
+        ids.forEach((id) => {
+          const result = get().approveTimeEntry(id);
+          if (result.ok) approvedCount++;
+          else if (result.reason === "self_approval") blockedCount++;
+        });
+        return { approvedCount, blockedCount };
+      },
 
       addExpense: (projectId, input, offline) => {
         const id = `ex_${Date.now()}_${seq++}`;

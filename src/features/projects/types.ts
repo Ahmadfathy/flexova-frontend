@@ -113,6 +113,8 @@ export interface TimeEntry {
   rate_source: RateSource;
   invoiced: boolean;
   invoice_id: string | null;
+  /** Set when `reject` is actioned (spec §8.3/§8.7 — reject requires a reason). */
+  reject_reason?: string | null;
   _flag?: string;
   _note?: string;
 }

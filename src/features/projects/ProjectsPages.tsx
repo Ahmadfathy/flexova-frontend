@@ -1,4 +1,4 @@
-import { Receipt, CheckCircle2 } from "lucide-react";
+import { Receipt } from "lucide-react";
 import { ProjectsPlaceholderPage } from "./ProjectsPlaceholderPage";
 
 // ── Projects list + create (spec §4) — Prompt 2 ────────────────────────────
@@ -14,9 +14,7 @@ export function BillingHubPage() {
 export { PersonalTimePage } from "./PersonalTimePage";
 
 // ── Time approvals (spec §8) — Prompt 7 ────────────────────────────────────
-export function TimeApprovalsPage() {
-  return <ProjectsPlaceholderPage titleKey="appr.title" icon={CheckCircle2} />;
-}
+export { TimeApprovalsPage } from "./time/TimeApprovalsPage";
 
 export { ProjectDetailLayout } from "./detail/ProjectDetailLayout";
 export {

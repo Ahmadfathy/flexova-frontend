@@ -247,7 +247,23 @@
     "reason": "Rejection reason",
     "bulk": "Approve all",
     "self": "You can't approve your own time",
-    "empty": "Nothing pending approval"
+    "empty": "Nothing pending approval",
+    "employee": "Employee",
+    "all_employees": "All employees",
+    "all_projects": "All projects",
+    "billable_all": "Billable: all",
+    "billable_yes": "Billable only",
+    "billable_no": "Non-billable only",
+    "hours": "Hours",
+    "rate": "Rate (preview)",
+    "select_all": "Select all pending",
+    "approve_success": "Entry approved",
+    "reject_success": "Entry rejected",
+    "bulk_success": "{{n}} entries approved",
+    "reason_placeholder": "Explain the rejection…",
+    "reason_required": "Reason is required",
+    "bulk_confirm_title": "Approve {{n}} entries?",
+    "bulk_confirm_body": "Rates will be resolved for each entry and they become eligible for billing."
   },
 
   "bill": {
