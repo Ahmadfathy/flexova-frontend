@@ -52,6 +52,9 @@ const REGISTRY: Record<string, ComponentType<CreateModalProps>> = {
   new_advance:     lazy(() => import("@/features/hr/advances/AdvanceCreateModal").then(m => ({ default: m.AdvanceCreateModal }))),
   new_payroll_run: lazy(() => import("@/features/hr/payroll/PayrollRunCreateModal").then(m => ({ default: m.PayrollRunCreateModal }))),
 
+  // Project-Based Services
+  new_timer: lazy(() => import("@/features/projects/time/StartTimerModal").then(m => ({ default: m.StartTimerModal }))),
+
   // Reports
   new_schedule: lazy(() => import("@/features/reports/scheduling/ScheduleCreateModal").then(m => ({ default: m.ScheduleCreateModal }))),
 

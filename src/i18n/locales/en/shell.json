@@ -177,7 +177,8 @@
     "new_payroll_run":      "Payroll Run",
     "new_schedule":         "Report Schedule",
     "new_user":             "User",
-    "new_branch":           "Branch"
+    "new_branch":           "Branch",
+    "new_timer":            "Start Timer"
   },
 
   "appearance": {

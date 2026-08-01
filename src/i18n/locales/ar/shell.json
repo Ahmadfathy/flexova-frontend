@@ -177,7 +177,8 @@
     "new_payroll_run":      "دورة رواتب",
     "new_schedule":         "جدولة تقرير",
     "new_user":             "مستخدم",
-    "new_branch":           "فرع"
+    "new_branch":           "فرع",
+    "new_timer":            "ابدأ عدّاد"
   },
 
   "appearance": {

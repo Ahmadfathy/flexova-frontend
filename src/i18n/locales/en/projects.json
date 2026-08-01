@@ -224,7 +224,8 @@
     "rate_pending": "Pending",
     "submitted_toast": "Submitted for approval",
     "minutes_required": "Minutes must be greater than 0",
-    "switch": "Switch project"
+    "switch": "Switch project",
+    "active_timer": "Active timer"
   },
 
   "expense": {

@@ -9,6 +9,7 @@ import { MobileDrawer } from "./MobileDrawer";
 import { HorizontalModuleBar, HorizontalSubBar, HorizontalDropdownModuleBar } from "./HorizontalNav";
 import { SearchPanel } from "./SearchPanel";
 import { QuickAdd } from "./QuickAdd";
+import { ActiveTimer } from "./ActiveTimer";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
@@ -131,6 +132,9 @@ export function Topbar() {
       <div className="flex-1 min-w-0" />
 
       {/* ── End side ────────────────────────────────────────── */}
+
+      {/* Active timer — additive slot (FE_16 §11); hidden entirely if module/permission off */}
+      <ActiveTimer />
 
       {/* ETA badge — always visible, sits in its own slot */}
       <EtaBadge />

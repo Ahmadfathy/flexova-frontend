@@ -224,7 +224,8 @@
     "rate_pending": "معلّق",
     "submitted_toast": "تم الإرسال للاعتماد",
     "minutes_required": "الدقائق لازم تكون أكبر من صفر",
-    "switch": "تبديل المشروع"
+    "switch": "تبديل المشروع",
+    "active_timer": "عدّاد شغّال"
   },
 
   "expense": {

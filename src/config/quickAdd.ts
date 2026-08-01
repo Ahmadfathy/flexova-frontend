@@ -6,7 +6,7 @@ import {
   CreditCard, HandCoins, Wallet, BookOpen, ListTree,
   UserRound, CalendarClock, Layers, MessageSquare,
   UserPlus, Banknote, PlayCircle,
-  Building,
+  Building, Timer,
 } from "lucide-react";
 
 export interface QuickAddAction {
@@ -79,6 +79,9 @@ export const QUICK_ADD: QuickAddAction[] = [
   { key: "new_employee",     icon: UserPlus,   method: "modal", group: "hr", permission: "hr.employee.create" },
   { key: "new_advance",      icon: Banknote,   method: "modal", group: "hr", permission: "hr.advance.create" },
   { key: "new_payroll_run",  icon: PlayCircle, method: "modal", group: "hr", permission: "hr.payroll.run" },
+
+  // ── Project-Based Services ─────────────────────────────────
+  { key: "new_timer", icon: Timer, method: "modal", group: "projects", permission: "projects.time.log", moduleFlag: "projects.enabled" },
 
   // ── Reports ─────────────────────────────────────────────────
   { key: "new_schedule", icon: CalendarClock, method: "modal", group: "reports", permission: "reports.schedules.create" },
