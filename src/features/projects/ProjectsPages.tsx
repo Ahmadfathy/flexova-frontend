@@ -1,14 +1,9 @@
-import { Briefcase, FilePlus2, Receipt, Clock, CheckCircle2 } from "lucide-react";
+import { Receipt, Clock, CheckCircle2 } from "lucide-react";
 import { ProjectsPlaceholderPage } from "./ProjectsPlaceholderPage";
 
-// ── Projects list + create (spec §4) — Prompt 2 builds these out ──────────
-export function ProjectsListPage() {
-  return <ProjectsPlaceholderPage titleKey="title" icon={Briefcase} />;
-}
-
-export function ProjectEditorPage() {
-  return <ProjectsPlaceholderPage titleKey="new" icon={FilePlus2} />;
-}
+// ── Projects list + create (spec §4) — Prompt 2 ────────────────────────────
+export { ProjectsListPage } from "./list/ProjectsListPage";
+export { ProjectEditorPage } from "./new/ProjectEditorPage";
 
 // ── Billing prep hub (spec §9) — Prompt 8 ──────────────────────────────────
 export function BillingHubPage() {

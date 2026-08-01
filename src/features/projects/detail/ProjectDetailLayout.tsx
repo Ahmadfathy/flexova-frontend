@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { ModuleTabs } from "@/components/patterns/ModuleTabs";
 import { useAppearance } from "@/stores/appearance";
-import { getProject } from "@/lib/mock/projects";
+import { useProjectsStore } from "@/stores/projectsStore";
 
 /** `/projects/:id` — tabbed project detail shell (spec §5.2). Overview/Milestones/etc. built in later prompts. */
 export function ProjectDetailLayout() {
@@ -11,7 +11,7 @@ export function ProjectDetailLayout() {
   const { t } = useTranslation("projects");
   const { lang } = useAppearance();
 
-  const project = getProject(id);
+  const project = useProjectsStore((s) => s.projects[id]);
   const title = project
     ? `${project.code} · ${lang === "ar" ? project.title_ar : project.title_en}`
     : id;

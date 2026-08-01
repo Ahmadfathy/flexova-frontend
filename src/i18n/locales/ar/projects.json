@@ -7,7 +7,12 @@
 
   "filters": {
     "status": "الحالة",
-    "billing": "نموذج الفوترة"
+    "billing": "نموذج الفوترة",
+    "type": "النوع",
+    "client": "العميل",
+    "team": "عضو الفريق",
+    "date_from": "من",
+    "date_to": "إلى"
   },
 
   "status": {
@@ -27,8 +32,107 @@
   },
 
   "col": {
+    "code": "الكود",
+    "title": "المشروع",
+    "client": "العميل",
+    "status": "الحالة",
+    "billing": "الفوترة",
     "hours": "ساعات فعلي/مقدّر",
-    "margin": "الهامش التقديري"
+    "margin": "الهامش التقديري",
+    "target_end": "نهاية مستهدفة",
+    "actions": "إجراءات"
+  },
+
+  "list": {
+    "search_placeholder": "ابحث بالكود أو العنوان أو العميل",
+    "all_statuses": "كل الحالات",
+    "all_types": "كل الأنواع",
+    "all_clients": "كل العملاء",
+    "all_billing": "كل نماذج الفوترة",
+    "all_team": "كل أعضاء الفريق",
+    "count": "{{n}} مشروع",
+    "action_open": "فتح",
+    "action_clone": "استنساخ",
+    "action_hold": "تعليق",
+    "action_activate": "تفعيل",
+    "action_close": "إغلاق",
+    "empty_title": "مفيش مشاريع لسه",
+    "empty_body": "ابدأ مشروع جديد عشان تتابع النطاق والوقت والفوترة في مكان واحد.",
+    "no_results_title": "مفيش مشاريع مطابقة",
+    "no_results_body": "جرّب تعدّل أو تمسح الفلاتر.",
+    "clear_filters": "مسح الفلاتر",
+    "export": "تصدير",
+    "export_toast": "تم تصدير {{n}} مشروع",
+    "clone_success": "تم الاستنساخ باسم {{code}} (مسودة)",
+    "hold_title": "تعليق المشروع؟",
+    "hold_body": "هينقل المشروع لحالة معلّق. تقدر تفعّله تاني بعدين.",
+    "close_title": "إغلاق المشروع؟",
+    "close_body": "هينقل المشروع لحالة مغلق. الأدمن يقدر يرجّعه بعدين.",
+    "activate_title": "تفعيل المشروع؟",
+    "activate_body": "هيبقى المشروع نشط وجاهز لتسجيل الوقت والفوترة.",
+    "activate_blocked_retainer": "المشروع ده يتفوتر بدفعة مقدمة — لازم تربط دفعة مقدمة برصيد افتتاحي قبل التفعيل (من فورم الإنشاء).",
+    "offline_note": "غير متصل — بنعرض آخر قائمة متزامنة (قراءة فقط).",
+    "permission_required": "معندكش صلاحية لعرض المشاريع."
+  },
+
+  "form": {
+    "details_section": "بيانات المشروع",
+    "client": "العميل",
+    "client_placeholder": "اختر عميل",
+    "client_required": "العميل مطلوب",
+    "title_ar": "العنوان (عربي)",
+    "title_en": "العنوان (إنجليزي)",
+    "title_ar_required": "العنوان بالعربي مطلوب",
+    "title_en_required": "العنوان بالإنجليزي مطلوب",
+    "type_label": "النوع / التصنيف",
+    "type_label_placeholder": "مثال: قضية، مشروع، حملة",
+    "type_label_required": "النوع / التصنيف مطلوب",
+    "billing_model": "نموذج الفوترة",
+    "start_date": "تاريخ البداية",
+    "start_date_required": "تاريخ البداية مطلوب",
+    "target_end": "نهاية مستهدفة",
+    "budget_estimated": "الموازنة التقديرية",
+    "hours_estimated": "الساعات التقديرية",
+    "retainer_opening": "رصيد الدفعة المقدمة الافتتاحي",
+    "retainer_opening_helper": "مطلوب قبل تفعيل المشروع (نموذج الفوترة = دفعة مقدمة).",
+    "team_section": "الفريق",
+    "team_add": "إضافة عضو",
+    "team_employee": "الموظف",
+    "team_role": "الدور في المشروع",
+    "team_role_placeholder": "مثال: قائد، دعم",
+    "team_empty": "مفيش أعضاء لسه",
+    "milestones_section": "المراحل (اختياري)",
+    "milestones_hint": "سيبها فاضية عشان المشروع يتفوتر مباشرة من الوقت.",
+    "milestones_add": "إضافة مرحلة",
+    "milestone_name_ar": "الاسم (عربي)",
+    "milestone_name_en": "الاسم (إنجليزي)",
+    "milestone_billing_type": "نوع الفوترة",
+    "milestone_amount": "المبلغ الثابت",
+    "milestone_hours_est": "الساعات التقديرية",
+    "milestone_target_date": "التاريخ المستهدف",
+    "save_draft": "حفظ كمسودة",
+    "create_activate": "إنشاء وتفعيل",
+    "cancel": "إلغاء",
+    "draft_toast": "تم حفظ المشروع كمسودة",
+    "activate_toast": "تم إنشاء المشروع وتفعيله"
+  },
+
+  "ms_type": {
+    "fixed": "ثابت",
+    "tm": "بالوقت والخامات",
+    "retainer": "خصم من الدفعة المقدمة"
+  },
+
+  "client_modal": {
+    "title": "عميل جديد",
+    "search_placeholder": "ابحث عن عميل…",
+    "add_new": "إضافة عميل جديد",
+    "type": "النوع",
+    "type_b2b": "شركة (B2B)",
+    "type_b2c": "فرد (B2C)",
+    "name_ar": "الاسم (عربي)",
+    "name_en": "الاسم (إنجليزي)",
+    "trn": "الرقم الضريبي"
   },
 
   "tab": {

@@ -7,7 +7,12 @@
 
   "filters": {
     "status": "Status",
-    "billing": "Billing model"
+    "billing": "Billing model",
+    "type": "Type",
+    "client": "Client",
+    "team": "Team member",
+    "date_from": "From",
+    "date_to": "To"
   },
 
   "status": {
@@ -27,8 +32,107 @@
   },
 
   "col": {
+    "code": "Code",
+    "title": "Project",
+    "client": "Client",
+    "status": "Status",
+    "billing": "Billing",
     "hours": "Hours actual/est.",
-    "margin": "Est. margin"
+    "margin": "Est. margin",
+    "target_end": "Target end",
+    "actions": "Actions"
+  },
+
+  "list": {
+    "search_placeholder": "Search by code, title or client",
+    "all_statuses": "All statuses",
+    "all_types": "All types",
+    "all_clients": "All clients",
+    "all_billing": "All billing models",
+    "all_team": "All team members",
+    "count": "{{n}} projects",
+    "action_open": "Open",
+    "action_clone": "Clone",
+    "action_hold": "Hold",
+    "action_activate": "Activate",
+    "action_close": "Close",
+    "empty_title": "No projects yet",
+    "empty_body": "Start one to track scope, time and billing in one place.",
+    "no_results_title": "No matching projects",
+    "no_results_body": "Try adjusting or clearing your filters.",
+    "clear_filters": "Clear filters",
+    "export": "Export",
+    "export_toast": "Exported {{n}} projects",
+    "clone_success": "Cloned as {{code}} (draft)",
+    "hold_title": "Hold this project?",
+    "hold_body": "The project moves to On hold. You can reactivate it later.",
+    "close_title": "Close this project?",
+    "close_body": "The project moves to Closed. This can be reversed by an admin later.",
+    "activate_title": "Activate this project?",
+    "activate_body": "The project becomes Active and ready for time logging and billing.",
+    "activate_blocked_retainer": "This project bills by retainer — link a retainer with an opening balance before activating (set it on the create form).",
+    "offline_note": "Offline — showing the last synced list (read-only).",
+    "permission_required": "You don't have permission to view projects."
+  },
+
+  "form": {
+    "details_section": "Project details",
+    "client": "Client",
+    "client_placeholder": "Select a client",
+    "client_required": "Client is required",
+    "title_ar": "Title (Arabic)",
+    "title_en": "Title (English)",
+    "title_ar_required": "Arabic title is required",
+    "title_en_required": "English title is required",
+    "type_label": "Type / label",
+    "type_label_placeholder": "e.g. case, project, campaign",
+    "type_label_required": "Type / label is required",
+    "billing_model": "Billing model",
+    "start_date": "Start date",
+    "start_date_required": "Start date is required",
+    "target_end": "Target end",
+    "budget_estimated": "Estimated budget",
+    "hours_estimated": "Estimated hours",
+    "retainer_opening": "Retainer opening balance",
+    "retainer_opening_helper": "Required before this project can be activated (billing model = retainer).",
+    "team_section": "Team",
+    "team_add": "Add member",
+    "team_employee": "Employee",
+    "team_role": "Project role",
+    "team_role_placeholder": "e.g. lead, support",
+    "team_empty": "No team members yet",
+    "milestones_section": "Milestones (optional)",
+    "milestones_hint": "Leave empty to bill this project directly from time.",
+    "milestones_add": "Add milestone",
+    "milestone_name_ar": "Name (Arabic)",
+    "milestone_name_en": "Name (English)",
+    "milestone_billing_type": "Billing type",
+    "milestone_amount": "Fixed amount",
+    "milestone_hours_est": "Est. hours",
+    "milestone_target_date": "Target date",
+    "save_draft": "Save draft",
+    "create_activate": "Create & activate",
+    "cancel": "Cancel",
+    "draft_toast": "Project saved as draft",
+    "activate_toast": "Project created and activated"
+  },
+
+  "ms_type": {
+    "fixed": "Fixed",
+    "tm": "Time & materials",
+    "retainer": "Retainer draw"
+  },
+
+  "client_modal": {
+    "title": "New client",
+    "search_placeholder": "Search clients…",
+    "add_new": "Add a new client",
+    "type": "Type",
+    "type_b2b": "Business (B2B)",
+    "type_b2c": "Individual (B2C)",
+    "name_ar": "Name (Arabic)",
+    "name_en": "Name (English)",
+    "trn": "Tax reg. number"
   },
 
   "tab": {
