@@ -39,7 +39,6 @@ export function ProfitabilityPage() {
   const boqItemsAll = useConstructionStore((s) => s.boq_items);
   const costBudgetBreakdown = useConstructionStore((s) => s.cost_budget_breakdown);
   const progressClaimsAll = useConstructionStore((s) => s.progress_claims);
-  const subcontractsAll = useConstructionStore((s) => s.subcontracts);
   const { isOffline } = useMockState();
 
   const canView = can("construction.profitability.view");
@@ -53,25 +52,19 @@ export function ProfitabilityPage() {
   const contractValue = useMemo(() => Object.values(boqItemsAll).reduce((sum, i) => sum + i.value, 0), [boqItemsAll]);
 
   /**
-   * Everything estimated is live (Cost Budget from S2); everything "actual" is the ledger
-   * snapshot fixture — except `subcontract`, which is recomputed live from approved sub-claims
-   * per spec §9.3/DoD §8's "approved sub-claims flow into actual cost." The fixture's own
-   * static subcontract figure predates that linkage and no longer agrees with it by design.
+   * Estimated cost is live (Cost Budget from S2, so "no Cost Budget → estimated columns
+   * empty" falls out for free). Actual cost is the ledger-snapshot fixture, taken as-is —
+   * golden rule #5 / DoD §9 "no source figure is recomputed" applies to the whole breakdown,
+   * `subcontract` included: the DoD's own fixture check (actual cost 3,855,000) is the static
+   * number, so §8's "approved sub-claims flow into actual cost" describes the backend ledger
+   * pipeline this snapshot represents, not something the client recomputes on every approval.
    */
   const pivot = useMemo(() => phases.map((phase) => {
     const estBreakdown = costBudgetBreakdown[phase.id];
     const estimatedCost = estBreakdown ? round2(estBreakdown.materials + estBreakdown.labor + estBreakdown.subcontract + estBreakdown.other) : null;
 
     const staticPhase = costActuals?.by_phase.find((p) => p.phase_ref === phase.id);
-    const liveSubcontract = round2(
-      Object.values(subcontractsAll)
-        .filter((sc) => boqItemsAll[sc.linked_boq_item]?.phase_ref === phase.id)
-        .reduce((sum, sc) => sum + sc.sub_claims
-          .filter((c) => c.status === "approved" || c.status === "invoiced" || c.status === "collected")
-          .reduce((s, c) => s + c.gross_current, 0), 0)
-    );
-
-    const actualBreakdown: CostActualBreakdown | null = staticPhase ? { ...staticPhase.breakdown, subcontract: liveSubcontract } : null;
+    const actualBreakdown: CostActualBreakdown | null = staticPhase ? staticPhase.breakdown : null;
     const actualCost = actualBreakdown ? round2(actualBreakdown.materials + actualBreakdown.labor + actualBreakdown.subcontract + actualBreakdown.other) : null;
 
     const variance = estimatedCost != null && actualCost != null ? round2(actualCost - estimatedCost) : null;
@@ -79,7 +72,7 @@ export function ProfitabilityPage() {
     const flag = actualCost != null ? flagCostVariance(phase.completion_pct, variance ?? 0) : null;
 
     return { phase, estimatedCost, actualCost, actualBreakdown, variance, variancePct, flag };
-  }), [phases, costBudgetBreakdown, costActuals, subcontractsAll, boqItemsAll]);
+  }), [phases, costBudgetBreakdown, costActuals]);
 
   const estimatedCostTotal = useMemo(() => round2(pivot.reduce((sum, r) => sum + (r.estimatedCost ?? 0), 0)), [pivot]);
   const actualCostTotal = useMemo(() => round2(pivot.reduce((sum, r) => sum + (r.actualCost ?? 0), 0)), [pivot]);
