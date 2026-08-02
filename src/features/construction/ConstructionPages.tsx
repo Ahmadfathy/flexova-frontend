@@ -1,4 +1,4 @@
-import { FileDiff, Receipt, ShieldCheck, Users, BarChart3 } from "lucide-react";
+import { Receipt, ShieldCheck, Users, BarChart3 } from "lucide-react";
 import { ConstructionPlaceholderPage } from "./ConstructionPlaceholderPage";
 
 // ── S1 project-workspace facet (spec §11) — Step 0 ─────────────────────────
@@ -11,17 +11,13 @@ export { BoqEditorPage } from "./boq/BoqEditorPage";
 // ── S3 Contract terms (spec §4) ────────────────────────────────────────────
 export { ContractTermsPage } from "./contract/ContractTermsPage";
 
-// ── Remaining screens (S4-S9) — scaffolded as placeholders, one screen per
+// ── S4 Variation Orders (spec §5) ──────────────────────────────────────────
+export { VariationOrdersPage } from "./vo/VariationOrdersPage";
+export { VariationOrderEditorPage } from "./vo/VariationOrderEditorPage";
+
+// ── Remaining screens (S5-S9) — scaffolded as placeholders, one screen per
 // build step per the Kickoff order. Real content replaces each export below
 // as its step lands; the route registration in App.tsx never changes. ──────
-
-export function VariationOrdersPage() {
-  return <ConstructionPlaceholderPage titleKey="vo.title" icon={FileDiff} bare />;
-}
-
-export function VariationOrderEditorPage() {
-  return <ConstructionPlaceholderPage titleKey="vo.title" icon={FileDiff} bare />;
-}
 
 export function ClaimsRegisterPage() {
   return <ConstructionPlaceholderPage titleKey="claims.title" icon={Receipt} bare />;

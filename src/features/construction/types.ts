@@ -112,6 +112,15 @@ export interface VoLine {
   type: VoLineType;
   target_boq_item?: string;
   detail_ar: string;
+  /** Working data for a not-yet-approved add_item line — the fixture's only VO (already
+   * approved) omits this since its resulting item already exists in boq_items. */
+  new_item?: {
+    phase_ref: string; code: string; section_header_ar: string; description_ar: string;
+    unit_ar: string; estimated_qty: number; unit_price: number; estimated_unit_cost: number;
+  };
+  /** Working data for a not-yet-approved modify_qty/modify_price line. */
+  new_qty?: number;
+  new_price?: number;
 }
 
 export interface VariationOrder {
