@@ -289,16 +289,55 @@
   },
 
   "doc": {
+    "title": "Documents",
     "upload": "Upload document",
-    "category": "Category"
+    "category": "Category",
+    "category_placeholder": "e.g. Contracts, Drawings",
+    "name": "Document name",
+    "name_required": "Document name is required",
+    "category_required": "Category is required",
+    "milestone_optional": "Milestone (optional)",
+    "uploaded_by": "Uploaded by",
+    "date": "Date",
+    "download": "Download",
+    "download_toast": "Demo download — there is no real file in this preview",
+    "empty_title": "No documents yet",
+    "empty_body": "Upload contracts, drawings, or any project-related files.",
+    "upload_success": "Document uploaded"
   },
 
   "appt": {
-    "new": "New appointment"
+    "title": "Appointments",
+    "new": "New appointment",
+    "edit": "Edit appointment",
+    "field_title": "Appointment title",
+    "title_required": "Appointment title is required",
+    "date": "Date",
+    "start_time": "From",
+    "end_time": "To",
+    "time_required": "End time must be after start time",
+    "today": "Today",
+    "prev_week": "Previous week",
+    "next_week": "Next week",
+    "empty_title": "No appointments yet",
+    "empty_body": "Add an appointment linked directly to this project and client.",
+    "save_success": "Appointment saved",
+    "no_client": "The project needs a linked client"
   },
 
   "team": {
+    "title": "Team",
     "add": "Add member",
-    "role": "Project role"
+    "role": "Project role",
+    "role_placeholder": "e.g. Lead, Support",
+    "employee": "Employee",
+    "remove": "Remove",
+    "remove_title": "Remove member?",
+    "remove_body": "Their project role will be cleared — this affects future time-approval rate resolution.",
+    "empty_title": "No team members yet",
+    "empty_body": "Add members from HR so they can be assigned time and their rate resolved on approval.",
+    "add_success": "Member added",
+    "remove_success": "Member removed",
+    "all_added": "All available employees are already on the team"
   }
 }

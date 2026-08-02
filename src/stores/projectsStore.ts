@@ -4,6 +4,7 @@ import {
   getProjects, getProjectClients, getMilestones as getFixtureMilestones, getRetainers,
   getTimeEntries as getFixtureTimeEntries, getExpenses as getFixtureExpenses,
   getProjectInvoices as getFixtureInvoices,
+  getProjectDocuments as getFixtureDocuments, getProjectAppointments as getFixtureAppointments,
   getProjectEmployee, getRoleRate,
 } from "@/lib/mock/projects";
 import { useProjectsAudit } from "@/stores/projectsAudit";
@@ -12,7 +13,7 @@ import { resolveRate } from "@/features/projects/time/rateResolution";
 import { timeEntryBilledAmount, expenseBilledAmount, computeInvoiceTotals, round2 } from "@/features/projects/detail/ledger";
 import type {
   Project, ProjectClient, Milestone, Retainer, ProjectStatus, BillingModel, TeamMember,
-  TimeEntry, Expense, ProjectInvoice, InvoiceLine, RetainerDraw,
+  TimeEntry, Expense, ProjectInvoice, InvoiceLine, RetainerDraw, ProjectDocument, Appointment,
 } from "@/features/projects/types";
 
 const SEED_PROJECTS: Record<string, Project> = Object.fromEntries(getProjects().map((p) => [p.id, p]));
@@ -22,6 +23,8 @@ const SEED_RETAINERS: Record<string, Retainer> = Object.fromEntries(getRetainers
 const SEED_TIME_ENTRIES: Record<string, TimeEntry> = Object.fromEntries(getFixtureTimeEntries().map((e) => [e.id, e]));
 const SEED_EXPENSES: Record<string, Expense> = Object.fromEntries(getFixtureExpenses().map((e) => [e.id, e]));
 const SEED_INVOICES: Record<string, ProjectInvoice> = Object.fromEntries(getFixtureInvoices().map((i) => [i.id, i]));
+const SEED_DOCUMENTS: Record<string, ProjectDocument> = Object.fromEntries(getFixtureDocuments().map((d) => [d.id, d]));
+const SEED_APPOINTMENTS: Record<string, Appointment> = Object.fromEntries(getFixtureAppointments().map((a) => [a.id, a]));
 
 function nextInvoiceNumber(invoices: Record<string, ProjectInvoice>): string {
   const max = Object.values(invoices).reduce((m, inv) => {
@@ -129,6 +132,18 @@ export interface ExpenseFormInput {
   stock_item_id?: string | null;
 }
 
+export interface DocumentFormInput {
+  name_ar: string;
+  category_ar: string;
+  milestone_id: string | null;
+}
+
+export interface AppointmentFormInput {
+  title_ar: string;
+  start_ts: string;
+  end_ts: string;
+}
+
 interface ProjectsState {
   projects: Record<string, Project>;
   clients: Record<string, ProjectClient>;
@@ -137,6 +152,8 @@ interface ProjectsState {
   time_entries: Record<string, TimeEntry>;
   expenses: Record<string, Expense>;
   invoices: Record<string, ProjectInvoice>;
+  documents: Record<string, ProjectDocument>;
+  appointments: Record<string, Appointment>;
   /** Entries/expenses created while `?mock=offline` — cleared on the next reconcile (kickoff §7.6: queue + idempotent reconcile). */
   pendingSyncIds: string[];
 
@@ -174,6 +191,13 @@ interface ProjectsState {
   /** Reduces the retainer balance directly — no invoice, no new receivable (spec §9.5). */
   drawRetainer: (retainerId: string, timeEntryIds: string[], expenseIds: string[]) => { ok: true; amount: number } | { ok: false; reason: "not_found" | "no_lines" };
 
+  addDocument: (projectId: string, input: DocumentFormInput) => ProjectDocument;
+  addAppointment: (projectId: string, input: AppointmentFormInput) => Appointment;
+
+  /** Adds/updates a team member's project role (inherited Team tab, spec §10.3) — the role feeds rate resolution. */
+  addTeamMember: (projectId: string, employeeId: string, projectRole: string) => void;
+  removeTeamMember: (projectId: string, employeeId: string) => void;
+
   reconcilePendingSync: () => void;
 }
 
@@ -187,6 +211,8 @@ export const useProjectsStore = create<ProjectsState>()(
       time_entries: SEED_TIME_ENTRIES,
       expenses: SEED_EXPENSES,
       invoices: SEED_INVOICES,
+      documents: SEED_DOCUMENTS,
+      appointments: SEED_APPOINTMENTS,
       pendingSyncIds: [],
 
       addClient: (input) => {
@@ -669,6 +695,50 @@ export const useProjectsStore = create<ProjectsState>()(
         }));
         return { ok: true, amount };
       },
+
+      addDocument: (projectId, input) => {
+        const id = `doc_${Date.now()}_${seq++}`;
+        const document: ProjectDocument = {
+          id,
+          project_id: projectId,
+          milestone_id: input.milestone_id,
+          name_ar: input.name_ar,
+          category_ar: input.category_ar,
+          uploaded_by: CURRENT_EMPLOYEE_ID,
+          date: new Date().toISOString().slice(0, 10),
+        };
+        set((s) => ({ documents: { ...s.documents, [id]: document } }));
+        return document;
+      },
+
+      addAppointment: (projectId, input) => {
+        const project = get().projects[projectId];
+        const id = `ap_${Date.now()}_${seq++}`;
+        const appointment: Appointment = {
+          id,
+          project_id: projectId,
+          client_id: project?.client_id ?? "",
+          title_ar: input.title_ar,
+          start_ts: input.start_ts,
+          end_ts: input.end_ts,
+        };
+        set((s) => ({ appointments: { ...s.appointments, [id]: appointment } }));
+        return appointment;
+      },
+
+      addTeamMember: (projectId, employeeId, projectRole) => set((s) => {
+        const p = s.projects[projectId];
+        if (!p || !employeeId) return s;
+        const withoutExisting = p.team.filter((m) => m.employee_id !== employeeId);
+        const team: TeamMember[] = [...withoutExisting, { employee_id: employeeId, project_role: projectRole }];
+        return { projects: { ...s.projects, [projectId]: { ...p, team } } };
+      }),
+
+      removeTeamMember: (projectId, employeeId) => set((s) => {
+        const p = s.projects[projectId];
+        if (!p) return s;
+        return { projects: { ...s.projects, [projectId]: { ...p, team: p.team.filter((m) => m.employee_id !== employeeId) } } };
+      }),
 
       reconcilePendingSync: () => set((s) => (s.pendingSyncIds.length === 0 ? s : { pendingSyncIds: [] })),
     }),
