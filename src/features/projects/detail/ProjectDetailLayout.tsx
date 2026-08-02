@@ -8,14 +8,18 @@ import { PageHeader } from "@/components/patterns/PageHeader";
 import { ModuleTabs } from "@/components/patterns/ModuleTabs";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
+import { StatCard } from "@/components/patterns/StatCard";
 import { Button } from "@/components/ui/button";
 
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { useProjectsAudit } from "@/stores/projectsAudit";
 import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
+import { getBoqItems, getProgressClaims, getRetention } from "@/lib/mock/construction";
+import { formatMoney } from "@/lib/format";
 import { computeProjectLedger } from "./ledger";
 import type { ProjectStatus } from "@/features/projects/types";
 
@@ -34,6 +38,7 @@ function statusPillVariant(status: ProjectStatus): PillVariant {
 export function ProjectDetailLayout() {
   const { id = "" } = useParams<{ id: string }>();
   const { t } = useTranslation("projects");
+  const { t: tc } = useTranslation("construction");
   const { lang } = useAppearance();
   const navigate = useNavigate();
   const can = useCan();
@@ -53,6 +58,9 @@ export function ProjectDetailLayout() {
   const canClose = can("projects.project.close");
   const canCreate = can("projects.project.create");
 
+  // Construction facet (FE_17) — gated by flag + project.mode; FE_16 is byte-identical when either is false.
+  const isConstruction = isFlagEnabled("construction.enabled") && project?.mode === "construction";
+
   const openWork = useMemo(() => {
     if (!project) return [];
     const entries = Object.values(allTimeEntries).filter((e) => e.project_id === project.id);
@@ -61,6 +69,24 @@ export function ProjectDetailLayout() {
     const employees = getProjectEmployees();
     return computeProjectLedger(entries, expenses, invoices, employees).openWork;
   }, [project, allTimeEntries, allExpenses]);
+
+  // §11 header KPIs — contract value = Σ BOQ (live, not the fixture's precomputed field);
+  // billed = Σ gross_current for claims that have at least been approved (draft/submitted aren't billed yet);
+  // completion = value-weighted average of BOQ items' executed qty (spec §11 formula).
+  const constructionKpis = useMemo(() => {
+    if (!project || !isConstruction) return null;
+    const boqItems = getBoqItems(project.id);
+    const contractValue = boqItems.reduce((sum, i) => sum + i.value, 0);
+    const claims = getProgressClaims(project.id);
+    const billed = claims
+      .filter((c) => c.status === "approved" || c.status === "invoiced" || c.status === "collected")
+      .reduce((sum, c) => sum + c.gross_current, 0);
+    const retentionHeld = getRetention(project.id)?.outstanding ?? 0;
+    const remaining = contractValue - billed;
+    const executedValue = boqItems.reduce((sum, i) => sum + i.cumulative_executed_qty * i.unit_price, 0);
+    const completionPct = contractValue > 0 ? (executedValue / contractValue) * 100 : 0;
+    return { contractValue, billed, retentionHeld, remaining, completionPct, boqItems, claims };
+  }, [project, isConstruction]);
 
   if (!project) {
     return (
@@ -74,7 +100,18 @@ export function ProjectDetailLayout() {
   const title = `${project.code} · ${lang === "ar" ? project.title_ar : project.title_en}`;
   const base = `/projects/${id}`;
 
-  const tabs = [
+  // Construction mode replaces the professional-services tab set with the one spec §1 names explicitly
+  // (Overview · BOQ · Claims · Retention · Subcontracts · Profitability · Documents) — milestones/time/
+  // invoices/appointments/team don't apply to a BOQ+claims-billed contract. Non-construction projects are unaffected.
+  const tabs = (isConstruction ? [
+    { key: "overview", label: t("tab.overview"), href: base, end: true, perm: "construction.project.view" },
+    { key: "boq", label: tc("tab.boq"), href: `${base}/boq`, perm: "construction.boq.edit" },
+    { key: "claims", label: tc("tab.claims"), href: `${base}/claims`, perm: "construction.claim.view" },
+    { key: "retention", label: tc("tab.retention"), href: `${base}/retention`, perm: "construction.retention.release" },
+    { key: "subcontracts", label: tc("tab.subcontracts"), href: `${base}/subcontracts`, perm: "construction.subcontract.manage" },
+    { key: "profitability", label: tc("tab.profitability"), href: `${base}/profitability`, perm: "construction.profitability.view" },
+    { key: "documents", label: t("tab.documents"), href: `${base}/documents`, perm: "projects.document.view" },
+  ] : [
     { key: "overview", label: t("tab.overview"), href: base, end: true, perm: "projects.project.view" },
     { key: "milestones", label: t("tab.milestones"), href: `${base}/milestones`, perm: "projects.milestone.view" },
     { key: "time", label: t("tab.time"), href: `${base}/time`, perm: "projects.time.view" },
@@ -82,7 +119,7 @@ export function ProjectDetailLayout() {
     { key: "documents", label: t("tab.documents"), href: `${base}/documents`, perm: "projects.document.view" },
     { key: "appointments", label: t("tab.appointments"), href: `${base}/appointments`, perm: "projects.appointment.view" },
     { key: "team", label: t("tab.team"), href: `${base}/team`, perm: "projects.team.view" },
-  ].filter((tab) => can(tab.perm));
+  ]).filter((tab) => can(tab.perm));
 
   function handleActivate() {
     const result = activateProject(project!.id);
@@ -149,6 +186,17 @@ export function ProjectDetailLayout() {
           </div>
         }
       />
+
+      {isConstruction && constructionKpis && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+          <StatCard label={tc("hub.contract_value")} value={formatMoney(constructionKpis.contractValue, lang)} tone="brand" />
+          <StatCard label={tc("hub.billed")} value={formatMoney(constructionKpis.billed, lang)} tone="success" />
+          <StatCard label={tc("hub.retention")} value={formatMoney(constructionKpis.retentionHeld, lang)} tone="warning" />
+          <StatCard label={tc("hub.remaining")} value={formatMoney(constructionKpis.remaining, lang)} />
+          <StatCard label={tc("hub.completion")} value={`${constructionKpis.completionPct.toFixed(1)}%`} />
+        </div>
+      )}
+
       <ModuleTabs tabs={tabs} />
       <Outlet />
 

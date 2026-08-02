@@ -1,0 +1,131 @@
+{
+  "title": "Construction",
+  "placeholder": {
+    "note": "This screen is under construction — coming in a later step."
+  },
+
+  "tab": {
+    "boq": "BOQ",
+    "claims": "Claims",
+    "retention": "Retention",
+    "subcontracts": "Subcontracts",
+    "profitability": "Profitability"
+  },
+
+  "hub": {
+    "contract_value": "Contract value",
+    "billed": "Billed",
+    "retention": "Retention held",
+    "remaining": "Remaining",
+    "completion": "Overall completion"
+  },
+
+  "overview": {
+    "financial_position_title": "Contract financial position",
+    "contract_value": "Contract value",
+    "billed": "Billed",
+    "collected": "Collected",
+    "retention": "Retention",
+    "advance_outstanding": "Advance outstanding",
+    "net_remaining": "Net remaining",
+    "latest_claim_title": "Latest claim",
+    "no_claims_yet": "No claims yet",
+    "new_claim": "New claim",
+    "alerts_title": "Alerts",
+    "no_alerts": "No alerts right now",
+    "alert_retention_due": "Warranty retention due for release since {{date}}",
+    "alert_advance_outstanding": "{{amount}} of the advance is still outstanding",
+    "alert_pending_vo": "A variation order is pending approval",
+    "boq_onboarding_title": "Start: enter BOQ items per phase",
+    "boq_onboarding_cta": "Add BOQ items"
+  },
+
+  "boq": {
+    "title": "Bill of Quantities",
+    "item": "Item",
+    "unit": "Unit",
+    "qty": "Qty",
+    "unit_price": "Unit price",
+    "value": "Value",
+    "est_cost": "Est. cost",
+    "margin": "Expected margin",
+    "section": "Section",
+    "hide_cost": "Hide cost",
+    "import": "Import from Excel",
+    "locked": "Contract approved — edit via Variation Order"
+  },
+
+  "contract": {
+    "retention": "Retention",
+    "retention_rate": "Retention rate",
+    "retention_cap": "Retention cap",
+    "advance": "Advance payment",
+    "recovery": "Advance recovery",
+    "warranty": "Warranty period",
+    "locked": "Billing started — terms change needs elevated permission"
+  },
+
+  "vo": {
+    "title": "Variation Orders",
+    "type_add": "Add item",
+    "type_qty": "Modify qty",
+    "type_price": "Modify price",
+    "reason": "Reason",
+    "impact": "Impact on contract value",
+    "reduce_warn": "Reduction below executed — conflicts with a prior claim"
+  },
+
+  "claim": {
+    "title": "Progress claim",
+    "prev_qty": "Prev executed",
+    "cum_qty": "Cumulative executed",
+    "cum_pct": "Cumulative %",
+    "current_value": "Current period value",
+    "gross": "Current work total",
+    "retention": "Retention",
+    "advance_recovery": "Advance recovery",
+    "deduction": "Deduction",
+    "net_payable": "Net payable",
+    "no_backward": "Progress can't go below previous"
+  },
+
+  "claims": {
+    "title": "Progress claims",
+    "billed": "Billed",
+    "collected": "Collected",
+    "remaining": "Remaining to bill"
+  },
+
+  "retention": {
+    "accumulated": "Accumulated retention",
+    "released": "Released",
+    "outstanding": "Outstanding held",
+    "release_new": "New release",
+    "stage_initial": "Initial handover",
+    "stage_warranty": "Warranty end",
+    "due": "Warranty retention due"
+  },
+
+  "sub": {
+    "title": "Subcontractors",
+    "contract": "Subcontract",
+    "boq": "Sub-BOQ",
+    "claim": "Sub progress claim",
+    "voucher": "Payment voucher",
+    "copy_from_main": "Copy items from main BOQ",
+    "loss_warn": "Sub costs more than your sell price"
+  },
+
+  "profit": {
+    "title": "Profitability (actual vs estimated)",
+    "revenue": "Revenue billed",
+    "actual_cost": "Actual cost",
+    "est_cost": "Estimated cost",
+    "variance": "Variance",
+    "complete": "% complete",
+    "forecast": "Approximate forecast",
+    "materials": "Materials",
+    "labor": "Labor",
+    "subcontract": "Subcontract"
+  }
+}

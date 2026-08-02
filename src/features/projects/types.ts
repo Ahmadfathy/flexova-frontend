@@ -78,6 +78,8 @@ export interface Project {
   /** Ledger-derived — illustrative pre-computed view for the mock layer only. */
   actuals_view: ProjectActualsView;
   milestones_optional?: boolean;
+  /** Sector facet — when "construction", the Construction module (FE_17) mounts on top of this project. Absent/other = plain FE_16 professional-services project. */
+  mode?: "construction";
 }
 
 export interface Milestone {

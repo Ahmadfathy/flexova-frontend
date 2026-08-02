@@ -1,23 +1,37 @@
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Wallet, TrendingUp, TrendingDown } from "lucide-react";
+import { Wallet, TrendingUp, TrendingDown, ClipboardList, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 import { PageSection } from "@/components/patterns/PageSection";
 import { StatCard } from "@/components/patterns/StatCard";
 import { ProgressRow } from "@/components/patterns/ProgressRow";
 import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { EmptyState } from "@/components/patterns/EmptyState";
 import { Skeleton, KpiSkeleton } from "@/components/patterns/Skeletons";
+import { Button } from "@/components/ui/button";
 
 import { formatMoney, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
+import { getBoqItems, getProgressClaims, getRetention, getAdvance, getVariationOrders } from "@/lib/mock/construction";
 import { useMockState } from "../useMockState";
 import { computeProjectLedger } from "./ledger";
+
+function FinRow({ label, value, tone }: { label: string; value: string; tone?: "success" | "warning" | "danger" }) {
+  const toneClass = tone === "success" ? "text-success-text" : tone === "warning" ? "text-warning-text" : tone === "danger" ? "text-danger-text" : "text-foreground";
+  return (
+    <div className="flex items-center justify-between py-2 border-b border-border last:border-0">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <span className={cn("text-sm font-semibold tabular-nums", toneClass)}>{value}</span>
+    </div>
+  );
+}
 
 function MetricLink({ onClick, children }: { onClick?: () => void; children: React.ReactNode }) {
   if (!onClick) return <div className="p-3 rounded">{children}</div>;
@@ -32,6 +46,7 @@ export function ProjectOverviewPage() {
   const { id = "" } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation("projects");
+  const { t: tc } = useTranslation("construction");
   const { lang } = useAppearance();
   const can = useCan();
 
@@ -57,6 +72,43 @@ export function ProjectOverviewPage() {
     () => computeProjectLedger(entries, expenses, invoices, employees),
     [entries, expenses, invoices, employees]
   );
+
+  const isConstruction = isFlagEnabled("construction.enabled") && project?.mode === "construction";
+
+  // §11 Overview additions — financial position, latest claim, alerts. Recomputed live from the
+  // construction mock layer (never trusts the fixture's own precomputed `overall_completion_pct`
+  // etc.) so it stays correct once BOQ/claims editing lands in later steps.
+  const construction = useMemo(() => {
+    if (!project || !isConstruction) return null;
+    const boqItems = getBoqItems(project.id);
+    const claims = getProgressClaims(project.id);
+    const retention = getRetention(project.id);
+    const advance = getAdvance(project.id);
+    const variationOrders = getVariationOrders(project.id);
+
+    const contractValue = boqItems.reduce((sum, i) => sum + i.value, 0);
+    const billed = claims
+      .filter((c) => c.status === "approved" || c.status === "invoiced" || c.status === "collected")
+      .reduce((sum, c) => sum + c.gross_current, 0);
+    const collected = claims
+      .filter((c) => c.status === "collected")
+      .reduce((sum, c) => sum + c.net_payable, 0);
+    const retentionOutstanding = retention?.outstanding ?? 0;
+    const advanceOutstanding = advance?.outstanding ?? 0;
+    const netRemaining = contractValue - collected;
+
+    const latestClaim = claims.length
+      ? [...claims].sort((a, b) => b.date.localeCompare(a.date))[0]
+      : null;
+
+    const pendingVo = variationOrders.find((vo) => vo.status === "submitted");
+
+    return {
+      boqItems, claims, retention, advance,
+      contractValue, billed, collected, retentionOutstanding, advanceOutstanding, netRemaining,
+      latestClaim, pendingVo,
+    };
+  }, [project, isConstruction]);
 
   if (loading) {
     return (
@@ -99,7 +151,86 @@ export function ProjectOverviewPage() {
         <StatCard label={t("form.team_section")} value={String(project.team.length)} />
       </div>
 
-      {canFinancials && (
+      {isConstruction && construction && (
+        construction.boqItems.length === 0 ? (
+          <PageSection>
+            <EmptyState
+              icon={ClipboardList}
+              title={tc("overview.boq_onboarding_title")}
+              action={{ label: tc("overview.boq_onboarding_cta"), onClick: () => navigate(`/projects/${id}/boq`) }}
+            />
+          </PageSection>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <PageSection title={tc("overview.financial_position_title")} className="lg:col-span-2">
+              <FinRow label={tc("overview.contract_value")} value={formatMoney(construction.contractValue, lang)} />
+              <FinRow label={tc("overview.billed")} value={formatMoney(construction.billed, lang)} tone="success" />
+              <FinRow label={tc("overview.collected")} value={formatMoney(construction.collected, lang)} tone="success" />
+              <FinRow label={tc("overview.retention")} value={formatMoney(construction.retentionOutstanding, lang)} tone="warning" />
+              <FinRow label={tc("overview.advance_outstanding")} value={formatMoney(construction.advanceOutstanding, lang)} tone="warning" />
+              <FinRow label={tc("overview.net_remaining")} value={formatMoney(construction.netRemaining, lang)} />
+            </PageSection>
+
+            <div className="space-y-4">
+              <PageSection
+                title={tc("overview.latest_claim_title")}
+                actions={can("construction.claim.create") && (
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/projects/${id}/claims/new`)}>
+                    {tc("overview.new_claim")}
+                  </Button>
+                )}
+              >
+                {construction.latestClaim ? (
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/projects/${id}/claims/${construction.latestClaim!.id}`)}
+                    className="w-full text-start space-y-1.5 hover:bg-muted/50 -m-1 p-1 rounded transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{construction.latestClaim.number}</span>
+                      <span className="text-xs text-muted-foreground">{construction.latestClaim.period_ar}</span>
+                    </div>
+                    <p className="text-lg font-bold tabular-nums">{formatMoney(construction.latestClaim.net_payable, lang)}</p>
+                  </button>
+                ) : (
+                  <p className="text-sm text-muted-foreground">{tc("overview.no_claims_yet")}</p>
+                )}
+              </PageSection>
+
+              <PageSection title={tc("overview.alerts_title")}>
+                <div className="space-y-2">
+                  {construction.retention?.at_cap && (
+                    <div className="flex items-start gap-2 text-sm text-warning-text">
+                      <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{construction.retention._note_ar}</span>
+                    </div>
+                  )}
+                  {construction.advanceOutstanding > 0 && (
+                    <div className="flex items-start gap-2 text-sm text-warning-text">
+                      <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{tc("overview.alert_advance_outstanding", { amount: formatMoney(construction.advanceOutstanding, lang) })}</span>
+                    </div>
+                  )}
+                  {construction.pendingVo && (
+                    <div className="flex items-start gap-2 text-sm text-warning-text">
+                      <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{tc("overview.alert_pending_vo")}</span>
+                    </div>
+                  )}
+                  {!construction.retention?.at_cap && construction.advanceOutstanding <= 0 && !construction.pendingVo && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 className="h-4 w-4 shrink-0" />
+                      <span>{tc("overview.no_alerts")}</span>
+                    </div>
+                  )}
+                </div>
+              </PageSection>
+            </div>
+          </div>
+        )
+      )}
+
+      {!isConstruction && canFinancials && (
         <PageSection title={t("overview.title")}>
           {!hasEstimate ? (
             <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">

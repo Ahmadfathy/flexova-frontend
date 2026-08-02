@@ -1,0 +1,131 @@
+{
+  "title": "المقاولات",
+  "placeholder": {
+    "note": "الشاشة قيد الإنشاء — هتتبني في خطوة لاحقة."
+  },
+
+  "tab": {
+    "boq": "جدول الكميات",
+    "claims": "المستخلصات",
+    "retention": "المحتجزات",
+    "subcontracts": "مقاولو الباطن",
+    "profitability": "الربحية"
+  },
+
+  "hub": {
+    "contract_value": "قيمة العقد",
+    "billed": "المفوتر",
+    "retention": "المحتجز",
+    "remaining": "المتبقّي",
+    "completion": "الإنجاز الكلي"
+  },
+
+  "overview": {
+    "financial_position_title": "الموقف المالي للعقد",
+    "contract_value": "قيمة العقد",
+    "billed": "المفوتر",
+    "collected": "المحصّل",
+    "retention": "المحتجز",
+    "advance_outstanding": "متبقّي الدفعة المقدّمة",
+    "net_remaining": "صافي المتبقّي",
+    "latest_claim_title": "آخر مستخلص",
+    "no_claims_yet": "لسه مفيش مستخلصات",
+    "new_claim": "مستخلص جديد",
+    "alerts_title": "تنبيهات",
+    "no_alerts": "لا توجد تنبيهات حالياً",
+    "alert_retention_due": "محتجز الضمان مستحق الإفراج منذ {{date}}",
+    "alert_advance_outstanding": "لسه متبقّي {{amount}} من الدفعة المقدّمة لم يُسترد",
+    "alert_pending_vo": "يوجد أمر تغيير في انتظار الاعتماد",
+    "boq_onboarding_title": "ابدأ: ادخل بنود الـ BOQ لكل مرحلة",
+    "boq_onboarding_cta": "إضافة بنود الكميات"
+  },
+
+  "boq": {
+    "title": "جدول الكميات",
+    "item": "البند",
+    "unit": "الوحدة",
+    "qty": "الكمية",
+    "unit_price": "سعر الوحدة",
+    "value": "القيمة",
+    "est_cost": "التكلفة المقدّرة",
+    "margin": "الهامش المتوقّع",
+    "section": "قسم",
+    "hide_cost": "إخفاء التكلفة",
+    "import": "استيراد من Excel",
+    "locked": "العقد معتمد — التعديل عبر أمر تغيير"
+  },
+
+  "contract": {
+    "retention": "المحتجزات",
+    "retention_rate": "نسبة المحتجز",
+    "retention_cap": "سقف المحتجز",
+    "advance": "الدفعة المقدّمة",
+    "recovery": "استرداد الدفعة",
+    "warranty": "مدة الضمان",
+    "locked": "العقد بدأ الفوترة — تعديل الشروط بصلاحية عُليا"
+  },
+
+  "vo": {
+    "title": "أوامر التغيير",
+    "type_add": "إضافة بند",
+    "type_qty": "تعديل كمية",
+    "type_price": "تعديل سعر",
+    "reason": "السبب",
+    "impact": "الأثر على قيمة العقد",
+    "reduce_warn": "تخفيض أقل من المنفّذ — تعارض مع مستخلص سابق"
+  },
+
+  "claim": {
+    "title": "المستخلص",
+    "prev_qty": "المنفّذ سابقاً",
+    "cum_qty": "المنفّذ التراكمي",
+    "cum_pct": "النسبة التراكمية",
+    "current_value": "قيمة الفترة الحالية",
+    "gross": "إجمالي الأعمال الحالية",
+    "retention": "المحتجز",
+    "advance_recovery": "استرداد الدفعة",
+    "deduction": "خصم",
+    "net_payable": "صافي المستحق",
+    "no_backward": "لا يمكن أن يقل الإنجاز عن السابق"
+  },
+
+  "claims": {
+    "title": "المستخلصات",
+    "billed": "المفوتر",
+    "collected": "المحصّل",
+    "remaining": "المتبقّي للفوترة"
+  },
+
+  "retention": {
+    "accumulated": "المحتجز المتراكم",
+    "released": "المُفرج",
+    "outstanding": "المتبقّي محجوز",
+    "release_new": "إفراج جديد",
+    "stage_initial": "استلام ابتدائي",
+    "stage_warranty": "نهاية الضمان",
+    "due": "محتجز الضمان مستحق الإفراج"
+  },
+
+  "sub": {
+    "title": "مقاولو الباطن",
+    "contract": "عقد باطن",
+    "boq": "نطاق الباطن",
+    "claim": "مستخلص باطن",
+    "voucher": "سند صرف",
+    "copy_from_main": "نسخ بنود من العقد الرئيسي",
+    "loss_warn": "الباطن أغلى من سعر بيعك"
+  },
+
+  "profit": {
+    "title": "الربحية (فعلي مقابل مقدّر)",
+    "revenue": "الإيراد المفوتر",
+    "actual_cost": "التكلفة الفعلية",
+    "est_cost": "التكلفة المقدّرة",
+    "variance": "الانحراف",
+    "complete": "نسبة الإنجاز",
+    "forecast": "توقّع تقريبي",
+    "materials": "خامات",
+    "labor": "عمالة",
+    "subcontract": "باطن"
+  }
+}

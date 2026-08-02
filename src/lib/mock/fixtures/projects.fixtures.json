@@ -13,14 +13,17 @@
     { "id": "cl_masria", "name_ar": "المصرية للتوريدات", "name_en": "Al-Masria Supplies", "type": "b2b", "trn": "512300987" },
     { "id": "cl_delta", "name_ar": "شركة دلتا للمقاولات", "name_en": "Delta Contracting Co.", "type": "b2b", "trn": "598712345" },
     { "id": "cl_horizon", "name_ar": "أفق للتسويق الرقمي", "name_en": "Horizon Digital Marketing", "type": "b2b", "trn": "504456789" },
-    { "id": "cl_fardy", "name_ar": "أحمد صابر (موكّل فردي)", "name_en": "Ahmed Saber (individual)", "type": "b2c", "trn": null }
+    { "id": "cl_fardy", "name_ar": "أحمد صابر (موكّل فردي)", "name_en": "Ahmed Saber (individual)", "type": "b2c", "trn": null },
+    { "id": "cu_developer", "name_ar": "شركة العمران للتطوير العقاري", "name_en": "Al-Omran Real Estate Development", "type": "b2b", "trn": null }
   ],
 
   "employees": [
     { "id": "emp_layla", "name_ar": "ليلى منصور", "name_en": "Layla Mansour", "role": "senior_associate", "cost_rate": 120.00, "default_bill_rate": 350.00 },
     { "id": "emp_karim", "name_ar": "كريم فؤاد", "name_en": "Karim Fouad", "role": "engineer", "cost_rate": 90.00, "default_bill_rate": 250.00 },
     { "id": "emp_nour", "name_ar": "نور حسن", "name_en": "Nour Hassan", "role": "junior", "cost_rate": 55.00, "default_bill_rate": 150.00 },
-    { "id": "emp_manager", "name_ar": "سامي عبد الرحمن (مدير)", "name_en": "Sami Abdel-Rahman (manager)", "role": "manager", "cost_rate": 0, "default_bill_rate": 0 }
+    { "id": "emp_manager", "name_ar": "سامي عبد الرحمن (مدير)", "name_en": "Sami Abdel-Rahman (manager)", "role": "manager", "cost_rate": 0, "default_bill_rate": 0 },
+    { "id": "emp_khaled_pm", "name_ar": "م. خالد عبد الرحمن", "name_en": "Eng. Khaled Abdel-Rahman", "role": "project_manager", "cost_rate": 0, "default_bill_rate": 0 },
+    { "id": "emp_sara_site", "name_ar": "م. سارة منير", "name_en": "Eng. Sara Mounir", "role": "site_engineer", "cost_rate": 0, "default_bill_rate": 0 }
   ],
 
   "role_rates": [
@@ -94,6 +97,22 @@
       "team": [], "budget_estimated": null, "hours_estimated": null,
       "start_date": "2026-07-20", "target_end": null, "actual_end": null,
       "actuals_view": { "hours_actual": 0, "cost_actual": 0, "revenue_invoiced": 0, "margin_est": 0 }
+    },
+    {
+      "id": "prj_bldg_zayed", "code": "CNST-2026-001", "title_ar": "عمارة سكنية 5 أدوار — الشيخ زايد",
+      "title_en": "5-Floor Residential Building — Sheikh Zayed", "type_label": "construction",
+      "client_id": "cu_developer", "status": "active", "billing_model": "fixed",
+      "scope_ar": "مقاولة عامة لإنشاء عمارة سكنية من 5 أدوار — عظم ومباني وتشطيبات، حسب جدول الكميات المعتمد.",
+      "team": [
+        { "employee_id": "emp_khaled_pm", "project_role": "مدير المشروع" },
+        { "employee_id": "emp_sara_site", "project_role": "مهندس موقع" }
+      ],
+      "budget_estimated": 6036000.00, "hours_estimated": null,
+      "start_date": "2026-05-01", "target_end": null, "actual_end": null,
+      "project_bill_rate": null,
+      "actuals_view": { "hours_actual": 0, "cost_actual": 3855000.00, "revenue_invoiced": 4243000.00, "margin_est": 993000.00 },
+      "milestones_optional": true,
+      "mode": "construction"
     }
   ],
 

@@ -153,6 +153,13 @@ import {
   ProjectInvoicesPage, ProjectDocumentsPage, ProjectAppointmentsPage, ProjectTeamPage,
 } from "@/features/projects/ProjectsPages";
 
+// Construction / Contracting — FE_17 — facet on FE_16 project workspace (Step 0: flag + S1 only, rest scaffolded)
+import {
+  BoqEditorPage, ContractTermsPage, VariationOrdersPage, VariationOrderEditorPage,
+  ClaimsRegisterPage, ClaimEditorPage, ClaimViewPage, RetentionPage,
+  SubcontractsListPage, SubcontractDetailPage, ProfitabilityPage,
+} from "@/features/construction/ConstructionPages";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -421,6 +428,18 @@ export default function App() {
               <Route path="documents"     element={<ProjectDocumentsPage />} />
               <Route path="appointments"  element={<ProjectAppointmentsPage />} />
               <Route path="team"          element={<ProjectTeamPage />} />
+              {/* Construction facet routes (FE_17) — only reachable when construction.enabled + mode="construction" */}
+              <Route path="boq"                element={<BoqEditorPage />} />
+              <Route path="contract"           element={<ContractTermsPage />} />
+              <Route path="variations"         element={<VariationOrdersPage />} />
+              <Route path="variations/:vo"     element={<VariationOrderEditorPage />} />
+              <Route path="claims"             element={<ClaimsRegisterPage />} />
+              <Route path="claims/new"         element={<ClaimEditorPage />} />
+              <Route path="claims/:claim"      element={<ClaimViewPage />} />
+              <Route path="retention"          element={<RetentionPage />} />
+              <Route path="subcontracts"       element={<SubcontractsListPage />} />
+              <Route path="subcontracts/:sc"   element={<SubcontractDetailPage />} />
+              <Route path="profitability"      element={<ProfitabilityPage />} />
             </Route>
           </Route>
           <Route path="/time"           element={<PersonalTimePage />} />
