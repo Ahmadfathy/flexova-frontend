@@ -20,6 +20,7 @@ import { isFlagEnabled } from "@/lib/flags";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { useConstructionStore } from "@/stores/constructionStore";
 import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
+import { computeWarrantyReleaseDue } from "@/features/construction/calc";
 import { useMockState } from "../useMockState";
 import { computeProjectLedger } from "./ledger";
 
@@ -80,6 +81,7 @@ export function ProjectOverviewPage() {
   const retentionLive = useConstructionStore((s) => s.retention);
   const advanceLive = useConstructionStore((s) => s.advance);
   const variationOrdersAll = useConstructionStore((s) => s.variation_orders);
+  const contractTermsLive = useConstructionStore((s) => s.contract_terms);
 
   // §11 Overview additions — financial position, latest claim, alerts. Recomputed live from the
   // construction store (never trusts the fixture's own precomputed `overall_completion_pct`
@@ -108,13 +110,16 @@ export function ProjectOverviewPage() {
       : null;
 
     const pendingVo = variationOrders.find((vo) => vo.status === "submitted");
+    const warrantyDue = retention
+      ? computeWarrantyReleaseDue(retention.release_events, contractTermsLive.release_template.warranty_months, retention.outstanding)
+      : { due: false, sinceDate: null };
 
     return {
       boqItems, claims, retention, advance,
       contractValue, billed, collected, retentionOutstanding, advanceOutstanding, netRemaining,
-      latestClaim, pendingVo,
+      latestClaim, pendingVo, warrantyDue,
     };
-  }, [project, isConstruction, boqItemsAll, progressClaimsAll, retentionLive, advanceLive, variationOrdersAll]);
+  }, [project, isConstruction, boqItemsAll, progressClaimsAll, retentionLive, advanceLive, variationOrdersAll, contractTermsLive]);
 
   if (loading) {
     return (
@@ -223,7 +228,13 @@ export function ProjectOverviewPage() {
                       <span>{tc("overview.alert_pending_vo")}</span>
                     </div>
                   )}
-                  {!construction.retention?.at_cap && construction.advanceOutstanding <= 0 && !construction.pendingVo && (
+                  {construction.warrantyDue.due && (
+                    <div className="flex items-start gap-2 text-sm text-danger-text">
+                      <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{tc("retention.warranty_due_alert", { date: formatDate(construction.warrantyDue.sinceDate ?? "") })}</span>
+                    </div>
+                  )}
+                  {!construction.retention?.at_cap && construction.advanceOutstanding <= 0 && !construction.pendingVo && !construction.warrantyDue.due && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 className="h-4 w-4 shrink-0" />
                       <span>{tc("overview.no_alerts")}</span>

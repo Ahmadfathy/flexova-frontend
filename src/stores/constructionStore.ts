@@ -7,7 +7,7 @@ import {
 import { round2, computeClaimSummary, computeClaimLine } from "@/features/construction/calc";
 import type {
   BoqItem, CostBudgetBreakdown, ContractTerms, VariationOrder, VoLine,
-  ProgressClaim, ClaimLine, ClaimDeduction, AdvancePayment, Retention,
+  ProgressClaim, ClaimLine, ClaimDeduction, AdvancePayment, Retention, ReleaseEvent, ReleaseStage,
 } from "@/features/construction/types";
 
 /**
@@ -93,6 +93,15 @@ export interface ClaimDraftInput {
 }
 
 export type CreateClaimResult = { ok: true; id: string } | { ok: false; reason: "open_claim_exists" | "no_boq" };
+
+export interface RetentionReleaseInput {
+  amount: number;
+  stage: ReleaseStage;
+  date: string;
+  reason_ar?: string;
+}
+
+export type CreateReleaseResult = { ok: true } | { ok: false; reason: "over_outstanding" };
 
 let seq = 1;
 
@@ -185,6 +194,11 @@ interface ConstructionState {
   /** Simulates a fixed-and-resent ETA submission — flips a rejected claim's `eta_status` back
    * to accepted; the claim's own `status` never leaves "approved" while this happens (§6.7). */
   resendClaimEta: (projectId: string, claimId: string) => { ok: boolean };
+
+  /** §8.3 — single-step, no draft/approval staging like VOs/claims: confirming the release
+   * form *is* the "explicit confirm" the spec asks for, and it posts the mock journal +
+   * payment voucher immediately. Blocked above `retention.outstanding`. */
+  createRetentionRelease: (projectId: string, input: RetentionReleaseInput) => CreateReleaseResult;
 }
 
 export const useConstructionStore = create<ConstructionState>()(
@@ -579,6 +593,34 @@ export const useConstructionStore = create<ConstructionState>()(
         const claim = get().progress_claims[claimId];
         if (!claim || claim.eta_status !== "rejected") return { ok: false };
         set((s) => ({ progress_claims: { ...s.progress_claims, [claimId]: { ...claim, eta_status: "accepted" } } }));
+        return { ok: true };
+      },
+
+      createRetentionRelease: (_projectId, input) => {
+        const retention = get().retention;
+        if (input.amount <= 0 || input.amount > retention.outstanding) return { ok: false, reason: "over_outstanding" };
+
+        const voucherSeq = retention.release_events.length + 1;
+        const event: ReleaseEvent = {
+          amount: round2(input.amount),
+          stage: input.stage,
+          date: input.date,
+          reason_ar: input.reason_ar,
+          voucher_ref: `PV-RET-${String(voucherSeq).padStart(3, "0")}`,
+        };
+
+        set((s) => {
+          const released = round2(s.retention.released + event.amount);
+          const outstanding = round2(s.retention.accumulated_retained - released);
+          return {
+            retention: {
+              ...s.retention,
+              released,
+              outstanding,
+              release_events: [...s.retention.release_events, event],
+            },
+          };
+        });
         return { ok: true };
       },
     }),

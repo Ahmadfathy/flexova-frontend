@@ -132,3 +132,24 @@ export function computeClaimPreview(input: ClaimPreviewInput): ClaimPreviewResul
 
   return { grossCurrent, retentionThis, advanceRecoveryThis, netBeforeVat, vat, netPayable };
 }
+
+/**
+ * §8.4 — "warranty start = date of the initial-handover release + warranty months (from S3)".
+ * Shared by the S7 retention page and the S1 overview alert pill so they can't disagree on
+ * whether the warranty-release window has elapsed.
+ */
+export function computeWarrantyReleaseDue(
+  releaseEvents: { stage: string; date: string }[],
+  warrantyMonths: number,
+  retentionOutstanding: number,
+  today: Date = new Date()
+): { due: boolean; sinceDate: string | null } {
+  if (retentionOutstanding <= 0) return { due: false, sinceDate: null };
+  const initial = releaseEvents.find((e) => e.stage === "initial_handover");
+  if (!initial) return { due: false, sinceDate: null };
+
+  const dueDate = new Date(initial.date);
+  dueDate.setMonth(dueDate.getMonth() + warrantyMonths);
+  if (today < dueDate) return { due: false, sinceDate: null };
+  return { due: true, sinceDate: dueDate.toISOString().slice(0, 10) };
+}
