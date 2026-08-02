@@ -52,7 +52,52 @@
     "section": "Section",
     "hide_cost": "Hide cost",
     "import": "Import from Excel",
-    "locked": "Contract approved — edit via Variation Order"
+    "locked": "Contract approved — edit via Variation Order",
+    "add_item": "Add item",
+    "edit_item": "Edit item",
+    "add_section": "Add section",
+    "code": "Code",
+    "code_placeholder": "Auto if left blank",
+    "description": "Description",
+    "section_placeholder": "No section",
+    "phase_totals": "Phase total",
+    "no_items_title": "No items in this phase yet",
+    "no_items_cta": "Add first item",
+    "search_placeholder": "Search the BOQ",
+    "no_results": "No matching results",
+    "offline_note": "BOQ data as of last sync",
+    "reorder_handle": "Reorder item",
+    "select_phase": "Select a phase",
+    "cost_zero_warn": "Qty or price is zero — lump-sum is allowed",
+    "cost_over_price_warn": "Cost is higher than the sell price",
+    "cumulative_executed": "Cumulative executed"
+  },
+
+  "cost_budget": {
+    "title": "Estimated cost breakdown",
+    "other": "Other",
+    "hint": "If left blank, the phase's total estimated cost from its BOQ items is used"
+  },
+
+  "boq_import": {
+    "title": "Import Bill of Quantities",
+    "step_paste": "Paste data",
+    "step_map": "Map columns",
+    "step_preview": "Preview",
+    "step_result": "Result",
+    "paste_hint": "Paste comma-separated (CSV) data — one row per item, columns: description, unit, qty, sell price, cost",
+    "col_description": "Description",
+    "col_unit": "Unit",
+    "col_qty": "Qty",
+    "col_price": "Sell price",
+    "col_cost": "Cost",
+    "map_hint": "Make sure every column is mapped to the right field",
+    "rows_detected": "{{n}} rows detected",
+    "confirm_import": "Import {{n}} items",
+    "imported_success": "{{n}} items imported successfully",
+    "next": "Next",
+    "back": "Back",
+    "parse_error": "Couldn't parse the data — check the format"
   },
 
   "contract": {

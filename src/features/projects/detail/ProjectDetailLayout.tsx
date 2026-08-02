@@ -16,9 +16,10 @@ import { useCan } from "@/lib/permissions";
 import { isFlagEnabled } from "@/lib/flags";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { useProjectsAudit } from "@/stores/projectsAudit";
+import { useConstructionStore } from "@/stores/constructionStore";
 import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
-import { getBoqItems, getProgressClaims, getRetention } from "@/lib/mock/construction";
+import { getProgressClaims, getRetention } from "@/lib/mock/construction";
 import { formatMoney } from "@/lib/format";
 import { computeProjectLedger } from "./ledger";
 import type { ProjectStatus } from "@/features/projects/types";
@@ -70,12 +71,15 @@ export function ProjectDetailLayout() {
     return computeProjectLedger(entries, expenses, invoices, employees).openWork;
   }, [project, allTimeEntries, allExpenses]);
 
-  // §11 header KPIs — contract value = Σ BOQ (live, not the fixture's precomputed field);
+  // §11 header KPIs — contract value = Σ BOQ (live off the mutable store, which BOQ editing
+  // writes to; not the fixture's precomputed field, and not the read-only fixture getter
+  // either, since S2 edits would otherwise never show up here);
   // billed = Σ gross_current for claims that have at least been approved (draft/submitted aren't billed yet);
   // completion = value-weighted average of BOQ items' executed qty (spec §11 formula).
+  const boqItemsAll = useConstructionStore((s) => s.boq_items);
   const constructionKpis = useMemo(() => {
     if (!project || !isConstruction) return null;
-    const boqItems = getBoqItems(project.id);
+    const boqItems = Object.values(boqItemsAll);
     const contractValue = boqItems.reduce((sum, i) => sum + i.value, 0);
     const claims = getProgressClaims(project.id);
     const billed = claims
@@ -86,7 +90,7 @@ export function ProjectDetailLayout() {
     const executedValue = boqItems.reduce((sum, i) => sum + i.cumulative_executed_qty * i.unit_price, 0);
     const completionPct = contractValue > 0 ? (executedValue / contractValue) * 100 : 0;
     return { contractValue, billed, retentionHeld, remaining, completionPct, boqItems, claims };
-  }, [project, isConstruction]);
+  }, [project, isConstruction, boqItemsAll]);
 
   if (!project) {
     return (

@@ -1,17 +1,16 @@
-import { ClipboardList, FileSignature, FileDiff, Receipt, ShieldCheck, Users, BarChart3 } from "lucide-react";
+import { FileSignature, FileDiff, Receipt, ShieldCheck, Users, BarChart3 } from "lucide-react";
 import { ConstructionPlaceholderPage } from "./ConstructionPlaceholderPage";
 
 // ── S1 project-workspace facet (spec §11) — Step 0 ─────────────────────────
 // Wired directly into `ProjectDetailLayout`/`ProjectOverviewPage` (FE_16) —
 // no standalone page component here.
 
-// ── Remaining screens (S2-S9) — scaffolded as placeholders, one screen per
+// ── S2 BOQ + Cost Budget editor (spec §3) ──────────────────────────────────
+export { BoqEditorPage } from "./boq/BoqEditorPage";
+
+// ── Remaining screens (S3-S9) — scaffolded as placeholders, one screen per
 // build step per the Kickoff order. Real content replaces each export below
 // as its step lands; the route registration in App.tsx never changes. ──────
-
-export function BoqEditorPage() {
-  return <ConstructionPlaceholderPage titleKey="boq.title" icon={ClipboardList} bare />;
-}
 
 export function ContractTermsPage() {
   return <ConstructionPlaceholderPage titleKey="contract.retention" icon={FileSignature} bare />;

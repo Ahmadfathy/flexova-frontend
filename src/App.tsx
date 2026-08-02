@@ -159,6 +159,7 @@ import {
   ClaimsRegisterPage, ClaimEditorPage, ClaimViewPage, RetentionPage,
   SubcontractsListPage, SubcontractDetailPage, ProfitabilityPage,
 } from "@/features/construction/ConstructionPages";
+import { ConstructionGuard } from "@/features/construction/ConstructionGuard";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -428,18 +429,20 @@ export default function App() {
               <Route path="documents"     element={<ProjectDocumentsPage />} />
               <Route path="appointments"  element={<ProjectAppointmentsPage />} />
               <Route path="team"          element={<ProjectTeamPage />} />
-              {/* Construction facet routes (FE_17) — only reachable when construction.enabled + mode="construction" */}
-              <Route path="boq"                element={<BoqEditorPage />} />
-              <Route path="contract"           element={<ContractTermsPage />} />
-              <Route path="variations"         element={<VariationOrdersPage />} />
-              <Route path="variations/:vo"     element={<VariationOrderEditorPage />} />
-              <Route path="claims"             element={<ClaimsRegisterPage />} />
-              <Route path="claims/new"         element={<ClaimEditorPage />} />
-              <Route path="claims/:claim"      element={<ClaimViewPage />} />
-              <Route path="retention"          element={<RetentionPage />} />
-              <Route path="subcontracts"       element={<SubcontractsListPage />} />
-              <Route path="subcontracts/:sc"   element={<SubcontractDetailPage />} />
-              <Route path="profitability"      element={<ProfitabilityPage />} />
+              {/* Construction facet routes (FE_17) — guarded: redirects to Overview unless construction.enabled + mode="construction" */}
+              <Route element={<ConstructionGuard />}>
+                <Route path="boq"                element={<BoqEditorPage />} />
+                <Route path="contract"           element={<ContractTermsPage />} />
+                <Route path="variations"         element={<VariationOrdersPage />} />
+                <Route path="variations/:vo"     element={<VariationOrderEditorPage />} />
+                <Route path="claims"             element={<ClaimsRegisterPage />} />
+                <Route path="claims/new"         element={<ClaimEditorPage />} />
+                <Route path="claims/:claim"      element={<ClaimViewPage />} />
+                <Route path="retention"          element={<RetentionPage />} />
+                <Route path="subcontracts"       element={<SubcontractsListPage />} />
+                <Route path="subcontracts/:sc"   element={<SubcontractDetailPage />} />
+                <Route path="profitability"      element={<ProfitabilityPage />} />
+              </Route>
             </Route>
           </Route>
           <Route path="/time"           element={<PersonalTimePage />} />

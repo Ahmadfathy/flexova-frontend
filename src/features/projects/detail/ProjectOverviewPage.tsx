@@ -18,8 +18,9 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { isFlagEnabled } from "@/lib/flags";
 import { useProjectsStore } from "@/stores/projectsStore";
+import { useConstructionStore } from "@/stores/constructionStore";
 import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
-import { getBoqItems, getProgressClaims, getRetention, getAdvance, getVariationOrders } from "@/lib/mock/construction";
+import { getProgressClaims, getRetention, getAdvance, getVariationOrders } from "@/lib/mock/construction";
 import { useMockState } from "../useMockState";
 import { computeProjectLedger } from "./ledger";
 
@@ -75,12 +76,14 @@ export function ProjectOverviewPage() {
 
   const isConstruction = isFlagEnabled("construction.enabled") && project?.mode === "construction";
 
+  const boqItemsAll = useConstructionStore((s) => s.boq_items);
+
   // §11 Overview additions — financial position, latest claim, alerts. Recomputed live from the
   // construction mock layer (never trusts the fixture's own precomputed `overall_completion_pct`
-  // etc.) so it stays correct once BOQ/claims editing lands in later steps.
+  // etc.) so it stays correct as BOQ/claims editing lands across steps.
   const construction = useMemo(() => {
     if (!project || !isConstruction) return null;
-    const boqItems = getBoqItems(project.id);
+    const boqItems = Object.values(boqItemsAll);
     const claims = getProgressClaims(project.id);
     const retention = getRetention(project.id);
     const advance = getAdvance(project.id);
@@ -108,7 +111,7 @@ export function ProjectOverviewPage() {
       contractValue, billed, collected, retentionOutstanding, advanceOutstanding, netRemaining,
       latestClaim, pendingVo,
     };
-  }, [project, isConstruction]);
+  }, [project, isConstruction, boqItemsAll]);
 
   if (loading) {
     return (
