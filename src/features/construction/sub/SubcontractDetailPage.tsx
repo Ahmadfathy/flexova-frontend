@@ -24,6 +24,8 @@ import { formatMoney, formatDate } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useConstructionStore } from "@/stores/constructionStore";
+import { useProjectsAudit } from "@/stores/projectsAudit";
+import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { useMockState } from "@/features/projects/useMockState";
 import { computeClaimLine, computeClaimSummary, round2 } from "@/features/construction/calc";
 import type { ClaimDeduction, ClaimStatus, ReleaseStage, SubBoqItem, SubClaimLine } from "@/features/construction/types";
@@ -35,6 +37,12 @@ const CLAIM_STATUS_PILL: Record<ClaimStatus, PillVariant> = {
   approved: "approved",
   invoiced: "in-progress",
   collected: "paid",
+};
+
+const STAGE_LABEL_KEY: Record<ReleaseStage, string> = {
+  initial_handover: "retention.stage_initial",
+  warranty_end: "retention.stage_warranty",
+  other: "retention.stage_other",
 };
 
 export function SubcontractDetailPage() {
@@ -55,6 +63,7 @@ export function SubcontractDetailPage() {
   const submitSubClaim = useConstructionStore((s) => s.submitSubClaim);
   const approveSubClaim = useConstructionStore((s) => s.approveSubClaim);
   const createSubRetentionRelease = useConstructionStore((s) => s.createSubRetentionRelease);
+  const appendAudit = useProjectsAudit((s) => s.append);
   const { loading, error, isOffline, reload } = useMockState();
 
   const canManage = can("construction.subcontract.manage");
@@ -248,6 +257,13 @@ export function SubcontractDetailPage() {
     const result = createSubRetentionRelease(id, scId, { amount: releaseAmountNum, stage: releaseStage, date: releaseDate, reason_ar: releaseReason.trim() || undefined });
     if (result.ok) {
       toast.success(t("retention.save_release_success"));
+      appendAudit({
+        user: CURRENT_EMPLOYEE_ID,
+        action: "construction.retention.release",
+        entity: scId,
+        detail_ar: `إفراج محتجز باطن بقيمة ${formatMoney(releaseAmountNum, "ar")} (${t(STAGE_LABEL_KEY[releaseStage])}) — ${sc?.subcontractor_name_ar}`,
+        detail_en: `Sub-retention release of ${formatMoney(releaseAmountNum, "en")} (${releaseStage}) — ${sc?.subcontractor_name_ar}`,
+      });
       setReleaseModalOpen(false);
     }
   }

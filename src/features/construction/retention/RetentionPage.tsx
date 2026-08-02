@@ -24,6 +24,8 @@ import { formatMoney, formatDate } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useConstructionStore } from "@/stores/constructionStore";
+import { useProjectsAudit } from "@/stores/projectsAudit";
+import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { useMockState } from "@/features/projects/useMockState";
 import { computeWarrantyReleaseDue, round2 } from "@/features/construction/calc";
 import type { ReleaseStage } from "@/features/construction/types";
@@ -44,6 +46,7 @@ export function RetentionPage() {
   const terms = useConstructionStore((s) => s.contract_terms);
   const claimsAll = useConstructionStore((s) => s.progress_claims);
   const createRetentionRelease = useConstructionStore((s) => s.createRetentionRelease);
+  const appendAudit = useProjectsAudit((s) => s.append);
   const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
   const canRelease = can("construction.retention.release");
@@ -95,6 +98,13 @@ export function RetentionPage() {
     const result = createRetentionRelease(id, { amount: amountNum, stage, date, reason_ar: reasonAr.trim() || undefined });
     if (result.ok) {
       toast.success(t("retention.save_release_success"));
+      appendAudit({
+        user: CURRENT_EMPLOYEE_ID,
+        action: "construction.retention.release",
+        entity: id,
+        detail_ar: `إفراج محتجز بقيمة ${formatMoney(amountNum, "ar")} (${t(STAGE_LABEL_KEY[stage])}) — المشروع ${id}`,
+        detail_en: `Retention release of ${formatMoney(amountNum, "en")} (${stage}) — project ${id}`,
+      });
       setModalOpen(false);
     } else {
       toast.error(t("retention.over_outstanding_error"));

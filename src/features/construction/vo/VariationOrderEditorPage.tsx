@@ -19,6 +19,8 @@ import { formatMoney, formatDate } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useConstructionStore } from "@/stores/constructionStore";
+import { useProjectsAudit } from "@/stores/projectsAudit";
+import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { useMockState } from "@/features/projects/useMockState";
 import { getPhases } from "@/lib/mock/construction";
 import { computeVoLineImpact } from "@/features/construction/calc";
@@ -51,6 +53,7 @@ export function VariationOrderEditorPage() {
   const updateVariationOrderDraft = useConstructionStore((s) => s.updateVariationOrderDraft);
   const submitVariationOrder = useConstructionStore((s) => s.submitVariationOrder);
   const approveVariationOrder = useConstructionStore((s) => s.approveVariationOrder);
+  const appendAudit = useProjectsAudit((s) => s.append);
   const rejectVariationOrder = useConstructionStore((s) => s.rejectVariationOrder);
   const { isOffline } = useMockState();
 
@@ -174,7 +177,16 @@ export function VariationOrderEditorPage() {
     if (!existingVo) return;
     const result = approveVariationOrder(id, existingVo.id);
     setApproveConfirmOpen(false);
-    if (result.ok) toast.success(t("vo.save_success"));
+    if (result.ok) {
+      toast.success(t("vo.save_success"));
+      appendAudit({
+        user: CURRENT_EMPLOYEE_ID,
+        action: "construction.vo.approve",
+        entity: existingVo.id,
+        detail_ar: `اعتماد أمر التغيير ${existingVo.number} — الأثر على قيمة العقد ${formatMoney(impact.valueImpact, "ar")}`,
+        detail_en: `Approved variation order ${existingVo.number} — contract value impact ${formatMoney(impact.valueImpact, "en")}`,
+      });
+    }
   }
 
   function confirmReject() {

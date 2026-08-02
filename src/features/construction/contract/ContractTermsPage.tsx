@@ -15,6 +15,8 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useConstructionStore } from "@/stores/constructionStore";
+import { useProjectsAudit } from "@/stores/projectsAudit";
+import { CURRENT_EMPLOYEE_ID } from "@/features/projects/currentUser";
 import { computeClaimPreview } from "@/features/construction/calc";
 import type { AdvanceRecoveryMethod } from "@/features/construction/types";
 import type { ContractTermsFormInput } from "@/stores/constructionStore";
@@ -27,6 +29,7 @@ export function ContractTermsPage() {
 
   const terms = useConstructionStore((s) => s.contract_terms);
   const updateContractTerms = useConstructionStore((s) => s.updateContractTerms);
+  const appendAudit = useProjectsAudit((s) => s.append);
   const contractValue = useConstructionStore((s) => Object.values(s.boq_items).reduce((sum, i) => sum + i.value, 0));
 
   const canEdit = can("construction.contract.edit");
@@ -114,6 +117,15 @@ export function ContractTermsPage() {
     const result = updateContractTerms(id, buildInput(), overrideActive);
     if (result.ok) {
       toast.success(t("contract.save_success"));
+      if (overrideActive) {
+        appendAudit({
+          user: CURRENT_EMPLOYEE_ID,
+          action: "construction.contract.terms_override",
+          entity: id,
+          detail_ar: `تعديل شروط العقد بصلاحية عُليا رغم القفل — المشروع ${id}`,
+          detail_en: `Overrode locked contract terms with elevated permission — project ${id}`,
+        });
+      }
       setOverrideActive(false);
     } else if (result.reason === "invalid") {
       toast.error(t("contract.block_over_100"));
