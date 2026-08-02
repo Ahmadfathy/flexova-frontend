@@ -243,5 +243,6 @@ export const MENU: MenuItem[] = [
   },
 ];
 
-export const MENU_CORE  = MENU.filter(m => m.group === "core");
-export const MENU_ADMIN = MENU.filter(m => m.group === "admin");
+export const MENU_CORE   = MENU.filter(m => m.group === "core");
+export const MENU_SECTOR = MENU.filter(m => m.group === "sector");
+export const MENU_ADMIN  = MENU.filter(m => m.group === "admin");

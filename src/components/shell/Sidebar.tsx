@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MENU, MENU_CORE, MENU_ADMIN, type MenuItem } from "@/config/menu";
+import { MENU, MENU_CORE, MENU_SECTOR, MENU_ADMIN, type MenuItem } from "@/config/menu";
 
 function isModuleActive(item: MenuItem, pathname: string) {
   return item.route === "/" ? pathname === "/" : pathname.startsWith(item.route);
@@ -287,6 +287,18 @@ export function Sidebar({ onClose, inDrawer = false }: SidebarProps) {
       <nav className="space-y-0.5 px-2">
         <GroupHeader label={t("nav_groups.core")} />
         {MENU_CORE.map(item => (
+          <AccordionItem
+            key={item.key}
+            item={item}
+            isActive={isModuleActive(item, location.pathname)}
+            isOpen={openKeys.has(item.key) || isModuleActive(item, location.pathname)}
+            onToggle={() => toggle(item.key)}
+            onClose={onClose}
+          />
+        ))}
+
+        <GroupHeader label={t("nav_groups.sector")} />
+        {MENU_SECTOR.map(item => (
           <AccordionItem
             key={item.key}
             item={item}
