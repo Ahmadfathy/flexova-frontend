@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getBoqItems, getCostBudget, getContractTerms } from "@/lib/mock/construction";
+import { getBoqItems, getCostBudget, getContractTerms as getFixtureContractTerms } from "@/lib/mock/construction";
 import { round2 } from "@/features/construction/calc";
-import type { BoqItem, CostBudgetBreakdown } from "@/features/construction/types";
+import type { BoqItem, CostBudgetBreakdown, ContractTerms } from "@/features/construction/types";
 
 /**
  * The fixture models exactly one construction project (`prj_bldg_zayed`) —
@@ -27,6 +27,17 @@ const SEED_COST_BUDGET_BREAKDOWN: Record<string, CostBudgetBreakdown | undefined
   getCostBudget(FIXTURE_PROJECT_ID).map((c) => [c.phase_ref, c.breakdown])
 );
 
+const SEED_CONTRACT_TERMS: ContractTerms = getFixtureContractTerms(FIXTURE_PROJECT_ID) ?? {
+  retention_rate: 0.10,
+  retention_cap: null,
+  release_template: { initial_handover_pct: 0.5, warranty_end_pct: 0.5, warranty_months: 12 },
+  advance_amount: 0,
+  advance_recovery_method: "fixed_pct",
+  advance_recovery_pct: 0,
+  vat_rate: 0.14,
+  locked: false,
+};
+
 export interface BoqItemFormInput {
   phase_ref: string;
   code: string;
@@ -38,11 +49,17 @@ export interface BoqItemFormInput {
   estimated_unit_cost: number;
 }
 
+/** Editable subset of ContractTerms (§4.2) — vat_rate/locked/locked_reason_ar are not user-editable here. */
+export type ContractTermsFormInput = Omit<ContractTerms, "vat_rate" | "locked" | "locked_reason_ar">;
+
+export type ContractTermsSaveResult = { ok: true } | { ok: false; reason: "locked" | "invalid" };
+
 let seq = 1;
 
-/** BOQ locks the same way Contract Terms does (§3.7/§4.4) — read live off `contract_terms.locked` (S3 will make this editable; today it's fixture-static and already `true` for `prj_bldg_zayed` since claim_001 is approved). */
-function isLocked(projectId: string): boolean {
-  return getContractTerms(projectId)?.locked ?? false;
+/** `_projectId` is unused today (single-project fixture) but kept in the signature so every
+ * call site already reads as project-scoped once the mock layer supports more than one. */
+function isLocked(get: () => ConstructionState, _projectId: string): boolean {
+  return get().contract_terms.locked;
 }
 
 function deriveItem(base: Omit<BoqItem, "value" | "estimated_cost" | "expected_margin">): BoqItem {
@@ -58,6 +75,7 @@ interface ConstructionState {
   cost_budget_breakdown: Record<string, CostBudgetBreakdown | undefined>;
   /** Per-user display preference (§3.3 "hide-cost toggle... persisted per user") — ungated, view-only. */
   hide_cost: boolean;
+  contract_terms: ContractTerms;
 
   toggleHideCost: () => void;
   addBoqItem: (projectId: string, input: BoqItemFormInput) => { ok: boolean };
@@ -65,20 +83,28 @@ interface ConstructionState {
   reorderBoqItems: (projectId: string, phaseRef: string, orderedIds: string[]) => { ok: boolean };
   setCostBudgetBreakdown: (projectId: string, phaseRef: string, breakdown: CostBudgetBreakdown | undefined) => { ok: boolean };
   importBoqItems: (projectId: string, phaseRef: string, rows: BoqItemFormInput[]) => { ok: boolean; count: number };
+  /**
+   * `locked` never flips back to false once true (§4.4 "hard lock after the first approved
+   * claim" — permanent, not a toggle). `override: true` (gated `construction.contract.terms_override`
+   * at the call site) allows a one-off edit while still locked; the record stays `locked: true`
+   * afterwards, so editing again still requires another explicit override.
+   */
+  updateContractTerms: (projectId: string, input: ContractTermsFormInput, override?: boolean) => ContractTermsSaveResult;
 }
 
 export const useConstructionStore = create<ConstructionState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       boq_items: SEED_BOQ_ITEMS,
       item_order: seedItemOrder(),
       cost_budget_breakdown: SEED_COST_BUDGET_BREAKDOWN,
       hide_cost: false,
+      contract_terms: SEED_CONTRACT_TERMS,
 
       toggleHideCost: () => set((s) => ({ hide_cost: !s.hide_cost })),
 
       addBoqItem: (projectId, input) => {
-        if (isLocked(projectId)) return { ok: false };
+        if (isLocked(get, projectId)) return { ok: false };
         const id = `boq_new_${Date.now()}_${seq++}`;
         const item = deriveItem({
           id,
@@ -100,7 +126,7 @@ export const useConstructionStore = create<ConstructionState>()(
       },
 
       updateBoqItem: (projectId, id, input) => {
-        if (isLocked(projectId)) return { ok: false };
+        if (isLocked(get, projectId)) return { ok: false };
         set((s) => {
           const existing = s.boq_items[id];
           if (!existing) return s;
@@ -124,19 +150,19 @@ export const useConstructionStore = create<ConstructionState>()(
       },
 
       reorderBoqItems: (projectId, phaseRef, orderedIds) => {
-        if (isLocked(projectId)) return { ok: false };
+        if (isLocked(get, projectId)) return { ok: false };
         set((s) => ({ item_order: { ...s.item_order, [phaseRef]: orderedIds } }));
         return { ok: true };
       },
 
       setCostBudgetBreakdown: (projectId, phaseRef, breakdown) => {
-        if (isLocked(projectId)) return { ok: false };
+        if (isLocked(get, projectId)) return { ok: false };
         set((s) => ({ cost_budget_breakdown: { ...s.cost_budget_breakdown, [phaseRef]: breakdown } }));
         return { ok: true };
       },
 
       importBoqItems: (projectId, phaseRef, rows) => {
-        if (isLocked(projectId)) return { ok: false, count: 0 };
+        if (isLocked(get, projectId)) return { ok: false, count: 0 };
         const newItems: BoqItem[] = rows.map((input) => {
           const id = `boq_new_${Date.now()}_${seq++}`;
           return deriveItem({
@@ -157,6 +183,26 @@ export const useConstructionStore = create<ConstructionState>()(
           item_order: { ...s.item_order, [phaseRef]: [...(s.item_order[phaseRef] ?? []), ...newItems.map((i) => i.id)] },
         }));
         return { ok: true, count: newItems.length };
+      },
+
+      updateContractTerms: (_projectId, input, override) => {
+        const current = get().contract_terms;
+        if (current.locked && !override) return { ok: false, reason: "locked" };
+        if (input.retention_rate + input.advance_recovery_pct > 1) return { ok: false, reason: "invalid" };
+        set((s) => ({
+          contract_terms: {
+            ...s.contract_terms,
+            retention_rate: input.retention_rate,
+            retention_cap: input.retention_cap,
+            retention_cap_basis_ar: input.retention_cap_basis_ar,
+            release_template: input.release_template,
+            advance_amount: input.advance_amount,
+            advance_recovery_method: input.advance_recovery_method,
+            advance_recovery_pct: input.advance_recovery_pct,
+            advance_received_receipt_ref: input.advance_received_receipt_ref,
+          },
+        }));
+        return { ok: true };
       },
     }),
     { name: "flexova.construction" }

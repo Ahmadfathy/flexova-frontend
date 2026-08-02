@@ -30,7 +30,7 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { useConstructionStore } from "@/stores/constructionStore";
-import { getPhases, getContractTerms } from "@/lib/mock/construction";
+import { getPhases } from "@/lib/mock/construction";
 import { useMockState } from "@/features/projects/useMockState";
 import type { BoqItem } from "@/features/construction/types";
 import type { BoqItemFormInput } from "@/stores/constructionStore";
@@ -134,8 +134,7 @@ export function BoqEditorPage() {
   const [costBudgetOpen, setCostBudgetOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
 
-  const contractTerms = getContractTerms(id);
-  const locked = contractTerms?.locked ?? false;
+  const locked = useConstructionStore((s) => s.contract_terms.locked);
   const canEdit = can("construction.boq.edit") && !locked;
 
   const contractValue = useMemo(() => Object.values(boqItemsAll).reduce((s, i) => s + i.value, 0), [boqItemsAll]);
