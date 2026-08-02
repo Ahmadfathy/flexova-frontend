@@ -153,3 +153,16 @@ export function computeWarrantyReleaseDue(
   if (today < dueDate) return { due: false, sinceDate: null };
   return { due: true, sinceDate: dueDate.toISOString().slice(0, 10) };
 }
+
+/**
+ * §10.2 phase-pivot flag. A phase still in progress (`completionPct < 100`) is flagged
+ * "partial" regardless of variance sign — judging over/under spend before a phase is done
+ * is premature (matches the fixture: ph_masonry/ph_finishing are both "partial" despite
+ * ph_finishing being technically under its estimate so far).
+ */
+export function flagCostVariance(completionPct: number, variance: number): "over" | "under" | "partial" | "on_track" {
+  if (completionPct < 100) return "partial";
+  if (variance > 0) return "over";
+  if (variance < 0) return "under";
+  return "on_track";
+}

@@ -1,6 +1,3 @@
-import { BarChart3 } from "lucide-react";
-import { ConstructionPlaceholderPage } from "./ConstructionPlaceholderPage";
-
 // ── S1 project-workspace facet (spec §11) — Step 0 ─────────────────────────
 // Wired directly into `ProjectDetailLayout`/`ProjectOverviewPage` (FE_16) —
 // no standalone page component here.
@@ -29,10 +26,5 @@ export { RetentionPage } from "./retention/RetentionPage";
 export { SubcontractsListPage } from "./sub/SubcontractsListPage";
 export { SubcontractDetailPage } from "./sub/SubcontractDetailPage";
 
-// ── Remaining screens (S9) — scaffolded as placeholders, one screen per
-// build step per the Kickoff order. Real content replaces each export below
-// as its step lands; the route registration in App.tsx never changes. ──────
-
-export function ProfitabilityPage() {
-  return <ConstructionPlaceholderPage titleKey="profit.title" icon={BarChart3} bare />;
-}
+// ── S9 Actual vs Estimated / Profitability (spec §10) — last screen ────────
+export { ProfitabilityPage } from "./profitability/ProfitabilityPage";
