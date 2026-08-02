@@ -359,6 +359,8 @@
     "col_outstanding": "Outstanding",
     "col_status": "Status",
     "empty_title": "No subcontractors on this project",
+    "status_draft": "Draft",
+    "status_in_progress": "In progress",
     "boq_title": "Sub-scope (BOQ)",
     "terms_title": "Sub terms",
     "copy_from_main_title": "Copy items from main BOQ",

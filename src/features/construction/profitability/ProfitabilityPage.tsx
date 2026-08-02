@@ -7,7 +7,9 @@ import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { StatCard } from "@/components/patterns/StatCard";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { TableSkeleton, KpiSkeleton } from "@/components/patterns/Skeletons";
 import { ModalShell } from "@/components/patterns/ModalShell";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -39,7 +41,7 @@ export function ProfitabilityPage() {
   const boqItemsAll = useConstructionStore((s) => s.boq_items);
   const costBudgetBreakdown = useConstructionStore((s) => s.cost_budget_breakdown);
   const progressClaimsAll = useConstructionStore((s) => s.progress_claims);
-  const { isOffline } = useMockState();
+  const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
   const canView = can("construction.profitability.view");
 
@@ -101,7 +103,28 @@ export function ProfitabilityPage() {
 
   if (!canView) return null;
 
-  if (isEmpty) {
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("profit.title")} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => <KpiSkeleton key={i} />)}
+        </div>
+        <TableSkeleton rows={3} cols={7} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("profit.title")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
+  }
+
+  if (forcedEmpty || isEmpty) {
     return (
       <div className="space-y-4">
         <PageHeader title={t("profit.title")} />

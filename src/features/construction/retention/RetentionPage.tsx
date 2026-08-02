@@ -8,7 +8,9 @@ import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { StatCard } from "@/components/patterns/StatCard";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { TableSkeleton, KpiSkeleton } from "@/components/patterns/Skeletons";
 import { StatusPill } from "@/components/patterns/StatusPill";
 import { ModalShell } from "@/components/patterns/ModalShell";
 import { FormField, FormGrid, FormActions } from "@/components/patterns/FormLayout";
@@ -42,7 +44,7 @@ export function RetentionPage() {
   const terms = useConstructionStore((s) => s.contract_terms);
   const claimsAll = useConstructionStore((s) => s.progress_claims);
   const createRetentionRelease = useConstructionStore((s) => s.createRetentionRelease);
-  const { isOffline } = useMockState();
+  const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
   const canRelease = can("construction.retention.release");
 
@@ -99,7 +101,28 @@ export function RetentionPage() {
     }
   }
 
-  if (accrualRows.length === 0 && retention.accumulated_retained === 0) {
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("retention.title")} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => <KpiSkeleton key={i} />)}
+        </div>
+        <TableSkeleton rows={3} cols={4} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("retention.title")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
+  }
+
+  if (forcedEmpty || (accrualRows.length === 0 && retention.accumulated_retained === 0)) {
     return (
       <div className="space-y-4">
         <PageHeader title={t("retention.title")} />

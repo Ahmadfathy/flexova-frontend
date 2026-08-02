@@ -8,7 +8,9 @@ import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { StatCard } from "@/components/patterns/StatCard";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { TableSkeleton, KpiSkeleton } from "@/components/patterns/Skeletons";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +45,7 @@ export function ClaimsRegisterPage() {
   const claimsAll = useConstructionStore((s) => s.progress_claims);
   const boqItemsAll = useConstructionStore((s) => s.boq_items);
   const retention = useConstructionStore((s) => s.retention);
-  const { isOffline, forcedEmpty } = useMockState();
+  const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
   const canCreate = can("construction.claim.create");
 
@@ -62,6 +64,8 @@ export function ClaimsRegisterPage() {
     }
     return list;
   }, [claims, status, search]);
+
+  const noResults = (status !== "" || search.trim().length > 0) && claims.length > 0 && filtered.length === 0;
 
   const contractValue = useMemo(() => Object.values(boqItemsAll).reduce((sum, i) => sum + i.value, 0), [boqItemsAll]);
 
@@ -87,6 +91,27 @@ export function ClaimsRegisterPage() {
 
   function handleExport() {
     toast.success(t("claims.export_toast", { n: filtered.length }));
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("claims.title")} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => <KpiSkeleton key={i} />)}
+        </div>
+        <TableSkeleton rows={4} cols={10} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("claims.title")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
   }
 
   return (
@@ -148,6 +173,9 @@ export function ClaimsRegisterPage() {
             </Button>
           </div>
 
+          {noResults ? (
+            <EmptyState title={t("common:no_results")} />
+          ) : (
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-muted/30">
@@ -218,6 +246,7 @@ export function ClaimsRegisterPage() {
               </TableFooter>
             </Table>
           </div>
+          )}
         </PageSection>
       )}
     </div>

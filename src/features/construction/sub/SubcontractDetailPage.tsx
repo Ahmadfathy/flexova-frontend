@@ -6,6 +6,8 @@ import { AlertTriangle, CheckCircle2, ClipboardCopy, Pencil, Plus, Trash2 } from
 
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { TableSkeleton } from "@/components/patterns/Skeletons";
 import { StatCard } from "@/components/patterns/StatCard";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
@@ -53,7 +55,7 @@ export function SubcontractDetailPage() {
   const submitSubClaim = useConstructionStore((s) => s.submitSubClaim);
   const approveSubClaim = useConstructionStore((s) => s.approveSubClaim);
   const createSubRetentionRelease = useConstructionStore((s) => s.createSubRetentionRelease);
-  const { isOffline } = useMockState();
+  const { loading, error, isOffline, reload } = useMockState();
 
   const canManage = can("construction.subcontract.manage");
 
@@ -250,6 +252,24 @@ export function SubcontractDetailPage() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("sub.contract")} />
+        <TableSkeleton rows={4} cols={6} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("sub.contract")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
+  }
+
   if (!sc) {
     return (
       <div className="space-y-4">
@@ -267,7 +287,7 @@ export function SubcontractDetailPage() {
       <PageHeader
         title={sc.subcontractor_name_ar}
         subtitle={linkedMain ? `${linkedMain.code} — ${linkedMain.description_ar}` : undefined}
-        actions={<StatusPill variant={sc.status === "in_progress" ? "active" : "inactive"} label={sc.status} />}
+        actions={<StatusPill variant={sc.status === "in_progress" ? "active" : "inactive"} label={t(`sub.status_${sc.status}`)} />}
       />
 
       {linkedMain && (

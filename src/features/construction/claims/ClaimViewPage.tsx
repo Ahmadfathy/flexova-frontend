@@ -10,6 +10,8 @@ import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { StatusPill, type PillVariant } from "@/components/patterns/StatusPill";
 import { FormField, FormGrid, FormActions } from "@/components/patterns/FormLayout";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { TableSkeleton } from "@/components/patterns/Skeletons";
 import { DatePicker } from "@/components/patterns/DatePicker";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -61,7 +63,7 @@ export function ClaimViewPage() {
   const approveProgressClaim = useConstructionStore((s) => s.approveProgressClaim);
   const collectProgressClaim = useConstructionStore((s) => s.collectProgressClaim);
   const resendClaimEta = useConstructionStore((s) => s.resendClaimEta);
-  const { isOffline } = useMockState();
+  const { loading, error, isOffline, reload } = useMockState();
 
   const canCreate = can("construction.claim.create");
   const canApprove = can("construction.claim.approve");
@@ -187,6 +189,24 @@ export function ClaimViewPage() {
 
   function handlePrint() {
     toast.info(t("claim.print_toast"));
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("claim.title")} />
+        <TableSkeleton rows={5} cols={9} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("claim.title")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
   }
 
   if (!existingClaim) {

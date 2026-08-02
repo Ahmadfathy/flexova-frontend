@@ -6,8 +6,11 @@ import { Receipt } from "lucide-react";
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { TableSkeleton } from "@/components/patterns/Skeletons";
 
 import { useConstructionStore } from "@/stores/constructionStore";
+import { useMockState } from "@/features/projects/useMockState";
 
 /**
  * `/projects/:id/claims/new` is a resolver, not a form — the claim table needs its `prev_qty`
@@ -22,9 +25,11 @@ export function ClaimEditorPage() {
   const { t } = useTranslation("construction");
   const createProgressClaim = useConstructionStore((s) => s.createProgressClaim);
   const progressClaims = useConstructionStore((s) => s.progress_claims);
+  const { loading, error, reload } = useMockState();
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
+    if (loading || error) return;
     const result = createProgressClaim(id);
     if (result.ok) {
       navigate(`/projects/${id}/claims/${result.id}`, { replace: true });
@@ -37,7 +42,25 @@ export function ClaimEditorPage() {
     }
     setBlocked(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, loading, error]);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("claim.new_claim")} />
+        <TableSkeleton rows={4} cols={9} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("claim.new_claim")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
+  }
 
   if (!blocked) return null;
 

@@ -6,6 +6,10 @@ import { AlertTriangle, Plus, Users } from "lucide-react";
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { TableSkeleton } from "@/components/patterns/Skeletons";
+import { StatusPill } from "@/components/patterns/StatusPill";
 import { ModalShell } from "@/components/patterns/ModalShell";
 import { FormField, FormActions } from "@/components/patterns/FormLayout";
 import { Input } from "@/components/ui/input";
@@ -17,6 +21,7 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useConstructionStore } from "@/stores/constructionStore";
+import { useMockState } from "@/features/projects/useMockState";
 
 export function SubcontractsListPage() {
   const { id = "" } = useParams<{ id: string }>();
@@ -28,6 +33,7 @@ export function SubcontractsListPage() {
   const subcontractsAll = useConstructionStore((s) => s.subcontracts);
   const boqItemsAll = useConstructionStore((s) => s.boq_items);
   const addSubcontract = useConstructionStore((s) => s.addSubcontract);
+  const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
   const canManage = can("construction.subcontract.manage");
 
@@ -36,7 +42,10 @@ export function SubcontractsListPage() {
   const [linkedItem, setLinkedItem] = useState("");
   const [attempted, setAttempted] = useState(false);
 
-  const rows = useMemo(() => Object.values(subcontractsAll).sort((a, b) => a.subcontractor_name_ar.localeCompare(b.subcontractor_name_ar)), [subcontractsAll]);
+  const rows = useMemo(
+    () => (forcedEmpty ? [] : Object.values(subcontractsAll).sort((a, b) => a.subcontractor_name_ar.localeCompare(b.subcontractor_name_ar))),
+    [subcontractsAll, forcedEmpty]
+  );
 
   function openModal() {
     setNameAr("");
@@ -55,6 +64,24 @@ export function SubcontractsListPage() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("sub.title")} />
+        <TableSkeleton rows={4} cols={6} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("sub.title")} />
+        <PageSection><ErrorState onRetry={reload} /></PageSection>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <PageHeader
@@ -65,6 +92,8 @@ export function SubcontractsListPage() {
           </Button>
         ) : undefined}
       />
+
+      {isOffline && <OfflineBanner />}
 
       {rows.length === 0 ? (
         <PageSection>
@@ -115,7 +144,9 @@ export function SubcontractsListPage() {
                       <TableCell className="px-3 py-2.5 text-sm tabular-nums text-end">{formatMoney(paid, lang)}</TableCell>
                       <TableCell className="px-3 py-2.5 text-sm tabular-nums text-end">{formatMoney(sc.sub_retention.accumulated_retained, lang)}</TableCell>
                       <TableCell className="px-3 py-2.5 text-sm tabular-nums text-end">{formatMoney(sc.sub_retention.outstanding, lang)}</TableCell>
-                      <TableCell className="px-3 py-2.5 text-sm">{sc.status}</TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <StatusPill variant={sc.status === "in_progress" ? "active" : "inactive"} label={t(`sub.status_${sc.status}`)} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}

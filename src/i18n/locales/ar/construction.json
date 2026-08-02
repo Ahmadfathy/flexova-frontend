@@ -359,6 +359,8 @@
     "col_outstanding": "المتبقّي",
     "col_status": "الحالة",
     "empty_title": "لا يوجد مقاولو باطن في هذا المشروع",
+    "status_draft": "مسودة",
+    "status_in_progress": "قيد التنفيذ",
     "boq_title": "نطاق الباطن (BOQ)",
     "terms_title": "شروط الباطن",
     "copy_from_main_title": "نسخ بنود من العقد الرئيسي",
