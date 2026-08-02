@@ -127,8 +127,6 @@ export function ContractTermsPage() {
     setOverrideConfirmOpen(false);
   }
 
-  const locked = terms.locked && !overrideActive;
-
   return (
     <div className="space-y-4">
       <PageHeader

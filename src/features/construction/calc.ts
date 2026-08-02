@@ -71,6 +71,47 @@ export function computeVoLineImpact(line: VoLineImpactInput): { valueImpact: num
   return { valueImpact: 0, costImpact: 0 };
 }
 
+/**
+ * §6.3 claim table row — cumulative %/value/current value for one BOQ item at a given
+ * cumulative executed qty. `prevValue` comes from the previous claim's line for this item
+ * (0 if the item has no prior claim history yet).
+ */
+export interface ClaimLineCalcInput {
+  contractQty: number;
+  unitPrice: number;
+  prevValue: number;
+  cumulativeQty: number;
+}
+
+export function computeClaimLine(input: ClaimLineCalcInput): { cumulative_pct: number; cumulative_value: number; current_value: number } {
+  const { contractQty, unitPrice, prevValue, cumulativeQty } = input;
+  const cumulative_value = round2(cumulativeQty * unitPrice);
+  const cumulative_pct = contractQty > 0 ? round2((cumulativeQty / contractQty) * 100) : 0;
+  const current_value = round2(cumulative_value - prevValue);
+  return { cumulative_pct, cumulative_value, current_value };
+}
+
+/**
+ * §6.4 full claim summary — wraps `computeClaimPreview` (retention/advance/VAT, shared with
+ * the S3 preview) and layers on the claim-only manual-deductions line so the two engines can
+ * never compute retention/advance/VAT differently, while deductions stay claim-specific.
+ */
+export interface ClaimSummaryInput extends ClaimPreviewInput {
+  deductionsTotal: number;
+}
+
+export interface ClaimSummaryResult extends ClaimPreviewResult {
+  deductionsTotal: number;
+}
+
+export function computeClaimSummary(input: ClaimSummaryInput): ClaimSummaryResult {
+  const { deductionsTotal, ...previewInput } = input;
+  const base = computeClaimPreview(previewInput);
+  const netBeforeVat = round2(base.netBeforeVat - deductionsTotal);
+  const netPayable = round2(netBeforeVat + base.vat);
+  return { ...base, netBeforeVat, netPayable, deductionsTotal };
+}
+
 export function computeClaimPreview(input: ClaimPreviewInput): ClaimPreviewResult {
   const {
     grossCurrent, retentionRate, retentionCap, retentionAccumulatedSoFar,

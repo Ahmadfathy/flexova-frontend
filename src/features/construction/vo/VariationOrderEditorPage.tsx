@@ -79,7 +79,6 @@ export function VariationOrderEditorPage() {
   }, [existingVo]);
 
   const isDraftEditable = isNew || existingVo?.status === "draft";
-  const status = existingVo?.status;
 
   function updateLine(index: number, patch: Partial<VoLine>) {
     setLines((prev) => prev.map((l, i) => (i === index ? { ...l, ...patch } : l)));

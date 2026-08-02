@@ -2,10 +2,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
   getBoqItems, getCostBudget, getContractTerms as getFixtureContractTerms,
-  getVariationOrders, getConstructionProject,
+  getVariationOrders, getConstructionProject, getProgressClaims, getAdvance, getRetention, getPhases,
 } from "@/lib/mock/construction";
-import { round2 } from "@/features/construction/calc";
-import type { BoqItem, CostBudgetBreakdown, ContractTerms, VariationOrder, VoLine } from "@/features/construction/types";
+import { round2, computeClaimSummary, computeClaimLine } from "@/features/construction/calc";
+import type {
+  BoqItem, CostBudgetBreakdown, ContractTerms, VariationOrder, VoLine,
+  ProgressClaim, ClaimLine, ClaimDeduction, AdvancePayment, Retention,
+} from "@/features/construction/types";
 
 /**
  * The fixture models exactly one construction project (`prj_bldg_zayed`) —
@@ -47,6 +50,18 @@ const SEED_VARIATION_ORDERS: Record<string, VariationOrder> = Object.fromEntries
 
 const SEED_BOQ_VERSION = getConstructionProject(FIXTURE_PROJECT_ID)?.boq_version ?? 1;
 
+const SEED_PROGRESS_CLAIMS: Record<string, ProgressClaim> = Object.fromEntries(
+  getProgressClaims(FIXTURE_PROJECT_ID).map((c) => [c.id, c])
+);
+
+const SEED_ADVANCE: AdvancePayment = getAdvance(FIXTURE_PROJECT_ID) ?? {
+  amount: 0, recovery_method: "fixed_pct", recovery_pct: 0, recovered_to_date: 0, outstanding: 0,
+};
+
+const SEED_RETENTION: Retention = getRetention(FIXTURE_PROJECT_ID) ?? {
+  rate: 0, cap: null, accumulated_retained: 0, released: 0, outstanding: 0, at_cap: false, release_events: [],
+};
+
 export interface BoqItemFormInput {
   phase_ref: string;
   code: string;
@@ -70,15 +85,28 @@ export interface VoDraftInput {
   lines: VoLine[];
 }
 
+export interface ClaimDraftInput {
+  period_ar: string;
+  date: string;
+  lines: ClaimLine[];
+  deductions: ClaimDeduction[];
+}
+
+export type CreateClaimResult = { ok: true; id: string } | { ok: false; reason: "open_claim_exists" | "no_boq" };
+
 let seq = 1;
 
-function nextVoNumber(vos: Record<string, VariationOrder>): string {
-  const max = Object.values(vos).reduce((m, v) => {
-    const match = v.number.match(/(\d+)$/);
-    const n = match ? parseInt(match[1], 10) : NaN;
-    return Number.isFinite(n) ? Math.max(m, n) : m;
+function nextNumber(numbers: string[], prefix: string): string {
+  const max = numbers.reduce((m, n) => {
+    const match = n.match(/(\d+)$/);
+    const num = match ? parseInt(match[1], 10) : NaN;
+    return Number.isFinite(num) ? Math.max(m, num) : m;
   }, 0);
-  return `VO-${String(max + 1).padStart(3, "0")}`;
+  return `${prefix}-${String(max + 1).padStart(3, "0")}`;
+}
+
+function nextVoNumber(vos: Record<string, VariationOrder>): string {
+  return nextNumber(Object.values(vos).map((v) => v.number), "VO");
 }
 
 /** `_projectId` is unused today (single-project fixture) but kept in the signature so every
@@ -118,6 +146,9 @@ interface ConstructionState {
   variation_orders: Record<string, VariationOrder>;
   /** Bumped on every VO approval (§5.3 "new BOQ version") — informational traceability counter. */
   boq_version: number;
+  progress_claims: Record<string, ProgressClaim>;
+  advance: AdvancePayment;
+  retention: Retention;
 
   toggleHideCost: () => void;
   addBoqItem: (projectId: string, input: BoqItemFormInput) => { ok: boolean };
@@ -139,6 +170,21 @@ interface ConstructionState {
   /** Approved VOs are never deletable (§5.3) — there is deliberately no deleteVariationOrder action; correction is a reversing VO. */
   approveVariationOrder: (projectId: string, voId: string) => { ok: boolean };
   rejectVariationOrder: (projectId: string, voId: string) => { ok: boolean };
+
+  /** §6.7 "one open draft per project" — also refuses a second draft while one is already
+   * submitted (awaiting approval), since that claim's numbers aren't final yet and the next
+   * claim's `prev_qty` baseline depends on it. §6.7 "no approved BOQ → block". */
+  createProgressClaim: (projectId: string) => CreateClaimResult;
+  updateProgressClaimDraft: (projectId: string, claimId: string, input: ClaimDraftInput) => { ok: boolean };
+  submitProgressClaim: (projectId: string, claimId: string) => { ok: boolean };
+  /** Approval posts the mock journal + ETA tax invoice, rolls retention/advance running totals
+   * forward, and writes each line's `cumulative_qty` back onto the BOQ item (`cumulative_executed_qty`)
+   * so the next claim's `prev_qty` and the VO reduce-below-executed check both read current data. */
+  approveProgressClaim: (projectId: string, claimId: string) => { ok: boolean };
+  collectProgressClaim: (projectId: string, claimId: string) => { ok: boolean };
+  /** Simulates a fixed-and-resent ETA submission — flips a rejected claim's `eta_status` back
+   * to accepted; the claim's own `status` never leaves "approved" while this happens (§6.7). */
+  resendClaimEta: (projectId: string, claimId: string) => { ok: boolean };
 }
 
 export const useConstructionStore = create<ConstructionState>()(
@@ -151,6 +197,9 @@ export const useConstructionStore = create<ConstructionState>()(
       contract_terms: SEED_CONTRACT_TERMS,
       variation_orders: SEED_VARIATION_ORDERS,
       boq_version: SEED_BOQ_VERSION,
+      progress_claims: SEED_PROGRESS_CLAIMS,
+      advance: SEED_ADVANCE,
+      retention: SEED_RETENTION,
 
       toggleHideCost: () => set((s) => ({ hide_cost: !s.hide_cost })),
 
@@ -362,6 +411,174 @@ export const useConstructionStore = create<ConstructionState>()(
         const vo = get().variation_orders[voId];
         if (!vo || vo.status !== "submitted") return { ok: false };
         set((s) => ({ variation_orders: { ...s.variation_orders, [voId]: { ...vo, status: "rejected" } } }));
+        return { ok: true };
+      },
+
+      createProgressClaim: (projectId) => {
+        const hasOpen = Object.values(get().progress_claims).some((c) => c.status === "draft" || c.status === "submitted");
+        if (hasOpen) return { ok: false, reason: "open_claim_exists" };
+
+        const boqItems = get().boq_items;
+        if (Object.keys(boqItems).length === 0) return { ok: false, reason: "no_boq" };
+
+        const claims = get().progress_claims;
+        const prevClaim = Object.values(claims)
+          .filter((c) => c.status === "approved" || c.status === "invoiced" || c.status === "collected")
+          .sort((a, b) => {
+            const an = parseInt(a.number.match(/(\d+)$/)?.[1] ?? "0", 10);
+            const bn = parseInt(b.number.match(/(\d+)$/)?.[1] ?? "0", 10);
+            return bn - an;
+          })[0] ?? null;
+        const prevLinesByItem = new Map((prevClaim?.lines ?? []).map((l) => [l.boq_item_ref, l]));
+
+        const itemOrder = get().item_order;
+        const phases = getPhases(projectId);
+        const orderedItemIds = phases.length ? phases.flatMap((p) => itemOrder[p.id] ?? []) : Object.values(itemOrder).flat();
+
+        const lines: ClaimLine[] = orderedItemIds.map((itemId) => {
+          const item = boqItems[itemId];
+          const prevLine = prevLinesByItem.get(itemId);
+          const prevQty = prevLine?.cumulative_qty ?? 0;
+          const prevValue = prevLine?.cumulative_value ?? 0;
+          const lineCalc = computeClaimLine({ contractQty: item.estimated_qty, unitPrice: item.unit_price, prevValue, cumulativeQty: prevQty });
+          return {
+            boq_item_ref: itemId,
+            prev_qty: prevQty,
+            cumulative_qty: prevQty,
+            cumulative_pct: lineCalc.cumulative_pct,
+            cumulative_value: lineCalc.cumulative_value,
+            prev_value: prevValue,
+            current_value: lineCalc.current_value,
+          };
+        });
+
+        const id = `claim_new_${Date.now()}_${seq++}`;
+        const claim: ProgressClaim = {
+          id,
+          number: nextNumber(Object.values(claims).map((c) => c.number), "PC"),
+          project_ref: projectId,
+          period_ar: "",
+          date: new Date().toISOString().slice(0, 10),
+          status: "draft",
+          previous_claim_ref: prevClaim?.id ?? null,
+          lines,
+          gross_current: 0,
+          retention_this: 0,
+          advance_recovery_this: 0,
+          deductions: [],
+          net_before_vat: 0,
+          vat: 0,
+          net_payable: 0,
+        };
+        set((s) => ({ progress_claims: { ...s.progress_claims, [id]: claim } }));
+        return { ok: true, id };
+      },
+
+      updateProgressClaimDraft: (_projectId, claimId, input) => {
+        const claim = get().progress_claims[claimId];
+        if (!claim || claim.status !== "draft") return { ok: false };
+
+        const grossCurrent = round2(input.lines.reduce((sum, l) => sum + l.current_value, 0));
+        const deductionsTotal = round2(input.deductions.reduce((sum, d) => sum + d.amount, 0));
+        const terms = get().contract_terms;
+        const retention = get().retention;
+        const advance = get().advance;
+        const summary = computeClaimSummary({
+          grossCurrent,
+          retentionRate: terms.retention_rate,
+          retentionCap: terms.retention_cap,
+          retentionAccumulatedSoFar: retention.accumulated_retained,
+          advanceAmount: terms.advance_amount,
+          advanceRecoveryPct: terms.advance_recovery_pct,
+          advanceRecoveredSoFar: advance.recovered_to_date,
+          vatRate: terms.vat_rate,
+          deductionsTotal,
+        });
+
+        set((s) => ({
+          progress_claims: {
+            ...s.progress_claims,
+            [claimId]: {
+              ...claim,
+              period_ar: input.period_ar,
+              date: input.date,
+              lines: input.lines,
+              deductions: input.deductions,
+              gross_current: grossCurrent,
+              retention_this: summary.retentionThis,
+              advance_recovery_this: summary.advanceRecoveryThis,
+              net_before_vat: summary.netBeforeVat,
+              vat: summary.vat,
+              net_payable: summary.netPayable,
+            },
+          },
+        }));
+        return { ok: true };
+      },
+
+      submitProgressClaim: (_projectId, claimId) => {
+        const claim = get().progress_claims[claimId];
+        if (!claim || claim.status !== "draft") return { ok: false };
+        set((s) => ({ progress_claims: { ...s.progress_claims, [claimId]: { ...claim, status: "submitted" } } }));
+        return { ok: true };
+      },
+
+      approveProgressClaim: (_projectId, claimId) => {
+        const claim = get().progress_claims[claimId];
+        if (!claim || claim.status !== "submitted") return { ok: false };
+
+        set((s) => {
+          const boqItems = { ...s.boq_items };
+          for (const line of claim.lines) {
+            const existing = boqItems[line.boq_item_ref];
+            if (existing) boqItems[line.boq_item_ref] = { ...existing, cumulative_executed_qty: line.cumulative_qty };
+          }
+
+          const retentionAccumulated = round2(s.retention.accumulated_retained + claim.retention_this);
+          const retention: Retention = {
+            ...s.retention,
+            accumulated_retained: retentionAccumulated,
+            outstanding: round2(retentionAccumulated - s.retention.released),
+            at_cap: s.retention.cap != null && retentionAccumulated >= s.retention.cap,
+          };
+
+          const advanceRecovered = round2(s.advance.recovered_to_date + claim.advance_recovery_this);
+          const advance: AdvancePayment = {
+            ...s.advance,
+            recovered_to_date: advanceRecovered,
+            outstanding: round2(Math.max(0, s.advance.amount - advanceRecovered)),
+          };
+
+          const claimNumSuffix = claim.number.match(/(\d+)$/)?.[1] ?? "001";
+
+          return {
+            boq_items: boqItems,
+            retention,
+            advance,
+            // §4.4 hard-lock, permanent once true — first approved claim is exactly the trigger.
+            contract_terms: s.contract_terms.locked ? s.contract_terms : {
+              ...s.contract_terms, locked: true, locked_reason_ar: "قُفلت بعد اعتماد المستخلص الأول",
+            },
+            progress_claims: {
+              ...s.progress_claims,
+              [claimId]: { ...claim, status: "approved", tax_invoice_ref: `MN-INV-CL-${claimNumSuffix}`, eta_status: "accepted" },
+            },
+          };
+        });
+        return { ok: true };
+      },
+
+      collectProgressClaim: (_projectId, claimId) => {
+        const claim = get().progress_claims[claimId];
+        if (!claim || claim.status !== "approved") return { ok: false };
+        set((s) => ({ progress_claims: { ...s.progress_claims, [claimId]: { ...claim, status: "collected" } } }));
+        return { ok: true };
+      },
+
+      resendClaimEta: (_projectId, claimId) => {
+        const claim = get().progress_claims[claimId];
+        if (!claim || claim.eta_status !== "rejected") return { ok: false };
+        set((s) => ({ progress_claims: { ...s.progress_claims, [claimId]: { ...claim, eta_status: "accepted" } } }));
         return { ok: true };
       },
     }),

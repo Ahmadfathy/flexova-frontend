@@ -20,7 +20,6 @@ import { isFlagEnabled } from "@/lib/flags";
 import { useProjectsStore } from "@/stores/projectsStore";
 import { useConstructionStore } from "@/stores/constructionStore";
 import { getProjectInvoices, getProjectEmployees } from "@/lib/mock/projects";
-import { getProgressClaims, getRetention, getAdvance, getVariationOrders } from "@/lib/mock/construction";
 import { useMockState } from "../useMockState";
 import { computeProjectLedger } from "./ledger";
 
@@ -77,17 +76,21 @@ export function ProjectOverviewPage() {
   const isConstruction = isFlagEnabled("construction.enabled") && project?.mode === "construction";
 
   const boqItemsAll = useConstructionStore((s) => s.boq_items);
+  const progressClaimsAll = useConstructionStore((s) => s.progress_claims);
+  const retentionLive = useConstructionStore((s) => s.retention);
+  const advanceLive = useConstructionStore((s) => s.advance);
+  const variationOrdersAll = useConstructionStore((s) => s.variation_orders);
 
   // §11 Overview additions — financial position, latest claim, alerts. Recomputed live from the
-  // construction mock layer (never trusts the fixture's own precomputed `overall_completion_pct`
-  // etc.) so it stays correct as BOQ/claims editing lands across steps.
+  // construction store (never trusts the fixture's own precomputed `overall_completion_pct`
+  // etc.) so it stays correct as BOQ/VO/claims editing lands across steps.
   const construction = useMemo(() => {
     if (!project || !isConstruction) return null;
     const boqItems = Object.values(boqItemsAll);
-    const claims = getProgressClaims(project.id);
-    const retention = getRetention(project.id);
-    const advance = getAdvance(project.id);
-    const variationOrders = getVariationOrders(project.id);
+    const claims = Object.values(progressClaimsAll);
+    const retention = retentionLive;
+    const advance = advanceLive;
+    const variationOrders = Object.values(variationOrdersAll);
 
     const contractValue = boqItems.reduce((sum, i) => sum + i.value, 0);
     const billed = claims
@@ -111,7 +114,7 @@ export function ProjectOverviewPage() {
       contractValue, billed, collected, retentionOutstanding, advanceOutstanding, netRemaining,
       latestClaim, pendingVo,
     };
-  }, [project, isConstruction, boqItemsAll]);
+  }, [project, isConstruction, boqItemsAll, progressClaimsAll, retentionLive, advanceLive, variationOrdersAll]);
 
   if (loading) {
     return (

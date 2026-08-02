@@ -15,20 +15,16 @@ export { ContractTermsPage } from "./contract/ContractTermsPage";
 export { VariationOrdersPage } from "./vo/VariationOrdersPage";
 export { VariationOrderEditorPage } from "./vo/VariationOrderEditorPage";
 
-// ── Remaining screens (S5-S9) — scaffolded as placeholders, one screen per
+// ── S5 Progress Claim engine (spec §6) ──────────────────────────────────────
+export { ClaimEditorPage } from "./claims/ClaimEditorPage";
+export { ClaimViewPage } from "./claims/ClaimViewPage";
+
+// ── Remaining screens (S6-S9) — scaffolded as placeholders, one screen per
 // build step per the Kickoff order. Real content replaces each export below
 // as its step lands; the route registration in App.tsx never changes. ──────
 
 export function ClaimsRegisterPage() {
   return <ConstructionPlaceholderPage titleKey="claims.title" icon={Receipt} bare />;
-}
-
-export function ClaimEditorPage() {
-  return <ConstructionPlaceholderPage titleKey="claim.title" icon={Receipt} bare />;
-}
-
-export function ClaimViewPage() {
-  return <ConstructionPlaceholderPage titleKey="claim.title" icon={Receipt} bare />;
 }
 
 export function RetentionPage() {
