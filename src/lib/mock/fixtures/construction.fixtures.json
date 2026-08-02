@@ -1,0 +1,272 @@
+{
+  "_meta": {
+    "module": "construction",
+    "version": "1.0",
+    "currency": "EGP",
+    "vat_rate": 0.14,
+    "construction_enabled": true,
+    "depends_on": "FE_16 projects (project/phases/team — inherited), inventory (material issue), hr (labor), accounting (cost centers/AR/AP/vouchers/ledger — consume), sales+eta (claim→tax invoice), purchasing (supplier→subcontractor/AP/input VAT)",
+    "notes": "Residential building (5 floors). Contract = facet on FE_16 project. Two numbers per BOQ item: unit_price=sell, estimated_unit_cost=our cost. current=cumulative-prev. Claim 2 demonstrates BOTH the retention cap hit AND the advance fully recovered (auto-cap). VAT base = current work value; retention/advance affect net_payable only (provisional, pending tax accountant). All amounts EGP, tabular-nums."
+  },
+
+  "project": {
+    "id": "prj_bldg_zayed",
+    "mode": "construction",
+    "name_ar": "عمارة سكنية 5 أدوار — الشيخ زايد",
+    "name_en": "5-Floor Residential Building — Sheikh Zayed",
+    "customer_id": "cu_developer",
+    "customer_name_ar": "شركة العمران للتطوير العقاري",
+    "customer_name_en": "Al-Omran Real Estate Development",
+    "status": "in_progress",
+    "start_date": "2026-05-01",
+    "cost_center_id": "cc_prj_bldg_zayed",
+    "team": [
+      { "name_ar": "م. خالد عبد الرحمن", "role_ar": "مدير المشروع" },
+      { "name_ar": "م. سارة منير", "role_ar": "مهندس موقع" }
+    ],
+    "boq_version": 2,
+    "contract_value_original": 5940000.00,
+    "contract_value_current": 6036000.00,
+    "overall_completion_pct": 39.5
+  },
+
+  "phases": [
+    { "id": "ph_structure", "name_ar": "الأساسات والعظم", "name_en": "Foundations & Structure", "order": 1, "completion_pct": 100 },
+    { "id": "ph_masonry",   "name_ar": "المباني والمحارة", "name_en": "Masonry & Plaster", "order": 2, "completion_pct": 55 },
+    { "id": "ph_finishing", "name_ar": "التشطيبات", "name_en": "Finishing", "order": 3, "completion_pct": 8 }
+  ],
+
+  "boq_items": [
+    { "id": "boq_concrete", "phase_ref": "ph_structure", "section_header_ar": "أعمال خرسانية", "code": "ST-01",
+      "description_ar": "خرسانة مسلحة (أساسات + هيكل)", "unit_ar": "م³",
+      "estimated_qty": 400, "unit_price": 3500.00, "value": 1400000.00,
+      "estimated_unit_cost": 2900.00, "estimated_cost": 1160000.00, "expected_margin": 240000.00,
+      "cumulative_executed_qty": 400 },
+
+    { "id": "boq_rebar", "phase_ref": "ph_structure", "section_header_ar": "أعمال خرسانية", "code": "ST-02",
+      "description_ar": "حديد تسليح", "unit_ar": "طن",
+      "estimated_qty": 60, "unit_price": 40000.00, "value": 2400000.00,
+      "estimated_unit_cost": 37000.00, "estimated_cost": 2220000.00, "expected_margin": 180000.00,
+      "cumulative_executed_qty": 60 },
+
+    { "id": "boq_brick", "phase_ref": "ph_masonry", "section_header_ar": "مباني", "code": "MS-01",
+      "description_ar": "مباني طوب", "unit_ar": "م³",
+      "estimated_qty": 300, "unit_price": 900.00, "value": 270000.00,
+      "estimated_unit_cost": 650.00, "estimated_cost": 195000.00, "expected_margin": 75000.00,
+      "cumulative_executed_qty": 210 },
+
+    { "id": "boq_plaster", "phase_ref": "ph_masonry", "section_header_ar": "محارة", "code": "MS-02",
+      "description_ar": "محارة (بياض)", "unit_ar": "م²",
+      "estimated_qty": 4000, "unit_price": 85.00, "value": 340000.00,
+      "estimated_unit_cost": 60.00, "estimated_cost": 240000.00, "expected_margin": 100000.00,
+      "cumulative_executed_qty": 1600 },
+
+    { "id": "boq_floor", "phase_ref": "ph_finishing", "section_header_ar": "أرضيات", "code": "FN-01",
+      "description_ar": "أرضيات سيراميك ورخام", "unit_ar": "م²",
+      "estimated_qty": 2000, "unit_price": 350.00, "value": 700000.00,
+      "estimated_unit_cost": 260.00, "estimated_cost": 520000.00, "expected_margin": 180000.00,
+      "cumulative_executed_qty": 200 },
+
+    { "id": "boq_paint", "phase_ref": "ph_finishing", "section_header_ar": "دهانات", "code": "FN-02",
+      "description_ar": "دهانات", "unit_ar": "م²",
+      "estimated_qty": 5000, "unit_price": 70.00, "value": 350000.00,
+      "estimated_unit_cost": 48.00, "estimated_cost": 240000.00, "expected_margin": 110000.00,
+      "cumulative_executed_qty": 0 },
+
+    { "id": "boq_electrical", "phase_ref": "ph_finishing", "section_header_ar": "كهروميكانيكا", "code": "FN-03",
+      "description_ar": "أعمال الكهرباء (مقاول باطن)", "unit_ar": "مقطوعية",
+      "estimated_qty": 1, "unit_price": 480000.00, "value": 480000.00,
+      "estimated_unit_cost": 400000.00, "estimated_cost": 400000.00, "expected_margin": 80000.00,
+      "cumulative_executed_qty": 0, "_subcontracted": "sc_electrical" },
+
+    { "id": "boq_insulation_vo", "phase_ref": "ph_finishing", "section_header_ar": "أعمال إضافية", "code": "VO-01",
+      "description_ar": "أعمال عزل إضافية (أمر تغيير)", "unit_ar": "م²",
+      "estimated_qty": 800, "unit_price": 120.00, "value": 96000.00,
+      "estimated_unit_cost": 85.00, "estimated_cost": 68000.00, "expected_margin": 28000.00,
+      "cumulative_executed_qty": 400, "_added_by_vo": "vo_001" }
+  ],
+
+  "cost_budget": [
+    { "phase_ref": "ph_structure", "estimated_cost": 3380000.00,
+      "breakdown": { "materials": 2600000.00, "labor": 700000.00, "subcontract": 0, "other": 80000.00 } },
+    { "phase_ref": "ph_masonry", "estimated_cost": 435000.00,
+      "breakdown": { "materials": 300000.00, "labor": 120000.00, "subcontract": 0, "other": 15000.00 } },
+    { "phase_ref": "ph_finishing", "estimated_cost": 1228000.00,
+      "breakdown": { "materials": 700000.00, "labor": 110000.00, "subcontract": 400000.00, "other": 18000.00 } }
+  ],
+
+  "contract_terms": {
+    "retention_rate": 0.10,
+    "retention_cap": 301800.00,
+    "retention_cap_basis_ar": "5% من قيمة العقد (6,036,000 × 5%)",
+    "release_template": { "initial_handover_pct": 0.50, "warranty_end_pct": 0.50, "warranty_months": 12 },
+    "advance_amount": 600000.00,
+    "advance_recovery_method": "fixed_pct",
+    "advance_recovery_pct": 0.20,
+    "advance_received_receipt_ref": "RV-ADV-001",
+    "vat_rate": 0.14,
+    "locked": true,
+    "locked_reason_ar": "قُفلت بعد اعتماد المستخلص الأول"
+  },
+
+  "variation_orders": [
+    { "id": "vo_001", "number": "VO-001", "date": "2026-06-20", "status": "approved",
+      "reason_ar": "طلب المالك إضافة أعمال عزل للأسطح", "ext_ref": "خطاب استشاري 2026/45",
+      "lines": [
+        { "type": "add_item", "target_boq_item": "boq_insulation_vo", "detail_ar": "إضافة بند عزل 800 م² بسعر 120 ج/م²" }
+      ],
+      "contract_value_impact": 96000.00,
+      "contract_value_before": 5940000.00, "contract_value_after": 6036000.00 }
+  ],
+
+  "advance": {
+    "amount": 600000.00,
+    "recovery_method": "fixed_pct",
+    "recovery_pct": 0.20,
+    "recovered_to_date": 600000.00,
+    "outstanding": 0.00,
+    "_note_ar": "استُرد بالكامل بنهاية المستخلص الثاني (auto-cap على المتبقّي)"
+  },
+
+  "retention": {
+    "rate": 0.10,
+    "cap": 301800.00,
+    "accumulated_retained": 301800.00,
+    "released": 0.00,
+    "outstanding": 301800.00,
+    "at_cap": true,
+    "_note_ar": "وصل للسقف في المستخلص الثاني — المستخلصات الجاية لن تحجز",
+    "release_events": []
+  },
+
+  "progress_claims": [
+    {
+      "id": "claim_001", "number": "PC-001", "project_ref": "prj_bldg_zayed",
+      "period_ar": "يونيو 2026", "date": "2026-06-30", "status": "collected",
+      "previous_claim_ref": null, "tax_invoice_ref": "MN-INV-CL-001", "eta_status": "accepted",
+      "lines": [
+        { "boq_item_ref": "boq_concrete", "prev_qty": 0, "cumulative_qty": 240, "cumulative_pct": 60.0, "cumulative_value": 840000.00, "prev_value": 0.00, "current_value": 840000.00 },
+        { "boq_item_ref": "boq_rebar", "prev_qty": 0, "cumulative_qty": 33, "cumulative_pct": 55.0, "cumulative_value": 1320000.00, "prev_value": 0.00, "current_value": 1320000.00 },
+        { "boq_item_ref": "boq_brick", "prev_qty": 0, "cumulative_qty": 60, "cumulative_pct": 20.0, "cumulative_value": 54000.00, "prev_value": 0.00, "current_value": 54000.00 }
+      ],
+      "gross_current": 2214000.00,
+      "retention_this": 221400.00,
+      "advance_recovery_this": 442800.00,
+      "deductions": [],
+      "net_before_vat": 1549800.00,
+      "vat": 309960.00,
+      "net_payable": 1859760.00,
+      "_checks_ar": {
+        "retention": "10% × 2,214,000 = 221,400 (المتراكم 221,400 < السقف 301,800 ✓)",
+        "advance": "min(20% × 2,214,000 = 442,800 ، المتبقّي 600,000) = 442,800",
+        "vat": "14% × 2,214,000 (على قيمة الأعمال، لا على الصافي) = 309,960"
+      }
+    },
+    {
+      "id": "claim_002", "number": "PC-002", "project_ref": "prj_bldg_zayed",
+      "period_ar": "يوليو 2026", "date": "2026-07-31", "status": "approved",
+      "previous_claim_ref": "claim_001", "tax_invoice_ref": "MN-INV-CL-002", "eta_status": "accepted",
+      "lines": [
+        { "boq_item_ref": "boq_concrete", "prev_qty": 240, "cumulative_qty": 400, "cumulative_pct": 100.0, "cumulative_value": 1400000.00, "prev_value": 840000.00, "current_value": 560000.00 },
+        { "boq_item_ref": "boq_rebar", "prev_qty": 33, "cumulative_qty": 60, "cumulative_pct": 100.0, "cumulative_value": 2400000.00, "prev_value": 1320000.00, "current_value": 1080000.00 },
+        { "boq_item_ref": "boq_brick", "prev_qty": 60, "cumulative_qty": 210, "cumulative_pct": 70.0, "cumulative_value": 189000.00, "prev_value": 54000.00, "current_value": 135000.00 },
+        { "boq_item_ref": "boq_plaster", "prev_qty": 0, "cumulative_qty": 1600, "cumulative_pct": 40.0, "cumulative_value": 136000.00, "prev_value": 0.00, "current_value": 136000.00 },
+        { "boq_item_ref": "boq_floor", "prev_qty": 0, "cumulative_qty": 200, "cumulative_pct": 10.0, "cumulative_value": 70000.00, "prev_value": 0.00, "current_value": 70000.00 },
+        { "boq_item_ref": "boq_insulation_vo", "prev_qty": 0, "cumulative_qty": 400, "cumulative_pct": 50.0, "cumulative_value": 48000.00, "prev_value": 0.00, "current_value": 48000.00 }
+      ],
+      "gross_current": 2029000.00,
+      "retention_this": 80400.00,
+      "advance_recovery_this": 157200.00,
+      "deductions": [],
+      "net_before_vat": 1791400.00,
+      "vat": 284060.00,
+      "net_payable": 2075460.00,
+      "_checks_ar": {
+        "retention": "10% × 2,029,000 = 202,900 لكن المتبقّي للسقف = 301,800 − 221,400 = 80,400 → يُحجز 80,400 فقط (وصل للسقف)",
+        "advance": "20% × 2,029,000 = 405,800 لكن المتبقّي من الدفعة = 157,200 → يُسترد 157,200 فقط (اكتمل الاسترداد)",
+        "vat": "14% × 2,029,000 = 284,060"
+      }
+    }
+  ],
+
+  "subcontracts": [
+    {
+      "id": "sc_electrical",
+      "subcontractor_supplier_ref": "sup_noor_electric",
+      "subcontractor_name_ar": "مؤسسة النور للكهرباء",
+      "linked_boq_item": "boq_electrical",
+      "status": "in_progress",
+      "sub_boq": [
+        { "id": "scb_wiring", "description_ar": "تمديدات كهرباء", "unit_ar": "نقطة", "estimated_qty": 400, "unit_price": 800.00, "value": 320000.00, "cumulative_executed_qty": 120 },
+        { "id": "scb_panels", "description_ar": "لوحات توزيع", "unit_ar": "عدد", "estimated_qty": 6, "unit_price": 12000.00, "value": 72000.00, "cumulative_executed_qty": 0 }
+      ],
+      "sub_contract_value": 392000.00,
+      "sub_terms": { "retention_rate": 0.10, "retention_cap": null, "advance_amount": 0, "advance_recovery_pct": 0 },
+      "sub_retention": { "accumulated_retained": 9600.00, "released": 0.00, "outstanding": 9600.00 },
+      "sub_claims": [
+        {
+          "id": "subclaim_001", "number": "SC-PC-001", "date": "2026-07-25", "status": "approved",
+          "output_ar": "سند صرف", "payment_voucher_ref": "PV-SUB-001", "eta_input_vat": true,
+          "lines": [
+            { "sub_boq_ref": "scb_wiring", "prev_qty": 0, "cumulative_qty": 120, "cumulative_pct": 30.0, "cumulative_value": 96000.00, "prev_value": 0.00, "current_value": 96000.00 }
+          ],
+          "gross_current": 96000.00,
+          "retention_this": 9600.00,
+          "advance_recovery_this": 0.00,
+          "deductions": [],
+          "net_before_vat": 86400.00,
+          "vat": 13440.00,
+          "net_payable": 99840.00,
+          "_note_ar": "مخرجه سند صرف (AP) لا فاتورة؛ المحتجز علينا للباطن 9,600؛ ضريبة الباطن مدخلات قابلة للخصم"
+        }
+      ]
+    }
+  ],
+
+  "cost_actuals": {
+    "as_of": "2026-07-31",
+    "by_phase": [
+      { "phase_ref": "ph_structure", "estimated_cost": 3380000.00, "actual_cost": 3510000.00, "variance": 130000.00, "variance_pct": 3.85, "completion_pct": 100, "flag": "over",
+        "breakdown": { "materials": 2720000.00, "labor": 730000.00, "subcontract": 0, "other": 60000.00 } },
+      { "phase_ref": "ph_masonry", "estimated_cost": 435000.00, "actual_cost": 250000.00, "variance": null, "variance_pct": null, "completion_pct": 55, "flag": "partial",
+        "breakdown": { "materials": 175000.00, "labor": 70000.00, "subcontract": 0, "other": 5000.00 } },
+      { "phase_ref": "ph_finishing", "estimated_cost": 1228000.00, "actual_cost": 95000.00, "variance": null, "variance_pct": null, "completion_pct": 8, "flag": "partial",
+        "breakdown": { "materials": 40000.00, "labor": 5000.00, "subcontract": 50000.00, "other": 0.00 } }
+    ],
+    "project_totals": {
+      "estimated_cost_total": 5043000.00,
+      "actual_cost_to_date": 3855000.00,
+      "breakdown": { "materials": 2935000.00, "labor": 805000.00, "subcontract": 50000.00, "other": 65000.00 }
+    }
+  },
+
+  "profitability": {
+    "revenue_billed": 4243000.00,
+    "_revenue_note_ar": "إجمالي قيمة أعمال المستخلصين المعتمدين (2,214,000 + 2,029,000)",
+    "actual_cost_to_date": 3855000.00,
+    "actual_profit_to_date": 388000.00,
+    "actual_margin_pct": 9.1,
+    "estimated_profit_total": 993000.00,
+    "estimated_margin_pct": 16.4,
+    "_estimated_note_ar": "قيمة العقد 6,036,000 − إجمالي التكلفة المقدّرة 5,043,000",
+    "approximate_forecast": {
+      "projected_final_cost": 5244000.00,
+      "projected_final_profit": 792000.00,
+      "projected_margin_pct": 13.1,
+      "label_ar": "توقّع تقريبي (إسقاط خطّي بمعدل الصرف الحالي — ليس EVM)"
+    },
+    "progress_vs_spend_ar": "الإنجاز 39.5% مقابل صرف 76% من موازنة العظم — العظم اكتمل بتجاوز 3.85%"
+  },
+
+  "eta_queue": [
+    { "claim_ref": "claim_001", "invoice_ref": "MN-INV-CL-001", "type": "B2B", "status": "accepted", "vat_base": 2214000.00, "vat": 309960.00 },
+    { "claim_ref": "claim_002", "invoice_ref": "MN-INV-CL-002", "type": "B2B", "status": "accepted", "vat_base": 2029000.00, "vat": 284060.00 }
+  ],
+
+  "states_samples": {
+    "empty_project_no_boq": { "project_id": "prj_empty_demo", "boq_items": [], "hint_ar": "ابدأ: ادخل بنود الـ BOQ لكل مرحلة" },
+    "eta_rejected_sample": { "claim_ref": "claim_003_demo", "eta_status": "rejected", "reason_ar": "الرقم الضريبي للعميل غير صحيح — راجع بيانات العميل وأعد الإرسال" },
+    "retention_at_cap_banner_ar": "المحتجز وصل السقف (301,800) — المستخلصات الجاية مش هتحجز تاني",
+    "sub_loss_alert_sample_ar": "بند الكهرباء: الباطن 392,000 مقابل بيعك 480,000 — هامش موجب ✓"
+  }
+}
