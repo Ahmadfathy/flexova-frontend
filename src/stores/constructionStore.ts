@@ -3,11 +3,13 @@ import { persist } from "zustand/middleware";
 import {
   getBoqItems, getCostBudget, getContractTerms as getFixtureContractTerms,
   getVariationOrders, getConstructionProject, getProgressClaims, getAdvance, getRetention, getPhases,
+  getSubcontracts,
 } from "@/lib/mock/construction";
 import { round2, computeClaimSummary, computeClaimLine } from "@/features/construction/calc";
 import type {
   BoqItem, CostBudgetBreakdown, ContractTerms, VariationOrder, VoLine,
   ProgressClaim, ClaimLine, ClaimDeduction, AdvancePayment, Retention, ReleaseEvent, ReleaseStage,
+  Subcontract, SubBoqItem, SubClaimLine, SubProgressClaim, SubTerms,
 } from "@/features/construction/types";
 
 /**
@@ -62,6 +64,13 @@ const SEED_RETENTION: Retention = getRetention(FIXTURE_PROJECT_ID) ?? {
   rate: 0, cap: null, accumulated_retained: 0, released: 0, outstanding: 0, at_cap: false, release_events: [],
 };
 
+const SEED_SUBCONTRACTS: Record<string, Subcontract> = Object.fromEntries(
+  getSubcontracts(FIXTURE_PROJECT_ID).map((sc) => [sc.id, {
+    ...sc,
+    sub_retention: { ...sc.sub_retention, release_events: sc.sub_retention.release_events ?? [] },
+  }])
+);
+
 export interface BoqItemFormInput {
   phase_ref: string;
   code: string;
@@ -102,6 +111,34 @@ export interface RetentionReleaseInput {
 }
 
 export type CreateReleaseResult = { ok: true } | { ok: false; reason: "over_outstanding" };
+
+export interface SubcontractInput {
+  subcontractor_name_ar: string;
+  subcontractor_supplier_ref?: string;
+  linked_boq_item: string;
+}
+
+export interface SubBoqItemFormInput {
+  description_ar: string;
+  unit_ar: string;
+  estimated_qty: number;
+  unit_price: number;
+}
+
+export interface SubTermsFormInput {
+  retention_rate: number;
+  retention_cap: number | null;
+  advance_amount: number;
+  advance_recovery_pct: number;
+}
+
+export interface SubClaimDraftInput {
+  date: string;
+  lines: SubClaimLine[];
+  deductions: ClaimDeduction[];
+}
+
+export type CreateSubClaimResult = { ok: true; id: string } | { ok: false; reason: "open_claim_exists" | "no_sub_boq" };
 
 let seq = 1;
 
@@ -144,6 +181,10 @@ function patchBoqItem(existing: BoqItem, patch: { estimated_qty?: number; unit_p
   });
 }
 
+function deriveSubBoqItem(base: Omit<SubBoqItem, "value">): SubBoqItem {
+  return { ...base, value: round2(base.estimated_qty * base.unit_price) };
+}
+
 interface ConstructionState {
   boq_items: Record<string, BoqItem>;
   /** Display order per phase — items render in this order; section dividers are derived from consecutive `section_header_ar` changes, not stored separately. */
@@ -158,6 +199,7 @@ interface ConstructionState {
   progress_claims: Record<string, ProgressClaim>;
   advance: AdvancePayment;
   retention: Retention;
+  subcontracts: Record<string, Subcontract>;
 
   toggleHideCost: () => void;
   addBoqItem: (projectId: string, input: BoqItemFormInput) => { ok: boolean };
@@ -199,6 +241,23 @@ interface ConstructionState {
    * form *is* the "explicit confirm" the spec asks for, and it posts the mock journal +
    * payment voucher immediately. Blocked above `retention.outstanding`. */
   createRetentionRelease: (projectId: string, input: RetentionReleaseInput) => CreateReleaseResult;
+
+  addSubcontract: (projectId: string, input: SubcontractInput) => { ok: boolean; id: string };
+  addSubBoqItem: (projectId: string, scId: string, input: SubBoqItemFormInput) => { ok: boolean };
+  updateSubBoqItem: (projectId: string, scId: string, itemId: string, input: SubBoqItemFormInput) => { ok: boolean };
+  /** §9.1 "copy, not live link — v1" — seeds sub-BOQ rows from selected main BOQ items, using
+   * each item's `estimated_unit_cost` (our cost) as the sub `unit_price`, since a sub-BOQ price
+   * is what we pay the sub, never the client sell price. No connection to the source item after. */
+  copySubBoqFromMain: (projectId: string, scId: string, mainBoqItemIds: string[]) => { ok: boolean; count: number };
+  updateSubTerms: (projectId: string, scId: string, input: SubTermsFormInput) => { ok: boolean };
+
+  createSubClaim: (projectId: string, scId: string) => CreateSubClaimResult;
+  updateSubClaimDraft: (projectId: string, scId: string, claimId: string, input: SubClaimDraftInput) => { ok: boolean };
+  submitSubClaim: (projectId: string, scId: string, claimId: string) => { ok: boolean };
+  /** §9.2 — mirrors `approveProgressClaim` but the output is a payment voucher/AP (never a tax
+   * invoice) and retention is money *we* hold back from the sub, not money withheld from us. */
+  approveSubClaim: (projectId: string, scId: string, claimId: string) => { ok: boolean };
+  createSubRetentionRelease: (projectId: string, scId: string, input: RetentionReleaseInput) => CreateReleaseResult;
 }
 
 export const useConstructionStore = create<ConstructionState>()(
@@ -214,6 +273,7 @@ export const useConstructionStore = create<ConstructionState>()(
       progress_claims: SEED_PROGRESS_CLAIMS,
       advance: SEED_ADVANCE,
       retention: SEED_RETENTION,
+      subcontracts: SEED_SUBCONTRACTS,
 
       toggleHideCost: () => set((s) => ({ hide_cost: !s.hide_cost })),
 
@@ -618,6 +678,251 @@ export const useConstructionStore = create<ConstructionState>()(
               released,
               outstanding,
               release_events: [...s.retention.release_events, event],
+            },
+          };
+        });
+        return { ok: true };
+      },
+
+      addSubcontract: (_projectId, input) => {
+        const id = `sc_new_${Date.now()}_${seq++}`;
+        const sc: Subcontract = {
+          id,
+          subcontractor_supplier_ref: input.subcontractor_supplier_ref,
+          subcontractor_name_ar: input.subcontractor_name_ar,
+          linked_boq_item: input.linked_boq_item,
+          status: "draft",
+          sub_boq: [],
+          sub_contract_value: 0,
+          sub_terms: { retention_rate: 0, retention_cap: null, advance_amount: 0, advance_recovery_pct: 0 },
+          sub_retention: { accumulated_retained: 0, released: 0, outstanding: 0, release_events: [] },
+          sub_claims: [],
+        };
+        set((s) => ({ subcontracts: { ...s.subcontracts, [id]: sc } }));
+        return { ok: true, id };
+      },
+
+      addSubBoqItem: (_projectId, scId, input) => {
+        const sc = get().subcontracts[scId];
+        if (!sc) return { ok: false };
+        const id = `scb_new_${Date.now()}_${seq++}`;
+        const item = deriveSubBoqItem({ id, description_ar: input.description_ar, unit_ar: input.unit_ar, estimated_qty: input.estimated_qty, unit_price: input.unit_price, cumulative_executed_qty: 0 });
+        const sub_boq = [...sc.sub_boq, item];
+        set((s) => ({ subcontracts: { ...s.subcontracts, [scId]: { ...sc, sub_boq, sub_contract_value: round2(sub_boq.reduce((sum, i) => sum + i.value, 0)) } } }));
+        return { ok: true };
+      },
+
+      updateSubBoqItem: (_projectId, scId, itemId, input) => {
+        const sc = get().subcontracts[scId];
+        if (!sc) return { ok: false };
+        const existing = sc.sub_boq.find((i) => i.id === itemId);
+        if (!existing) return { ok: false };
+        const updated = deriveSubBoqItem({ id: itemId, description_ar: input.description_ar, unit_ar: input.unit_ar, estimated_qty: input.estimated_qty, unit_price: input.unit_price, cumulative_executed_qty: existing.cumulative_executed_qty });
+        const sub_boq = sc.sub_boq.map((i) => (i.id === itemId ? updated : i));
+        set((s) => ({ subcontracts: { ...s.subcontracts, [scId]: { ...sc, sub_boq, sub_contract_value: round2(sub_boq.reduce((sum, i) => sum + i.value, 0)) } } }));
+        return { ok: true };
+      },
+
+      copySubBoqFromMain: (_projectId, scId, mainBoqItemIds) => {
+        const sc = get().subcontracts[scId];
+        if (!sc) return { ok: false, count: 0 };
+        const boqItems = get().boq_items;
+        const newItems: SubBoqItem[] = mainBoqItemIds
+          .map((mid) => boqItems[mid])
+          .filter((i): i is BoqItem => !!i)
+          .map((mainItem) => deriveSubBoqItem({
+            id: `scb_new_${Date.now()}_${seq++}`,
+            description_ar: mainItem.description_ar,
+            unit_ar: mainItem.unit_ar,
+            estimated_qty: mainItem.estimated_qty,
+            unit_price: mainItem.estimated_unit_cost,
+            cumulative_executed_qty: 0,
+          }));
+        const sub_boq = [...sc.sub_boq, ...newItems];
+        set((s) => ({ subcontracts: { ...s.subcontracts, [scId]: { ...sc, sub_boq, sub_contract_value: round2(sub_boq.reduce((sum, i) => sum + i.value, 0)) } } }));
+        return { ok: true, count: newItems.length };
+      },
+
+      updateSubTerms: (_projectId, scId, input) => {
+        const sc = get().subcontracts[scId];
+        if (!sc) return { ok: false };
+        if (input.retention_rate + input.advance_recovery_pct > 1) return { ok: false };
+        const sub_terms: SubTerms = { ...input };
+        set((s) => ({ subcontracts: { ...s.subcontracts, [scId]: { ...sc, sub_terms } } }));
+        return { ok: true };
+      },
+
+      createSubClaim: (_projectId, scId) => {
+        const sc = get().subcontracts[scId];
+        if (!sc) return { ok: false, reason: "no_sub_boq" };
+        const hasOpen = sc.sub_claims.some((c) => c.status === "draft" || c.status === "submitted");
+        if (hasOpen) return { ok: false, reason: "open_claim_exists" };
+        if (sc.sub_boq.length === 0) return { ok: false, reason: "no_sub_boq" };
+
+        const prevClaim = [...sc.sub_claims]
+          .filter((c) => c.status === "approved" || c.status === "invoiced" || c.status === "collected")
+          .sort((a, b) => {
+            const an = parseInt(a.number.match(/(\d+)$/)?.[1] ?? "0", 10);
+            const bn = parseInt(b.number.match(/(\d+)$/)?.[1] ?? "0", 10);
+            return bn - an;
+          })[0] ?? null;
+        const prevLinesByItem = new Map((prevClaim?.lines ?? []).map((l) => [l.sub_boq_ref, l]));
+
+        const lines: SubClaimLine[] = sc.sub_boq.map((item) => {
+          const prevLine = prevLinesByItem.get(item.id);
+          const prevQty = prevLine?.cumulative_qty ?? 0;
+          const prevValue = prevLine?.cumulative_value ?? 0;
+          const lineCalc = computeClaimLine({ contractQty: item.estimated_qty, unitPrice: item.unit_price, prevValue, cumulativeQty: prevQty });
+          return {
+            sub_boq_ref: item.id,
+            prev_qty: prevQty,
+            cumulative_qty: prevQty,
+            cumulative_pct: lineCalc.cumulative_pct,
+            cumulative_value: lineCalc.cumulative_value,
+            prev_value: prevValue,
+            current_value: lineCalc.current_value,
+          };
+        });
+
+        const id = `subclaim_new_${Date.now()}_${seq++}`;
+        const claim: SubProgressClaim = {
+          id,
+          number: nextNumber(sc.sub_claims.map((c) => c.number), "SC-PC"),
+          date: new Date().toISOString().slice(0, 10),
+          status: "draft",
+          previous_claim_ref: prevClaim?.id ?? null,
+          output_ar: "سند صرف",
+          eta_input_vat: true,
+          lines,
+          gross_current: 0,
+          retention_this: 0,
+          advance_recovery_this: 0,
+          deductions: [],
+          net_before_vat: 0,
+          vat: 0,
+          net_payable: 0,
+        };
+        set((s) => ({ subcontracts: { ...s.subcontracts, [scId]: { ...sc, sub_claims: [...sc.sub_claims, claim] } } }));
+        return { ok: true, id };
+      },
+
+      updateSubClaimDraft: (_projectId, scId, claimId, input) => {
+        const sc = get().subcontracts[scId];
+        const claim = sc?.sub_claims.find((c) => c.id === claimId);
+        if (!sc || !claim || claim.status !== "draft") return { ok: false };
+
+        const grossCurrent = round2(input.lines.reduce((sum, l) => sum + l.current_value, 0));
+        const deductionsTotal = round2(input.deductions.reduce((sum, d) => sum + d.amount, 0));
+        const advanceRecoveredSoFar = round2(
+          sc.sub_claims
+            .filter((c) => c.status === "approved" || c.status === "invoiced" || c.status === "collected")
+            .reduce((sum, c) => sum + c.advance_recovery_this, 0)
+        );
+        const summary = computeClaimSummary({
+          grossCurrent,
+          retentionRate: sc.sub_terms.retention_rate,
+          retentionCap: sc.sub_terms.retention_cap,
+          retentionAccumulatedSoFar: sc.sub_retention.accumulated_retained,
+          advanceAmount: sc.sub_terms.advance_amount,
+          advanceRecoveryPct: sc.sub_terms.advance_recovery_pct,
+          advanceRecoveredSoFar,
+          vatRate: get().contract_terms.vat_rate,
+          deductionsTotal,
+        });
+
+        const updatedClaim: SubProgressClaim = {
+          ...claim,
+          date: input.date,
+          lines: input.lines,
+          deductions: input.deductions,
+          gross_current: grossCurrent,
+          retention_this: summary.retentionThis,
+          advance_recovery_this: summary.advanceRecoveryThis,
+          net_before_vat: summary.netBeforeVat,
+          vat: summary.vat,
+          net_payable: summary.netPayable,
+        };
+        set((s) => ({
+          subcontracts: {
+            ...s.subcontracts,
+            [scId]: { ...sc, sub_claims: sc.sub_claims.map((c) => (c.id === claimId ? updatedClaim : c)) },
+          },
+        }));
+        return { ok: true };
+      },
+
+      submitSubClaim: (_projectId, scId, claimId) => {
+        const sc = get().subcontracts[scId];
+        const claim = sc?.sub_claims.find((c) => c.id === claimId);
+        if (!sc || !claim || claim.status !== "draft") return { ok: false };
+        set((s) => ({
+          subcontracts: {
+            ...s.subcontracts,
+            [scId]: { ...sc, sub_claims: sc.sub_claims.map((c) => (c.id === claimId ? { ...c, status: "submitted" } : c)) },
+          },
+        }));
+        return { ok: true };
+      },
+
+      approveSubClaim: (_projectId, scId, claimId) => {
+        const sc = get().subcontracts[scId];
+        const claim = sc?.sub_claims.find((c) => c.id === claimId);
+        if (!sc || !claim || claim.status !== "submitted") return { ok: false };
+
+        set((s) => {
+          const sub_boq = sc.sub_boq.map((item) => {
+            const line = claim.lines.find((l) => l.sub_boq_ref === item.id);
+            return line ? { ...item, cumulative_executed_qty: line.cumulative_qty } : item;
+          });
+
+          const accumulated = round2(sc.sub_retention.accumulated_retained + claim.retention_this);
+          const sub_retention = {
+            ...sc.sub_retention,
+            accumulated_retained: accumulated,
+            outstanding: round2(accumulated - sc.sub_retention.released),
+          };
+
+          const claimNumSuffix = claim.number.match(/(\d+)$/)?.[1] ?? "001";
+          const updatedClaim: SubProgressClaim = { ...claim, status: "approved", payment_voucher_ref: `PV-SUB-${claimNumSuffix}` };
+
+          return {
+            subcontracts: {
+              ...s.subcontracts,
+              [scId]: {
+                ...sc, sub_boq, sub_retention,
+                sub_claims: sc.sub_claims.map((c) => (c.id === claimId ? updatedClaim : c)),
+              },
+            },
+          };
+        });
+        return { ok: true };
+      },
+
+      createSubRetentionRelease: (_projectId, scId, input) => {
+        const sc = get().subcontracts[scId];
+        if (!sc) return { ok: false, reason: "over_outstanding" };
+        const subRetention = sc.sub_retention;
+        if (input.amount <= 0 || input.amount > subRetention.outstanding) return { ok: false, reason: "over_outstanding" };
+
+        const voucherSeq = (subRetention.release_events ?? []).length + 1;
+        const event: ReleaseEvent = {
+          amount: round2(input.amount),
+          stage: input.stage,
+          date: input.date,
+          reason_ar: input.reason_ar,
+          voucher_ref: `PV-RET-SUB-${String(voucherSeq).padStart(3, "0")}`,
+        };
+
+        set((s) => {
+          const released = round2(subRetention.released + event.amount);
+          const outstanding = round2(subRetention.accumulated_retained - released);
+          return {
+            subcontracts: {
+              ...s.subcontracts,
+              [scId]: {
+                ...sc,
+                sub_retention: { ...subRetention, released, outstanding, release_events: [...(subRetention.release_events ?? []), event] },
+              },
             },
           };
         });

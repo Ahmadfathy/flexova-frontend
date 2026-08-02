@@ -1,4 +1,4 @@
-import { Users, BarChart3 } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { ConstructionPlaceholderPage } from "./ConstructionPlaceholderPage";
 
 // ── S1 project-workspace facet (spec §11) — Step 0 ─────────────────────────
@@ -25,17 +25,13 @@ export { ClaimsRegisterPage } from "./claims/ClaimsRegisterPage";
 // ── S7 Retention + release (spec §8) ────────────────────────────────────────
 export { RetentionPage } from "./retention/RetentionPage";
 
-// ── Remaining screens (S8-S9) — scaffolded as placeholders, one screen per
+// ── S8 Subcontract + sub-claim (spec §9) ────────────────────────────────────
+export { SubcontractsListPage } from "./sub/SubcontractsListPage";
+export { SubcontractDetailPage } from "./sub/SubcontractDetailPage";
+
+// ── Remaining screens (S9) — scaffolded as placeholders, one screen per
 // build step per the Kickoff order. Real content replaces each export below
 // as its step lands; the route registration in App.tsx never changes. ──────
-
-export function SubcontractsListPage() {
-  return <ConstructionPlaceholderPage titleKey="sub.title" icon={Users} bare />;
-}
-
-export function SubcontractDetailPage() {
-  return <ConstructionPlaceholderPage titleKey="sub.contract" icon={Users} bare />;
-}
 
 export function ProfitabilityPage() {
   return <ConstructionPlaceholderPage titleKey="profit.title" icon={BarChart3} bare />;

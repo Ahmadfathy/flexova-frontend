@@ -221,6 +221,9 @@ export interface SubRetention {
   accumulated_retained: number;
   released: number;
   outstanding: number;
+  /** Optional — the fixture's only subcontract predates release tracking; defaults to `[]`
+   * wherever consumed. Mini-S7 releases held by us from the sub (§9.2). */
+  release_events?: ReleaseEvent[];
 }
 
 export interface SubClaimLine {
@@ -238,6 +241,7 @@ export interface SubProgressClaim {
   number: string;
   date: string;
   status: ClaimStatus;
+  previous_claim_ref?: string | null;
   output_ar: string;
   payment_voucher_ref?: string;
   eta_input_vat: boolean;
@@ -254,7 +258,9 @@ export interface SubProgressClaim {
 
 export interface Subcontract {
   id: string;
-  subcontractor_supplier_ref: string;
+  /** Absent when the subcontractor was entered directly rather than linked to an existing
+   * Purchasing supplier record (§9.1 "supplier variant... or new"). */
+  subcontractor_supplier_ref?: string;
   subcontractor_name_ar: string;
   linked_boq_item: string;
   status: string;
