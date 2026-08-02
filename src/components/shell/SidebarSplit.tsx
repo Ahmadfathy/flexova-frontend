@@ -5,13 +5,9 @@ import { useAppearance } from "@/stores/appearance";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { MENU, type MenuItem } from "@/config/menu";
+import { MENU, isModuleActive, type MenuItem } from "@/config/menu";
 
 const SESSION_KEY = "flexova.subpanel";
-
-function isModuleActive(item: MenuItem, pathname: string) {
-  return item.route === "/" ? pathname === "/" : pathname.startsWith(item.route);
-}
 
 /* ── Sub-item link ───────────────────────────────────────────── */
 function PanelSubItem({ route, label, onClose }: { route: string; label: string; onClose?: () => void }) {

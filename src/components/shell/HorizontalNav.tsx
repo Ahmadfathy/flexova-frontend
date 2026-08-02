@@ -3,17 +3,13 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MENU, type MenuItem } from "@/config/menu";
+import { MENU, isModuleActive, type MenuItem } from "@/config/menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-function isModuleActive(item: MenuItem, pathname: string) {
-  return item.route === "/" ? pathname === "/" : pathname.startsWith(item.route);
-}
 
 /* ── Row 2: module tabs ─────────────────────────────────────── */
 export function HorizontalModuleBar() {

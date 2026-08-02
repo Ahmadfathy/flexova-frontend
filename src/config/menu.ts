@@ -24,6 +24,21 @@ export interface MenuItem {
   subItems?: SubItem[];
 }
 
+/**
+ * Whether `pathname` belongs to `item`'s section — its own route prefix, or any
+ * of its subItems' routes. Most modules' subItems live under the parent's own
+ * route (e.g. `/wholesale/orders`), so the prefix check alone is usually enough,
+ * but some (e.g. Projects' `/time` and `/time/approvals`) are deliberately
+ * top-level shared routes outside the parent's prefix — without this fallback,
+ * navigating to one of those "escapes" active-section detection and the
+ * accordion/sub-panel/highlight for the parent silently collapses.
+ */
+export function isModuleActive(item: MenuItem, pathname: string): boolean {
+  if (item.route === "/") return pathname === "/";
+  if (pathname.startsWith(item.route)) return true;
+  return !!item.subItems?.some(sub => pathname.startsWith(sub.route));
+}
+
 export const MENU: MenuItem[] = [
   {
     key: "inventory",

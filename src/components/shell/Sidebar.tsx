@@ -8,11 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MENU, MENU_CORE, MENU_SECTOR, MENU_ADMIN, type MenuItem } from "@/config/menu";
-
-function isModuleActive(item: MenuItem, pathname: string) {
-  return item.route === "/" ? pathname === "/" : pathname.startsWith(item.route);
-}
+import { MENU, MENU_CORE, MENU_SECTOR, MENU_ADMIN, isModuleActive, type MenuItem } from "@/config/menu";
 
 /* ── Group header label ─────────────────────────────────────── */
 function GroupHeader({ label }: { label: string }) {
