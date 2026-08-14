@@ -163,7 +163,37 @@
   },
 
   "patient360": {
-    "title": "ملف المريض"
+    "title": "ملف المريض",
+    "not_found": "لم يتم العثور على هذا المريض",
+
+    "tab_visits": "الزيارات",
+    "tab_orders": "الأوامر والنتائج",
+    "tab_prescriptions": "الروشتات",
+    "tab_invoices": "الفواتير والرصيد",
+    "tab_insurance": "التأمين",
+    "tab_data": "البيانات",
+
+    "action_new_visit": "＋ زيارة",
+    "action_view_balance": "عرض الرصيد",
+
+    "start_visit_title": "بدء زيارة جديدة",
+    "start_visit_cta": "بدء الزيارة",
+
+    "visits_empty": "لا زيارات بعد",
+    "visits_empty_action": "＋ ابدأ أول زيارة",
+    "orders_empty": "لا أوامر أو نتائج بعد",
+    "invoices_empty": "لا فواتير بعد",
+
+    "balance_due": "الرصيد المستحق",
+    "status_due": "مستحق",
+
+    "cap_remaining_annual": "المتبقي من السقف السنوي",
+    "cap_per_visit": "سقف الزيارة الواحدة",
+
+    "owner_self": "الجهة المسؤولة",
+    "owner_self_value": "المريض نفسه",
+
+    "data_saved": "تم حفظ البيانات"
   },
 
   "encounter": {
@@ -235,7 +265,10 @@
   },
 
   "insurance": {
-    "title": "شركات وخطط التأمين"
+    "title": "شركات وخطط التأمين",
+    "field_coverage_pct": "نسبة التغطية",
+    "field_copay": "تحمّل المريض",
+    "field_exclusions": "استثناءات"
   },
 
   "catalog": {

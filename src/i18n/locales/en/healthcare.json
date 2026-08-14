@@ -163,7 +163,37 @@
   },
 
   "patient360": {
-    "title": "Patient profile"
+    "title": "Patient profile",
+    "not_found": "This patient couldn't be found",
+
+    "tab_visits": "Visits",
+    "tab_orders": "Orders & results",
+    "tab_prescriptions": "Prescriptions",
+    "tab_invoices": "Invoices & balance",
+    "tab_insurance": "Insurance",
+    "tab_data": "Data",
+
+    "action_new_visit": "＋ Visit",
+    "action_view_balance": "View balance",
+
+    "start_visit_title": "Start a new visit",
+    "start_visit_cta": "Start visit",
+
+    "visits_empty": "No visits yet",
+    "visits_empty_action": "＋ Start first visit",
+    "orders_empty": "No orders or results yet",
+    "invoices_empty": "No invoices yet",
+
+    "balance_due": "Balance due",
+    "status_due": "Due",
+
+    "cap_remaining_annual": "Remaining annual cap",
+    "cap_per_visit": "Per-visit cap",
+
+    "owner_self": "Guarantor",
+    "owner_self_value": "The patient themselves",
+
+    "data_saved": "Data saved"
   },
 
   "encounter": {
@@ -235,7 +265,10 @@
   },
 
   "insurance": {
-    "title": "Insurance payers & plans"
+    "title": "Insurance payers & plans",
+    "field_coverage_pct": "Coverage %",
+    "field_copay": "Co-pay",
+    "field_exclusions": "Exclusions"
   },
 
   "catalog": {

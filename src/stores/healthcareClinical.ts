@@ -39,6 +39,13 @@ export interface InvoiceLine {
   amount: number;
 }
 
+/** Derived from each order's own `encounter_id`, not the encounter's `orders[]`
+ * list — the fixture has at least one order (ord_7003) that list never picked
+ * up, so trusting the array silently drops real orders. */
+function ordersOf(allOrders: Record<string, HcOrder>, encounterId: string): HcOrder[] {
+  return Object.values(allOrders).filter((o) => o.encounter_id === encounterId);
+}
+
 interface ClinicalState {
   encounters: Record<string, HcEncounter>;
   orders: Record<string, HcOrder>;
@@ -177,14 +184,13 @@ export const useHealthcareClinical = create<ClinicalState>()(
         const consult = catalog.find((c) => c.id === "svc_consult");
         const lines: InvoiceLine[] = [];
         if (consult) lines.push({ key: "consult", label_ar: consult.name_ar, amount: consult.price });
-        for (const oid of e.orders) {
-          const o = s.orders[oid];
-          if (!o || o.type === "prescription") continue;
+        for (const o of ordersOf(s.orders, encounterId)) {
+          if (o.type === "prescription") continue;
           if (o.catalog_id) {
             const c = catalog.find((c) => c.id === o.catalog_id);
-            if (c) lines.push({ key: oid, label_ar: c.name_ar, amount: c.price });
+            if (c) lines.push({ key: o.id, label_ar: c.name_ar, amount: c.price });
           } else if (o.price != null) {
-            lines.push({ key: oid, label_ar: o.name_ar, amount: o.price });
+            lines.push({ key: o.id, label_ar: o.name_ar, amount: o.price });
           }
         }
         return lines;
@@ -198,7 +204,7 @@ export const useHealthcareClinical = create<ClinicalState>()(
         const e = s.encounters[encounterId];
         if (!e) return false;
         const hasDiagnosis = !!e.diagnosis && e.diagnosis.trim().length > 0;
-        const hasOrderedLine = e.orders.some((oid) => s.orders[oid]?.type !== "prescription");
+        const hasOrderedLine = ordersOf(s.orders, encounterId).some((o) => o.type !== "prescription");
         return hasDiagnosis || hasOrderedLine;
       },
 

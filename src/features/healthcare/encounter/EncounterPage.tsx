@@ -93,7 +93,11 @@ export function EncounterPage() {
 
   const encounterOrders = useMemo(() => {
     if (!encounter) return [];
-    return encounter.orders.map((oid) => orders[oid]).filter((o): o is NonNullable<typeof o> => !!o);
+    // Derived from the order's own `encounter_id` back-reference, not the
+    // encounter's `orders[]` list — the fixture itself has at least one order
+    // (ord_7003) whose encounter never got it added to that array, so trusting
+    // the array silently drops real orders.
+    return Object.values(orders).filter((o) => o.encounter_id === encounter.id);
   }, [encounter, orders]);
 
   const rxOrder = encounterOrders.find((o) => o.type === "prescription");

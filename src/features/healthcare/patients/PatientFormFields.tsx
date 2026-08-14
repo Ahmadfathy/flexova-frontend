@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { FormField, FormGrid, FormSection } from "@/components/patterns/FormLayout";
 import { getPayers, getPlans } from "@/lib/mock/healthcare";
+import type { HcPatient } from "@/features/healthcare/types";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -30,6 +31,18 @@ export const EMPTY_PATIENT_FORM: PatientFormValues = {
   allergies: [], chronic: [], payer_id: "", plan_id: "",
   isPediatric: false, guardian_name: "", guardian_phone: "",
 };
+
+/** Existing patient → editable form values (Patient 360's Data tab). Owner/guardian
+ * fields aren't populated here — that tab shows Owner/Guarantor as its own
+ * read-only section instead (see `showGuardianSection`). */
+export function patientToFormValues(p: HcPatient): PatientFormValues {
+  return {
+    name_ar: p.name_ar, phone: p.phone ?? "", dob: p.dob ?? "", sex: p.sex ?? "",
+    blood_type: p.blood_type ?? "", allergies: p.allergies, chronic: p.chronic,
+    payer_id: p.insurance?.payer_id ?? "", plan_id: p.insurance?.plan_id ?? "",
+    isPediatric: false, guardian_name: "", guardian_phone: "",
+  };
+}
 
 /** Small local chip input — no shared multi-value component exists yet in the pattern library. */
 function TagInput({ value, onChange, placeholder }: { value: string[]; onChange: (v: string[]) => void; placeholder: string }) {
@@ -72,9 +85,13 @@ interface PatientFormFieldsProps {
   /** allergies/chronic are PHI (spec §5.6) — hidden entirely without clinical.view. */
   canClinical: boolean;
   dedupeWarning?: string;
+  /** Patient 360's Data tab (Prompt 4) edits an *existing* owner binding, which
+   * the pediatric on/off toggle here isn't built to convert — that tab renders
+   * Owner/Guarantor as its own read-only section instead, per spec §6.2. */
+  showGuardianSection?: boolean;
 }
 
-export function PatientFormFields({ value, onChange, canClinical, dedupeWarning }: PatientFormFieldsProps) {
+export function PatientFormFields({ value, onChange, canClinical, dedupeWarning, showGuardianSection = true }: PatientFormFieldsProps) {
   const { t } = useTranslation("healthcare");
   const payers = getPayers().filter((p) => p.contract_status === "active");
   const plans = getPlans().filter((p) => p.payer_id === value.payer_id);
@@ -150,6 +167,7 @@ export function PatientFormFields({ value, onChange, canClinical, dedupeWarning 
         </FormGrid>
       </FormSection>
 
+      {showGuardianSection && (
       <FormSection title={t("patients.section_guardian")} subtitle={t("patients.section_guardian_sub")}>
         <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
           <Switch checked={value.isPediatric} onCheckedChange={(v) => onChange({ isPediatric: v })} />
@@ -166,6 +184,7 @@ export function PatientFormFields({ value, onChange, canClinical, dedupeWarning 
           </FormGrid>
         )}
       </FormSection>
+      )}
     </div>
   );
 }

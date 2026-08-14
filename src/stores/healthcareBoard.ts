@@ -28,6 +28,10 @@ interface HealthcareBoardState {
   collect: (appointmentId: string) => void;
   /** Adds a locally-booked slot ("＋ موعد") — booked status, unsynced until it round-trips. */
   addBooking: (row: { appointment_id: string; time: string; patient_id: string; provider_id: string }) => void;
+  /** Patient 360's "＋ ابدأ أول زيارة" (spec §6.4 empty state) — a walk-in with
+   * no prior appointment, so it starts straight at checked-in (skips booked)
+   * and still shows up on Today Board like any other in-progress visit. */
+  addWalkIn: (row: { appointment_id: string; time: string; patient_id: string; provider_id: string }) => void;
   /** Demo-only: forces one row into a visible `syncing` badge under `?mock=offline` (fixture §_states_demo). */
   applyOfflineDemoRow: () => void;
   /** Encounter's Finish visit (spec §4.4) — flips the row to completed+owes so
@@ -88,6 +92,16 @@ export const useHealthcareBoard = create<HealthcareBoardState>()(
           rows: {
             ...s.rows,
             [row.appointment_id]: { ...row, status: "booked", patient_portion: null, collected: false, sync: "local" },
+          },
+        }));
+        settleRow(row.appointment_id, set);
+      },
+
+      addWalkIn: (row) => {
+        set((s) => ({
+          rows: {
+            ...s.rows,
+            [row.appointment_id]: { ...row, status: "checked-in", patient_portion: null, collected: false, sync: "local" },
           },
         }));
         settleRow(row.appointment_id, set);
