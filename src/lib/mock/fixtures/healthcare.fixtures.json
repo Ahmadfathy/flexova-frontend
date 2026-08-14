@@ -1,0 +1,181 @@
+{
+  "_meta": {
+    "module": "healthcare",
+    "version": "1.0",
+    "build": "FE_18",
+    "currency": "EGP",
+    "moduleFlag": "healthcare",
+    "depends_on": "Brief 3 (appointments+providers READ), sales+eta (invoice), accounting (AR READ), crm (whatsapp/dedupe)",
+    "notes": "Encounter is the unit. Patient core unified + specialty_ext dynamic. Owner/Guarantor separate (self hidden for humans, active for veterinary). Insurance = pricing split only in v1, no claims lifecycle. Clinical PHI access-logged on READ.",
+    "tenant_specialty": "clinic",
+    "phi_read_logging": true
+  },
+
+  "payers": [
+    { "id": "pay_axa", "name_ar": "أكسا للتأمين", "name_en": "AXA Insurance", "contract_status": "active", "contact": "01000000001", "covered_patients": 2, "ar_on_payer": 1350.00 },
+    { "id": "pay_misr", "name_ar": "مصر للتأمين", "name_en": "Misr Insurance", "contract_status": "active", "contact": "01000000002", "covered_patients": 1, "ar_on_payer": 480.00 },
+    { "id": "pay_sus", "name_ar": "الدلتا للتأمين", "name_en": "Delta Insurance", "contract_status": "suspended", "contact": "01000000003", "covered_patients": 0, "ar_on_payer": 0, "_flag": "suspended_payer" }
+  ],
+
+  "plans": [
+    { "id": "plan_axa_gold", "payer_id": "pay_axa", "name_ar": "أكسا جولد", "coverage_pct": 80, "cap_type": "annual", "cap_amount": 20000.00, "co_pay_type": "fixed", "co_pay_value": 50.00, "exclusions": ["تجميل", "أسنان تقويم"] },
+    { "id": "plan_axa_silver", "payer_id": "pay_axa", "name_ar": "أكسا سيلفر", "coverage_pct": 60, "cap_type": "per_visit", "cap_amount": 1000.00, "co_pay_type": "pct", "co_pay_value": 10, "exclusions": [] },
+    { "id": "plan_misr_basic", "payer_id": "pay_misr", "name_ar": "مصر أساسي", "coverage_pct": 70, "cap_type": "annual", "cap_amount": 10000.00, "co_pay_type": "fixed", "co_pay_value": 30.00, "exclusions": ["أشعة مقطعية"] }
+  ],
+
+  "owners": [
+    { "id": "own_self", "relationship": "self", "name_ar": "—", "phone": null, "_note": "transparent self-guarantor for human specialties" },
+    { "id": "own_hala", "relationship": "owner", "name_ar": "هالة إبراهيم", "name_en": "Hala Ibrahim", "phone": "01277889900", "_note": "veterinary owner, 2 animals" },
+    { "id": "own_karim_parent", "relationship": "parent", "name_ar": "كريم فؤاد", "name_en": "Karim Fouad", "phone": "01099001122", "_note": "pediatric parent-guarantor" }
+  ],
+
+  "patients": [
+    {
+      "id": "pt_mona", "code": "P-1001", "name_ar": "منى صلاح", "name_en": "Mona Salah",
+      "phone": "01011223344", "dob": "1988-03-14", "sex": "female", "blood_type": "O+",
+      "allergies": ["بنسلين"], "chronic": ["ضغط"], "owner_id": "own_self",
+      "insurance": { "payer_id": "pay_axa", "plan_id": "plan_axa_gold" },
+      "specialty_ext": {}, "last_visit": "2026-08-10", "status": "active"
+    },
+    {
+      "id": "pt_tarek", "code": "P-1002", "name_ar": "طارق منصور", "name_en": "Tarek Mansour",
+      "phone": "01522334455", "dob": "1975-11-02", "sex": "male", "blood_type": "A-",
+      "allergies": [], "chronic": ["سكري"], "owner_id": "own_self",
+      "insurance": { "payer_id": "pay_misr", "plan_id": "plan_misr_basic" },
+      "specialty_ext": {}, "last_visit": "2026-08-12", "status": "active"
+    },
+    {
+      "id": "pt_nour", "code": "P-1003", "name_ar": "نور كريم فؤاد", "name_en": "Nour Karim",
+      "phone": "01099001122", "dob": "2019-06-20", "sex": "female", "blood_type": "B+",
+      "allergies": [], "chronic": [], "owner_id": "own_karim_parent",
+      "insurance": null, "specialty_ext": {}, "last_visit": null, "status": "active",
+      "_flag": "pediatric_parent_guarantor"
+    },
+    {
+      "id": "pt_walk", "code": "P-0000", "name_ar": "مريض عابر", "name_en": "Walk-in",
+      "phone": null, "dob": null, "sex": null, "blood_type": null,
+      "allergies": [], "chronic": [], "owner_id": "own_self",
+      "insurance": null, "specialty_ext": {}, "last_visit": null, "status": "active",
+      "_flag": "walk_in_default"
+    },
+    {
+      "id": "pt_bosy", "code": "V-2001", "name_ar": "بوسي (قطة)", "name_en": "Bosy (cat)",
+      "phone": null, "dob": "2022-01-01", "sex": "female", "blood_type": null,
+      "allergies": [], "chronic": [], "owner_id": "own_hala",
+      "insurance": null,
+      "specialty_ext": { "species": "قطط", "breed": "شيرازي", "weight_kg": 4.2 },
+      "last_visit": "2026-08-11", "status": "active", "_flag": "veterinary_patient"
+    },
+    {
+      "id": "pt_rex", "code": "V-2002", "name_ar": "ركس (كلب)", "name_en": "Rex (dog)",
+      "phone": null, "dob": "2020-05-15", "sex": "male", "blood_type": null,
+      "allergies": [], "chronic": [], "owner_id": "own_hala",
+      "insurance": null,
+      "specialty_ext": { "species": "كلاب", "breed": "جيرمن", "weight_kg": 28.0 },
+      "last_visit": null, "status": "active", "_flag": "veterinary_same_owner"
+    }
+  ],
+
+  "providers": [
+    { "id": "prov_dr_sara", "name_ar": "د. سارة عادل", "name_en": "Dr. Sara Adel", "role": "doctor", "specialty": "باطنة", "commission_pct": 40, "_source": "inherited Brief 3 ServiceProvider" },
+    { "id": "prov_dr_omar", "name_ar": "د. عمر حسن", "name_en": "Dr. Omar Hassan", "role": "doctor", "specialty": "أطفال", "commission_pct": 45, "_source": "inherited Brief 3 ServiceProvider" },
+    { "id": "prov_vet_lina", "name_ar": "د. لينا (بيطري)", "name_en": "Dr. Lina (vet)", "role": "doctor", "specialty": "بيطري", "commission_pct": 50, "_source": "inherited Brief 3 ServiceProvider" },
+    { "id": "tech_lab", "name_ar": "فني المعمل", "name_en": "Lab Technician", "role": "lab_tech" }
+  ],
+
+  "catalog": [
+    { "id": "svc_consult", "name_ar": "كشف", "type": "consult", "price": 300.00, "default_provider": "prov_dr_sara", "active": true },
+    { "id": "svc_followup", "name_ar": "استشارة متابعة", "type": "consult", "price": 150.00, "default_provider": "prov_dr_sara", "active": true },
+    { "id": "lab_cbc", "name_ar": "صورة دم كاملة (CBC)", "type": "lab", "price": 180.00, "default_provider": "tech_lab", "active": true },
+    { "id": "lab_glucose", "name_ar": "سكر صائم", "type": "lab", "price": 90.00, "default_provider": "tech_lab", "active": true },
+    { "id": "rad_xray", "name_ar": "أشعة إكس صدر", "type": "radiology", "price": 250.00, "default_provider": "tech_lab", "active": true },
+    { "id": "vet_vaccine", "name_ar": "تطعيم", "type": "procedure", "price": 200.00, "default_provider": "prov_vet_lina", "active": true },
+    { "id": "svc_ct", "name_ar": "أشعة مقطعية", "type": "radiology", "price": 1200.00, "default_provider": "tech_lab", "active": false, "_flag": "inactive_service" }
+  ],
+
+  "encounters": [
+    {
+      "id": "enc_5001", "patient_id": "pt_mona", "provider_id": "prov_dr_sara",
+      "appointment_id": "ap_9001", "date": "2026-08-10", "type": "consult",
+      "complaint": "صداع وارتفاع ضغط", "diagnosis": "ارتفاع ضغط غير منتظم",
+      "clinical_note": "المتابعة بعد أسبوعين", "status": "completed",
+      "orders": ["ord_7001"], "invoice_id": "inv_h5001", "_phi": true
+    },
+    {
+      "id": "enc_5002", "patient_id": "pt_tarek", "provider_id": "prov_dr_sara",
+      "appointment_id": "ap_9002", "date": "2026-08-12", "type": "consult",
+      "complaint": "مراجعة سكري", "diagnosis": "سكري نوع 2 — تحت السيطرة",
+      "clinical_note": "", "status": "completed",
+      "orders": ["ord_7002"], "invoice_id": "inv_h5002", "_phi": true
+    },
+    {
+      "id": "enc_5003", "patient_id": "pt_bosy", "provider_id": "prov_vet_lina",
+      "appointment_id": "ap_9003", "date": "2026-08-11", "type": "procedure",
+      "complaint": "تطعيم دوري", "diagnosis": "سليمة — تم التطعيم",
+      "clinical_note": "الجرعة القادمة بعد سنة", "status": "completed",
+      "orders": [], "invoice_id": "inv_h5003", "_phi": true, "_flag": "veterinary_encounter"
+    },
+    {
+      "id": "enc_5004", "patient_id": "pt_nour", "provider_id": "prov_dr_omar",
+      "appointment_id": "ap_9004", "date": "2026-08-13", "type": "consult",
+      "complaint": "سخونية", "diagnosis": null, "clinical_note": null,
+      "status": "open", "orders": [], "invoice_id": null,
+      "_flag": "open_encounter_in_progress"
+    }
+  ],
+
+  "orders": [
+    { "id": "ord_7001", "encounter_id": "enc_5001", "type": "lab", "catalog_id": "lab_cbc", "name_ar": "صورة دم كاملة", "status": "ready", "requested_at": "2026-08-10T10:15:00", "result_id": "res_8001" },
+    { "id": "ord_7002", "encounter_id": "enc_5002", "type": "lab", "catalog_id": "lab_glucose", "name_ar": "سكر صائم", "status": "pending", "requested_at": "2026-08-12T09:40:00", "result_id": null, "_flag": "pending_result" },
+    { "id": "ord_7003", "encounter_id": "enc_5001", "type": "prescription", "name_ar": "روشتة", "status": "issued", "items": [ { "drug": "كونكور 5مج", "dose": "قرص", "duration": "يومياً 30 يوم" } ], "_note": "prescription = no result" }
+  ],
+
+  "results": [
+    { "id": "res_8001", "order_id": "ord_7001", "value": "طبيعي — لا يوجد التهاب", "attachment": "cbc_mona.pdf", "note": "", "status": "delivered", "ready_at": "2026-08-10T13:00:00", "_phi": true }
+  ],
+
+  "invoices": [
+    {
+      "id": "inv_h5001", "encounter_id": "enc_5001", "patient_id": "pt_mona",
+      "total": 480.00, "insured": true, "plan_id": "plan_axa_gold",
+      "patient_portion": 136.00, "insurer_portion": 344.00,
+      "split_note": "أكسا جولد 80% بعد تحمّل 50ج", "eta_route": "b2c_receipt", "collected": true,
+      "_note": "consult 300 + CBC 180 = 480; co-pay 50 + 20% of 430 = 136"
+    },
+    {
+      "id": "inv_h5002", "encounter_id": "enc_5002", "patient_id": "pt_tarek",
+      "total": 390.00, "insured": true, "plan_id": "plan_misr_basic",
+      "patient_portion": 138.00, "insurer_portion": 252.00,
+      "split_note": "مصر أساسي 70% بعد تحمّل 30ج", "eta_route": "b2c_receipt", "collected": false,
+      "_flag": "insured_uncollected_patient_portion"
+    },
+    {
+      "id": "inv_h5003", "encounter_id": "enc_5003", "patient_id": "pt_bosy",
+      "total": 200.00, "insured": false, "plan_id": null,
+      "patient_portion": 200.00, "insurer_portion": 0,
+      "split_note": "بدون تأمين", "eta_route": "b2c_receipt", "collected": true,
+      "_note": "billed to owner own_hala"
+    }
+  ],
+
+  "today_board": [
+    { "appointment_id": "ap_9004", "time": "09:00", "patient_id": "pt_nour", "provider_id": "prov_dr_omar", "status": "in-visit", "patient_portion": null, "collected": false, "is_new": true },
+    { "appointment_id": "ap_9005", "time": "09:30", "patient_id": "pt_tarek", "provider_id": "prov_dr_sara", "status": "completed", "patient_portion": 138.00, "collected": false },
+    { "appointment_id": "ap_9006", "time": "10:00", "patient_id": "pt_mona", "provider_id": "prov_dr_sara", "status": "booked", "patient_portion": null, "collected": false },
+    { "appointment_id": "ap_9007", "time": "10:30", "patient_id": "pt_bosy", "provider_id": "prov_vet_lina", "status": "checked-in", "patient_portion": null, "collected": false, "_flag": "vet_on_board" },
+    { "appointment_id": "ap_9008", "time": "11:00", "patient_id": "pt_walk", "provider_id": "prov_dr_sara", "status": "no-show", "patient_portion": null, "collected": false, "_flag": "no_show" }
+  ],
+
+  "access_log": [
+    { "id": "log_1", "actor": "prov_dr_sara", "patient_id": "pt_mona", "surface": "encounter", "action": "read", "at": "2026-08-10T10:12:00" },
+    { "id": "log_2", "actor": "reception_1", "patient_id": "pt_mona", "surface": "patient_admin", "action": "read", "at": "2026-08-10T10:05:00", "_note": "administrative read, no clinical exposure" },
+    { "id": "log_3", "actor": "prov_dr_omar", "patient_id": "pt_nour", "surface": "encounter", "action": "read", "at": "2026-08-13T09:01:00" }
+  ],
+
+  "_states_demo": {
+    "today_empty": [],
+    "lab_empty": [],
+    "patients_empty": [],
+    "offline_row_example": { "appointment_id": "ap_9006", "sync": "syncing" }
+  }
+}
