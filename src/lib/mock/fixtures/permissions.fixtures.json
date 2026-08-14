@@ -19,22 +19,30 @@
     "crm": ["crm.customer.view","create","edit","merge!","credit.set","credit.override!","followup.manage","loyalty.manage","communicate","import","export"],
     "hr": ["hr.employee.view","manage","attendance.manage","advance.request","advance.approve!","commission.manage","payroll.run","payroll.approve!","statutory.config!!","payslip.view","export"],
     "reports": ["reports.view","view_financial!","view_all_branches","build","save","schedule","export","dashboard.customize","eta.view"],
-    "admin": ["admin.user.manage!","role.manage!","security.config!!","audit.view","branch.manage"]
+    "admin": ["admin.user.manage!","role.manage!","security.config!!","audit.view","branch.manage"],
+    "healthcare": ["healthcare.today.view","healthcare.patients.view","healthcare.patients.view_all","healthcare.clinical.view!","healthcare.clinical.edit!","healthcare.lab.manage!","healthcare.insurance.manage","healthcare.catalog.manage"]
   },
 
   "role_templates": [
     { "id": "role_owner", "name_ar": "المالك", "name_en": "Owner", "template": true, "user_count": 1,
-      "permissions": "*", "scope": { "branches": "all", "row_rule": "all" } },
+      "permissions": "*", "exclude": ["healthcare.clinical.view!"], "scope": { "branches": "all", "row_rule": "all" },
+      "_note": "Healthcare §11/§12 SoD carve-out on the wildcard: owner is governance + aggregate reports, no individual clinical PHI by default — every other module's '*' access is untouched" },
     { "id": "role_branch_mgr", "name_ar": "مدير فرع", "name_en": "Branch Manager", "template": true, "user_count": 1,
       "permissions": ["sales.*","inventory.*","purchasing.view","crm.*","reports.view","reports.eta.view"], "exclude": ["admin.*","period.reopen!!"], "scope": { "branches": ["assigned"], "row_rule": "branch" } },
     { "id": "role_cashier", "name_ar": "كاشير", "name_en": "Cashier", "template": true, "user_count": 1,
       "permissions": ["sales.view","invoice.create","invoice.submit","eta.send","finance.receipt.create","reports.view"], "scope": { "branches": ["assigned"], "row_rule": "own" } },
     { "id": "role_accountant", "name_ar": "محاسب", "name_en": "Accountant", "template": true, "user_count": 1,
-      "permissions": ["finance.*","reports.view_financial!","reports.view","purchasing.view","sales.view"], "exclude": ["*.delete","period.reopen!!"], "scope": { "branches": "all", "row_rule": "all" } },
+      "permissions": ["finance.*","reports.view_financial!","reports.view","purchasing.view","sales.view","healthcare.patients.view","healthcare.insurance.manage"], "exclude": ["*.delete","period.reopen!!","healthcare.clinical.view!"], "scope": { "branches": "all", "row_rule": "all" } },
     { "id": "role_stock_keeper", "name_ar": "أمين مخزن", "name_en": "Stock Keeper", "template": true, "user_count": 0,
       "permissions": ["inventory.view","item.manage","count","transfer","stock.adjust!"], "scope": { "branches": ["assigned"], "row_rule": "branch" } },
     { "id": "role_sales_rep", "name_ar": "مندوب مبيعات", "name_en": "Sales Rep", "template": true, "user_count": 1,
-      "permissions": ["sales.view","invoice.create","crm.customer.view","crm.create","crm.communicate","finance.receipt.create"], "scope": { "branches": ["assigned"], "row_rule": "own" } }
+      "permissions": ["sales.view","invoice.create","crm.customer.view","crm.create","crm.communicate","finance.receipt.create"], "scope": { "branches": ["assigned"], "row_rule": "own" } },
+    { "id": "role_hc_reception", "name_ar": "استقبال (رعاية صحية)", "name_en": "Reception (Healthcare)", "template": true, "user_count": 0,
+      "permissions": ["healthcare.today.view","healthcare.patients.view","finance.receipt.create","reports.view"], "exclude": ["healthcare.clinical.view!","healthcare.clinical.edit!","healthcare.insurance.manage"], "scope": { "branches": ["assigned"], "row_rule": "branch" },
+      "_note": "§12 matrix: Today Board + contact/financial status only; diagnosis/prescription/results never visible" },
+    { "id": "role_hc_provider", "name_ar": "طبيب / مقدّم خدمة", "name_en": "Doctor / Provider", "template": true, "user_count": 0,
+      "permissions": ["healthcare.today.view","healthcare.patients.view","healthcare.clinical.view!","healthcare.clinical.edit!"], "exclude": ["healthcare.patients.view_all","healthcare.insurance.manage","healthcare.catalog.manage"], "scope": { "branches": ["assigned"], "row_rule": "own" },
+      "_note": "§12 matrix: own patients/appointments by default (row_rule:own, no view_all); full clinical read/write; no insurance/catalog admin" }
   ],
 
   "users": [

@@ -8,18 +8,26 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
+import { useHealthcareAudit } from "@/stores/healthcareAudit";
+import { CURRENT_STAFF_ACTOR } from "@/features/healthcare/currentUser";
 import type { HcOrder } from "@/features/healthcare/types";
 
 interface ResultEntryModalProps {
   order: HcOrder | null;
+  /** For the access-log event (spec §11) — looked up by the caller from the order's encounter. */
+  patientId: string | undefined;
   onOpenChange: (open: boolean) => void;
 }
 
 /** "إدخال نتيجة" (spec §7.3) — value/text + attachment (v1 image/PDF, stored as
- * just a filename in this mock layer) + note → order flips to ready. */
-export function ResultEntryModal({ order, onOpenChange }: ResultEntryModalProps) {
+ * just a filename in this mock layer) + note → order flips to ready. Entering
+ * a result is itself a clinical-PHI write the technician performs on this
+ * patient, so it gets the same who/whom/when access-log event as any other
+ * clinical-surface open (spec §11). */
+export function ResultEntryModal({ order, patientId, onOpenChange }: ResultEntryModalProps) {
   const { t } = useTranslation("healthcare");
   const enterResult = useHealthcareClinical((s) => s.enterResult);
+  const logAccess = useHealthcareAudit((s) => s.logAccess);
 
   const [value, setValue] = useState("");
   const [attachment, setAttachment] = useState("");
@@ -36,6 +44,9 @@ export function ResultEntryModal({ order, onOpenChange }: ResultEntryModalProps)
       return;
     }
     enterResult(order.id, { value: value.trim(), attachment: attachment || undefined, note: note.trim() || undefined });
+    if (patientId) {
+      logAccess({ actor: CURRENT_STAFF_ACTOR, patient_id: patientId, surface: "lab_result", action: "write" });
+    }
     toast.success(t("lab.result_saved"));
     reset();
     onOpenChange(false);

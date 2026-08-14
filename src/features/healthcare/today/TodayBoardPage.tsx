@@ -25,6 +25,7 @@ import { useHealthcareClinical } from "@/stores/healthcareClinical";
 import { useHealthcarePatients } from "@/stores/healthcarePatients";
 import { useMockState } from "../useMockState";
 import { getProviders, patientName, providerName } from "@/lib/mock/healthcare";
+import { CURRENT_PROVIDER_ID } from "@/features/healthcare/currentUser";
 import type { TodayBoardRow, BoardStatus } from "@/features/healthcare/types";
 import { QuickBookDialog } from "./QuickBookDialog";
 
@@ -60,7 +61,14 @@ export function TodayBoardPage() {
     if (isOffline) applyOfflineDemoRow();
   }, [isOffline, applyOfflineDemoRow]);
 
-  const [providerFilter, setProviderFilter] = useState("all");
+  // Default-narrowed scope (spec §11/§12): without view_all, a provider only
+  // ever sees their own appointments — locked, not just defaulted, since the
+  // picker itself would otherwise be the leak.
+  const canViewAll = can("healthcare.patients.view_all");
+  const [providerFilter, setProviderFilter] = useState(canViewAll ? "all" : CURRENT_PROVIDER_ID);
+  useEffect(() => {
+    if (!canViewAll) setProviderFilter(CURRENT_PROVIDER_ID);
+  }, [canViewAll]);
   const [bookOpen, setBookOpen] = useState(false);
 
   const forcedNoResults = useMemo(
@@ -70,7 +78,9 @@ export function TodayBoardPage() {
 
   const allRows = forcedEmpty
     ? []
-    : Object.values(rowsMap).sort((a, b) => a.time.localeCompare(b.time));
+    : Object.values(rowsMap)
+        .filter((r) => canViewAll || r.provider_id === CURRENT_PROVIDER_ID)
+        .sort((a, b) => a.time.localeCompare(b.time));
 
   const filtered = useMemo(
     () => (providerFilter === "all" ? allRows : allRows.filter((r) => r.provider_id === providerFilter)),
@@ -224,10 +234,10 @@ export function TodayBoardPage() {
         subtitle={formatDate(new Date())}
         actions={
           <>
-            <Select value={providerFilter} onValueChange={setProviderFilter}>
+            <Select value={providerFilter} onValueChange={setProviderFilter} disabled={!canViewAll}>
               <SelectTrigger className="h-9 w-44"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t("today.provider_all")}</SelectItem>
+                {canViewAll && <SelectItem value="all">{t("today.provider_all")}</SelectItem>}
                 {providers.map((p) => (
                   <SelectItem key={p.id} value={p.id}>{providerName(p, lang)}</SelectItem>
                 ))}

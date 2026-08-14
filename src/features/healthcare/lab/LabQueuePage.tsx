@@ -242,7 +242,11 @@ export function LabQueuePage() {
         </div>
       )}
 
-      <ResultEntryModal order={resultOrder} onOpenChange={(o) => { if (!o) setResultOrder(null); }} />
+      <ResultEntryModal
+        order={resultOrder}
+        patientId={resultOrder ? encounters[resultOrder.encounter_id]?.patient_id : undefined}
+        onOpenChange={(o) => { if (!o) setResultOrder(null); }}
+      />
     </div>
   );
 }

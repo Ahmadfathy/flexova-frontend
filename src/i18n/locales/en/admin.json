@@ -62,6 +62,7 @@
     "module_hr":        "HR",
     "module_reports":   "Reports",
     "module_admin":     "Admin",
+    "module_healthcare":"Healthcare",
     "no_roles":         "No roles",
     "empty_sub":        "Define roles to control what each team member can do."
   },

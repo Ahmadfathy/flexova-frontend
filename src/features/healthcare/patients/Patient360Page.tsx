@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/patterns/Skeletons";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useAuthStore } from "@/stores/auth";
+import { CURRENT_STAFF_ACTOR } from "@/features/healthcare/currentUser";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
 import { useHealthcarePatients } from "@/stores/healthcarePatients";
@@ -65,7 +66,7 @@ export function Patient360Page() {
   useEffect(() => {
     if (!patient) return;
     logAccess({
-      actor: currentUserId ?? "staff",
+      actor: currentUserId ?? CURRENT_STAFF_ACTOR,
       patient_id: patient.id,
       surface: canClinical ? "patient_360" : "patient_admin",
       action: "read",

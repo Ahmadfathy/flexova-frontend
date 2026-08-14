@@ -74,18 +74,28 @@ export function EncounterPage() {
   }, [id, encounter, boardRow, ensureEncounter]);
 
   const canClinical = can("healthcare.clinical.view");
+  const canClinicalEdit = can("healthcare.clinical.edit");
   const [activeTab, setActiveTab] = useState<TabKey>(canClinical ? "diagnosis" : "invoice");
 
   // Golden rule (spec §0) — every clinical-surface open is access-logged, keyed
-  // on the encounter's own id so edits to the same visit don't re-log on every render.
+  // on the encounter's own id so edits to the same visit don't re-log on every
+  // render. Tagged like Patient 360's dual surface (clinical vs administrative-
+  // only, e.g. a reception user opening a completed visit just to check the
+  // invoice) so the log distinguishes a PHI exposure from a routine admin read.
   useEffect(() => {
     if (!encounter) return;
-    logAccess({ actor: encounter.provider_id, patient_id: encounter.patient_id, surface: "encounter", action: "read" });
+    logAccess({
+      actor: encounter.provider_id, patient_id: encounter.patient_id,
+      surface: canClinical ? "encounter" : "encounter_admin", action: "read",
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [encounter?.id]);
+  }, [encounter?.id, canClinical]);
 
   const patient = encounter ? livePatients[encounter.patient_id] : undefined;
-  const readOnly = encounter?.status === "completed";
+  // Completed visits are always locked; an open visit is also read-only for
+  // anyone without clinical.edit (view-only/observer — clinical.view alone
+  // grants reading the tabs, not writing them, per spec §11).
+  const readOnly = encounter?.status === "completed" || !canClinicalEdit;
 
   const priorEncounters = useMemo(() => {
     if (!encounter || !patient) return [];
