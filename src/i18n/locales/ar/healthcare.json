@@ -84,7 +84,82 @@
 
   "patients": {
     "title": "المرضى",
-    "new": "إضافة مريض"
+    "new": "＋ مريض جديد",
+    "new_vet": "＋ مريض (بيطري)",
+    "export": "تصدير",
+    "permission_required": "لا تملك صلاحية عرض المرضى",
+
+    "col_code": "الكود",
+    "col_name": "الاسم",
+    "col_age_sex": "العمر/النوع",
+    "col_phone": "الهاتف",
+    "col_insurance": "التأمين",
+    "col_last_visit": "آخر زيارة",
+
+    "action_open_profile": "فتح الملف",
+    "action_book": "＋ موعد",
+    "action_whatsapp": "واتساب",
+
+    "search_placeholder": "ابحث بالاسم أو الهاتف…",
+    "filter_all": "الكل",
+    "filter_insured": "مؤمَّن",
+    "filter_uninsured": "بدون تأمين",
+    "filter_active": "نشط",
+    "filter_inactive": "غير نشط",
+
+    "error_title": "تعذّر تحميل المرضى",
+    "empty_title": "لا مرضى بعد",
+    "empty_add": "＋ أضف أول مريض",
+
+    "add_success": "تم إضافة المريض",
+
+    "section_basic": "البيانات الأساسية",
+    "section_clinical": "بيانات إكلينيكية",
+    "section_clinical_sub": "حساسيات وأمراض مزمنة — PHI",
+    "section_insurance": "التأمين",
+    "section_guardian": "ولي الأمر",
+    "section_guardian_sub": "للمرضى القُصّر — المالك/ولي الأمر مسؤول عن الفوترة والتواصل",
+
+    "field_name": "الاسم",
+    "field_name_placeholder": "الاسم بالكامل",
+    "field_phone": "الهاتف",
+    "field_dob": "تاريخ الميلاد",
+    "field_sex": "النوع",
+    "field_blood_type": "فصيلة الدم",
+    "field_allergies": "حساسيات",
+    "field_allergies_placeholder": "اكتب واضغط Enter",
+    "field_chronic": "أمراض مزمنة",
+    "field_chronic_placeholder": "اكتب واضغط Enter",
+    "field_payer": "شركة التأمين",
+    "field_payer_placeholder": "بدون تأمين",
+    "field_plan": "خطة التغطية",
+    "field_plan_placeholder": "اختر خطة",
+    "field_pediatric_toggle": "مريض قاصر (يحتاج ولي أمر)",
+
+    "quickadd_title": "إضافة سريعة",
+    "quickadd_bad_phone": "رقم الهاتف غير صحيح (01xxxxxxxxx)",
+    "quickadd_missing_name": "أدخل اسم المريض",
+    "quickadd_success": "تم إضافة المريض",
+
+    "dedupe_warning": "رقم الهاتف مسجّل بالفعل لـ {{name}}",
+    "dedupe_use_existing": "استخدام هذا المريض",
+
+    "vet_next": "التالي",
+    "vet_back": "رجوع",
+    "vet_owner_title": "بيانات المالك",
+    "vet_animal_title": "بيانات الحيوان",
+    "vet_owner_name": "اسم المالك",
+    "vet_owner_found": "المالك مسجّل بالفعل: {{name}} — سيُضاف الحيوان لحسابه",
+    "vet_owner_label": "المالك",
+    "vet_animal_name": "اسم الحيوان",
+    "vet_animal_name_placeholder": "مثال: بوسي",
+    "vet_species": "النوع",
+    "vet_species_placeholder": "قطط، كلاب…",
+    "vet_breed": "السلالة",
+    "vet_weight": "الوزن (كجم)",
+    "vet_missing_owner_name": "أدخل اسم المالك",
+    "vet_missing_animal_fields": "أدخل اسم الحيوان ونوعه",
+    "vet_success": "تم إضافة الحيوان"
   },
 
   "patient360": {

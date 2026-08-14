@@ -84,7 +84,82 @@
 
   "patients": {
     "title": "Patients",
-    "new": "Add patient"
+    "new": "＋ New patient",
+    "new_vet": "＋ Patient (veterinary)",
+    "export": "Export",
+    "permission_required": "You don't have permission to view patients",
+
+    "col_code": "Code",
+    "col_name": "Name",
+    "col_age_sex": "Age/Sex",
+    "col_phone": "Phone",
+    "col_insurance": "Insurance",
+    "col_last_visit": "Last visit",
+
+    "action_open_profile": "Open profile",
+    "action_book": "＋ Appointment",
+    "action_whatsapp": "WhatsApp",
+
+    "search_placeholder": "Search by name or phone…",
+    "filter_all": "All",
+    "filter_insured": "Insured",
+    "filter_uninsured": "Uninsured",
+    "filter_active": "Active",
+    "filter_inactive": "Inactive",
+
+    "error_title": "Couldn't load patients",
+    "empty_title": "No patients yet",
+    "empty_add": "＋ Add first patient",
+
+    "add_success": "Patient added",
+
+    "section_basic": "Basic info",
+    "section_clinical": "Clinical info",
+    "section_clinical_sub": "Allergies and chronic conditions — PHI",
+    "section_insurance": "Insurance",
+    "section_guardian": "Guardian",
+    "section_guardian_sub": "For minor patients — the owner/guardian is billed and contacted",
+
+    "field_name": "Name",
+    "field_name_placeholder": "Full name",
+    "field_phone": "Phone",
+    "field_dob": "Date of birth",
+    "field_sex": "Sex",
+    "field_blood_type": "Blood type",
+    "field_allergies": "Allergies",
+    "field_allergies_placeholder": "Type and press Enter",
+    "field_chronic": "Chronic conditions",
+    "field_chronic_placeholder": "Type and press Enter",
+    "field_payer": "Insurance payer",
+    "field_payer_placeholder": "No insurance",
+    "field_plan": "Coverage plan",
+    "field_plan_placeholder": "Select a plan",
+    "field_pediatric_toggle": "Minor patient (needs a guardian)",
+
+    "quickadd_title": "Quick add",
+    "quickadd_bad_phone": "Invalid phone number (01xxxxxxxxx)",
+    "quickadd_missing_name": "Enter the patient's name",
+    "quickadd_success": "Patient added",
+
+    "dedupe_warning": "This phone is already registered to {{name}}",
+    "dedupe_use_existing": "Use this patient",
+
+    "vet_next": "Next",
+    "vet_back": "Back",
+    "vet_owner_title": "Owner details",
+    "vet_animal_title": "Animal details",
+    "vet_owner_name": "Owner name",
+    "vet_owner_found": "Owner already registered: {{name}} — the animal will be added to their account",
+    "vet_owner_label": "Owner",
+    "vet_animal_name": "Animal name",
+    "vet_animal_name_placeholder": "e.g. Bosy",
+    "vet_species": "Species",
+    "vet_species_placeholder": "Cat, dog…",
+    "vet_breed": "Breed",
+    "vet_weight": "Weight (kg)",
+    "vet_missing_owner_name": "Enter the owner's name",
+    "vet_missing_animal_fields": "Enter the animal's name and species",
+    "vet_success": "Animal added"
   },
 
   "patient360": {

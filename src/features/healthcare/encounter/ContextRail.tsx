@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { AlertTriangle, History } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/format";
-import { getOwner, ownerName } from "@/lib/mock/healthcare";
-import type { HcPatient, HcEncounter } from "@/features/healthcare/types";
+import { ownerName } from "@/lib/mock/healthcare";
+import type { HcPatient, HcEncounter, HcOwner } from "@/features/healthcare/types";
 
 const SPECIALTY_LABEL_AR: Record<string, string> = {
   species: "النوع",
@@ -14,13 +14,14 @@ const SPECIALTY_LABEL_AR: Record<string, string> = {
 
 interface ContextRailProps {
   patient: HcPatient;
+  owner: HcOwner | undefined;
   lang: "ar" | "en";
   /** Prior encounters for this patient, most-recent first, current one excluded. */
   priorEncounters: HcEncounter[];
 }
 
 /** Fixed context rail (spec §4.2) — all PHI, hidden entirely without clinical.view. */
-export function ContextRail({ patient, lang, priorEncounters }: ContextRailProps) {
+export function ContextRail({ patient, owner, lang, priorEncounters }: ContextRailProps) {
   const { t } = useTranslation("healthcare");
   const navigate = useNavigate();
 
@@ -28,7 +29,6 @@ export function ContextRail({ patient, lang, priorEncounters }: ContextRailProps
   const hasChronic = patient.chronic.length > 0;
   const showWarningStrip = hasAllergies || hasChronic;
 
-  const owner = getOwner(patient.owner_id);
   const specialtyEntries = Object.entries(patient.specialty_ext ?? {});
   const showSpecialtyBlock = specialtyEntries.length > 0 || (owner && owner.relationship !== "self");
 

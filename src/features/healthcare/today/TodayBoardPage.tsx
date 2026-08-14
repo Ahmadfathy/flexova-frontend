@@ -22,8 +22,9 @@ import { useCan } from "@/lib/permissions";
 import { useHealthcareBoard } from "@/stores/healthcareBoard";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
+import { useHealthcarePatients } from "@/stores/healthcarePatients";
 import { useMockState } from "../useMockState";
-import { getPatient, getProviders, patientName, providerName } from "@/lib/mock/healthcare";
+import { getProviders, patientName, providerName } from "@/lib/mock/healthcare";
 import type { TodayBoardRow, BoardStatus } from "@/features/healthcare/types";
 import { QuickBookDialog } from "./QuickBookDialog";
 
@@ -47,6 +48,9 @@ export function TodayBoardPage() {
   const collect = useHealthcareBoard((s) => s.collect);
   const applyOfflineDemoRow = useHealthcareBoard((s) => s.applyOfflineDemoRow);
   const logAccess = useHealthcareAudit((s) => s.logAccess);
+  // Live, not the static fixture — a patient booked via quick-add/veterinary
+  // add (Prompt 3) must resolve here too, not just fixture-seeded ones.
+  const patients = useHealthcarePatients((s) => s.patients);
 
   const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
@@ -159,7 +163,7 @@ export function TodayBoardPage() {
     {
       key: "patient", header: t("today.col_patient"),
       cell: (row) => {
-        const patient = getPatient(row.patient_id);
+        const patient = patients[row.patient_id];
         return (
           <span className="flex items-center gap-2">
             <span className="font-medium text-foreground">{patient ? patientName(patient, lang) : row.patient_id}</span>

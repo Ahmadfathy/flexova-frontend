@@ -17,9 +17,10 @@ import { useCan } from "@/lib/permissions";
 import { useHealthcareBoard } from "@/stores/healthcareBoard";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
+import { useHealthcarePatients } from "@/stores/healthcarePatients";
 import { useMockState } from "../useMockState";
 import { ageFromDob, computeInsuranceSplit } from "@/features/healthcare/calc";
-import { getPatient, getPayer, getPlan, patientName } from "@/lib/mock/healthcare";
+import { getPayer, getPlan, patientName } from "@/lib/mock/healthcare";
 import { ContextRail } from "./ContextRail";
 import { DiagnosisTab } from "./DiagnosisTab";
 import { PrescriptionTab } from "./PrescriptionTab";
@@ -57,6 +58,8 @@ export function EncounterPage() {
   const canFinishFn = useHealthcareClinical((s) => s.canFinish);
   const finishVisit = useHealthcareClinical((s) => s.finishVisit);
   const invoices = useHealthcareClinical((s) => s.invoices);
+  const livePatients = useHealthcarePatients((s) => s.patients);
+  const owners = useHealthcarePatients((s) => s.owners);
 
   // A "بدء الزيارة" click from Today Board always targets an id that's either an
   // existing encounter or, for a brand-new visit, the appointment_id itself —
@@ -78,7 +81,7 @@ export function EncounterPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [encounter?.id]);
 
-  const patient = encounter ? getPatient(encounter.patient_id) : undefined;
+  const patient = encounter ? livePatients[encounter.patient_id] : undefined;
   const readOnly = encounter?.status === "completed";
 
   const priorEncounters = useMemo(() => {
@@ -256,7 +259,7 @@ export function EncounterPage() {
         </PageSection>
 
         {canClinical && (
-          <ContextRail patient={patient} lang={lang} priorEncounters={priorEncounters} />
+          <ContextRail patient={patient} owner={owners[patient.owner_id]} lang={lang} priorEncounters={priorEncounters} />
         )}
       </div>
     </div>
