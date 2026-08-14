@@ -21,7 +21,8 @@ import { formatDate } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useHealthcarePatients } from "@/stores/healthcarePatients";
-import { getPayer, patientName } from "@/lib/mock/healthcare";
+import { useHealthcareInsurance } from "@/stores/healthcareInsurance";
+import { patientName } from "@/lib/mock/healthcare";
 import { useMockState } from "../useMockState";
 import { QuickBookDialog } from "../today/QuickBookDialog";
 import { PatientQuickAddDialog } from "./PatientQuickAddDialog";
@@ -39,6 +40,7 @@ export function PatientsListPage() {
   const navigate = useNavigate();
 
   const patientsMap = useHealthcarePatients((s) => s.patients);
+  const payersMap = useHealthcareInsurance((s) => s.payers);
   const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
 
   const [search, setSearch] = useState("");
@@ -110,7 +112,7 @@ export function PatientsListPage() {
       key: "insurance", header: t("patients.col_insurance"),
       cell: (p) => {
         if (!p.insurance) return <StatusPill variant="inactive" label={t("encounter.uninsured_badge")} />;
-        const payer = getPayer(p.insurance.payer_id);
+        const payer = payersMap[p.insurance.payer_id];
         return <StatusPill variant="active" label={payer ? payer.name_ar : t("patients.col_insurance")} />;
       },
     },

@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StatusPill } from "@/components/patterns/StatusPill";
 import { EmptyState } from "@/components/patterns/EmptyState";
 import { formatMoney } from "@/lib/format";
-import { getCatalog } from "@/lib/mock/healthcare";
+import { useHealthcareCatalog } from "@/stores/healthcareCatalog";
 import type { HcOrder } from "@/features/healthcare/types";
 
 const ORDER_STATUS_VARIANT = {
@@ -30,7 +30,11 @@ export function LabsTab({ orders, readOnly, onAddCatalog, onAddManual, onRemove 
   const [manualName, setManualName] = useState("");
   const [manualPrice, setManualPrice] = useState("");
 
-  const catalog = useMemo(() => getCatalog().filter((c) => c.active && c.type !== "consult"), []);
+  const catalogItems = useHealthcareCatalog((s) => s.items);
+  const catalog = useMemo(
+    () => Object.values(catalogItems).filter((c) => c.active && c.type !== "consult"),
+    [catalogItems]
+  );
   const filtered = useMemo(
     () => catalog.filter((c) => c.name_ar.toLowerCase().includes(search.trim().toLowerCase())),
     [catalog, search]

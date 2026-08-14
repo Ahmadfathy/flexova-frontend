@@ -300,12 +300,89 @@
 
   "insurance": {
     "title": "Insurance payers & plans",
+    "permission_required": "You don't have permission to manage insurance",
+
+    "section_payers": "Insurance payers",
+    "section_plans": "Coverage plans — {{payer}}",
+    "plans_for": "Plans:",
+    "plans_empty": "No plans for this payer yet",
+
+    "new_payer": "＋ Insurance payer",
+    "new_plan": "＋ Coverage plan",
+    "edit_plan": "Edit plan",
+
+    "col_payer_name": "Name",
+    "col_contract_status": "Contract status",
+    "col_covered_patients": "Covered patients",
+    "col_ar_on_payer": "AR on payer",
+    "col_plan_name": "Plan",
+    "col_cap": "Cap",
+
+    "status_active": "Active",
+    "status_suspended": "Suspended",
+
+    "field_payer_name": "Payer name",
+    "field_contact": "Contact details",
+    "field_plan_name": "Plan name",
     "field_coverage_pct": "Coverage %",
+    "field_cap_type": "Cap type",
+    "field_cap_amount": "Cap amount",
+    "field_copay_type": "Co-pay type",
+    "field_copay_value": "Co-pay value",
     "field_copay": "Co-pay",
-    "field_exclusions": "Exclusions"
+    "field_exclusions": "Exclusions",
+    "field_exclusions_placeholder": "Comma-separated",
+
+    "cap_annual": "Annual",
+    "cap_per_visit": "Per visit",
+    "copay_fixed": "Fixed amount",
+    "copay_pct": "Percentage",
+
+    "payer_missing_name": "Enter the payer's name",
+    "payer_added": "Insurance payer added",
+    "plan_missing_fields": "Fill in all plan fields",
+    "plan_added": "Plan added",
+    "plan_updated": "Plan updated",
+
+    "error_title": "Couldn't load insurance payers",
+    "empty_title": "No insurance payers",
+    "empty_add": "＋ Add first payer"
   },
 
   "catalog": {
-    "title": "Service catalog"
+    "title": "Service catalog",
+    "permission_required": "You don't have permission to manage the catalog",
+
+    "new_item": "＋ Service",
+    "edit_item": "Edit service",
+
+    "field_name": "Name",
+    "field_type": "Test type",
+    "field_price": "Price",
+    "field_default_provider": "Default provider",
+    "field_status": "Status",
+
+    "type_consult": "Consult",
+    "type_lab": "Lab",
+    "type_radiology": "Radiology",
+    "type_procedure": "Procedure",
+
+    "status_active": "Active",
+    "status_suspended": "Suspended",
+
+    "search_placeholder": "Search a service…",
+    "item_missing_fields": "Enter the name and price",
+    "item_added": "Service added",
+    "item_updated": "Service updated",
+
+    "import_cta": "Import CSV",
+    "import_title": "Import catalog from CSV",
+    "import_hint": "Columns: name_ar,type,price,default_provider",
+    "import_empty": "Paste CSV data first",
+    "import_result": "Added {{added}} items — skipped {{deduped}} duplicates",
+
+    "error_title": "Couldn't load the catalog",
+    "empty_title": "No services yet",
+    "empty_add": "＋ Add first service"
   }
 }

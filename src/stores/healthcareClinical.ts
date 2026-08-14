@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getEncounters, getOrders, getInvoices, getResults, getPlan, getPatient, getCatalog } from "@/lib/mock/healthcare";
+import { getEncounters, getOrders, getInvoices, getResults } from "@/lib/mock/healthcare";
+import { useHealthcareCatalog } from "@/stores/healthcareCatalog";
+import { useHealthcareInsurance } from "@/stores/healthcareInsurance";
+import { useHealthcarePatients } from "@/stores/healthcarePatients";
 import { computeInsuranceSplit, round2 } from "@/features/healthcare/calc";
 import type { HcEncounter, HcOrder, HcInvoice, HcResult, SyncStatus } from "@/features/healthcare/types";
 
@@ -142,7 +145,7 @@ export const useHealthcareClinical = create<ClinicalState>()(
       },
 
       addCatalogOrder: (encounterId, catalogId) => {
-        const catalog = getCatalog().find((c) => c.id === catalogId);
+        const catalog = useHealthcareCatalog.getState().items[catalogId];
         if (!catalog || catalog.type === "consult") return; // the base consult line is automatic, never orderable here
         set((s) => {
           const e = s.encounters[encounterId];
@@ -192,7 +195,7 @@ export const useHealthcareClinical = create<ClinicalState>()(
         const s = get();
         const e = s.encounters[encounterId];
         if (!e) return [];
-        const catalog = getCatalog();
+        const catalog = Object.values(useHealthcareCatalog.getState().items);
         const consult = catalog.find((c) => c.id === "svc_consult");
         const lines: InvoiceLine[] = [];
         if (consult) lines.push({ key: "consult", label_ar: consult.name_ar, amount: consult.price });
@@ -224,8 +227,8 @@ export const useHealthcareClinical = create<ClinicalState>()(
         const s = get();
         if (!s.canFinish(encounterId)) return { ok: false };
         const e = s.encounters[encounterId];
-        const patient = getPatient(e.patient_id);
-        const plan = patient?.insurance ? getPlan(patient.insurance.plan_id) : undefined;
+        const patient = useHealthcarePatients.getState().patients[e.patient_id];
+        const plan = patient?.insurance ? useHealthcareInsurance.getState().plans[patient.insurance.plan_id] : undefined;
         const lines = s.invoiceLines(encounterId);
         const total = round2(lines.reduce((sum, l) => sum + l.amount, 0));
         const split = computeInsuranceSplit(total, plan);

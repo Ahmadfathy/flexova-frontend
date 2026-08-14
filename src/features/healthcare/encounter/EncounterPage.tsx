@@ -18,9 +18,10 @@ import { useHealthcareBoard } from "@/stores/healthcareBoard";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
 import { useHealthcarePatients } from "@/stores/healthcarePatients";
+import { useHealthcareInsurance } from "@/stores/healthcareInsurance";
 import { useMockState } from "../useMockState";
 import { ageFromDob, computeInsuranceSplit } from "@/features/healthcare/calc";
-import { getPayer, getPlan, patientName } from "@/lib/mock/healthcare";
+import { patientName } from "@/lib/mock/healthcare";
 import { ContextRail } from "./ContextRail";
 import { DiagnosisTab } from "./DiagnosisTab";
 import { PrescriptionTab } from "./PrescriptionTab";
@@ -60,6 +61,8 @@ export function EncounterPage() {
   const invoices = useHealthcareClinical((s) => s.invoices);
   const livePatients = useHealthcarePatients((s) => s.patients);
   const owners = useHealthcarePatients((s) => s.owners);
+  const payers = useHealthcareInsurance((s) => s.payers);
+  const plans = useHealthcareInsurance((s) => s.plans);
 
   // A "بدء الزيارة" click from Today Board always targets an id that's either an
   // existing encounter or, for a brand-new visit, the appointment_id itself —
@@ -107,7 +110,7 @@ export function EncounterPage() {
   const total = lines.reduce((sum, l) => sum + l.amount, 0);
 
   const existingInvoice = encounter?.invoice_id ? invoices[encounter.invoice_id] : undefined;
-  const plan = patient?.insurance ? getPlan(patient.insurance.plan_id) : undefined;
+  const plan = patient?.insurance ? plans[patient.insurance.plan_id] : undefined;
   const preview = computeInsuranceSplit(total, plan);
 
   const invoiceView = existingInvoice
@@ -167,7 +170,7 @@ export function EncounterPage() {
     );
   }
 
-  const payer = patient.insurance ? getPayer(patient.insurance.payer_id) : undefined;
+  const payer = patient.insurance ? payers[patient.insurance.payer_id] : undefined;
   const age = ageFromDob(patient.dob);
 
   const tabs = [

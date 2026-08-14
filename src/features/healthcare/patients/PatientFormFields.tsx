@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { FormField, FormGrid, FormSection } from "@/components/patterns/FormLayout";
-import { getPayers, getPlans } from "@/lib/mock/healthcare";
+import { useHealthcareInsurance } from "@/stores/healthcareInsurance";
 import type { HcPatient } from "@/features/healthcare/types";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -93,8 +93,10 @@ interface PatientFormFieldsProps {
 
 export function PatientFormFields({ value, onChange, canClinical, dedupeWarning, showGuardianSection = true }: PatientFormFieldsProps) {
   const { t } = useTranslation("healthcare");
-  const payers = getPayers().filter((p) => p.contract_status === "active");
-  const plans = getPlans().filter((p) => p.payer_id === value.payer_id);
+  const allPayers = useHealthcareInsurance((s) => s.payers);
+  const allPlans = useHealthcareInsurance((s) => s.plans);
+  const payers = Object.values(allPayers).filter((p) => p.contract_status === "active");
+  const plans = Object.values(allPlans).filter((p) => p.payer_id === value.payer_id);
 
   return (
     <div className="space-y-6">

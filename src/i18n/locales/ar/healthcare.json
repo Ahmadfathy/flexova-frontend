@@ -300,12 +300,89 @@
 
   "insurance": {
     "title": "شركات وخطط التأمين",
+    "permission_required": "لا تملك صلاحية إدارة التأمين",
+
+    "section_payers": "شركات التأمين",
+    "section_plans": "خطط التغطية — {{payer}}",
+    "plans_for": "خطط:",
+    "plans_empty": "لا خطط لهذه الشركة بعد",
+
+    "new_payer": "＋ شركة تأمين",
+    "new_plan": "＋ خطة تغطية",
+    "edit_plan": "تعديل الخطة",
+
+    "col_payer_name": "الاسم",
+    "col_contract_status": "حالة التعاقد",
+    "col_covered_patients": "المرضى المغطّون",
+    "col_ar_on_payer": "مستحق على الشركة",
+    "col_plan_name": "الخطة",
+    "col_cap": "السقف",
+
+    "status_active": "فعّال",
+    "status_suspended": "معلّق",
+
+    "field_payer_name": "اسم الشركة",
+    "field_contact": "بيانات التواصل",
+    "field_plan_name": "اسم الخطة",
     "field_coverage_pct": "نسبة التغطية",
+    "field_cap_type": "نوع السقف",
+    "field_cap_amount": "قيمة السقف",
+    "field_copay_type": "نوع التحمّل",
+    "field_copay_value": "قيمة التحمّل",
     "field_copay": "تحمّل المريض",
-    "field_exclusions": "استثناءات"
+    "field_exclusions": "استثناءات",
+    "field_exclusions_placeholder": "افصل بينها بفاصلة",
+
+    "cap_annual": "سنوي",
+    "cap_per_visit": "لكل زيارة",
+    "copay_fixed": "مبلغ ثابت",
+    "copay_pct": "نسبة مئوية",
+
+    "payer_missing_name": "أدخل اسم الشركة",
+    "payer_added": "تمت إضافة شركة التأمين",
+    "plan_missing_fields": "أدخل بيانات الخطة كاملة",
+    "plan_added": "تمت إضافة الخطة",
+    "plan_updated": "تم تحديث الخطة",
+
+    "error_title": "تعذّر تحميل شركات التأمين",
+    "empty_title": "لا شركات تأمين",
+    "empty_add": "＋ أضف أول شركة"
   },
 
   "catalog": {
-    "title": "كتالوج الخدمات"
+    "title": "كتالوج الخدمات",
+    "permission_required": "لا تملك صلاحية إدارة الكتالوج",
+
+    "new_item": "＋ خدمة",
+    "edit_item": "تعديل الخدمة",
+
+    "field_name": "الاسم",
+    "field_type": "نوع الفحص",
+    "field_price": "السعر",
+    "field_default_provider": "مقدّم الخدمة الافتراضي",
+    "field_status": "الحالة",
+
+    "type_consult": "كشف",
+    "type_lab": "تحليل",
+    "type_radiology": "أشعة",
+    "type_procedure": "إجراء",
+
+    "status_active": "فعّال",
+    "status_suspended": "معطّل",
+
+    "search_placeholder": "ابحث عن خدمة…",
+    "item_missing_fields": "أدخل الاسم والسعر",
+    "item_added": "تمت إضافة الخدمة",
+    "item_updated": "تم تحديث الخدمة",
+
+    "import_cta": "استيراد CSV",
+    "import_title": "استيراد الكتالوج من CSV",
+    "import_hint": "أعمدة: name_ar,type,price,default_provider",
+    "import_empty": "الصق بيانات CSV أولاً",
+    "import_result": "تمت إضافة {{added}} صنف — تخطّي {{deduped}} مكرر",
+
+    "error_title": "تعذّر تحميل الكتالوج",
+    "empty_title": "لا توجد خدمات بعد",
+    "empty_add": "＋ أضف أول خدمة"
   }
 }

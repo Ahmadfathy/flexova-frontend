@@ -16,9 +16,10 @@ import { useAuthStore } from "@/stores/auth";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
 import { useHealthcarePatients } from "@/stores/healthcarePatients";
+import { useHealthcareInsurance } from "@/stores/healthcareInsurance";
 import { useMockState } from "../useMockState";
 import { ageFromDob } from "@/features/healthcare/calc";
-import { getPayer, getPlan, patientName } from "@/lib/mock/healthcare";
+import { patientName } from "@/lib/mock/healthcare";
 import { QuickBookDialog } from "../today/QuickBookDialog";
 import { StartVisitDialog } from "./360/StartVisitDialog";
 import { AnimalSwitcher } from "./360/AnimalSwitcher";
@@ -47,6 +48,8 @@ export function Patient360Page() {
   const orders = useHealthcareClinical((s) => s.orders);
   const results = useHealthcareClinical((s) => s.results);
   const invoicesMap = useHealthcareClinical((s) => s.invoices);
+  const payersMap = useHealthcareInsurance((s) => s.payers);
+  const plansMap = useHealthcareInsurance((s) => s.plans);
   const logAccess = useHealthcareAudit((s) => s.logAccess);
 
   const canClinical = can("healthcare.clinical.view");
@@ -122,8 +125,8 @@ export function Patient360Page() {
   }
 
   const age = ageFromDob(patient.dob);
-  const payer = patient.insurance ? getPayer(patient.insurance.payer_id) : undefined;
-  const plan = patient.insurance ? getPlan(patient.insurance.plan_id) : undefined;
+  const payer = patient.insurance ? payersMap[patient.insurance.payer_id] : undefined;
+  const plan = patient.insurance ? plansMap[patient.insurance.plan_id] : undefined;
 
   const hasWarnings = patient.allergies.length > 0 || patient.chronic.length > 0 || !!patient.blood_type;
 
