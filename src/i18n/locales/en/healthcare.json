@@ -12,6 +12,19 @@
     "cancelled": "Cancelled"
   },
 
+  "orderStatus": {
+    "pending": "Pending",
+    "in_progress": "In progress",
+    "ready": "Ready",
+    "delivered": "Delivered",
+    "issued": "Issued"
+  },
+
+  "sex": {
+    "male": "Male",
+    "female": "Female"
+  },
+
   "today": {
     "title": "Today",
     "permission_required": "You don't have permission to view the Today Board",
@@ -79,7 +92,67 @@
   },
 
   "encounter": {
-    "title": "Encounter"
+    "title": "Encounter",
+    "error_title": "Couldn't load the encounter",
+    "error_body": "Something went wrong loading it, try again",
+    "error_draft_note": "Your latest edits are saved locally and won't be lost",
+    "not_found": "This encounter couldn't be found",
+    "offline_note": "Offline — the encounter is saved locally and will sync later",
+
+    "age_sex": "{{age}}y · {{sex}}",
+    "insured_badge": "Insured — {{payer}}",
+    "uninsured_badge": "No insurance",
+
+    "finish_visit": "Finish visit",
+    "finish_success": "Visit finished and invoice issued",
+
+    "tab_diagnosis": "Diagnosis",
+    "tab_prescription": "Prescription",
+    "tab_labs": "Labs & radiology",
+    "tab_invoice": "Invoice",
+
+    "field_complaint": "Complaint",
+    "field_complaint_placeholder": "Chief complaint",
+    "field_diagnosis": "Diagnosis",
+    "field_diagnosis_placeholder": "Diagnosis",
+    "field_clinical_note": "Clinical note",
+    "field_clinical_note_placeholder": "Extra notes for follow-up",
+
+    "rx_missing_fields": "Enter the drug, dose, and duration",
+    "rx_empty": "No prescription items yet",
+    "rx_drug": "Drug",
+    "rx_dose": "Dose",
+    "rx_duration": "Duration",
+    "rx_instructions": "Instructions (optional)",
+    "rx_add": "＋ Add",
+    "rx_print": "Print",
+    "rx_whatsapp": "WhatsApp",
+    "rx_whatsapp_sent": "Prescription sent via WhatsApp",
+
+    "labs_empty": "No labs or radiology ordered",
+    "labs_search": "Search the catalog…",
+    "labs_no_results": "No matches — add manually",
+    "labs_manual_name": "Test name",
+    "labs_manual_price": "Price",
+    "labs_manual_add": "＋ Add",
+    "labs_pick_placeholder": "Pick from catalog",
+
+    "invoice_total": "Total",
+    "invoice_covers": "Insurance covers {{pct}}% — patient pays: {{amount}}",
+    "invoice_insurer_portion": "Insurer's share",
+    "invoice_patient_portion": "Patient's share",
+    "invoice_no_insurance": "No insurance — patient covers the full amount",
+    "invoice_preview_note": "Preview — finalized when the visit is finished",
+
+    "rail_warning": "Warning",
+    "rail_allergies": "Allergies",
+    "rail_chronic": "Chronic conditions",
+    "rail_history": "Recent visits",
+    "rail_history_empty": "No prior visits",
+    "rail_no_diagnosis": "No diagnosis",
+    "rail_specialty": "Additional info",
+    "rail_owner": "Owner",
+    "rail_guardian": "Guardian"
   },
 
   "lab": {

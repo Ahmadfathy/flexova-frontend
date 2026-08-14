@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getTodayBoard } from "@/lib/mock/healthcare";
-import type { TodayBoardRow, BoardStatus } from "@/features/healthcare/types";
+import type { TodayBoardRow, BoardStatus, HcInvoice } from "@/features/healthcare/types";
 
 /**
  * Today Board local state (spec §3.4 offline row states + §3.7 "check-in/collect
@@ -30,6 +30,10 @@ interface HealthcareBoardState {
   addBooking: (row: { appointment_id: string; time: string; patient_id: string; provider_id: string }) => void;
   /** Demo-only: forces one row into a visible `syncing` badge under `?mock=offline` (fixture §_states_demo). */
   applyOfflineDemoRow: () => void;
+  /** Encounter's Finish visit (spec §4.4) — flips the row to completed+owes so
+   * reception sees it ready to collect, and stamps the invoice id so collect()
+   * doesn't have to re-derive it from the patient. */
+  completeVisit: (appointmentId: string, invoice: HcInvoice) => void;
 }
 
 function settleRow(appointmentId: string, set: (fn: (s: HealthcareBoardState) => Partial<HealthcareBoardState>) => void) {
@@ -96,6 +100,27 @@ export const useHealthcareBoard = create<HealthcareBoardState>()(
           if (!row || row.sync !== "synced") return s;
           return { rows: { ...s.rows, [target]: { ...row, sync: "syncing" } } };
         });
+      },
+
+      completeVisit: (appointmentId, invoice) => {
+        set((s) => {
+          const row = s.rows[appointmentId];
+          if (!row) return s;
+          return {
+            rows: {
+              ...s.rows,
+              [appointmentId]: {
+                ...row,
+                status: "completed" as BoardStatus,
+                patient_portion: invoice.patient_portion,
+                collected: false,
+                invoice_id: invoice.id,
+                sync: "local",
+              },
+            },
+          };
+        });
+        settleRow(appointmentId, set);
       },
     }),
     { name: "flexova.healthcare.board", partialize: (s) => ({ rows: s.rows }) }

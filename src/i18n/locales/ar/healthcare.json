@@ -12,6 +12,19 @@
     "cancelled": "ملغي"
   },
 
+  "orderStatus": {
+    "pending": "قيد الانتظار",
+    "in_progress": "جاري التنفيذ",
+    "ready": "جاهز",
+    "delivered": "تم التسليم",
+    "issued": "صادرة"
+  },
+
+  "sex": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+
   "today": {
     "title": "اليوم",
     "permission_required": "لا تملك صلاحية عرض لوحة اليوم",
@@ -79,7 +92,67 @@
   },
 
   "encounter": {
-    "title": "الزيارة"
+    "title": "الزيارة",
+    "error_title": "تعذّر تحميل الزيارة",
+    "error_body": "حدث خطأ أثناء التحميل، حاول مرة أخرى",
+    "error_draft_note": "آخر تعديلاتك محفوظة محلياً ولن تُفقد",
+    "not_found": "لم يتم العثور على هذه الزيارة",
+    "offline_note": "غير متصل — الزيارة تُحفظ محلياً وتتم مزامنتها لاحقاً",
+
+    "age_sex": "{{age}} سنة · {{sex}}",
+    "insured_badge": "مؤمَّن — {{payer}}",
+    "uninsured_badge": "بدون تأمين",
+
+    "finish_visit": "إنهاء الزيارة",
+    "finish_success": "تم إنهاء الزيارة وإصدار الفاتورة",
+
+    "tab_diagnosis": "التشخيص",
+    "tab_prescription": "روشتة",
+    "tab_labs": "تحاليل وأشعة",
+    "tab_invoice": "الفاتورة",
+
+    "field_complaint": "الشكوى",
+    "field_complaint_placeholder": "الشكوى الرئيسية",
+    "field_diagnosis": "التشخيص",
+    "field_diagnosis_placeholder": "التشخيص",
+    "field_clinical_note": "ملاحظات إكلينيكية",
+    "field_clinical_note_placeholder": "ملاحظات إضافية للمتابعة",
+
+    "rx_missing_fields": "أدخل الدواء والجرعة والمدة",
+    "rx_empty": "لا توجد أصناف بالروشتة بعد",
+    "rx_drug": "الدواء",
+    "rx_dose": "الجرعة",
+    "rx_duration": "المدة",
+    "rx_instructions": "تعليمات (اختياري)",
+    "rx_add": "＋ إضافة",
+    "rx_print": "اطبع",
+    "rx_whatsapp": "واتساب",
+    "rx_whatsapp_sent": "تم إرسال الروشتة عبر واتساب",
+
+    "labs_empty": "لا توجد تحاليل أو أشعة مطلوبة",
+    "labs_search": "ابحث في الكتالوج…",
+    "labs_no_results": "لا نتائج مطابقة — أضف يدوياً",
+    "labs_manual_name": "اسم الفحص",
+    "labs_manual_price": "السعر",
+    "labs_manual_add": "＋ إضافة",
+    "labs_pick_placeholder": "اختر من الكتالوج",
+
+    "invoice_total": "الإجمالي",
+    "invoice_covers": "التأمين يغطّي {{pct}}% — على المريض: {{amount}}",
+    "invoice_insurer_portion": "نصيب شركة التأمين",
+    "invoice_patient_portion": "نصيب المريض",
+    "invoice_no_insurance": "بدون تأمين — المريض يتحمّل كامل المبلغ",
+    "invoice_preview_note": "معاينة — تُحسب نهائياً عند إنهاء الزيارة",
+
+    "rail_warning": "تنبيه",
+    "rail_allergies": "حساسيات",
+    "rail_chronic": "أمراض مزمنة",
+    "rail_history": "آخر الزيارات",
+    "rail_history_empty": "لا زيارات سابقة",
+    "rail_no_diagnosis": "بدون تشخيص",
+    "rail_specialty": "بيانات إضافية",
+    "rail_owner": "المالك",
+    "rail_guardian": "ولي الأمر"
   },
 
   "lab": {

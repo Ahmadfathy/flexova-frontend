@@ -21,11 +21,9 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useHealthcareBoard } from "@/stores/healthcareBoard";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
+import { useHealthcareClinical } from "@/stores/healthcareClinical";
 import { useMockState } from "../useMockState";
-import {
-  getPatient, getProviders, getEncounterByAppointment, getEncounters, getInvoiceByEncounter,
-  patientName, providerName,
-} from "@/lib/mock/healthcare";
+import { getPatient, getProviders, patientName, providerName } from "@/lib/mock/healthcare";
 import type { TodayBoardRow, BoardStatus } from "@/features/healthcare/types";
 import { QuickBookDialog } from "./QuickBookDialog";
 
@@ -95,16 +93,22 @@ export function TodayBoardPage() {
 
   function handleStartVisit(row: TodayBoardRow) {
     // Golden rule (spec §0): clinical PHI is access-logged on READ, not only on write.
-    const encounter = getEncounterByAppointment(row.appointment_id);
-    const encounterId = encounter?.id ?? row.appointment_id;
+    // Looked up live (not the static fixture) so re-opening an already-started
+    // local encounter lands back on the same record instead of creating a new one.
+    const existing = Object.values(useHealthcareClinical.getState().encounters)
+      .find((e) => e.appointment_id === row.appointment_id);
+    const encounterId = existing?.id ?? row.appointment_id;
     logAccess({ actor: row.provider_id, patient_id: row.patient_id, surface: "encounter", action: "read" });
     navigate(`/healthcare/encounter/${encounterId}`);
   }
 
   function handleCollect(row: TodayBoardRow) {
     collect(row.appointment_id);
-    const encounter = getEncounters().find((e) => e.patient_id === row.patient_id && e.status === "completed");
-    const invoice = getInvoiceByEncounter(encounter?.id);
+    const { encounters, invoices } = useHealthcareClinical.getState();
+    const invoiceId = row.invoice_id
+      ?? Object.values(encounters).find((e) => e.patient_id === row.patient_id && e.status === "completed")?.invoice_id
+      ?? undefined;
+    const invoice = invoiceId ? invoices[invoiceId] : undefined;
     const route = invoice?.eta_route === "b2b" ? t("today.eta_b2b") : t("today.eta_b2c");
     toast.success(t("today.collect_success", { amount: formatMoney(row.patient_portion ?? 0, lang), route }));
   }

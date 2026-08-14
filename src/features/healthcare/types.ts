@@ -103,7 +103,9 @@ export interface HcOrder {
   status: "pending" | "in_progress" | "ready" | "delivered" | "issued";
   requested_at?: string;
   result_id?: string | null;
-  items?: { drug: string; dose: string; duration: string }[];
+  items?: { drug: string; dose: string; duration: string; instructions?: string }[];
+  /** Set only on manually-added orders (no catalog match, spec §4.5 no-results "أضف يدوي") — catalog-sourced orders price from `catalog_id` instead. */
+  price?: number;
 }
 
 export interface HcResult {
@@ -145,6 +147,9 @@ export interface TodayBoardFixtureRow {
 
 export interface TodayBoardRow extends TodayBoardFixtureRow {
   sync: SyncStatus;
+  /** Set by Encounter's Finish visit (spec §4.4) so Today Board's collect action
+   * can look the invoice up directly instead of re-deriving it from the patient. */
+  invoice_id?: string;
 }
 
 /** Immutable PHI access-log entry (spec §11 — who/whom/when). */
