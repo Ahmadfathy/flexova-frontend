@@ -263,6 +263,7 @@
   "lab": {
     "title": "Lab & Radiology queue",
     "permission_required": "You don't have permission to manage the lab",
+    "flag_disabled": "Lab & radiology isn't enabled for this clinic",
 
     "kpi_pending": "Pending",
     "kpi_ready": "Ready",
@@ -301,6 +302,7 @@
   "insurance": {
     "title": "Insurance payers & plans",
     "permission_required": "You don't have permission to manage insurance",
+    "flag_disabled": "Insurance isn't enabled for this clinic",
 
     "section_payers": "Insurance payers",
     "section_plans": "Coverage plans — {{payer}}",

@@ -13,6 +13,7 @@ import { TableSkeleton } from "@/components/patterns/Skeletons";
 import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useHealthcareInsurance } from "@/stores/healthcareInsurance";
 import { useMockState } from "../useMockState";
 import { PayerFormModal } from "./PayerFormModal";
@@ -50,6 +51,15 @@ export function InsurancePage() {
   function handleEditPlan(plan: HcPlan) {
     setEditingPlan(plan);
     setPlanModalOpen(true);
+  }
+
+  if (!isFlagEnabled("healthcare.insurance")) {
+    return (
+      <div className="max-w-md w-full mx-auto flex flex-col items-center gap-3 py-20 text-center">
+        <ShieldCheck className="h-8 w-8 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">{t("insurance.flag_disabled")}</p>
+      </div>
+    );
   }
 
   if (!can("healthcare.insurance.manage")) {

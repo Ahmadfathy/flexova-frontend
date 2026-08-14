@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { formatTime } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
 import { useHealthcarePatients } from "@/stores/healthcarePatients";
 import { useMockState } from "../useMockState";
@@ -112,6 +113,15 @@ export function LabQueuePage() {
 
   function handleNotify() {
     toast.success(t("lab.notify_sent"));
+  }
+
+  if (!isFlagEnabled("healthcare.lab")) {
+    return (
+      <div className="max-w-md w-full mx-auto flex flex-col items-center gap-3 py-20 text-center">
+        <FlaskConical className="h-8 w-8 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">{t("lab.flag_disabled")}</p>
+      </div>
+    );
   }
 
   if (!can("healthcare.lab.manage")) {

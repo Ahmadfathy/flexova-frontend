@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/patterns/Skeletons";
 import { cn } from "@/lib/utils";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useHealthcareBoard } from "@/stores/healthcareBoard";
 import { useHealthcareAudit } from "@/stores/healthcareAudit";
 import { useHealthcareClinical } from "@/stores/healthcareClinical";
@@ -75,6 +76,7 @@ export function EncounterPage() {
 
   const canClinical = can("healthcare.clinical.view");
   const canClinicalEdit = can("healthcare.clinical.edit");
+  const labFlagEnabled = isFlagEnabled("healthcare.lab");
   const [activeTab, setActiveTab] = useState<TabKey>(canClinical ? "diagnosis" : "invoice");
 
   // Golden rule (spec §0) — every clinical-surface open is access-logged, keyed
@@ -188,7 +190,11 @@ export function EncounterPage() {
     { key: "prescription" as const, label: t("encounter.tab_prescription"), clinical: true },
     { key: "labs" as const, label: t("encounter.tab_labs"), clinical: true },
     { key: "invoice" as const, label: t("encounter.tab_invoice"), clinical: false },
-  ].filter((tb) => canClinical || !tb.clinical);
+  ]
+    .filter((tb) => canClinical || !tb.clinical)
+    // spec §9.3 — a consult-only clinic (healthcare.lab off) hides the
+    // Labs/Radiology tab without breaking the rest of the encounter.
+    .filter((tb) => tb.key !== "labs" || labFlagEnabled);
 
   return (
     <div>
@@ -247,7 +253,7 @@ export function EncounterPage() {
                 />
               </TabsContent>
             )}
-            {canClinical && (
+            {canClinical && labFlagEnabled && (
               <TabsContent value="labs">
                 <LabsTab
                   orders={labOrders}
