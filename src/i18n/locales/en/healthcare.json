@@ -261,7 +261,41 @@
   },
 
   "lab": {
-    "title": "Lab & Radiology queue"
+    "title": "Lab & Radiology queue",
+    "permission_required": "You don't have permission to manage the lab",
+
+    "kpi_pending": "Pending",
+    "kpi_ready": "Ready",
+    "kpi_delivered": "Delivered",
+
+    "col_order": "Order",
+    "col_patient": "Patient",
+    "col_provider": "Requesting doctor",
+    "col_type": "Type",
+    "col_status": "Status",
+    "col_action": "Action",
+
+    "type_lab": "Lab",
+    "type_radiology": "Radiology",
+
+    "search_placeholder": "Search by patient…",
+    "error_title": "Couldn't load the lab queue",
+    "empty_title": "No orders waiting",
+    "empty_body": "A quiet day — no pending labs or radiology",
+    "offline_note": "Offline — result entry works locally and will sync",
+
+    "enter_result": "Enter result",
+    "notify_patient": "Notify patient",
+    "deliver": "Deliver",
+    "notify_sent": "WhatsApp notification sent: your result is ready",
+
+    "result_missing_value": "Enter the result value",
+    "result_saved": "Result saved",
+    "result_value": "Result",
+    "result_value_placeholder": "Value or description",
+    "result_attachment": "Attachment (image or PDF)",
+    "result_note": "Note",
+    "result_note_placeholder": "Optional note"
   },
 
   "insurance": {

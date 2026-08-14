@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { getEncounters, getOrders, getInvoices, getPlan, getPatient, getCatalog } from "@/lib/mock/healthcare";
+import { getEncounters, getOrders, getInvoices, getResults, getPlan, getPatient, getCatalog } from "@/lib/mock/healthcare";
 import { computeInsuranceSplit, round2 } from "@/features/healthcare/calc";
-import type { HcEncounter, HcOrder, HcInvoice, SyncStatus } from "@/features/healthcare/types";
+import type { HcEncounter, HcOrder, HcInvoice, HcResult, SyncStatus } from "@/features/healthcare/types";
 
 /**
  * Live clinical working set (spec §4 — Encounter is the module heart).
@@ -25,6 +25,9 @@ function seedOrders(): Record<string, HcOrder> {
 }
 function seedInvoices(): Record<string, HcInvoice> {
   return Object.fromEntries(getInvoices().map((i) => [i.id, i]));
+}
+function seedResults(): Record<string, HcResult> {
+  return Object.fromEntries(getResults().map((r) => [r.id, r]));
 }
 
 let localSeq = 9000;
@@ -50,8 +53,11 @@ interface ClinicalState {
   encounters: Record<string, HcEncounter>;
   orders: Record<string, HcOrder>;
   invoices: Record<string, HcInvoice>;
+  results: Record<string, HcResult>;
   /** Per-encounter offline indicator (spec §4.5 — "encounter-level local/syncing/synced"). */
   sync: Record<string, SyncStatus>;
+  /** Per-order offline indicator (spec §7.5 — "offline: result entry local + sync"). */
+  resultSync: Record<string, SyncStatus>;
 
   ensureEncounter: (id: string, seed: { patient_id: string; provider_id: string; appointment_id: string }) => void;
   updateDiagnosis: (id: string, patch: Partial<Pick<HcEncounter, "complaint" | "diagnosis" | "clinical_note">>) => void;
@@ -63,6 +69,10 @@ interface ClinicalState {
   invoiceLines: (encounterId: string) => InvoiceLine[];
   canFinish: (encounterId: string) => boolean;
   finishVisit: (encounterId: string) => { ok: true; invoice: HcInvoice } | { ok: false };
+  /** Lab queue (spec §7.3) — pending/in_progress → ready; writes the Result and
+   * links it back onto the order (`result_id`). */
+  enterResult: (orderId: string, input: { value: string; attachment?: string; note?: string }) => void;
+  deliverResult: (orderId: string) => void;
 }
 
 export const useHealthcareClinical = create<ClinicalState>()(
@@ -71,7 +81,9 @@ export const useHealthcareClinical = create<ClinicalState>()(
       encounters: seedEncounters(),
       orders: seedOrders(),
       invoices: seedInvoices(),
+      results: seedResults(),
       sync: {},
+      resultSync: {},
 
       ensureEncounter: (id, seed) => {
         if (get().encounters[id]) return;
@@ -250,6 +262,45 @@ export const useHealthcareClinical = create<ClinicalState>()(
         }
 
         return { ok: true, invoice };
+      },
+
+      enterResult: (orderId, input) => {
+        const s = get();
+        const order = s.orders[orderId];
+        if (!order) return;
+        const resultId = order.result_id ?? nextLocalId("res");
+        const result: HcResult = {
+          id: resultId, order_id: orderId, value: input.value,
+          attachment: input.attachment, note: input.note,
+          status: "ready", ready_at: new Date().toISOString(),
+        };
+        set((st) => ({
+          results: { ...st.results, [resultId]: result },
+          orders: { ...st.orders, [orderId]: { ...order, status: "ready", result_id: resultId } },
+          resultSync: { ...st.resultSync, [orderId]: "local" },
+        }));
+
+        // Same local→syncing→synced simulation used elsewhere in this store.
+        if (!isOfflineMock()) {
+          setTimeout(() => {
+            set((st) => ({ resultSync: { ...st.resultSync, [orderId]: "syncing" } }));
+            setTimeout(() => {
+              set((st) => ({ resultSync: { ...st.resultSync, [orderId]: "synced" } }));
+            }, 600);
+          }, 400);
+        }
+      },
+
+      deliverResult: (orderId) => {
+        set((s) => {
+          const order = s.orders[orderId];
+          if (!order || !order.result_id) return s;
+          const result = s.results[order.result_id];
+          return {
+            orders: { ...s.orders, [orderId]: { ...order, status: "delivered" } },
+            results: result ? { ...s.results, [order.result_id]: { ...result, status: "delivered" } } : s.results,
+          };
+        });
       },
     }),
     { name: "flexova.healthcare.clinical" }

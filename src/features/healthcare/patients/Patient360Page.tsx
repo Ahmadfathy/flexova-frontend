@@ -45,6 +45,7 @@ export function Patient360Page() {
   const owners = useHealthcarePatients((s) => s.owners);
   const encountersMap = useHealthcareClinical((s) => s.encounters);
   const orders = useHealthcareClinical((s) => s.orders);
+  const results = useHealthcareClinical((s) => s.results);
   const invoicesMap = useHealthcareClinical((s) => s.invoices);
   const logAccess = useHealthcareAudit((s) => s.logAccess);
 
@@ -202,7 +203,7 @@ export function Patient360Page() {
           )}
           {canClinical && (
             <TabsContent value="orders">
-              <OrdersResultsTab encounters={patientEncounters} ordersById={orders} />
+              <OrdersResultsTab encounters={patientEncounters} ordersById={orders} resultsById={results} />
             </TabsContent>
           )}
           {canClinical && (

@@ -3,28 +3,22 @@ import { FlaskConical } from "lucide-react";
 import { StatusPill } from "@/components/patterns/StatusPill";
 import { EmptyState } from "@/components/patterns/EmptyState";
 import { formatDate } from "@/lib/format";
-import { getResults } from "@/lib/mock/healthcare";
-import type { HcEncounter, HcOrder } from "@/features/healthcare/types";
+import type { HcEncounter, HcOrder, HcResult } from "@/features/healthcare/types";
 
 interface OrdersResultsTabProps {
   encounters: HcEncounter[];
   ordersById: Record<string, HcOrder>;
+  resultsById: Record<string, HcResult>;
 }
 
 const STATUS_VARIANT = {
   pending: "pending", in_progress: "in-progress", ready: "approved", delivered: "approved", issued: "approved",
 } as const;
 
-/**
- * Orders & Results tab (spec §6.2, PHI). Results are still read from the
- * static fixture (`getResults()`) — Prompt 5 (Lab queue) is what introduces
- * result *entry*, at which point this needs its own live store the same way
- * encounters/orders/invoices and patients did in Prompts 2-3, not a silent
- * carry-over of the same static-read mistake.
- */
-export function OrdersResultsTab({ encounters, ordersById }: OrdersResultsTabProps) {
+/** Orders & Results tab (spec §6.2, PHI). Reads live off useHealthcareClinical —
+ * a result entered on the Lab queue (Prompt 5) shows up here immediately. */
+export function OrdersResultsTab({ encounters, ordersById, resultsById }: OrdersResultsTabProps) {
   const { t } = useTranslation("healthcare");
-  const results = getResults();
 
   // Derived from each order's own `encounter_id`, not the encounter's `orders[]`
   // list — see the note in `useHealthcareClinical`'s `ordersOf` helper.
@@ -40,7 +34,7 @@ export function OrdersResultsTab({ encounters, ordersById }: OrdersResultsTabPro
   return (
     <ul className="space-y-2">
       {rows.map(({ encounter, order }) => {
-        const result = order.result_id ? results.find((r) => r.id === order.result_id) : undefined;
+        const result = order.result_id ? resultsById[order.result_id] : undefined;
         return (
           <li key={order.id} className="rounded-lg border border-border p-3 space-y-1.5">
             <div className="flex items-center justify-between gap-3">

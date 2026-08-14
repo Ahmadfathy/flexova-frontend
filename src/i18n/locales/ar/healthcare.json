@@ -261,7 +261,41 @@
   },
 
   "lab": {
-    "title": "طابور التحاليل والأشعة"
+    "title": "طابور التحاليل والأشعة",
+    "permission_required": "لا تملك صلاحية إدارة المعمل",
+
+    "kpi_pending": "قيد الانتظار",
+    "kpi_ready": "جاهز",
+    "kpi_delivered": "تم التسليم",
+
+    "col_order": "الأمر",
+    "col_patient": "المريض",
+    "col_provider": "الطبيب الطالب",
+    "col_type": "النوع",
+    "col_status": "الحالة",
+    "col_action": "إجراء",
+
+    "type_lab": "تحليل",
+    "type_radiology": "أشعة",
+
+    "search_placeholder": "ابحث بالمريض…",
+    "error_title": "تعذّر تحميل طابور التحاليل",
+    "empty_title": "لا أوامر منتظرة",
+    "empty_body": "يوم هادئ — لا توجد تحاليل أو أشعة معلّقة",
+    "offline_note": "غير متصل — إدخال النتيجة يعمل محلياً وسيتم مزامنته",
+
+    "enter_result": "إدخال نتيجة",
+    "notify_patient": "إبلاغ المريض",
+    "deliver": "تسليم",
+    "notify_sent": "تم إرسال إشعار واتساب: نتيجتك جاهزة",
+
+    "result_missing_value": "أدخل نتيجة الفحص",
+    "result_saved": "تم حفظ النتيجة",
+    "result_value": "النتيجة",
+    "result_value_placeholder": "القيمة أو الوصف",
+    "result_attachment": "مرفق (صورة أو PDF)",
+    "result_note": "ملاحظة",
+    "result_note_placeholder": "ملاحظة اختيارية"
   },
 
   "insurance": {
