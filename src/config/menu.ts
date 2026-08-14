@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Package, ShoppingCart, Truck, Users, Calculator,
-  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock, Wrench, Warehouse, Factory, Briefcase,
+  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock, Wrench, Warehouse, Factory, Briefcase, Stethoscope,
 } from "lucide-react";
 
 export type MenuGroup = "core" | "sector" | "admin";
@@ -230,6 +230,22 @@ export const MENU: MenuItem[] = [
       { key: "prj_billing",    route: "/projects/billing" },
       { key: "prj_time",       route: "/time" },
       { key: "prj_approvals",  route: "/time/approvals" },
+    ],
+  },
+  {
+    key: "healthcare",
+    icon: Stethoscope,
+    route: "/healthcare",
+    group: "sector",
+    order: 15,
+    moduleFlag: "healthcare",
+    permission: "healthcare.today.view",
+    subItems: [
+      { key: "hc_today",     route: "/healthcare/today" },
+      { key: "hc_patients",  route: "/healthcare/patients" },
+      { key: "hc_lab",       route: "/healthcare/lab" },
+      { key: "hc_insurance", route: "/healthcare/insurance" },
+      { key: "hc_catalog",   route: "/healthcare/catalog" },
     ],
   },
   {

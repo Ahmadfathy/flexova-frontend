@@ -1,0 +1,96 @@
+{
+  "placeholder": {
+    "note": "The real screen lands in a later step"
+  },
+
+  "status": {
+    "booked": "Booked",
+    "checked-in": "Waiting",
+    "in-visit": "In visit",
+    "completed": "Completed",
+    "no-show": "No-show",
+    "cancelled": "Cancelled"
+  },
+
+  "today": {
+    "title": "Today",
+    "permission_required": "You don't have permission to view the Today Board",
+
+    "col_time": "Time",
+    "col_patient": "Patient",
+    "col_provider": "Doctor",
+    "col_status": "Status",
+    "col_financial": "Due",
+    "col_action": "Action",
+
+    "badge_new": "New",
+
+    "action_checkin": "Check-in",
+    "action_start_visit": "Start visit",
+    "action_collect": "Collect",
+    "action_done": "Done",
+
+    "sync_local": "Local",
+    "sync_syncing": "Syncing…",
+
+    "provider_all": "All doctors",
+
+    "book_cta": "＋ Appointment",
+    "book_title": "Book a new appointment",
+    "book_patient": "Patient",
+    "book_patient_placeholder": "Select patient",
+    "book_provider": "Doctor",
+    "book_provider_placeholder": "Select doctor",
+    "book_time": "Time",
+    "book_missing_fields": "Select a patient and a doctor first",
+    "book_success": "Appointment booked",
+
+    "kpi_appointments": "Appointments",
+    "kpi_waiting": "Waiting",
+    "kpi_completed": "Completed",
+    "kpi_due": "Due to collect today",
+
+    "error_title": "Couldn't load the Today Board",
+    "error_body": "Something went wrong loading the data, try again",
+
+    "empty_title": "No appointments today",
+    "empty_book": "＋ Book first appointment",
+    "empty_tomorrow": "See tomorrow",
+    "empty_tomorrow_note": "Browsing other days lands later",
+
+    "no_results_title": "No matching results",
+    "no_results_body": "No appointments match the current filter",
+    "clear_filters": "Clear filters",
+
+    "offline_note": "Offline — check-in and collect still work locally and will sync",
+
+    "collect_success": "Collected {{amount}} — {{route}}",
+    "eta_b2c": "ETA receipt issued",
+    "eta_b2b": "B2B invoice opened on the insurer"
+  },
+
+  "patients": {
+    "title": "Patients",
+    "new": "Add patient"
+  },
+
+  "patient360": {
+    "title": "Patient profile"
+  },
+
+  "encounter": {
+    "title": "Encounter"
+  },
+
+  "lab": {
+    "title": "Lab & Radiology queue"
+  },
+
+  "insurance": {
+    "title": "Insurance payers & plans"
+  },
+
+  "catalog": {
+    "title": "Service catalog"
+  }
+}

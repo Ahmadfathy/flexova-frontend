@@ -161,6 +161,14 @@ import {
 } from "@/features/construction/ConstructionPages";
 import { ConstructionGuard } from "@/features/construction/ConstructionGuard";
 
+// Healthcare — FE_18 — back-office (standard shell). Today Board this step (Prompt 1);
+// patients/encounter/lab/insurance/catalog are routed placeholders, built in later prompts.
+import { HealthcareLayout } from "@/features/healthcare/HealthcareLayout";
+import {
+  TodayBoardPage, PatientsListPage, PatientNewPage, Patient360Page,
+  EncounterPage, LabQueuePage, InsurancePage, CatalogPage,
+} from "@/features/healthcare/HealthcarePages";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -447,6 +455,19 @@ export default function App() {
           </Route>
           <Route path="/time"           element={<PersonalTimePage />} />
           <Route path="/time/approvals" element={<TimeApprovalsPage />} />
+
+          {/* Healthcare — FE_18 — back-office (standard shell) */}
+          <Route path="/healthcare" element={<HealthcareLayout />}>
+            <Route index element={<Navigate to="today" replace />} />
+            <Route path="today"          element={<TodayBoardPage />} />
+            <Route path="patients"       element={<PatientsListPage />} />
+            <Route path="patients/new"   element={<PatientNewPage />} />
+            <Route path="patients/:id"   element={<Patient360Page />} />
+            <Route path="lab"            element={<LabQueuePage />} />
+            <Route path="insurance"      element={<InsurancePage />} />
+            <Route path="catalog"        element={<CatalogPage />} />
+          </Route>
+          <Route path="/healthcare/encounter/:id" element={<EncounterPage />} />
 
           {/* Price tiers editor — extends FE_01 price lists (spec §11), standalone path */}
           <Route path="/pricing/lists/:id" element={<PriceTiersEditorPage />} />

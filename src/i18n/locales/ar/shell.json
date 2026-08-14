@@ -17,6 +17,13 @@
     "wholesale":    "الجملة",
     "mfg":          "التصنيع",
     "projects":     "المشاريع",
+    "healthcare":   "الرعاية الصحية",
+
+    "hc_today":     "اليوم",
+    "hc_patients":  "المرضى",
+    "hc_lab":       "التحاليل والأشعة",
+    "hc_insurance": "التأمين",
+    "hc_catalog":   "الكتالوج",
 
     "wh_orders":     "طلبات البيع",
     "wh_deliveries": "أذون التسليم",

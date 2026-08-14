@@ -51,10 +51,12 @@ import arProjects    from "./locales/ar/projects.json";
 import enProjects    from "./locales/en/projects.json";
 import arConstruction from "./locales/ar/construction.json";
 import enConstruction from "./locales/en/construction.json";
+import arHealthcare   from "./locales/ar/healthcare.json";
+import enHealthcare   from "./locales/en/healthcare.json";
 
 i18n.use(initReactI18next).init({
   lng: "ar", fallbackLng: "ar",
-  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc", "repair", "wholesale", "van", "mfg", "play", "projects", "construction"],
+  ns: ["common", "shell", "settings", "inventory", "sales", "purchasing", "finance", "crm", "hr", "reports", "admin", "auth", "errors", "patterns", "eta", "pos", "fnb", "svc", "repair", "wholesale", "van", "mfg", "play", "projects", "construction", "healthcare"],
   defaultNS: "common",
   resources: {
     ar: {
@@ -63,6 +65,7 @@ i18n.use(initReactI18next).init({
       finance: arFinance, crm: arCrm, hr: arHr, reports: arReports, admin: arAdmin,
       auth: arAuth, errors: arErrors, patterns: arPatterns, eta: arEta, pos: arPos, fnb: arFnb, svc: arSvc, repair: arRepair,
       wholesale: arWholesale, van: arVan, mfg: arMfg, play: arPlay, projects: arProjects, construction: arConstruction,
+      healthcare: arHealthcare,
     },
     en: {
       common: enCommon, shell: enShell, settings: enSettings,
@@ -70,6 +73,7 @@ i18n.use(initReactI18next).init({
       finance: enFinance, crm: enCrm, hr: enHr, reports: enReports, admin: enAdmin,
       auth: enAuth, errors: enErrors, patterns: enPatterns, eta: enEta, pos: enPos, fnb: enFnb, svc: enSvc, repair: enRepair,
       wholesale: enWholesale, van: enVan, mfg: enMfg, play: enPlay, projects: enProjects, construction: enConstruction,
+      healthcare: enHealthcare,
     },
   },
   interpolation: { escapeValue: false },

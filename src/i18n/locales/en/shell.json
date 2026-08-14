@@ -17,6 +17,13 @@
     "wholesale":    "Wholesale",
     "mfg":          "Manufacturing",
     "projects":     "Projects",
+    "healthcare":   "Healthcare",
+
+    "hc_today":     "Today",
+    "hc_patients":  "Patients",
+    "hc_lab":       "Lab & Radiology",
+    "hc_insurance": "Insurance",
+    "hc_catalog":   "Catalog",
 
     "wh_orders":     "Orders",
     "wh_deliveries": "Deliveries",

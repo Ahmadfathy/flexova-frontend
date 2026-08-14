@@ -1,0 +1,96 @@
+{
+  "placeholder": {
+    "note": "الشاشة الفعلية تصل في خطوة لاحقة"
+  },
+
+  "status": {
+    "booked": "محجوز",
+    "checked-in": "في الانتظار",
+    "in-visit": "داخل الزيارة",
+    "completed": "منتهي",
+    "no-show": "لم يحضر",
+    "cancelled": "ملغي"
+  },
+
+  "today": {
+    "title": "اليوم",
+    "permission_required": "لا تملك صلاحية عرض لوحة اليوم",
+
+    "col_time": "الوقت",
+    "col_patient": "المريض",
+    "col_provider": "الطبيب",
+    "col_status": "الحالة",
+    "col_financial": "المستحق",
+    "col_action": "إجراء",
+
+    "badge_new": "جديد",
+
+    "action_checkin": "تسجيل حضور",
+    "action_start_visit": "بدء الزيارة",
+    "action_collect": "تحصيل",
+    "action_done": "تمّ",
+
+    "sync_local": "محلي",
+    "sync_syncing": "جارِ المزامنة",
+
+    "provider_all": "كل الأطباء",
+
+    "book_cta": "＋ موعد",
+    "book_title": "حجز موعد جديد",
+    "book_patient": "المريض",
+    "book_patient_placeholder": "اختر المريض",
+    "book_provider": "الطبيب",
+    "book_provider_placeholder": "اختر الطبيب",
+    "book_time": "الوقت",
+    "book_missing_fields": "اختر المريض والطبيب أولاً",
+    "book_success": "تم حجز الموعد",
+
+    "kpi_appointments": "المواعيد",
+    "kpi_waiting": "في الانتظار",
+    "kpi_completed": "منتهية",
+    "kpi_due": "مستحق تحصيله اليوم",
+
+    "error_title": "تعذّر تحميل لوحة اليوم",
+    "error_body": "حدث خطأ أثناء تحميل البيانات، حاول مرة أخرى",
+
+    "empty_title": "لا مواعيد اليوم",
+    "empty_book": "＋ احجز أول موعد",
+    "empty_tomorrow": "شوف بكرة",
+    "empty_tomorrow_note": "تصفح الأيام القادمة يصل لاحقاً",
+
+    "no_results_title": "لا نتائج مطابقة",
+    "no_results_body": "لا توجد مواعيد تطابق الفلتر الحالي",
+    "clear_filters": "امسح الفلاتر",
+
+    "offline_note": "غير متصل — تسجيل الحضور والتحصيل يعملان محلياً وسيتم مزامنتهما",
+
+    "collect_success": "تم تحصيل {{amount}} — {{route}}",
+    "eta_b2c": "إيصال ETA صادر",
+    "eta_b2b": "فاتورة B2B على شركة التأمين"
+  },
+
+  "patients": {
+    "title": "المرضى",
+    "new": "إضافة مريض"
+  },
+
+  "patient360": {
+    "title": "ملف المريض"
+  },
+
+  "encounter": {
+    "title": "الزيارة"
+  },
+
+  "lab": {
+    "title": "طابور التحاليل والأشعة"
+  },
+
+  "insurance": {
+    "title": "شركات وخطط التأمين"
+  },
+
+  "catalog": {
+    "title": "كتالوج الخدمات"
+  }
+}
