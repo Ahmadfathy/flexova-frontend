@@ -1,0 +1,25 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.main {
+  aspect-ratio: 1;
+  background: hsl(var(--fx-surface));
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: var(--radius-lg);
+}
+
+.thumbs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.thumb {
+  width: 64px;
+  height: 64px;
+  background: hsl(var(--fx-surface));
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: 10px;
+}

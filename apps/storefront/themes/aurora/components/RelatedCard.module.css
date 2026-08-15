@@ -1,0 +1,21 @@
+.card {
+  display: block;
+  text-decoration: none;
+  background: hsl(var(--fx-surface));
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: var(--radius-lg);
+  padding: 0.75rem;
+}
+
+.imageBox {
+  aspect-ratio: 1;
+  background: hsl(var(--fx-bg));
+  border-radius: calc(var(--radius-lg) - 6px);
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: hsl(var(--fx-ink));
+}

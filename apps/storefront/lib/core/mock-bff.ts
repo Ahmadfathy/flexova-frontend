@@ -13,6 +13,7 @@
  * the functions below.
  */
 import "server-only";
+import { unstable_cache } from "next/cache";
 import fixturesJson from "@/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json";
 import type { Product, ProductStatic, ProductDynamic, ProductVariant, Category, ThemeName, Cart, OnlineOrder } from "./types";
 
@@ -86,6 +87,18 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
   return all.find((p) => p.slug_en === slug || p.slug_ar === slug);
 }
 
+/** Static half only, by slug (spec §4.1 PDP shell) — clean AR/EN slug. */
+export async function getProductStaticBySlug(slug: string): Promise<ProductStatic | undefined> {
+  const all = await getCatalogStatic();
+  return all.find((p) => p.slug_en === slug || p.slug_ar === slug);
+}
+
+/** "related" section (spec §4.2, static/ISR) — same category, self excluded. */
+export async function getRelatedStatic(category: string, excludeId: string, limit = 4): Promise<ProductStatic[]> {
+  const all = await getCatalogStatic();
+  return all.filter((p) => p.category === category && p.id !== excludeId).slice(0, limit);
+}
+
 /** Static half only (spec §5.1) — instant, no ERP round trip. PLP renders
  * this immediately; each card's `dynamic` half streams in separately via
  * `getProductDynamic()` (see `catalog.ts`'s per-card island). */
@@ -108,6 +121,27 @@ export async function getProductDynamic(id: string): Promise<ProductDynamic> {
     offer: raw._dynamic.offer,
     erp_error: raw._dynamic.erp_error,
   };
+}
+
+/**
+ * PDP's dynamic read (spec §4.1) — same live price/stock as
+ * `getProductDynamic`, but wrapped in Next's Data Cache with a per-product
+ * tag. Unlike PLP's per-card islands (which re-read on every request to
+ * make independent streaming visible in dev), a Product page is meant to
+ * be genuinely ISR'd: `unstable_cache` lets `generateStaticParams` +
+ * static rendering work for the shell while still being instantly
+ * invalidatable — the *same* mechanism §10's "product changed in admin →
+ * revalidateTag via Redis → all instances update" describes, and the
+ * exact reason apps/storefront's custom Redis cache handler
+ * (lib/cache/redis-handler.mjs, Phase A) exists. A real ERP webhook would
+ * call `revalidateTag(`product:${id}`)` on price/stock change; nothing
+ * else here would need to change.
+ */
+export async function getProductDynamicCached(id: string): Promise<ProductDynamic> {
+  return unstable_cache(() => getProductDynamic(id), ["product-dynamic", id], {
+    tags: [`product:${id}`],
+    revalidate: 60,
+  })();
 }
 
 /** StoreCategory read (mocked) — spec §3. The storefront fixture only

@@ -11,7 +11,7 @@
  * has to special-case a theme that's missing a piece.
  */
 import type { ComponentType } from "react";
-import type { Product, Category } from "./types";
+import type { Product, ProductStatic, Category } from "./types";
 import type { PlpResult } from "./catalog";
 
 export interface ThemeConfig {
@@ -37,8 +37,27 @@ export interface PlpLayoutProps {
   result: PlpResult;
 }
 
+/** spec §4.2 — gallery + info block (title -> price island -> availability
+ * island -> variant selector -> add to cart) + description + related. The
+ * dynamic island itself is resolved inside the theme's own PdpLayout via
+ * `ProductAvailabilityIsland` wrapped in `<Suspense>` — not passed as a
+ * prop here, so the static shell can stream before it resolves. */
+export interface PdpLayoutProps {
+  product: ProductStatic;
+  categoryLabel?: string;
+  related: ProductStatic[];
+}
+
+/** spec §4.4 — true 404 (unpublished/deleted), themed, with suggestions +
+ * catalog link. Rendered by `app/products/[slug]/not-found.tsx`. */
+export interface NotFoundLayoutProps {
+  suggestions: ProductStatic[];
+}
+
 export interface ThemeModule {
   config: ThemeConfig;
   HomeLayout: ComponentType<HomeLayoutProps>;
   PlpLayout: ComponentType<PlpLayoutProps>;
+  PdpLayout: ComponentType<PdpLayoutProps>;
+  NotFoundLayout: ComponentType<NotFoundLayoutProps>;
 }

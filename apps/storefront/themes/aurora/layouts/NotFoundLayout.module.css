@@ -1,0 +1,60 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  flex: 1;
+}
+
+.icon {
+  color: hsl(var(--fx-muted));
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: hsl(var(--fx-ink));
+  margin: 0 0 0.5rem;
+}
+
+.desc {
+  color: hsl(var(--fx-muted));
+  margin: 0 0 1.5rem;
+}
+
+.catalogLink {
+  display: inline-block;
+  background: hsl(var(--brand));
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.suggestions {
+  margin-top: 3.5rem;
+  text-align: start;
+}
+
+.suggestionsTitle {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: hsl(var(--fx-ink));
+  margin: 0 0 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}

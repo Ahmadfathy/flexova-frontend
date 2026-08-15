@@ -1,0 +1,77 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.breadcrumb {
+  font-size: 0.8rem;
+  color: hsl(var(--fx-muted));
+  margin-bottom: 1rem;
+}
+
+.breadcrumb a {
+  color: hsl(var(--fx-muted));
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: hsl(var(--fx-ink));
+  margin: 0;
+}
+
+.desc {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: hsl(var(--fx-muted));
+  border-top: 1px solid hsl(var(--fx-line));
+  padding-top: 1.25rem;
+  margin: 0;
+}
+
+.relatedSection {
+  margin-top: 3rem;
+}
+
+.relatedTitle {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: hsl(var(--fx-ink));
+  margin: 0 0 1rem;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
