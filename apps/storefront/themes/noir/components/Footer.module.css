@@ -1,0 +1,12 @@
+.footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  margin-top: 2rem;
+}
+
+.line {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: hsl(var(--fx-muted));
+  margin: 0.25rem 0;
+}

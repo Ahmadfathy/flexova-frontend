@@ -1,0 +1,21 @@
+.footer {
+  border-top: 1px solid hsl(var(--fx-line));
+  margin-top: 3rem;
+}
+
+.inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: hsl(var(--fx-muted));
+}
+
+.links {
+  display: flex;
+  gap: 1rem;
+}

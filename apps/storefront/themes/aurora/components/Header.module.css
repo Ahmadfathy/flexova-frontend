@@ -1,0 +1,39 @@
+.header {
+  background: hsl(var(--fx-surface));
+  border-bottom: 1px solid hsl(var(--fx-line));
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: hsl(var(--brand-dark));
+}
+
+.nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-inline-end: auto;
+}
+
+.navLink {
+  font-size: 0.9rem;
+  color: hsl(var(--fx-ink));
+  cursor: default;
+}
+
+.cart {
+  font-size: 1.25rem;
+}

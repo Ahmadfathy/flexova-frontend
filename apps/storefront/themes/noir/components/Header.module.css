@@ -1,0 +1,30 @@
+.header {
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  border-bottom: 1px solid hsl(var(--fx-line));
+}
+
+.eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: hsl(var(--brand));
+  margin-bottom: 0.75rem;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: hsl(var(--fx-ink));
+  margin: 0 0 1rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: hsl(var(--fx-muted));
+}

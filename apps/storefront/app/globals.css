@@ -1,6 +1,10 @@
-/* Phase A scaffold only — no store/theme features yet (that's FE_21 Storefront S1).
-   This proves apps/storefront consumes the same FE_00 CSS-variable contract as
-   apps/erp, both sourced from @flexova/shared. */
+/* Base FE_00 CSS-variable contract, shared with apps/erp — see
+   packages/shared/src/tokens/tokens.css. Theme packages layer their own
+   VALUES on top of these same names under `[data-theme="<name>"]`
+   (themes/aurora/tokens.css, themes/noir/tokens.css — imported in
+   app/layout.tsx so both ship statically; only the active theme's
+   `[data-theme]` attribute on <html> makes its values apply — zero FOUC,
+   no runtime CSS fetch). */
 @import "@flexova/shared/tokens.css";
 
 html,
@@ -14,4 +18,9 @@ body {
   color: hsl(var(--fx-ink));
   font-family: var(--font-active), system-ui, sans-serif;
   line-height: 1.5;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
 }

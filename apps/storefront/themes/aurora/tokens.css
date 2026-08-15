@@ -1,0 +1,20 @@
+/**
+ * aurora — token VALUES only (spec §2 Layer 2). Same CSS-variable NAMES as
+ * @flexova/shared (imported once in app/globals.css) — this file only ever
+ * overrides values under `[data-theme="aurora"]`, never invents new names
+ * that Shared Core or the other theme wouldn't recognize.
+ */
+[data-theme="aurora"] {
+  --brand: 24 92% 54%;       /* warm amber/coral */
+  --brand-dark: 20 88% 44%;
+  --fx-bg: 30 40% 98%;
+  --fx-surface: 0 0% 100%;
+  --fx-ink: 20 30% 14%;
+  --fx-muted: 25 15% 45%;
+  --fx-line: 28 30% 90%;
+
+  --aurora-hero-from: 24 92% 92%;
+  --aurora-hero-to: 340 80% 92%;
+  --font-display: "Cairo", var(--font-active), system-ui, sans-serif;
+  --radius-lg: 20px;
+}

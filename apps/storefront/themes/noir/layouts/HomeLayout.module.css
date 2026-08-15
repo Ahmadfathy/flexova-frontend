@@ -1,0 +1,22 @@
+.page {
+  min-height: 100vh;
+}
+
+.listSection {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.sectionLabel {
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: hsl(var(--brand));
+  margin: 0 0 1.5rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,18 @@
+/**
+ * noir — token VALUES only (spec §2 Layer 2). Same CSS-variable NAMES as
+ * @flexova/shared — this file only overrides values under
+ * `[data-theme="noir"]`. Deliberately dark (an editorial aesthetic
+ * choice for this theme), independent of the site's light/dark mode.
+ */
+[data-theme="noir"] {
+  --brand: 42 55% 58%;        /* muted bronze/gold */
+  --brand-dark: 42 60% 46%;
+  --fx-bg: 0 0% 7%;
+  --fx-surface: 0 0% 11%;
+  --fx-ink: 40 20% 92%;
+  --fx-muted: 40 8% 62%;
+  --fx-line: 0 0% 20%;
+
+  --font-display: "IBM Plex Sans Arabic", var(--font-active), system-ui, sans-serif;
+  --radius-lg: 2px;
+}

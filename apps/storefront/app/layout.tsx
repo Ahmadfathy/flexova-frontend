@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { getActiveTheme } from "@/lib/core/mock-bff";
 import "./globals.css";
+// Both themes' token VALUES ship statically (cheap CSS) — which one applies
+// is decided purely by the `data-theme` attribute set below, resolved
+// server-side before the HTML streams out. No client-side theme fetch, no
+// flash of the wrong theme.
+import "@/themes/aurora/tokens.css";
+import "@/themes/noir/tokens.css";
 
 export const metadata: Metadata = {
   title: "Flexova Store",
-  description: "Flexova storefront — monorepo scaffold (FE_21 Phase A). No store features yet.",
+  description: "Flexova storefront — public e-commerce store.",
 };
 
-// RTL-ready default: Arabic-first, matching apps/erp's FE_00 convention.
-// Server-side activeTheme resolution (per-theme data-theme/dir) lands in
-// Storefront Prompt S1 — this is intentionally the bare scaffold shell.
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // Resolved server-side from StoreConfig (mocked) — spec §2: "no FOUC;
+  // appears in the SSR HTML directly." Nothing here runs on the client.
+  const activeTheme = await getActiveTheme();
+
   return (
-    <html lang="ar" dir="rtl" data-mode="light" data-theme="nile">
+    <html lang="ar" dir="rtl" data-theme={activeTheme}>
       <body>{children}</body>
     </html>
   );
