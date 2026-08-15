@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Turborepo
+.turbo
+
+# Next.js (apps/storefront)
+.next
+out
+next-env.d.ts
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,5 +30,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-SECTORS.md

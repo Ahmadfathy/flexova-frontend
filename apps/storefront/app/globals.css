@@ -1,0 +1,17 @@
+/* Phase A scaffold only — no store/theme features yet (that's FE_21 Storefront S1).
+   This proves apps/storefront consumes the same FE_00 CSS-variable contract as
+   apps/erp, both sourced from @flexova/shared. */
+@import "@flexova/shared/tokens.css";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: hsl(var(--fx-bg));
+  color: hsl(var(--fx-ink));
+  font-family: var(--font-active), system-ui, sans-serif;
+  line-height: 1.5;
+}

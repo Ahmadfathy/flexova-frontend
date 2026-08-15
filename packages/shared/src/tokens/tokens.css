@@ -1,0 +1,100 @@
+/**
+ * @flexova/shared — design tokens (FE_00 contract)
+ *
+ * The CSS-variable contract shared by apps/erp and apps/storefront.
+ * This is Layers A+B+font-system of the original FE_00 token system
+ * (docs/build/Flexova_FE_00_Foundation.md §14), extracted verbatim so
+ * both apps consume the exact same variable names/values instead of
+ * duplicating them. Consumers apply data-mode / data-theme / lang /
+ * data-font-* attributes on <html> exactly as FE_00 defines.
+ *
+ * This file intentionally stops at the raw token layer — it does NOT
+ * include the shadcn bridge (Layer C) or app-shell/base-reset CSS,
+ * since those are erp-shell-specific, not part of the shared contract.
+ */
+
+/* ============================================================
+   LAYER B — MODE NEUTRALS + SEMANTICS  (HSL channels)
+   ============================================================ */
+:root{
+  /* neutrals — light */
+  --fx-bg:        220 20% 98%;   /* #F9FAFB */
+  --fx-surface:   0 0% 100%;     /* #FFFFFF */
+  --fx-tint-base: 0 0% 100%;     /* #FFFFFF */
+  --fx-ink:       222 47% 11%;   /* #0F172A */
+  --fx-muted:     215 16% 47%;   /* #64748B */
+  --fx-line:      218 28% 92%;   /* #E6EAF1 */
+
+  /* semantic solids */
+  --success: 142 76% 36%;
+  --warning: 32 95% 44%;
+  --danger:  0 72% 51%;
+  --on-brand: 0 0% 100%;
+
+  /* semantic text */
+  --success-text: hsl(var(--success));
+  --warning-text: hsl(26 90% 37%);
+  --danger-text:  hsl(var(--danger));
+  --brand-text:   hsl(var(--brand-dark));
+
+  /* derived tints */
+  --brand-tint:   color-mix(in srgb, hsl(var(--brand))   12%, hsl(var(--fx-tint-base)));
+  --success-tint: color-mix(in srgb, hsl(var(--success)) 14%, hsl(var(--fx-tint-base)));
+  --warning-tint: color-mix(in srgb, hsl(var(--warning)) 14%, hsl(var(--fx-tint-base)));
+  --danger-tint:  color-mix(in srgb, hsl(var(--danger))  14%, hsl(var(--fx-tint-base)));
+  --info-tint:    color-mix(in srgb, hsl(var(--brand))   10%, hsl(var(--fx-tint-base)));
+
+  /* shadows — §14.7: soft + diffuse */
+  --shadow:    0 2px 4px rgba(15,23,42,.04), 0 12px 32px -12px rgba(15,23,42,.12);
+  --shadow-sm: 0 1px 3px rgba(15,23,42,.06);
+
+  /* easing + shell metrics */
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --nav-w: 240px; --nav-w-collapsed: 72px; --topbar-h: 60px;
+
+  /* font system — §14.6 */
+  --font-ar:     "IBM Plex Sans Arabic";
+  --font-en:     "Inter";
+  --font-active: var(--font-ar);
+  --font-base:   14px;
+}
+
+/* DARK overrides */
+html[data-mode="dark"]{
+  --fx-bg:        218 36% 9%;
+  --fx-surface:   215 29% 13%;
+  --fx-tint-base: 214 26% 16%;
+  --fx-ink:       215 33% 93%;
+  --fx-muted:     215 19% 64%;
+  --fx-line:      213 21% 20%;
+
+  --success-text: color-mix(in srgb, white 36%, hsl(var(--success)));
+  --warning-text: color-mix(in srgb, white 40%, hsl(var(--warning)));
+  --danger-text:  color-mix(in srgb, white 38%, hsl(var(--danger)));
+  --brand-text:   color-mix(in srgb, white 38%, hsl(var(--brand)));
+
+  --shadow:    0 2px 4px rgba(0,0,0,.3), 0 12px 32px -12px rgba(0,0,0,.5);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+}
+
+/* ============================================================
+   LAYER A — THEME PALETTE
+   ============================================================ */
+html[data-theme="nile"]    { --brand: 224 76% 48%; --brand-dark: 224 76% 42%; }
+html[data-theme="emerald"] { --brand: 161 94% 30%; --brand-dark: 163 94% 24%; }
+html[data-theme="graphite"]{ --brand: 215 19% 35%; --brand-dark: 215 25% 27%; }
+html[data-theme="clay"]    { --brand: 17 75% 48%;  --brand-dark: 18 85% 39%; }
+html[data-theme="royal"]   { --brand: 263 70% 50%; --brand-dark: 263 69% 42%; }
+html[data-theme="teal"]    { --brand: 175 84% 32%; --brand-dark: 175 83% 26%; }
+:root{ --brand: 224 76% 48%; --brand-dark: 224 76% 42%; }
+
+/* ============================================================
+   FONT SYSTEM — §14.6
+   ============================================================ */
+html[data-font-ar="cairo"]     { --font-ar: "Cairo"; }
+html[data-font-en="plex-sans"] { --font-en: "IBM Plex Sans"; }
+html[lang="ar"] { --font-active: var(--font-ar); }
+html[lang="en"] { --font-active: var(--font-en); }
+html[data-font-scale="sm"] { --font-base: 12px; } /* md − 20% */
+html[data-font-scale="md"] { --font-base: 15px;   }
+html[data-font-scale="lg"] { --font-base: 18px; } /* md + 20% */

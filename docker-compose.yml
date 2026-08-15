@@ -1,0 +1,79 @@
+# Flexova — self-hosted deploy scaffold (FE_21 Phase A)
+#
+# reverse-proxy (Traefik) → N × storefront (Next.js standalone) → Redis
+#                          → erp-api (placeholder — real ERP backend is a
+#                            separate repo/service, not part of this
+#                            frontend-only monorepo)
+#
+# Scale the storefront horizontally with:
+#   docker compose up --scale storefront=3
+# Traefik's Docker provider auto-discovers every replica under the same
+# service name and load-balances across them; Redis is what makes that
+# safe (shared ISR/data cache + tag invalidation, see
+# apps/storefront/lib/cache/redis-handler.mjs).
+
+services:
+  reverse-proxy:
+    image: traefik:v3.2
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      # Dashboard is for local/dev convenience only — do not expose
+      # --api.insecure in a real deployment.
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "8080:8080" # Traefik dashboard (dev only)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - flexova
+
+  storefront:
+    build:
+      context: .
+      dockerfile: apps/storefront/Dockerfile
+    environment:
+      REDIS_URL: redis://redis:6379
+      ERP_API_URL: http://erp-api:4000
+      NODE_ENV: production
+    depends_on:
+      - redis
+      - erp-api
+    networks:
+      - flexova
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.storefront.rule: "Host(`store.localhost`)"
+      traefik.http.routers.storefront.entrypoints: "web"
+      traefik.http.services.storefront.loadbalancer.server.port: "3000"
+    # No published host port on purpose — only reachable through Traefik,
+    # which is what lets multiple replicas share one route.
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - flexova
+
+  # Placeholder for the ERP backend API — the ERP is a separate repo/service
+  # (this monorepo is frontend-only: apps/erp is the admin UI, not the API).
+  # Swap this block for the real service (build: ../flexova-erp-api or
+  # image: flexova/erp-api:<tag>) once that repo exists. Until then it just
+  # answers health checks so the storefront's BFF has something to point at
+  # in local compose runs.
+  erp-api:
+    image: hashicorp/http-echo:1.0
+    command: ["-listen=:4000", "-text=erp-api placeholder — replace with the real ERP backend service"]
+    networks:
+      - flexova
+
+networks:
+  flexova:
+    driver: bridge
+
+volumes:
+  redis-data:
