@@ -11,7 +11,8 @@
  * has to special-case a theme that's missing a piece.
  */
 import type { ComponentType } from "react";
-import type { Product } from "./types";
+import type { Product, Category } from "./types";
+import type { PlpResult } from "./catalog";
 
 export interface ThemeConfig {
   name: "aurora" | "noir";
@@ -22,9 +23,22 @@ export interface ThemeConfig {
 export interface HomeLayoutProps {
   storeName: string;
   featured: Product[];
+  categories: Category[];
+}
+
+/** spec §5.2 — filter bar + grid + pagination. `result` carries either the
+ * streaming static shell (per-card islands the theme wraps in Suspense) or
+ * an already-resolved product list (price filter/sort's eager path) — see
+ * `catalog.ts`'s `PlpResult`. */
+export interface PlpLayoutProps {
+  categories: Category[];
+  activeCategory?: string;
+  activeSort: "featured" | "price_asc" | "price_desc";
+  result: PlpResult;
 }
 
 export interface ThemeModule {
   config: ThemeConfig;
   HomeLayout: ComponentType<HomeLayoutProps>;
+  PlpLayout: ComponentType<PlpLayoutProps>;
 }

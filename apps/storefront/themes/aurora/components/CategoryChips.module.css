@@ -1,0 +1,23 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 1120px;
+  margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+}
+
+.chip {
+  background: hsl(var(--fx-surface));
+  border: 1px solid hsl(var(--fx-line));
+  color: hsl(var(--fx-ink));
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.chip:hover {
+  border-color: hsl(var(--brand));
+  color: hsl(var(--brand-dark));
+}

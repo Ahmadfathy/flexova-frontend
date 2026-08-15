@@ -1,0 +1,21 @@
+.nav {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.page,
+.pageActive {
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.page {
+  color: hsl(var(--fx-muted));
+}
+
+.pageActive {
+  color: hsl(var(--brand));
+  text-decoration: underline;
+}

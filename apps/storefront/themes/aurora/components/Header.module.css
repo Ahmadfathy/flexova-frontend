@@ -20,6 +20,7 @@
   font-weight: 800;
   font-size: 1.25rem;
   color: hsl(var(--brand-dark));
+  text-decoration: none;
 }
 
 .nav {
@@ -31,7 +32,11 @@
 .navLink {
   font-size: 0.9rem;
   color: hsl(var(--fx-ink));
-  cursor: default;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: hsl(var(--brand-dark));
 }
 
 .cart {

@@ -45,9 +45,30 @@ export interface ProductDynamic {
   erp_error?: boolean;
 }
 
+/** The static half of `Product` (title/images/slug/SEO/category) — everything
+ * PLP/PDP can render instantly from ISR without an ERP round trip (spec §4.1,
+ * §5.1). `getCatalogStatic()` returns exactly this shape; the `dynamic` field
+ * is resolved separately, per-product, as its own "island" (see `catalog.ts`). */
+export type ProductStatic = Omit<Product, "dynamic">;
+
 export interface Category {
   id: string;
   label_ar: string;
+  /** True when this category currently has zero products anywhere in the
+   * catalog — drives PLP's empty-vs-no-results distinction (spec §5.3). */
+  isEmpty: boolean;
+}
+
+export type SortOption = "featured" | "price_asc" | "price_desc";
+
+/** PLP query state, parsed from `?category=&sort=&minPrice=&maxPrice=&page=`
+ * (spec §5.2 filter bar + §5.2 "indexable `?page=` links"). */
+export interface PlpQuery {
+  category?: string;
+  sort: SortOption;
+  minPrice?: number;
+  maxPrice?: number;
+  page: number;
 }
 
 export interface CartItem {

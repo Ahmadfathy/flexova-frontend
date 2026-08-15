@@ -1,16 +1,15 @@
+import Link from "next/link";
 import styles from "./Header.module.css";
 
 export function Header({ storeName }: { storeName: string }) {
   return (
     <header className={styles.header}>
       <span className={styles.eyebrow}>NOIR EDIT</span>
-      <h1 className={styles.logo}>{storeName}</h1>
+      <Link href="/" className={styles.logo}>{storeName}</Link>
       <nav className={styles.nav}>
-        <span>مجموعات</span>
+        <Link href="/products" className={styles.navLink}>مجموعات</Link>
         <span>·</span>
-        <span>عن المتجر</span>
-        <span>·</span>
-        <span>تتبّع الطلب</span>
+        <span className={styles.navLink}>تتبّع الطلب</span>
       </nav>
     </header>
   );

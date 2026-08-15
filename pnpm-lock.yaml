@@ -189,6 +189,9 @@ importers:
       ioredis:
         specifier: ^6.0.0
         version: 6.0.0
+      lucide-react:
+        specifier: ^0.400.0
+        version: 0.400.0(react@19.2.8)
       next:
         specifier: ^16.3.1
         version: 16.3.1(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -6228,6 +6231,10 @@ snapshots:
   lucide-react@0.400.0(react@18.3.1):
     dependencies:
       react: 18.3.1
+
+  lucide-react@0.400.0(react@19.2.8):
+    dependencies:
+      react: 19.2.8
 
   magic-string@0.30.21:
     dependencies:

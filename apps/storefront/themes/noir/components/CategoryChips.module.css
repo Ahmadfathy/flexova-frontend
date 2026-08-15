@@ -1,0 +1,29 @@
+.row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--fx-line));
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sep {
+  color: hsl(var(--fx-muted));
+}
+
+.link {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: hsl(var(--fx-muted));
+  text-decoration: none;
+}
+
+.link:hover {
+  color: hsl(var(--brand));
+}

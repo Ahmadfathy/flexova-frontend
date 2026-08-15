@@ -1,0 +1,34 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.select,
+.priceInput {
+  height: 2.5rem;
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: 10px;
+  background: hsl(var(--fx-surface));
+  color: hsl(var(--fx-ink));
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+.priceInput {
+  width: 7rem;
+}
+
+.submit {
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  border: none;
+  background: hsl(var(--brand));
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}

@@ -14,7 +14,7 @@
  */
 import "server-only";
 import fixturesJson from "@/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json";
-import type { Product, ProductVariant, ThemeName, Cart, OnlineOrder } from "./types";
+import type { Product, ProductStatic, ProductDynamic, ProductVariant, Category, ThemeName, Cart, OnlineOrder } from "./types";
 
 /** Loosely-typed raw fixture shape (fields vary per demo row — offers/variants/
  * erp_error are each present on only some catalog entries) — normalized into
@@ -84,6 +84,50 @@ export async function getCatalog(): Promise<Product[]> {
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   const all = await getCatalog();
   return all.find((p) => p.slug_en === slug || p.slug_ar === slug);
+}
+
+/** Static half only (spec §5.1) — instant, no ERP round trip. PLP renders
+ * this immediately; each card's `dynamic` half streams in separately via
+ * `getProductDynamic()` (see `catalog.ts`'s per-card island). */
+export async function getCatalogStatic(): Promise<ProductStatic[]> {
+  return fixtures.catalog.map(({ _dynamic: _omit, ...rest }) => rest);
+}
+
+/** Simulates the live per-product ERP stock+price read (spec §5.1 "dynamic
+ * per-card island"). Real latency + a small random jitter so, in dev,
+ * cards visibly resolve independently instead of all at once. */
+export async function getProductDynamic(id: string): Promise<ProductDynamic> {
+  await new Promise((r) => setTimeout(r, 250 + Math.random() * 500));
+  const raw = fixtures.catalog.find((p) => p.id === id);
+  if (!raw) return { price: null, available: null, in_stock: null, erp_error: true };
+  return {
+    price: raw._dynamic.price,
+    list_price: raw._dynamic.list_price,
+    available: raw._dynamic.available,
+    in_stock: raw._dynamic.in_stock,
+    offer: raw._dynamic.offer,
+    erp_error: raw._dynamic.erp_error,
+  };
+}
+
+/** StoreCategory read (mocked) — spec §3. The storefront fixture only
+ * carries a bare `category` id per product (no separate categories
+ * collection), so labels are a small local map; `isEmpty` is derived live
+ * from the catalog, matching `_states_demo.catalog_empty_category`. */
+const CATEGORY_LABELS: Record<string, string> = {
+  cat_men: "رجالي",
+  cat_women: "حريمي",
+  cat_shoes: "أحذية",
+  cat_accessories: "إكسسوارات",
+};
+
+export async function getCategories(): Promise<Category[]> {
+  const catalog = await getCatalog();
+  return Object.entries(CATEGORY_LABELS).map(([id, label_ar]) => ({
+    id,
+    label_ar,
+    isEmpty: !catalog.some((p) => p.category === id),
+  }));
 }
 
 export async function getCart(): Promise<Cart> {

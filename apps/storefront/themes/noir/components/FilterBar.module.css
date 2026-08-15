@@ -1,0 +1,36 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  align-items: center;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid hsl(var(--fx-line));
+}
+
+.select,
+.priceInput {
+  height: 2.25rem;
+  border: none;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  background: transparent;
+  color: hsl(var(--fx-ink));
+  font-size: 0.8rem;
+  padding: 0 0.25rem;
+}
+
+.priceInput {
+  width: 4rem;
+}
+
+.submit {
+  height: 2.25rem;
+  padding: 0 1.25rem;
+  border: 1px solid hsl(var(--brand));
+  background: transparent;
+  color: hsl(var(--brand));
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
