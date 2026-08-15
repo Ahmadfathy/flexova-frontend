@@ -1,0 +1,133 @@
+{
+  "_meta": {
+    "module": "ecommerce-admin",
+    "version": "1.0",
+    "build": "FE_21",
+    "currency": "EGP",
+    "moduleFlag": "ecommerce",
+    "depends_on": "inventory FE_01 (stock READ), sales+eta FE_02 (invoice), accounting FE_04 (AR READ), crm FE_05 (customer)",
+    "notes": "OnlineProduct = display layer over inventory_item, never duplicates stock. OnlineOrder = bridge → invoice+ETA on confirm. Affiliate commission on confirmed orders only. ERP is source of truth."
+  },
+
+  "store_config": {
+    "store_name": "متجر النيل",
+    "logo": "nile-store-logo.png",
+    "active_theme": "aurora",
+    "available_themes": ["aurora", "noir"],
+    "payment_gateway": ["paymob", "fawry", "cod"],
+    "default_lang": "ar",
+    "rtl": true,
+    "social": { "facebook": "nilestore", "instagram": "nilestore.eg" }
+  },
+
+  "store_categories": [
+    { "id": "cat_men", "name_ar": "رجالي", "name_en": "Men", "parent_id": null, "seo_slug": "men" },
+    { "id": "cat_women", "name_ar": "حريمي", "name_en": "Women", "parent_id": null, "seo_slug": "women" },
+    { "id": "cat_shoes", "name_ar": "أحذية", "name_en": "Shoes", "parent_id": "cat_men", "seo_slug": "men-shoes" },
+    { "id": "cat_empty", "name_ar": "إكسسوارات", "name_en": "Accessories", "parent_id": null, "seo_slug": "accessories", "_flag": "empty_category" }
+  ],
+
+  "online_products": [
+    {
+      "id": "op_1001", "inventory_item_id": "inv_shirt_01", "title_ar": "قميص قطن كلاسيك",
+      "title_en": "Classic Cotton Shirt", "description_ar": "قميص قطن 100% مريح للاستخدام اليومي",
+      "images": ["shirt1_a.jpg", "shirt1_b.jpg", "shirt1_c.jpg"],
+      "seo": { "meta_title_ar": "قميص قطن كلاسيك - متجر النيل", "slug_ar": "قميص-قطن-كلاسيك", "slug_en": "classic-cotton-shirt", "og_image": "shirt1_og.jpg" },
+      "store_category": "cat_men", "online_price": null, "erp_base_price": 450.00, "erp_stock": 24,
+      "publish_status": "published", "variants": [ {"size": "M", "color": "أبيض"}, {"size": "L", "color": "أزرق"} ]
+    },
+    {
+      "id": "op_1002", "inventory_item_id": "inv_shoe_02", "title_ar": "حذاء جلد بني",
+      "title_en": "Brown Leather Shoe", "description_ar": "حذاء جلد طبيعي",
+      "images": ["shoe2_a.jpg", "shoe2_b.jpg"],
+      "seo": { "slug_ar": "حذاء-جلد-بني", "slug_en": "brown-leather-shoe" },
+      "store_category": "cat_shoes", "online_price": 799.00, "erp_base_price": 950.00, "erp_stock": 3,
+      "publish_status": "published", "variants": [ {"size": "42"}, {"size": "43"}, {"size": "44"} ],
+      "_flag": "online_price_override_and_low_stock"
+    },
+    {
+      "id": "op_1003", "inventory_item_id": "inv_bag_03", "title_ar": "شنطة يد حريمي",
+      "title_en": "Women's Handbag", "images": ["bag3_a.jpg"],
+      "seo": { "slug_ar": "شنطة-يد", "slug_en": "womens-handbag" },
+      "store_category": "cat_women", "online_price": null, "erp_base_price": 620.00, "erp_stock": 0,
+      "publish_status": "published", "_flag": "out_of_stock" },
+    {
+      "id": "op_1004", "inventory_item_id": "inv_draft_04", "title_ar": "منتج تحت الإعداد",
+      "images": [], "seo": {}, "store_category": "cat_men", "online_price": null,
+      "erp_base_price": 300.00, "erp_stock": 10, "publish_status": "draft", "_flag": "draft_not_live" },
+    {
+      "id": "op_1005", "inventory_item_id": "inv_suspended_05", "title_ar": "منتج صنفه موقوف",
+      "images": ["susp.jpg"], "seo": { "slug_en": "suspended-item" }, "store_category": "cat_men",
+      "online_price": null, "erp_base_price": 200.00, "erp_stock": null, "publish_status": "published",
+      "erp_status": "suspended", "_flag": "erp_item_suspended_auto_hidden" }
+  ],
+
+  "customers": [
+    { "id": "cust_ahmed", "name_ar": "أحمد محمود", "phone": "01012345678", "source": "crm", "_note": "existing CRM customer, linked at checkout" },
+    { "id": "cust_guest_sara", "name_ar": "سارة (guest)", "phone": "01199887766", "source": "guest_implicit", "_flag": "guest_implicit_crm" }
+  ],
+
+  "orders": [
+    {
+      "id": "ord_5001", "code": "EC-5001", "customer_id": "cust_ahmed",
+      "items": [ { "product_id": "op_1001", "variant": "L/أزرق", "qty": 2, "unit_price": 450.00 } ],
+      "subtotal": 900.00, "shipping": 50.00, "total": 950.00,
+      "status": "delivered", "payment_method": "card", "payment_status": "paid",
+      "invoice_id": "inv_ec5001", "eta_status": "accepted", "affiliate_id": "aff_mona",
+      "shipping_address": "مدينة نصر، القاهرة", "carrier": "بوسطة", "tracking_no": "BST123456",
+      "created_at": "2026-08-10T14:00:00"
+    },
+    {
+      "id": "ord_5002", "code": "EC-5002", "customer_id": "cust_guest_sara",
+      "items": [ { "product_id": "op_1002", "variant": "43", "qty": 1, "unit_price": 799.00 } ],
+      "subtotal": 799.00, "shipping": 60.00, "total": 859.00,
+      "status": "processing", "payment_method": "cod", "payment_status": "pending_cod",
+      "invoice_id": "inv_ec5002", "eta_status": "accepted", "affiliate_id": null,
+      "shipping_address": "سموحة، الإسكندرية", "carrier": null, "tracking_no": null,
+      "created_at": "2026-08-13T10:30:00", "_flag": "cod_processing"
+    },
+    {
+      "id": "ord_5003", "code": "EC-5003", "customer_id": "cust_ahmed",
+      "items": [ { "product_id": "op_1003", "variant": null, "qty": 1, "unit_price": 620.00 } ],
+      "subtotal": 620.00, "shipping": 50.00, "total": 670.00,
+      "status": "pending_payment", "payment_method": "card", "payment_status": "pending",
+      "invoice_id": null, "eta_status": null, "affiliate_id": null,
+      "created_at": "2026-08-14T09:15:00", "_flag": "webhook_late_no_invoice_yet"
+    },
+    {
+      "id": "ord_5004", "code": "EC-5004", "customer_id": "cust_guest_sara",
+      "items": [ { "product_id": "op_1001", "variant": "M/أبيض", "qty": 1, "unit_price": 450.00 } ],
+      "subtotal": 450.00, "shipping": 50.00, "total": 500.00,
+      "status": "returned", "payment_method": "card", "payment_status": "refunded",
+      "invoice_id": "inv_ec5004", "eta_status": "credit_note", "affiliate_id": null,
+      "created_at": "2026-08-08T16:00:00", "_flag": "returned_credit_note" }
+  ],
+
+  "affiliates": [
+    {
+      "id": "aff_mona", "name_ar": "منى المسوّقة", "phone": "01555443322",
+      "code": "MONA10", "link": "https://nilestore.eg/?ref=MONA10", "commission_pct": 10,
+      "clicks": 340, "attributed_orders": 12, "balance_due": 850.00, "status": "active"
+    },
+    {
+      "id": "aff_khaled", "name_ar": "خالد", "phone": "01066554433",
+      "code": "KHALED5", "link": "https://nilestore.eg/?ref=KHALED5", "commission_pct": 5,
+      "clicks": 45, "attributed_orders": 0, "balance_due": 0, "status": "active", "_flag": "no_conversions_yet" }
+  ],
+
+  "payouts": [
+    { "id": "pay_1", "affiliate_id": "aff_mona", "amount": 500.00, "status": "pending_approval", "requested_at": "2026-08-12", "_flag": "pending_payout" }
+  ],
+
+  "shipping_zones": [
+    { "id": "z_cairo", "name_ar": "القاهرة والجيزة", "cost": 50.00 },
+    { "id": "z_alex", "name_ar": "الإسكندرية", "cost": 60.00 },
+    { "id": "z_other", "name_ar": "باقي المحافظات", "cost": 80.00 }
+  ],
+
+  "_states_demo": {
+    "orders_empty": [],
+    "products_empty": [],
+    "affiliates_empty": []
+  }
+}

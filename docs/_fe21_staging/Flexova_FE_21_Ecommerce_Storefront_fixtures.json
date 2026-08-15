@@ -1,0 +1,93 @@
+{
+  "_meta": {
+    "module": "ecommerce-storefront",
+    "version": "1.0",
+    "build": "FE_21",
+    "currency": "EGP",
+    "repo": "standalone Next.js (separate from ERP)",
+    "notes": "Storefront reads stock/price live from ERP (source of truth). Static shell (ISR) + dynamic islands (live). Reservation with TTL = anti-oversell. Theme = presentation only. Guest checkout + implicit CRM customer.",
+    "active_theme": "aurora",
+    "rendering": { "pdp": "ISR shell + dynamic price/stock", "plp": "ISR grid + dynamic per-card", "cart": "client", "checkout": "dynamic no-store" }
+  },
+
+  "catalog": [
+    {
+      "id": "op_1001", "slug_ar": "قميص-قطن-كلاسيك", "slug_en": "classic-cotton-shirt",
+      "title_ar": "قميص قطن كلاسيك", "images": ["shirt1_a.jpg", "shirt1_b.jpg", "shirt1_c.jpg"],
+      "category": "cat_men", "static_desc_ar": "قميص قطن 100% مريح للاستخدام اليومي",
+      "seo": { "meta_title_ar": "قميص قطن كلاسيك - متجر النيل", "json_ld": "Product" },
+      "_dynamic": { "price": 450.00, "available": 24, "in_stock": true },
+      "variants": [ {"size": "M", "color": "أبيض", "available": 10}, {"size": "L", "color": "أزرق", "available": 14} ]
+    },
+    {
+      "id": "op_1002", "slug_ar": "حذاء-جلد-بني", "slug_en": "brown-leather-shoe",
+      "title_ar": "حذاء جلد بني", "images": ["shoe2_a.jpg", "shoe2_b.jpg"], "category": "cat_shoes",
+      "static_desc_ar": "حذاء جلد طبيعي", "seo": { "json_ld": "Product" },
+      "_dynamic": { "price": 799.00, "list_price": 950.00, "available": 3, "in_stock": true, "offer": true },
+      "variants": [ {"size": "42", "available": 1}, {"size": "43", "available": 2}, {"size": "44", "available": 0} ],
+      "_flag": "offer_and_low_stock_and_one_variant_out"
+    },
+    {
+      "id": "op_1003", "slug_ar": "شنطة-يد", "slug_en": "womens-handbag",
+      "title_ar": "شنطة يد حريمي", "images": ["bag3_a.jpg"], "category": "cat_women",
+      "seo": { "json_ld": "Product" },
+      "_dynamic": { "price": 620.00, "available": 0, "in_stock": false },
+      "_flag": "out_of_stock_disabled_add" },
+    {
+      "id": "op_1006", "slug_en": "erp-read-fail-demo", "title_ar": "منتج تعذّر قراءة سعره",
+      "images": ["x.jpg"], "category": "cat_men", "seo": {},
+      "_dynamic": { "price": null, "available": null, "in_stock": null, "erp_error": true },
+      "_flag": "erp_read_fail_graceful_fallback" }
+  ],
+
+  "not_found_demo": { "slug_en": "deleted-product", "status": 404, "_flag": "true_404_unpublished" },
+
+  "cart": {
+    "session_id": "sess_abc123",
+    "items": [
+      { "product_id": "op_1001", "variant": "L/أزرق", "qty": 2, "price_at_add": 450.00, "live_price": 450.00 },
+      { "product_id": "op_1002", "variant": "43", "qty": 1, "price_at_add": 850.00, "live_price": 799.00, "_flag": "price_changed_since_add" }
+    ],
+    "subtotal": 1699.00,
+    "_note": "no reservation at cart stage; live re-check on open"
+  },
+
+  "cart_states": {
+    "empty": { "items": [] },
+    "item_out_of_stock": { "items": [ { "product_id": "op_1003", "qty": 1, "live_available": 0, "_flag": "blocked_until_resolved" } ] }
+  },
+
+  "checkout": {
+    "reservation": {
+      "id": "resv_9001", "session_id": "sess_abc123",
+      "items": [ { "product_id": "op_1001", "variant": "L/أزرق", "qty": 2 }, { "product_id": "op_1002", "variant": "43", "qty": 1 } ],
+      "ttl_seconds": 600, "expires_at": "2026-08-14T12:10:00", "status": "active"
+    },
+    "delivery": { "phone": "01199887766", "name": "سارة", "address": "سموحة، الإسكندرية", "zone": "z_alex", "shipping_cost": 60.00, "crm_match": false, "_flag": "guest_new_implicit_customer" },
+    "payment_methods": ["paymob", "fawry", "cod"],
+    "attribution": { "ref_code": "MONA10", "affiliate_id": "aff_mona", "source": "cookie", "_note": "attributed on confirm" }
+  },
+
+  "checkout_states": {
+    "ttl_expired": { "reservation_id": "resv_9001", "status": "expired", "_flag": "re_reserve_keep_data" },
+    "payment_failed": { "order_ref": "tmp_5010", "gateway": "paymob", "_flag": "retry_idempotent_reservation_alive" },
+    "webhook_late": { "order_ref": "tmp_5011", "status": "pending_payment", "invoice": null, "_flag": "no_invoice_before_confirm" },
+    "race_out_at_confirm": { "product_id": "op_1002", "variant": "43", "_flag": "blocked_by_reservation_guard" }
+  },
+
+  "order_tracking": [
+    { "code": "EC-5001", "status": "delivered", "timeline": ["confirmed", "processing", "shipped", "delivered"], "carrier": "بوسطة", "tracking_no": "BST123456" },
+    { "code": "EC-5002", "status": "processing", "timeline": ["confirmed", "processing"], "carrier": null, "_flag": "cod_in_progress" },
+    { "code": "INVALID", "status": null, "_flag": "invalid_code_not_found" }
+  ],
+
+  "themes": [
+    { "name": "aurora", "label_ar": "أورورا", "layout": "grid-hero", "_note": "launch theme" },
+    { "name": "noir", "label_ar": "نوار", "layout": "editorial-dark", "_note": "second theme — fully different layout/components, same token contract + shared core" }
+  ],
+
+  "_states_demo": {
+    "catalog_empty_category": { "category": "cat_accessories", "items": [] },
+    "plp_no_results": { "filter": "price>5000", "items": [] }
+  }
+}
