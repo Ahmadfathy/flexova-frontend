@@ -25,6 +25,14 @@
     "hc_insurance": "التأمين",
     "hc_catalog":   "الكتالوج",
 
+    "ecommerce":             "المتجر الإلكتروني",
+    "ec_orders":              "الأوردرات",
+    "ec_products":             "المنتجات",
+    "ec_categories":           "التصنيفات",
+    "ec_affiliates":           "المسوّقون",
+    "ec_settings_payments":    "الدفع والشحن",
+    "ec_settings_store":       "إعدادات المتجر",
+
     "wh_orders":     "طلبات البيع",
     "wh_deliveries": "أذون التسليم",
     "wh_routes":     "المسارات",

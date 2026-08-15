@@ -1,0 +1,116 @@
+{
+  "placeholder": {
+    "note": "الشاشة الفعلية تصل في خطوة لاحقة"
+  },
+
+  "nav_titles": {
+    "products": "المنتجات أونلاين",
+    "categories": "تصنيفات المتجر",
+    "affiliates": "المسوّقون",
+    "settings_payments": "الدفع والشحن",
+    "settings_store": "إعدادات المتجر"
+  },
+
+  "orders": {
+    "title": "الأوردرات",
+    "count": "{{n}} أوردر",
+    "search_placeholder": "ابحث بكود الأوردر أو رقم الهاتف",
+    "all_statuses": "كل الحالات",
+    "all_payment_methods": "كل طرق الدفع",
+    "filter_date_from": "من تاريخ",
+    "filter_date_to": "إلى تاريخ",
+    "clear_filters": "مسح الفلاتر",
+
+    "col_code": "كود الأوردر",
+    "col_customer": "العميل",
+    "col_total": "الإجمالي",
+    "col_status": "الحالة",
+    "col_payment": "الدفع",
+    "col_date": "التاريخ",
+
+    "status_pending_payment": "بانتظار الدفع",
+    "status_paid": "مدفوع",
+    "status_processing": "قيد التجهيز",
+    "status_shipped": "تم الشحن",
+    "status_delivered": "تم التسليم",
+    "status_returned": "مرتجع",
+    "status_cancelled": "ملغي",
+
+    "payment_method_card": "بطاقة",
+    "payment_method_cod": "الدفع عند الاستلام",
+
+    "payment_status_pending": "بانتظار الدفع",
+    "payment_status_pending_cod": "تحصيل عند التسليم",
+    "payment_status_paid": "محصّل",
+    "payment_status_refunded": "مُسترد",
+
+    "ar_status_pending": "غير محصّل",
+    "ar_status_pending_cod": "تحصيل عند التسليم",
+    "ar_status_paid": "محصّل بالكامل",
+    "ar_status_refunded": "مُسترد",
+
+    "eta_status_accepted": "مقبولة",
+    "eta_status_credit_note": "إشعار دائن",
+    "eta_status_rejected": "مرفوضة",
+
+    "sync_local": "لم تتم المزامنة",
+    "sync_syncing": "جارِ المزامنة...",
+
+    "flag_stuck_payment": "دفع متأخر",
+    "flag_stuck_payment_body": "لم يصل تأكيد الدفع بعد — قد يكون هناك تأخير في الإشعار (webhook). استخدم \"إعادة فحص الدفع\" للتحقق مجددًا.",
+
+    "no_orders": "لا يوجد أوردرات بعد",
+    "empty_sub": "ستظهر أوردرات المتجر هنا فور وصولها",
+    "no_results_title": "لا نتائج مطابقة للفلاتر",
+
+    "error_title": "تعذّر تحميل الأوردرات",
+    "error_body": "حدث خطأ أثناء تحميل البيانات — حاول مرة أخرى",
+    "offline_note": "لا يوجد اتصال بالإنترنت — تحديثات الحالة ستُحفظ وتُزامن عند عودة الاتصال",
+
+    "not_found_title": "الأوردر غير موجود",
+    "not_found_body": "لم يتم العثور على هذا الأوردر",
+    "back_to_list": "العودة لقائمة الأوردرات",
+
+    "customer": "العميل",
+    "customer_crm_note": "عميل موجود في CRM",
+    "affiliate": "المسوّق",
+    "carrier_label": "شركة الشحن",
+    "carrier_placeholder": "مثال: بوسطة",
+    "tracking_no_label": "رقم التتبّع",
+    "tracking_no_placeholder": "أدخل رقم التتبّع",
+
+    "erp_links": "روابط النظام (قراءة فقط)",
+    "invoice_label": "الفاتورة",
+    "not_yet_generated": "لم تُصدر بعد",
+    "eta_label": "حالة الفاتورة الإلكترونية (ETA)",
+    "ar_label": "حالة التحصيل",
+    "credit_note_label": "إشعار الدائن",
+
+    "items": "عناصر الأوردر",
+    "qty_label": "الكمية",
+    "subtotal": "الإجمالي الفرعي",
+    "shipping_cost": "الشحن",
+    "total": "الإجمالي",
+
+    "action_recheck_payment": "إعادة فحص الدفع",
+    "action_start_processing": "بدء التجهيز",
+    "action_mark_shipped": "شُحن",
+    "action_mark_delivered": "تم التسليم",
+    "action_return": "إرجاع",
+    "action_cancel": "إلغاء",
+
+    "recheck_success_toast": "تم تأكيد الدفع",
+    "start_processing_toast": "بدأ تجهيز الأوردر",
+    "mark_shipped_toast": "تم تسجيل الشحن",
+    "mark_delivered_toast": "تم تسجيل التسليم",
+    "return_toast": "تم تسجيل الإرجاع وإصدار إشعار دائن",
+    "cancel_toast": "تم إلغاء الأوردر",
+
+    "ship_dialog_title": "تسجيل الشحن",
+    "ship_dialog_body": "أدخل بيانات الشحنة قبل تغيير حالة الأوردر إلى \"تم الشحن\"",
+    "return_dialog_title": "إرجاع الأوردر؟",
+    "return_dialog_body": "سيتم تغيير حالة الأوردر إلى مرتجع وإصدار إشعار دائن في الحسابات (محاكاة)",
+    "cancel_dialog_title": "إلغاء الأوردر؟",
+    "cancel_dialog_body": "سيتم إلغاء الأوردر. لا يمكن التراجع عن هذا الإجراء"
+  }
+}

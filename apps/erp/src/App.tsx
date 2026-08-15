@@ -169,6 +169,17 @@ import {
   EncounterPage, LabQueuePage, InsurancePage, CatalogPage,
 } from "@/features/healthcare/HealthcarePages";
 
+// E-commerce Admin — FE_21 — back-office (standard shell). Orders (list+detail)
+// this step (Admin Prompt A1); products/categories/affiliates/settings are
+// routed placeholders, built in later prompts.
+import { EcommerceLayout } from "@/features/ecommerce/EcommerceLayout";
+import {
+  OrdersListPage as EcOrdersListPage, OrderDetailPage as EcOrderDetailPage,
+  ProductsPage as EcProductsPage, CategoriesPage as EcCategoriesPage,
+  AffiliatesPage as EcAffiliatesPage, SettingsPaymentsPage as EcSettingsPaymentsPage,
+  SettingsStorePage as EcSettingsStorePage,
+} from "@/features/ecommerce/EcommercePages";
+
 import { Toaster } from "@/components/ui/sonner";
 
 function PageFallback() {
@@ -468,6 +479,18 @@ export default function App() {
             <Route path="catalog"        element={<CatalogPage />} />
           </Route>
           <Route path="/healthcare/encounter/:id" element={<EncounterPage />} />
+
+          {/* E-commerce Admin — FE_21 — back-office (standard shell) */}
+          <Route path="/ecommerce" element={<EcommerceLayout />}>
+            <Route index element={<Navigate to="orders" replace />} />
+            <Route path="orders"                element={<EcOrdersListPage />} />
+            <Route path="orders/:id"            element={<EcOrderDetailPage />} />
+            <Route path="products"              element={<EcProductsPage />} />
+            <Route path="categories"            element={<EcCategoriesPage />} />
+            <Route path="affiliates"            element={<EcAffiliatesPage />} />
+            <Route path="settings/payments"     element={<EcSettingsPaymentsPage />} />
+            <Route path="settings/store"        element={<EcSettingsStorePage />} />
+          </Route>
 
           {/* Price tiers editor — extends FE_01 price lists (spec §11), standalone path */}
           <Route path="/pricing/lists/:id" element={<PriceTiersEditorPage />} />

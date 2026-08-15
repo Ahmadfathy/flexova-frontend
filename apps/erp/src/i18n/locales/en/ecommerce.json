@@ -1,0 +1,116 @@
+{
+  "placeholder": {
+    "note": "This screen lands in a later step"
+  },
+
+  "nav_titles": {
+    "products": "Online Products",
+    "categories": "Store Categories",
+    "affiliates": "Affiliates",
+    "settings_payments": "Payments & Shipping",
+    "settings_store": "Store Settings"
+  },
+
+  "orders": {
+    "title": "Orders",
+    "count": "{{n}} orders",
+    "search_placeholder": "Search by order code or phone",
+    "all_statuses": "All statuses",
+    "all_payment_methods": "All payment methods",
+    "filter_date_from": "From date",
+    "filter_date_to": "To date",
+    "clear_filters": "Clear filters",
+
+    "col_code": "Order code",
+    "col_customer": "Customer",
+    "col_total": "Total",
+    "col_status": "Status",
+    "col_payment": "Payment",
+    "col_date": "Date",
+
+    "status_pending_payment": "Pending payment",
+    "status_paid": "Paid",
+    "status_processing": "Processing",
+    "status_shipped": "Shipped",
+    "status_delivered": "Delivered",
+    "status_returned": "Returned",
+    "status_cancelled": "Cancelled",
+
+    "payment_method_card": "Card",
+    "payment_method_cod": "Cash on delivery",
+
+    "payment_status_pending": "Pending payment",
+    "payment_status_pending_cod": "Collect on delivery",
+    "payment_status_paid": "Collected",
+    "payment_status_refunded": "Refunded",
+
+    "ar_status_pending": "Uncollected",
+    "ar_status_pending_cod": "Collect on delivery",
+    "ar_status_paid": "Fully collected",
+    "ar_status_refunded": "Refunded",
+
+    "eta_status_accepted": "Accepted",
+    "eta_status_credit_note": "Credit note",
+    "eta_status_rejected": "Rejected",
+
+    "sync_local": "Not synced",
+    "sync_syncing": "Syncing...",
+
+    "flag_stuck_payment": "Payment late",
+    "flag_stuck_payment_body": "Payment confirmation hasn't arrived yet — the webhook may be delayed. Use \"Recheck payment\" to check again.",
+
+    "no_orders": "No orders yet",
+    "empty_sub": "Store orders will appear here as they come in",
+    "no_results_title": "No results match your filters",
+
+    "error_title": "Couldn't load orders",
+    "error_body": "Something went wrong loading the data — try again",
+    "offline_note": "No internet connection — status updates will be saved and synced once you're back online",
+
+    "not_found_title": "Order not found",
+    "not_found_body": "This order could not be found",
+    "back_to_list": "Back to orders",
+
+    "customer": "Customer",
+    "customer_crm_note": "Existing CRM customer",
+    "affiliate": "Affiliate",
+    "carrier_label": "Carrier",
+    "carrier_placeholder": "e.g. Bosta",
+    "tracking_no_label": "Tracking no.",
+    "tracking_no_placeholder": "Enter tracking number",
+
+    "erp_links": "ERP links (read-only)",
+    "invoice_label": "Invoice",
+    "not_yet_generated": "Not generated yet",
+    "eta_label": "E-receipt (ETA) status",
+    "ar_label": "Collection status",
+    "credit_note_label": "Credit note",
+
+    "items": "Order items",
+    "qty_label": "Qty",
+    "subtotal": "Subtotal",
+    "shipping_cost": "Shipping",
+    "total": "Total",
+
+    "action_recheck_payment": "Recheck payment",
+    "action_start_processing": "Start processing",
+    "action_mark_shipped": "Mark shipped",
+    "action_mark_delivered": "Mark delivered",
+    "action_return": "Return",
+    "action_cancel": "Cancel",
+
+    "recheck_success_toast": "Payment confirmed",
+    "start_processing_toast": "Order processing started",
+    "mark_shipped_toast": "Shipment recorded",
+    "mark_delivered_toast": "Delivery recorded",
+    "return_toast": "Return recorded and credit note issued",
+    "cancel_toast": "Order cancelled",
+
+    "ship_dialog_title": "Record shipment",
+    "ship_dialog_body": "Enter the shipment details before moving this order to \"Shipped\"",
+    "return_dialog_title": "Return this order?",
+    "return_dialog_body": "The order will be marked returned and a credit note will be posted in Accounting (mocked)",
+    "cancel_dialog_title": "Cancel this order?",
+    "cancel_dialog_body": "The order will be cancelled. This cannot be undone"
+  }
+}

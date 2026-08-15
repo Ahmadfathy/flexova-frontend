@@ -25,6 +25,14 @@
     "hc_insurance": "Insurance",
     "hc_catalog":   "Catalog",
 
+    "ecommerce":             "E-commerce",
+    "ec_orders":              "Orders",
+    "ec_products":             "Products",
+    "ec_categories":           "Categories",
+    "ec_affiliates":           "Affiliates",
+    "ec_settings_payments":    "Payments & Shipping",
+    "ec_settings_store":       "Store Settings",
+
     "wh_orders":     "Orders",
     "wh_deliveries": "Deliveries",
     "wh_routes":     "Routes",

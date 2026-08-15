@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Package, ShoppingCart, Truck, Users, Calculator,
-  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock, Wrench, Warehouse, Factory, Briefcase, Stethoscope,
+  UserCog, BarChart3, Shield, Settings, Store, UtensilsCrossed, CalendarClock, Wrench, Warehouse, Factory, Briefcase, Stethoscope, ShoppingBag,
 } from "lucide-react";
 
 export type MenuGroup = "core" | "sector" | "admin";
@@ -246,6 +246,23 @@ export const MENU: MenuItem[] = [
       { key: "hc_lab",       route: "/healthcare/lab" },
       { key: "hc_insurance", route: "/healthcare/insurance" },
       { key: "hc_catalog",   route: "/healthcare/catalog" },
+    ],
+  },
+  {
+    key: "ecommerce",
+    icon: ShoppingBag,
+    route: "/ecommerce",
+    group: "sector",
+    order: 16,
+    moduleFlag: "ecommerce",
+    permission: "ecommerce.orders.view",
+    subItems: [
+      { key: "ec_orders",             route: "/ecommerce/orders" },
+      { key: "ec_products",           route: "/ecommerce/products" },
+      { key: "ec_categories",         route: "/ecommerce/categories" },
+      { key: "ec_affiliates",         route: "/ecommerce/affiliates" },
+      { key: "ec_settings_payments",  route: "/ecommerce/settings/payments" },
+      { key: "ec_settings_store",     route: "/ecommerce/settings/store" },
     ],
   },
   {
