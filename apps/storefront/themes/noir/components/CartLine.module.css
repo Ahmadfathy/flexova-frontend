@@ -1,0 +1,83 @@
+.line {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  align-items: flex-start;
+}
+
+.imageBox {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  background: hsl(var(--fx-surface));
+  border: 1px solid hsl(var(--fx-line));
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.title {
+  font-size: 0.9rem;
+  color: hsl(var(--fx-ink));
+}
+
+.variant {
+  font-size: 0.7rem;
+  color: hsl(var(--fx-muted));
+}
+
+.blockedNote {
+  font-size: 0.7rem;
+  color: hsl(var(--danger, 0 72% 51%));
+  margin: 0.15rem 0;
+}
+
+.priceChangedNote {
+  font-size: 0.7rem;
+  color: hsl(var(--brand));
+  margin: 0.15rem 0;
+}
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.qtyBtn {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid hsl(var(--fx-line));
+  background: transparent;
+  color: hsl(var(--fx-ink));
+  cursor: pointer;
+}
+
+.qtyValue {
+  font-size: 0.8rem;
+  min-width: 1.25rem;
+  text-align: center;
+}
+
+.removeBtn {
+  margin-inline-start: 0.75rem;
+  font-size: 0.7rem;
+  color: hsl(var(--fx-muted));
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.lineTotal {
+  font-size: 0.9rem;
+  color: hsl(var(--fx-ink));
+  white-space: nowrap;
+}

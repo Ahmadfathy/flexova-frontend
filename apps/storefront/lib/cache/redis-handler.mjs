@@ -24,9 +24,20 @@ const TAG_PREFIX = "flexova:tag:";
 
 // One connection per server process (dev, build worker, or standalone
 // server) — ioredis handles reconnects on its own.
+//
+// enableOfflineQueue:false + a short connectTimeout + maxRetriesPerRequest:1
+// are deliberate: without them, a command issued while Redis is unreachable
+// gets *queued* and waits through several reconnect/backoff cycles before
+// failing (discovered chasing a real bug in S4 — a live re-check call was
+// silently hanging for 60s+ with no Redis running, instead of the "degrades
+// gracefully" behavior this handler documents above). With these set, an
+// unreachable Redis fails a get()/set() almost immediately, so a page/action
+// still degrades to "cache miss" fast instead of hanging the whole request.
 const redis = new Redis(REDIS_URL, {
   lazyConnect: false,
-  maxRetriesPerRequest: 3,
+  connectTimeout: 1000,
+  maxRetriesPerRequest: 1,
+  enableOfflineQueue: false,
 });
 
 redis.on("error", (err) => {

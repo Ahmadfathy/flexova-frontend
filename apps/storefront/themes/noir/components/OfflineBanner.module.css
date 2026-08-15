@@ -1,0 +1,9 @@
+.banner {
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: hsl(var(--brand));
+  border: 1px solid hsl(var(--brand) / 0.4);
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.5rem;
+}

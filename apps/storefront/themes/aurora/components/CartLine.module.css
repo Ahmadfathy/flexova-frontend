@@ -1,0 +1,99 @@
+.line {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  align-items: flex-start;
+}
+
+.imageBox {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  background: hsl(var(--fx-bg));
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: 12px;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.title {
+  font-weight: 600;
+  color: hsl(var(--fx-ink));
+  font-size: 0.9rem;
+}
+
+.variant {
+  font-size: 0.75rem;
+  color: hsl(var(--fx-muted));
+}
+
+.blockedNote {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: hsl(var(--danger));
+  margin: 0.15rem 0;
+}
+
+.priceChangedNote {
+  font-size: 0.75rem;
+  color: hsl(var(--warning, 32 95% 44%));
+  margin: 0.15rem 0;
+}
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.qtyBtn {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 8px;
+  border: 1px solid hsl(var(--fx-line));
+  background: hsl(var(--fx-surface));
+  color: hsl(var(--fx-ink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.qtyValue {
+  min-width: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-inline-start: 0.75rem;
+  font-size: 0.75rem;
+  color: hsl(var(--fx-muted));
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.removeBtn:hover {
+  color: hsl(var(--danger));
+}
+
+.lineTotal {
+  font-weight: 700;
+  color: hsl(var(--fx-ink));
+  white-space: nowrap;
+}

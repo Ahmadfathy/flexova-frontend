@@ -6,6 +6,7 @@ import { HomeLayout } from "./layouts/HomeLayout";
 import { PlpLayout } from "./layouts/PlpLayout";
 import { PdpLayout } from "./layouts/PdpLayout";
 import { NotFoundLayout } from "./layouts/NotFoundLayout";
+import { CartLayout } from "./layouts/CartLayout";
 
-const theme: ThemeModule = { config, HomeLayout, PlpLayout, PdpLayout, NotFoundLayout };
+const theme: ThemeModule = { config, HomeLayout, PlpLayout, PdpLayout, NotFoundLayout, CartLayout };
 export default theme;

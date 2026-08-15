@@ -1,0 +1,131 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: hsl(var(--fx-ink));
+  margin: 0 0 1.25rem;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 5rem 1rem;
+  color: hsl(var(--fx-muted));
+  text-align: center;
+}
+
+.browseLink {
+  display: inline-block;
+  background: hsl(var(--brand));
+  color: white;
+  font-weight: 600;
+  padding: 0.65rem 1.75rem;
+  border-radius: 999px;
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lines {
+  min-width: 0;
+}
+
+.blockedBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: hsl(var(--danger) / 0.1);
+  color: hsl(var(--danger));
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+}
+
+.summary {
+  background: hsl(var(--fx-surface));
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 5rem;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: hsl(var(--fx-muted));
+}
+
+.summaryTotal {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: hsl(var(--fx-ink));
+  padding-top: 0.5rem;
+  border-top: 1px solid hsl(var(--fx-line));
+}
+
+.shippingNote {
+  font-size: 0.75rem;
+  color: hsl(var(--fx-muted));
+  margin: -0.5rem 0 0;
+}
+
+.checkoutBtn,
+.checkoutBtnDisabled {
+  display: block;
+  text-align: center;
+  height: 3rem;
+  line-height: 3rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.checkoutBtn {
+  background: hsl(var(--brand));
+  color: white;
+}
+
+.checkoutBtnDisabled {
+  background: hsl(var(--fx-line));
+  color: hsl(var(--fx-muted));
+  cursor: not-allowed;
+}

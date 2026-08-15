@@ -1,0 +1,13 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: hsl(var(--warning, 32 95% 44%) / 0.12);
+  color: hsl(26 90% 37%);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid hsl(var(--warning, 32 95% 44%) / 0.3);
+  margin-bottom: 1rem;
+}

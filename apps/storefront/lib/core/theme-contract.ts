@@ -54,10 +54,21 @@ export interface NotFoundLayoutProps {
   suggestions: ProductStatic[];
 }
 
+/** spec §6 — client-only, not SEO. `catalog` is the full static product
+ * list (title/image lookup by product_id) fetched once server-side so the
+ * theme never needs its own fetch just to render a line item's title —
+ * the live re-check itself (price/stock) is entirely the theme's own
+ * concern via `useCartRecheck()`, called from inside the (Client
+ * Component) CartLayout. */
+export interface CartLayoutProps {
+  catalog: ProductStatic[];
+}
+
 export interface ThemeModule {
   config: ThemeConfig;
   HomeLayout: ComponentType<HomeLayoutProps>;
   PlpLayout: ComponentType<PlpLayoutProps>;
   PdpLayout: ComponentType<PdpLayoutProps>;
   NotFoundLayout: ComponentType<NotFoundLayoutProps>;
+  CartLayout: ComponentType<CartLayoutProps>;
 }

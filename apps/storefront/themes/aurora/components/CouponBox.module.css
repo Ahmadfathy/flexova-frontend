@@ -1,0 +1,50 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  flex: 1;
+  height: 2.5rem;
+  border: 1px solid hsl(var(--fx-line));
+  border-radius: 10px;
+  background: hsl(var(--fx-surface));
+  color: hsl(var(--fx-ink));
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+.applyBtn {
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  border: 1px solid hsl(var(--fx-line));
+  background: hsl(var(--fx-surface));
+  color: hsl(var(--fx-ink));
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.applyBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  font-size: 0.75rem;
+  color: hsl(var(--danger));
+  margin: 0;
+}
+
+.success {
+  font-size: 0.75rem;
+  color: hsl(var(--success, 142 76% 36%));
+  margin: 0;
+}
