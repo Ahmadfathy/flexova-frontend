@@ -112,5 +112,124 @@
     "return_dialog_body": "The order will be marked returned and a credit note will be posted in Accounting (mocked)",
     "cancel_dialog_title": "Cancel this order?",
     "cancel_dialog_body": "The order will be cancelled. This cannot be undone"
+  },
+
+  "products": {
+    "title": "Online Products",
+    "count": "{{n}} products",
+    "new": "New product",
+    "new_title": "New online product",
+    "search_placeholder": "Search by product name",
+    "all_categories": "All categories",
+    "all_statuses": "All statuses",
+    "status_published": "Published",
+    "status_draft": "Draft",
+    "status_hidden": "Hidden",
+
+    "col_product": "Product",
+    "col_category": "Category",
+    "col_price": "Price",
+    "col_availability": "Availability",
+    "col_status": "Status",
+
+    "no_products": "No online products yet",
+    "empty_sub": "Publish your first online product",
+    "no_results_title": "No results match your filters",
+    "clear_filters": "Clear filters",
+    "error_body": "Something went wrong loading the data — try again",
+    "offline_note": "No internet connection — changes will be saved locally",
+
+    "auto_hidden_note": "Item unavailable — auto-hidden from the storefront",
+    "auto_hidden_badge": "Auto-hidden",
+    "erp_unavailable": "Item unavailable",
+    "out_of_stock": "Out of stock",
+
+    "section_link": "Inventory item link",
+    "section_link_sub": "An online product is a display layer over an existing inventory item — it never duplicates stock",
+    "pick_item": "Pick an inventory item",
+    "change_link": "Change link",
+    "erp_base_price": "Base price",
+    "erp_stock": "Stock on hand",
+    "erp_suspended_warning": "The linked inventory item is suspended — this product is auto-hidden from the storefront until it's reactivated",
+
+    "section_display": "Display info",
+    "field_title_ar": "Title (Arabic)",
+    "field_title_en": "Title (English)",
+    "field_description": "Description",
+    "field_category": "Category",
+    "field_category_placeholder": "Pick a category",
+    "field_online_price": "Online price (optional)",
+    "field_online_price_helper": "Leave blank to use the inventory base price",
+    "field_publish_status": "Publish status",
+
+    "section_images": "Images",
+    "section_images_sub": "Image filenames (real upload lands later)",
+    "image_placeholder": "shirt1_a.jpg",
+    "remove_image": "Remove image",
+
+    "section_variants": "Variants (size/color)",
+    "section_variants_sub": "Display variants — not a duplicate of item stock",
+    "variant_size": "Size",
+    "variant_color": "Color",
+    "add_variant": "Add variant",
+    "remove_variant": "Remove variant",
+
+    "section_seo": "SEO",
+    "section_seo_sub": "Shows up in search results and share links",
+    "field_meta_title": "Meta title",
+    "field_og_image": "OG image",
+    "field_slug_ar": "Slug (Arabic)",
+    "field_slug_en": "Slug (English)",
+
+    "save": "Save",
+    "created_toast": "Product created",
+    "saved_toast": "Changes saved",
+    "revalidated_toast": "Storefront instances updated (revalidateTag)",
+
+    "not_found_title": "Product not found",
+    "not_found_body": "This product couldn't be found",
+    "back_to_list": "Back to products",
+
+    "picker_search_placeholder": "Search by item name",
+    "picker_no_results": "No results",
+    "picker_item_suspended": "Item suspended",
+    "picker_stock": "In stock: {{n}}"
+  },
+
+  "categories": {
+    "title": "Store Categories",
+    "count": "{{n}} categories",
+    "new": "New category",
+    "new_title": "New category",
+    "edit_title": "Edit category",
+    "offline_note": "No internet connection — changes will be saved locally",
+
+    "no_categories": "No categories yet",
+    "empty_sub": "Add your first category",
+    "empty_flag": "Empty category",
+    "product_count": "{{n}} products",
+
+    "move_up": "Move up",
+    "move_down": "Move down",
+    "edit": "Edit",
+    "delete": "Delete",
+
+    "field_name_ar": "Name (Arabic)",
+    "field_name_en": "Name (English)",
+    "field_parent": "Parent category",
+    "field_parent_none": "None (top-level)",
+    "field_slug": "Slug",
+    "form_name_required": "Name is required",
+
+    "cancel": "Cancel",
+    "save": "Save",
+    "created_toast": "Category created",
+    "saved_toast": "Changes saved",
+    "deleted_toast": "Category deleted",
+
+    "delete_title": "Delete this category?",
+    "delete_body": "\"{{name}}\" will be permanently deleted",
+    "delete_blocked_children": "Can't delete a category that has subcategories",
+    "delete_blocked_products": "Can't delete a category linked to products — move them first"
   }
 }

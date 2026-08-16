@@ -112,5 +112,124 @@
     "return_dialog_body": "سيتم تغيير حالة الأوردر إلى مرتجع وإصدار إشعار دائن في الحسابات (محاكاة)",
     "cancel_dialog_title": "إلغاء الأوردر؟",
     "cancel_dialog_body": "سيتم إلغاء الأوردر. لا يمكن التراجع عن هذا الإجراء"
+  },
+
+  "products": {
+    "title": "المنتجات أونلاين",
+    "count": "{{n}} منتج",
+    "new": "منتج جديد",
+    "new_title": "منتج أونلاين جديد",
+    "search_placeholder": "ابحث باسم المنتج",
+    "all_categories": "كل الأقسام",
+    "all_statuses": "كل الحالات",
+    "status_published": "منشور",
+    "status_draft": "مسودة",
+    "status_hidden": "مخفي",
+
+    "col_product": "المنتج",
+    "col_category": "القسم",
+    "col_price": "السعر",
+    "col_availability": "التوفّر",
+    "col_status": "الحالة",
+
+    "no_products": "لا يوجد منتجات أونلاين بعد",
+    "empty_sub": "انشر أول منتج أونلاين",
+    "no_results_title": "لا نتائج مطابقة للفلاتر",
+    "clear_filters": "مسح الفلاتر",
+    "error_body": "حدث خطأ أثناء تحميل البيانات — حاول مرة أخرى",
+    "offline_note": "لا يوجد اتصال بالإنترنت — التغييرات ستُحفظ محليًا",
+
+    "auto_hidden_note": "الصنف غير متاح — مخفي تلقائيًا من المتجر",
+    "auto_hidden_badge": "مخفي تلقائيًا",
+    "erp_unavailable": "الصنف غير متاح",
+    "out_of_stock": "نفدت الكمية",
+
+    "section_link": "الربط بصنف المخزون",
+    "section_link_sub": "المنتج الأونلاين واجهة عرض فوق صنف مخزون موجود — لا يكرر المخزون أبدًا",
+    "pick_item": "اختر صنف من المخزون",
+    "change_link": "تغيير الربط",
+    "erp_base_price": "السعر الأساسي",
+    "erp_stock": "المتاح بالمخزون",
+    "erp_suspended_warning": "صنف المخزون المرتبط موقوف — المنتج مخفي تلقائيًا من المتجر حتى يُفعَّل الصنف مجددًا",
+
+    "section_display": "بيانات العرض",
+    "field_title_ar": "العنوان (عربي)",
+    "field_title_en": "العنوان (إنجليزي)",
+    "field_description": "الوصف",
+    "field_category": "القسم",
+    "field_category_placeholder": "اختر قسمًا",
+    "field_online_price": "سعر أونلاين (اختياري)",
+    "field_online_price_helper": "اتركه فارغًا لاستخدام السعر الأساسي من المخزون",
+    "field_publish_status": "حالة النشر",
+
+    "section_images": "الصور",
+    "section_images_sub": "أسماء ملفات الصور (رفع فعلي لاحقًا)",
+    "image_placeholder": "shirt1_a.jpg",
+    "remove_image": "إزالة الصورة",
+
+    "section_variants": "الخيارات (مقاس/لون)",
+    "section_variants_sub": "خيارات العرض — لا تكرر مخزون الأصناف",
+    "variant_size": "المقاس",
+    "variant_color": "اللون",
+    "add_variant": "إضافة خيار",
+    "remove_variant": "إزالة الخيار",
+
+    "section_seo": "تحسين محركات البحث (SEO)",
+    "section_seo_sub": "تظهر هذه البيانات في نتائج البحث وروابط المشاركة",
+    "field_meta_title": "عنوان الميتا",
+    "field_og_image": "صورة المشاركة (OG)",
+    "field_slug_ar": "رابط ثابت (عربي)",
+    "field_slug_en": "رابط ثابت (إنجليزي)",
+
+    "save": "حفظ",
+    "created_toast": "تم إنشاء المنتج",
+    "saved_toast": "تم حفظ التعديلات",
+    "revalidated_toast": "تم تحديث نسخ المتجر (revalidateTag)",
+
+    "not_found_title": "المنتج غير موجود",
+    "not_found_body": "لم يتم العثور على هذا المنتج",
+    "back_to_list": "العودة للمنتجات",
+
+    "picker_search_placeholder": "ابحث باسم الصنف",
+    "picker_no_results": "لا نتائج",
+    "picker_item_suspended": "الصنف موقوف",
+    "picker_stock": "متاح: {{n}}"
+  },
+
+  "categories": {
+    "title": "تصنيفات المتجر",
+    "count": "{{n}} تصنيف",
+    "new": "تصنيف جديد",
+    "new_title": "تصنيف جديد",
+    "edit_title": "تعديل التصنيف",
+    "offline_note": "لا يوجد اتصال بالإنترنت — التغييرات ستُحفظ محليًا",
+
+    "no_categories": "لا يوجد تصنيفات بعد",
+    "empty_sub": "أضف أول تصنيف",
+    "empty_flag": "قسم فارغ",
+    "product_count": "{{n}} منتج",
+
+    "move_up": "تحريك لأعلى",
+    "move_down": "تحريك لأسفل",
+    "edit": "تعديل",
+    "delete": "حذف",
+
+    "field_name_ar": "الاسم (عربي)",
+    "field_name_en": "الاسم (إنجليزي)",
+    "field_parent": "التصنيف الأب",
+    "field_parent_none": "بدون (تصنيف رئيسي)",
+    "field_slug": "رابط ثابت",
+    "form_name_required": "الاسم مطلوب",
+
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "created_toast": "تم إنشاء التصنيف",
+    "saved_toast": "تم حفظ التعديلات",
+    "deleted_toast": "تم حذف التصنيف",
+
+    "delete_title": "حذف التصنيف؟",
+    "delete_body": "سيتم حذف \"{{name}}\" نهائيًا",
+    "delete_blocked_children": "لا يمكن حذف تصنيف يحتوي على تصنيفات فرعية",
+    "delete_blocked_products": "لا يمكن حذف تصنيف مرتبط بمنتجات — انقل المنتجات أولًا"
   }
 }

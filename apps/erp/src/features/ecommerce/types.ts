@@ -70,7 +70,7 @@ export interface EcOnlineProduct {
   id: string;
   inventory_item_id: string;
   title_ar: string;
-  title_en: string;
+  title_en?: string;
   description_ar?: string;
   images: string[];
   seo: { meta_title_ar?: string; slug_ar?: string; slug_en?: string; og_image?: string };
@@ -79,9 +79,29 @@ export interface EcOnlineProduct {
   /** READ (FE_01) */
   erp_base_price: number;
   /** READ (FE_01) */
-  erp_stock: number;
+  erp_stock: number | null;
   publish_status: "published" | "draft" | "hidden";
   variants?: EcOnlineProductVariant[];
+  /** READ (FE_01) — the linked inventory item's own ERP status. `"suspended"`
+   * (or the item having been deleted, same effect) is spec §3.3's special
+   * case: the product shows a warning and is auto-hidden from the
+   * storefront regardless of its own `publish_status`. */
+  erp_status?: "active" | "suspended";
+  _flag?: string;
+}
+
+/** A picker-only shape (spec §3.2 "search + select existing inventory
+ * item") — not a real join against `inventory.fixtures.json` (that
+ * fixture's id namespace is a different, unrelated catalog — same
+ * precedent `EcOrder`'s ERP READ fields already established). Scoped
+ * mock data lives in `lib/mock/ecommerce.ts`, not the inventory fixture. */
+export interface LinkableInventoryItem {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  base_price: number;
+  stock: number;
+  status: "active" | "suspended";
 }
 
 export interface EcStoreCategory {
@@ -90,6 +110,7 @@ export interface EcStoreCategory {
   name_en: string;
   parent_id: string | null;
   seo_slug: string;
+  _flag?: string;
 }
 
 export interface EcAffiliate {
