@@ -63,6 +63,7 @@
     "module_reports":   "التقارير",
     "module_admin":     "الإدارة",
     "module_healthcare":"الرعاية الصحية",
+    "module_ecommerce":"المتجر الإلكتروني",
     "no_roles":         "لا توجد أدوار",
     "empty_sub":        "أنشئ أدواراً للتحكم في صلاحيات كل عضو."
   },
