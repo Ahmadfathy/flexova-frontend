@@ -41,4 +41,6 @@
 
 .cart {
   font-size: 1.25rem;
+  text-decoration: none;
+  line-height: 1;
 }

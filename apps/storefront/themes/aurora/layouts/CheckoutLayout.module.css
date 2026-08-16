@@ -379,3 +379,12 @@
   font-size: 0.8rem;
   margin: 0.1rem 0;
 }
+
+.trackLink {
+  display: inline-block;
+  color: hsl(var(--brand-dark));
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  margin-top: 0.75rem;
+}

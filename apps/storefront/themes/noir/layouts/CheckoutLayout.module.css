@@ -355,3 +355,12 @@
   font-size: 0.78rem;
   margin: 0.1rem 0;
 }
+
+.trackLink {
+  display: inline-block;
+  color: hsl(var(--brand));
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  margin-top: 0.75rem;
+}

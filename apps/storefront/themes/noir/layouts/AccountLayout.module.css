@@ -1,0 +1,151 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+  margin: 0 0 0.35rem;
+}
+
+.optionalNote {
+  color: hsl(var(--fx-muted));
+  font-size: 0.8rem;
+  margin: 0 0 2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid hsl(var(--fx-line));
+  border-bottom: 1px solid hsl(var(--fx-line));
+  padding: 1.25rem 0;
+}
+
+.label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+}
+
+.input {
+  border: none;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  background: transparent;
+  color: hsl(var(--fx-ink));
+}
+
+.submitBtn {
+  background: hsl(var(--brand));
+  color: hsl(0 0% 7%);
+  border: none;
+  padding: 0.65rem 1.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  width: fit-content;
+}
+
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: hsl(var(--fx-muted));
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.browseLink {
+  display: inline-block;
+  width: fit-content;
+  border: 1px solid hsl(var(--brand));
+  color: hsl(var(--brand));
+  padding: 0.5rem 1.5rem;
+  text-decoration: none;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.demoNote {
+  color: hsl(var(--fx-muted));
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.section {
+  border-top: 1px solid hsl(var(--fx-line));
+  padding-top: 1rem;
+}
+
+.sectionTitle {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+  margin: 0 0 0.85rem;
+}
+
+.hint {
+  color: hsl(var(--fx-muted));
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.orderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  padding: 0.65rem 0;
+  text-decoration: none;
+  color: hsl(var(--fx-ink));
+}
+
+.orderCode {
+  font-weight: 700;
+}
+
+.orderStatus {
+  font-size: 0.78rem;
+  color: hsl(var(--fx-muted));
+}
+
+.addressBox {
+  font-size: 0.85rem;
+  color: hsl(var(--fx-muted));
+}
+
+.addressBox p {
+  margin: 0.2rem 0;
+}

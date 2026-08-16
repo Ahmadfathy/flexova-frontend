@@ -182,8 +182,14 @@ export async function getCart(): Promise<Cart> {
   return { items: fixtures.cart.items, subtotal: fixtures.cart.subtotal };
 }
 
+/** Orders placed for real through S5's `confirmOrder` (spec §8 "reads
+ * OnlineOrder status") — populated below, checked before the static fixture
+ * demo rows so a shopper can actually track the order they just placed,
+ * not just the 3 canned demo codes. */
+const liveOrders = new Map<string, OnlineOrder>();
+
 export async function getOrderTracking(code: string): Promise<OnlineOrder | undefined> {
-  return fixtures.order_tracking.find((o) => o.code === code) as OnlineOrder | undefined;
+  return liveOrders.get(code) ?? (fixtures.order_tracking.find((o) => o.code === code) as OnlineOrder | undefined);
 }
 
 export function getStoreMeta() {
@@ -354,5 +360,19 @@ export async function confirmOrder(input: ConfirmOrderInput): Promise<ConfirmOrd
     attributed_affiliate: status === "pending_payment" ? null : await resolveAffiliate(input.refCode),
   };
   idempotentOrders.set(input.idempotencyKey, order);
+  liveOrders.set(code, { code, status, timeline: timelineForStatus(status), carrier: null, tracking_no: null });
   return { ok: true, order };
+}
+
+/** §8's timeline vocabulary is confirmed→processing→shipped→delivered — a
+ * freshly-placed order has only reached whichever of those its own status
+ * already implies (a COD order skips straight past a bare "confirmed" the
+ * same way spec §7 describes it: "confirm → processing"). `pending_payment`
+ * isn't part of that vocabulary at all (no invoice/commitment yet), so it
+ * gets no timeline — §8's tracking page treats that the same as "nothing
+ * confirmed yet", not a stage of its own. */
+function timelineForStatus(status: OrderConfirmation["status"]): string[] {
+  const stages = ["confirmed", "processing", "shipped", "delivered"];
+  const idx = stages.indexOf(status);
+  return idx === -1 ? [] : stages.slice(0, idx + 1);
 }

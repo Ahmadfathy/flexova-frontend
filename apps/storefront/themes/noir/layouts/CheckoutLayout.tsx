@@ -309,7 +309,9 @@ function ConfirmedStep({ c }: { c: UseCheckoutReturn }) {
       {c.order.attributed_affiliate && (
         <p className={styles.confirmedNote}>طلب مُحال عبر شريك: {c.order.attributed_affiliate}</p>
       )}
-      <p className={styles.confirmedNote}>احتفظ بكود الطلب لتتبّعه لاحقًا</p>
+      <Link href={`/track?code=${encodeURIComponent(c.order.code)}`} className={styles.trackLink}>
+        تتبّع الطلب
+      </Link>
       <Link href="/products" className={styles.browseLink}>مواصلة التسوّق</Link>
     </div>
   );

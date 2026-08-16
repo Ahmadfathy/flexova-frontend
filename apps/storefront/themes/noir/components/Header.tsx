@@ -9,7 +9,11 @@ export function Header({ storeName }: { storeName: string }) {
       <nav className={styles.nav}>
         <Link href="/products" className={styles.navLink}>مجموعات</Link>
         <span>·</span>
-        <span className={styles.navLink}>تتبّع الطلب</span>
+        <Link href="/track" className={styles.navLink}>تتبّع الطلب</Link>
+        <span>·</span>
+        <Link href="/account" className={styles.navLink}>حسابي</Link>
+        <span>·</span>
+        <Link href="/cart" className={styles.navLink}>السلة</Link>
       </nav>
     </header>
   );
