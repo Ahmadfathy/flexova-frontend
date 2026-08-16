@@ -2,12 +2,9 @@
 
 import { useState } from "react";
 import { useCart } from "@/lib/core/cart";
+import { getAddToCartGate, variantLabel } from "@/lib/core/pdp";
 import type { ProductDynamic, ProductStatic } from "@/lib/core/types";
 import styles from "./PriceAndCart.module.css";
-
-function variantLabel(v: { size?: string; color?: string }): string {
-  return v.color ? `${v.size}/${v.color}` : (v.size ?? "");
-}
 
 interface PriceAndCartProps {
   dynamic: ProductDynamic;
@@ -20,14 +17,11 @@ export function PriceAndCart({ dynamic, product }: PriceAndCartProps) {
   const [added, setAdded] = useState(false);
   const [notifyMe, setNotifyMe] = useState(false);
 
-  const hasVariants = (product.variants?.length ?? 0) > 0;
-  const selectedVariant = product.variants?.find((v) => variantLabel(v) === selected);
-  const priceUnknown = dynamic.erp_error || dynamic.price == null;
-  const productOutOfStock = dynamic.in_stock === false;
-  const variantOutOfStock = hasVariants && !!selectedVariant && selectedVariant.available <= 0;
-  const variantRequired = hasVariants && !selected;
-
-  const canAddToCart = !priceUnknown && !productOutOfStock && !variantRequired && !variantOutOfStock;
+  const { hasVariants, priceUnknown, productOutOfStock, variantRequired, canAddToCart } = getAddToCartGate(
+    product,
+    dynamic,
+    selected
+  );
 
   function handleAddToCart() {
     if (!canAddToCart || dynamic.price == null) return;

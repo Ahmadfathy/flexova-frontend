@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/lib/core/types";
+import { PlaceholderImage } from "./PlaceholderImage";
 import styles from "./ProductCard.module.css";
 
 /** noir's editorial row — a stacked list item, not a grid card (spec §2 —
@@ -15,7 +16,9 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
   return (
     <Link href={`/products/${product.slug_en ?? product.id}`} className={styles.row}>
       <span className={styles.index}>{String(index + 1).padStart(2, "0")}</span>
-      <div className={styles.imageBox} />
+      <div className={styles.imageBox}>
+        <PlaceholderImage alt={product.title_ar} />
+      </div>
       <div className={styles.body}>
         <h3 className={styles.title}>{product.title_ar}</h3>
         {product.static_desc_ar && <p className={styles.desc}>{product.static_desc_ar}</p>}

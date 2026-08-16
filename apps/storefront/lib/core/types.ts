@@ -135,6 +135,12 @@ export interface OrderConfirmation {
   /** `null` when no invoice exists yet (§7 "no invoice before payment
    * confirmed" — the `webhook_late` critical state). */
   invoice_id: string | null;
+  /** ETA = Egyptian Tax Authority e-receipt (§10 "online B2C = e-receipt"),
+   * same meaning as FE_02 Sales' ETA connector — not "estimated delivery
+   * time". `"submitted"` alongside the invoice, `null` under the exact same
+   * condition invoice_id is (no e-receipt before payment is actually
+   * confirmed either). */
+  eta_status: "submitted" | null;
   /** Set only when the order is both attributed (ref cookie/code present)
    * and actually confirmed — §10 "confirmed + attributed order → affiliate
    * commission (confirmed only)", never on a merely-pending order. */

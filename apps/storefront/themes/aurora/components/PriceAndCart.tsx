@@ -3,12 +3,9 @@
 import { useState } from "react";
 import { CheckCircle2, BellRing } from "lucide-react";
 import { useCart } from "@/lib/core/cart";
+import { getAddToCartGate, variantLabel } from "@/lib/core/pdp";
 import type { ProductDynamic, ProductStatic } from "@/lib/core/types";
 import styles from "./PriceAndCart.module.css";
-
-function variantLabel(v: { size?: string; color?: string }): string {
-  return v.color ? `${v.size}/${v.color}` : (v.size ?? "");
-}
 
 interface PriceAndCartProps {
   dynamic: ProductDynamic;
@@ -19,9 +16,8 @@ interface PriceAndCartProps {
  * The one genuinely interactive part of the PDP (spec §4.1 "variant
  * selector: interactive (client)"). Receives the already-resolved live
  * price/availability from `ProductAvailabilityIsland` — never fetches
- * anything itself, and never sells on missing/failed data (spec §4.4):
- * an ERP read failure or a null price disables Add to cart just like a
- * real out-of-stock read does, it just shows a different message.
+ * anything itself. Gating logic itself lives in `lib/core/pdp.ts`
+ * (Shared Core) — this component only renders what that gate returns.
  */
 export function PriceAndCart({ dynamic, product }: PriceAndCartProps) {
   const addItem = useCart((s) => s.addItem);
@@ -29,14 +25,11 @@ export function PriceAndCart({ dynamic, product }: PriceAndCartProps) {
   const [added, setAdded] = useState(false);
   const [notifyMe, setNotifyMe] = useState(false);
 
-  const hasVariants = (product.variants?.length ?? 0) > 0;
-  const selectedVariant = product.variants?.find((v) => variantLabel(v) === selected);
-  const priceUnknown = dynamic.erp_error || dynamic.price == null;
-  const productOutOfStock = dynamic.in_stock === false;
-  const variantOutOfStock = hasVariants && !!selectedVariant && selectedVariant.available <= 0;
-  const variantRequired = hasVariants && !selected;
-
-  const canAddToCart = !priceUnknown && !productOutOfStock && !variantRequired && !variantOutOfStock;
+  const { hasVariants, priceUnknown, productOutOfStock, variantRequired, canAddToCart } = getAddToCartGate(
+    product,
+    dynamic,
+    selected
+  );
 
   function handleAddToCart() {
     if (!canAddToCart || dynamic.price == null) return;

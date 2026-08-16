@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/lib/core/types";
+import { PlaceholderImage } from "./PlaceholderImage";
 import styles from "./ProductCard.module.css";
 
 /** PLP grid card — links to the PDP (spec §5.2 "Product-card grid"). Fixes
@@ -15,6 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/products/${product.slug_en ?? product.id}`} className={styles.card}>
       <div className={styles.imageBox}>
+        <PlaceholderImage alt={product.title_ar} />
         {dynamic.offer && <span className={styles.offerBadge}>عرض</span>}
         {outOfStock && <span className={styles.oosBadge}>غير متوفّر حالياً</span>}
       </div>

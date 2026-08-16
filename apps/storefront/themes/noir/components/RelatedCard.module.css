@@ -8,6 +8,8 @@
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
   margin-bottom: 0.5rem;
+  overflow: hidden;
+  position: relative;
 }
 
 .title {

@@ -313,9 +313,14 @@ function ConfirmedStep({ c }: { c: UseCheckoutReturn }) {
       <p className={styles.confirmedCode}>{c.order.code}</p>
       <p className={styles.confirmedStatus}>{STATUS_LABELS[c.order.status ?? ""] ?? c.order.status}</p>
       {c.order.invoice_id ? (
-        <p className={styles.confirmedNote}>رقم الفاتورة: {c.order.invoice_id}</p>
+        <>
+          <p className={styles.confirmedNote}>رقم الفاتورة: {c.order.invoice_id}</p>
+          {c.order.eta_status === "submitted" && (
+            <p className={styles.confirmedNote}>تم إصدار الإيصال الإلكتروني (ETA)</p>
+          )}
+        </>
       ) : (
-        <p className={styles.confirmedNote}>بانتظار تأكيد الدفع من البنك — سيتم إصدار الفاتورة بعد التأكيد</p>
+        <p className={styles.confirmedNote}>بانتظار تأكيد الدفع من البنك — سيتم إصدار الفاتورة والإيصال الإلكتروني بعد التأكيد</p>
       )}
       {c.order.attributed_affiliate && (
         <p className={styles.confirmedNote}>طلب مُحال عبر شريك: {c.order.attributed_affiliate}</p>

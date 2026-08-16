@@ -12,6 +12,8 @@
   flex-shrink: 0;
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
+  overflow: hidden;
+  position: relative;
 }
 
 .info {

@@ -13,6 +13,8 @@
   background: hsl(var(--fx-bg));
   border: 1px solid hsl(var(--fx-line));
   border-radius: 12px;
+  overflow: hidden;
+  position: relative;
 }
 
 .info {

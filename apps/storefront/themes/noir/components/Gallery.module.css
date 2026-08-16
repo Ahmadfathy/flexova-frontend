@@ -8,6 +8,8 @@
   aspect-ratio: 4 / 5;
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
+  overflow: hidden;
+  position: relative;
 }
 
 .thumbs {
@@ -20,4 +22,6 @@
   height: 56px;
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
+  overflow: hidden;
+  position: relative;
 }

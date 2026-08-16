@@ -357,6 +357,7 @@ export async function confirmOrder(input: ConfirmOrderInput): Promise<ConfirmOrd
     code,
     status,
     invoice_id: input.outcome === "pending" ? null : `inv_${code}`,
+    eta_status: input.outcome === "pending" ? null : "submitted",
     attributed_affiliate: status === "pending_payment" ? null : await resolveAffiliate(input.refCode),
   };
   idempotentOrders.set(input.idempotencyKey, order);

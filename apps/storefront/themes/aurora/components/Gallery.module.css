@@ -9,6 +9,8 @@
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
   border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
 }
 
 .thumbs {
@@ -22,4 +24,6 @@
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
   border-radius: 10px;
+  overflow: hidden;
+  position: relative;
 }

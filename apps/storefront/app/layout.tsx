@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { getActiveTheme } from "@/lib/core/mock-bff";
+import { RefCapture } from "@/lib/core/RefCapture";
 import "./globals.css";
 // Both themes' token VALUES ship statically (cheap CSS) — which one applies
 // is decided purely by the `data-theme` attribute set below, resolved
@@ -21,7 +22,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   return (
     <html lang="ar" dir="rtl" data-theme={activeTheme}>
-      <body>{children}</body>
+      <body>
+        <RefCapture />
+        {children}
+      </body>
     </html>
   );
 }

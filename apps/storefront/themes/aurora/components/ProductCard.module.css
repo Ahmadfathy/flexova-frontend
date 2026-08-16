@@ -12,6 +12,7 @@
   background: hsl(var(--fx-bg));
   border-radius: calc(var(--radius-lg) - 6px);
   margin-bottom: 0.75rem;
+  overflow: hidden;
   position: relative;
   display: flex;
   align-items: flex-start;

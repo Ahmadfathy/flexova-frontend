@@ -1,5 +1,6 @@
 import type { CartItem, ProductStatic, ProductDynamic } from "@/lib/core/types";
 import { isItemBlocked, isPriceChanged } from "@/lib/core/cart";
+import { PlaceholderImage } from "./PlaceholderImage";
 import styles from "./CartLine.module.css";
 
 interface CartLineProps {
@@ -16,7 +17,9 @@ export function CartLine({ item, product, dynamic, onQtyChange, onRemove }: Cart
 
   return (
     <div className={styles.line}>
-      <div className={styles.imageBox} />
+      <div className={styles.imageBox}>
+        <PlaceholderImage alt={product?.title_ar ?? item.product_id} />
+      </div>
       <div className={styles.info}>
         <span className={styles.title}>{product?.title_ar ?? item.product_id}</span>
         {item.variant && <span className={styles.variant}>{item.variant}</span>}
