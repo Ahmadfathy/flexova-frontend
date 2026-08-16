@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { FolderTree, Plus, ChevronUp, ChevronDown, Pencil, Trash2, CornerDownLeft } from "lucide-react";
@@ -6,7 +6,9 @@ import { FolderTree, Plus, ChevronUp, ChevronDown, Pencil, Trash2, CornerDownLef
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { Skeleton } from "@/components/patterns/Skeletons";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +16,8 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useEcommerceCategories } from "@/stores/ecommerceCategories";
 import { useEcommerceProducts } from "@/stores/ecommerceProducts";
-import { categoryTreeOrder, categoryDepth, productCountByCategory, isOfflineMock } from "../catalog";
+import { categoryTreeOrder, categoryDepth, productCountByCategory } from "../catalog";
+import { useMockState } from "../useMockState";
 import { CategoryFormDialog } from "./CategoryFormDialog";
 import type { EcStoreCategory } from "../types";
 
@@ -26,14 +29,16 @@ export function CategoriesPage() {
   const { t } = useTranslation("ecommerce");
   const { lang } = useAppearance();
   const can = useCan();
-  const isOffline = isOfflineMock();
 
-  const categories = useEcommerceCategories((s) => s.categories);
+  const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
+  const rawCategories = useEcommerceCategories((s) => s.categories);
   const createCategory = useEcommerceCategories((s) => s.createCategory);
   const updateCategory = useEcommerceCategories((s) => s.updateCategory);
   const deleteCategory = useEcommerceCategories((s) => s.deleteCategory);
   const reorder = useEcommerceCategories((s) => s.reorder);
   const products = useEcommerceProducts((s) => s.products);
+
+  const categories = useMemo(() => (forcedEmpty ? [] : rawCategories), [rawCategories, forcedEmpty]);
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<EcStoreCategory | undefined>(undefined);
@@ -72,6 +77,32 @@ export function CategoriesPage() {
     deleteCategory(deleteTarget.id);
     toast.success(t("categories.deleted_toast"));
     setDeleteTarget(null);
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("categories.title")} />
+        <PageSection padded={false}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-border" style={{ opacity: 1 - i * 0.15 }}>
+              <Skeleton className="h-3.5 flex-1" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+              <Skeleton className="h-7 w-24" />
+            </div>
+          ))}
+        </PageSection>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("categories.title")} />
+        <PageSection><ErrorState description={t("categories.error_body")} onRetry={reload} /></PageSection>
+      </div>
+    );
   }
 
   return (

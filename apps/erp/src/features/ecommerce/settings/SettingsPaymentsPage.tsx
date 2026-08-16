@@ -6,6 +6,9 @@ import { CreditCard, Truck, Plus, X, CheckCircle2, Receipt } from "lucide-react"
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { Skeleton } from "@/components/patterns/Skeletons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +20,7 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useEcommerceSettings } from "@/stores/ecommerceSettings";
 import { useEcommerceOrders } from "@/stores/ecommerceOrders";
+import { useMockState } from "../useMockState";
 import type { GatewayId } from "../types";
 
 const GATEWAY_ICON: Record<GatewayId, typeof CreditCard> = { paymob: CreditCard, fawry: CreditCard, cod: Truck };
@@ -30,6 +34,7 @@ export function SettingsPaymentsPage() {
   const can = useCan();
   const canManage = can("ecommerce.settings.manage");
 
+  const { loading, error, isOffline, reload } = useMockState();
   const gateways = useEcommerceSettings((s) => s.gateways);
   const toggleGateway = useEcommerceSettings((s) => s.toggleGateway);
   const zones = useEcommerceSettings((s) => s.shippingZones);
@@ -72,9 +77,37 @@ export function SettingsPaymentsPage() {
     setCarrierDraft("");
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("settings.payments_title")} />
+        <div className="px-4 space-y-4">
+          <PageSection>
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-12 w-full rounded" />
+              ))}
+            </div>
+          </PageSection>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("settings.payments_title")} />
+        <div className="px-4"><PageSection><ErrorState description={t("settings.error_body")} onRetry={reload} /></PageSection></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 pb-6">
       <PageHeader title={t("settings.payments_title")} />
+
+      {isOffline && <div className="px-4"><OfflineBanner message={t("settings.offline_note")} /></div>}
 
       <div className="px-4">
         <Tabs defaultValue="payments">

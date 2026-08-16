@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -6,6 +6,9 @@ import { ArrowLeft, ArrowRight, Copy, Check, MousePointerClick, ShoppingBag, Wal
 
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { Skeleton } from "@/components/patterns/Skeletons";
 import { StatusPill } from "@/components/patterns/StatusPill";
 import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { Button } from "@/components/ui/button";
@@ -24,6 +27,18 @@ import {
 const ArrowBack = ({ className }: { className?: string }) =>
   document.dir === "rtl" ? <ArrowRight className={className} /> : <ArrowLeft className={className} />;
 
+function DetailSkeleton() {
+  return (
+    <div className="p-4 space-y-4">
+      <Skeleton className="h-8 w-64" />
+      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4">
+        <Skeleton className="h-64 rounded-lg" />
+        <Skeleton className="h-64 rounded-lg" />
+      </div>
+    </div>
+  );
+}
+
 /** spec §6.2 — detail + payout. */
 export function AffiliateDetailPage() {
   const { id = "" } = useParams<{ id: string }>();
@@ -37,6 +52,30 @@ export function AffiliateDetailPage() {
   const approvePayout = useEcommerceAffiliates((s) => s.approvePayout);
   const requestPayout = useEcommerceAffiliates((s) => s.requestPayout);
   const ordersMap = useEcommerceOrders((s) => s.orders);
+
+  // Same detail-page five-states signal OrderDetailPage uses
+  // (?mock=loading|error|offline — `empty` has no meaning for a single record).
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true); setError(false); setIsOffline(false);
+      const { mockFetch } = await import("@/lib/mock/client");
+      try {
+        await mockFetch(async () => "ok" as const, "ok" as const);
+      } catch (e: unknown) {
+        if (cancelled) return;
+        if (e instanceof Error && e.message === "mock_offline") setIsOffline(true);
+        else setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id]);
 
   const [copied, setCopied] = useState(false);
   const [requestOpen, setRequestOpen] = useState(false);
@@ -53,6 +92,11 @@ export function AffiliateDetailPage() {
     [payoutsMap, id]
   );
   const hasPendingPayout = payouts.some((p) => p.status === "pending_approval");
+
+  if (loading) return <DetailSkeleton />;
+  if (error) {
+    return <div className="p-4"><ErrorState description={t("affiliates.error_body")} onRetry={() => window.location.reload()} /></div>;
+  }
 
   if (!affiliate) {
     return (
@@ -97,6 +141,8 @@ export function AffiliateDetailPage() {
   return (
     <div className="space-y-4 pb-6">
       <PageHeader title={affiliate.name_ar} crumbLabel={affiliate.name_ar} />
+
+      {isOffline && <div className="px-4"><OfflineBanner message={t("affiliates.offline_note")} /></div>}
 
       <div className="px-4 flex items-center gap-2">
         <Button variant="ghost" size="sm" onClick={() => navigate("/ecommerce/affiliates")}>

@@ -6,6 +6,9 @@ import { Users2, Plus, Link2 } from "lucide-react";
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { Skeleton } from "@/components/patterns/Skeletons";
 import { StatusPill } from "@/components/patterns/StatusPill";
 import { EntityCell } from "@/components/patterns/DataTable";
 import { Button } from "@/components/ui/button";
@@ -15,6 +18,7 @@ import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useEcommerceAffiliates } from "@/stores/ecommerceAffiliates";
 import { AFFILIATE_STATUS_PILL } from "../catalog";
+import { useMockState } from "../useMockState";
 import { AffiliateCreateModal } from "./AffiliateCreateModal";
 import type { EcAffiliate } from "../types";
 
@@ -26,10 +30,41 @@ export function AffiliatesListPage() {
   const navigate = useNavigate();
   const can = useCan();
 
+  const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
   const affiliatesMap = useEcommerceAffiliates((s) => s.affiliates);
-  const affiliates = useMemo(() => Object.values(affiliatesMap), [affiliatesMap]);
+  const affiliates = useMemo(() => (forcedEmpty ? [] : Object.values(affiliatesMap)), [affiliatesMap, forcedEmpty]);
   const [createOpen, setCreateOpen] = useState(false);
   const canManage = can("ecommerce.affiliates.manage");
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("affiliates.title")} />
+        <PageSection padded={false}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4 px-4 py-3 border-b border-border" style={{ opacity: 1 - i * 0.15 }}>
+              <Skeleton className="h-8 w-8 rounded-full" />
+              <div className="space-y-1.5 flex-1">
+                <Skeleton className="h-3.5 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+              <Skeleton className="h-3.5 w-16 tabular-nums" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+            </div>
+          ))}
+        </PageSection>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("affiliates.title")} />
+        <PageSection><ErrorState description={t("affiliates.error_body")} onRetry={reload} /></PageSection>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 pb-6">
@@ -42,6 +77,8 @@ export function AffiliatesListPage() {
           ) : undefined
         }
       />
+
+      {isOffline && <OfflineBanner message={t("affiliates.offline_note")} />}
 
       <PageSection padded={false}>
         {affiliates.length === 0 ? (

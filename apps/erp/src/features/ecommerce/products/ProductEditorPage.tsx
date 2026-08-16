@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, Plus, X, AlertTriangle, Link2 } from "lucide-rea
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
 import { ErrorState } from "@/components/patterns/ErrorState";
+import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton } from "@/components/patterns/Skeletons";
 import { FormSection, FormField, FormGrid, FormActions } from "@/components/patterns/FormLayout";
 import { Button } from "@/components/ui/button";
@@ -102,6 +103,8 @@ export function ProductEditorPage() {
   );
 
   const [loading, setLoading] = useState(!isNew);
+  const [error, setError] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm());
   const [pickerOpen, setPickerOpen] = useState(false);
   const [erpMeta, setErpMeta] = useState<{ base_price: number; stock: number | null; status?: "active" | "suspended" }>({
@@ -110,13 +113,31 @@ export function ProductEditorPage() {
   const [imageDraft, setImageDraft] = useState("");
   const [variantDraft, setVariantDraft] = useState<{ size: string; color: string }>({ size: "", color: "" });
 
+  // Same detail-page five-states signal OrderDetailPage/AffiliateDetailPage
+  // use (?mock=loading|error|offline) — skipped entirely for the create
+  // form (nothing to fetch yet), same as OrderDetailPage skips `empty`.
   useEffect(() => {
     if (isNew) { setLoading(false); return; }
-    if (product) {
-      setForm(formFromProduct(product));
-      setErpMeta({ base_price: product.erp_base_price, stock: product.erp_stock, status: product.erp_status });
-    }
-    setLoading(false);
+    let cancelled = false;
+    (async () => {
+      setLoading(true); setError(false); setIsOffline(false);
+      const { mockFetch } = await import("@/lib/mock/client");
+      try {
+        await mockFetch(async () => "ok" as const, "ok" as const);
+        if (cancelled) return;
+        if (product) {
+          setForm(formFromProduct(product));
+          setErpMeta({ base_price: product.erp_base_price, stock: product.erp_stock, status: product.erp_status });
+        }
+      } catch (e: unknown) {
+        if (cancelled) return;
+        if (e instanceof Error && e.message === "mock_offline") setIsOffline(true);
+        else setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [isNew, product]);
 
   const canManage = can("ecommerce.products.manage");
@@ -189,6 +210,15 @@ export function ProductEditorPage() {
 
   if (loading) return <div className="p-4"><EditorSkeleton /></div>;
 
+  if (error) {
+    return (
+      <div className="space-y-4 p-4">
+        <PageHeader title={t("products.title")} />
+        <PageSection><ErrorState description={t("products.error_body")} onRetry={() => window.location.reload()} /></PageSection>
+      </div>
+    );
+  }
+
   if (!isNew && !product) {
     return (
       <div className="space-y-4 p-4">
@@ -211,6 +241,8 @@ export function ProductEditorPage() {
         title={isNew ? t("products.new_title") : form.title_ar}
         crumbLabel={isNew ? t("products.new") : form.title_ar}
       />
+
+      {isOffline && <div className="mx-4"><OfflineBanner message={t("products.offline_note")} /></div>}
 
       {suspended && (
         <div className="mx-4 flex items-center gap-2 rounded-md border border-danger/40 bg-danger-tint px-3 py-2 text-sm text-danger-text">

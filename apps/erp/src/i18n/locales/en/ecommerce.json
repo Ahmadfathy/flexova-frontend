@@ -203,6 +203,7 @@
     "new_title": "New category",
     "edit_title": "Edit category",
     "offline_note": "No internet connection — changes will be saved locally",
+    "error_body": "Something went wrong loading the data — try again",
 
     "no_categories": "No categories yet",
     "empty_sub": "Add your first category",
@@ -240,6 +241,8 @@
     "new_title": "Add affiliate",
     "cancel": "Cancel",
     "save": "Save",
+    "error_body": "Something went wrong loading the data — try again",
+    "offline_note": "No internet connection — changes will be saved locally",
 
     "no_affiliates": "No affiliates yet",
     "empty_sub": "Add your first affiliate",
@@ -301,6 +304,8 @@
 
   "settings": {
     "save": "Save",
+    "error_body": "Something went wrong loading the data — try again",
+    "offline_note": "No internet connection — changes will be saved locally",
 
     "payments_title": "Payments & Shipping",
     "tab_payments": "Payments",

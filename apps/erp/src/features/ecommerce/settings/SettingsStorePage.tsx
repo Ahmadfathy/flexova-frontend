@@ -5,6 +5,9 @@ import { CheckCircle2, Plus, X, ShieldCheck } from "lucide-react";
 
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
+import { ErrorState } from "@/components/patterns/ErrorState";
+import { OfflineBanner } from "@/components/patterns/OfflineBanner";
+import { Skeleton } from "@/components/patterns/Skeletons";
 import { FormField, FormGrid, FormActions } from "@/components/patterns/FormLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
 import { useEcommerceSettings } from "@/stores/ecommerceSettings";
+import { useMockState } from "../useMockState";
 import type { EcStoreConfig } from "../types";
 
 const THEME_META: Record<string, { label_ar: string; layout: string }> = {
@@ -58,6 +62,7 @@ export function SettingsStorePage() {
   const can = useCan();
   const canManage = can("ecommerce.settings.manage");
 
+  const { loading, error, isOffline, reload } = useMockState();
   const config = useEcommerceSettings((s) => s.storeConfig);
   const setActiveTheme = useEcommerceSettings((s) => s.setActiveTheme);
   const updateStoreConfig = useEcommerceSettings((s) => s.updateStoreConfig);
@@ -90,9 +95,40 @@ export function SettingsStorePage() {
     toast.success(t("settings.store_saved_toast"));
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("settings.store_title")} />
+        <div className="px-4 space-y-4">
+          <PageSection>
+            <Skeleton className="h-32 w-full rounded" />
+          </PageSection>
+          <PageSection>
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-9 w-full rounded" />
+              ))}
+            </div>
+          </PageSection>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <PageHeader title={t("settings.store_title")} />
+        <div className="px-4"><PageSection><ErrorState description={t("settings.error_body")} onRetry={reload} /></PageSection></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 pb-10">
       <PageHeader title={t("settings.store_title")} />
+
+      {isOffline && <div className="px-4"><OfflineBanner message={t("settings.offline_note")} /></div>}
 
       <div className="px-4 space-y-4">
         <PageSection title={t("settings.theme_section_title")} subtitle={t("settings.theme_section_sub")}>
