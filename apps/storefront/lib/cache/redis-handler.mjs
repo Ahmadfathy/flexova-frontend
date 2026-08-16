@@ -42,8 +42,13 @@ const redis = new Redis(REDIS_URL, {
 
 redis.on("error", (err) => {
   // Never let a Redis blip crash page rendering — log and let get()/set()
-  // degrade to "cache miss" below instead of throwing.
-  console.error("[redis-cache-handler] redis connection error:", err.message);
+  // degrade to "cache miss" below instead of throwing. `warn`, not `error`:
+  // Next's dev overlay surfaces any console.error() during a Server
+  // Component render as a full red "Console Error" screen, even though
+  // this is already handled and nothing actually failed the request — with
+  // no local Redis running that showed up looking like a crash on every
+  // page. The condition is still fully logged, just without the false alarm.
+  console.warn("[redis-cache-handler] redis connection error:", err.message);
 });
 
 export default class RedisCacheHandler {
@@ -58,7 +63,9 @@ export default class RedisCacheHandler {
       if (!raw) return null;
       return JSON.parse(raw);
     } catch (err) {
-      console.error("[redis-cache-handler] get failed:", err.message);
+      // warn, not error — see the connection-error handler's comment above.
+      // This is a handled cache-miss, not a request failure.
+      console.warn("[redis-cache-handler] get failed:", err.message);
       return null;
     }
   }
@@ -85,7 +92,7 @@ export default class RedisCacheHandler {
         await pipeline.exec();
       }
     } catch (err) {
-      console.error("[redis-cache-handler] set failed:", err.message);
+      console.warn("[redis-cache-handler] set failed:", err.message);
     }
   }
 
@@ -101,7 +108,7 @@ export default class RedisCacheHandler {
         await redis.del(TAG_PREFIX + tag);
       }
     } catch (err) {
-      console.error("[redis-cache-handler] revalidateTag failed:", err.message);
+      console.warn("[redis-cache-handler] revalidateTag failed:", err.message);
     }
   }
 
