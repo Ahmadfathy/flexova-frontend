@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Users2, CreditCard, Store } from "lucide-react";
+import { CreditCard, Store } from "lucide-react";
 import { EcommercePlaceholderPage } from "./EcommercePlaceholderPage";
 
 export { OrdersListPage } from "./orders/OrdersListPage";
@@ -7,14 +7,11 @@ export { OrderDetailPage } from "./orders/OrderDetailPage";
 export { ProductsListPage as ProductsPage } from "./products/ProductsListPage";
 export { ProductEditorPage } from "./products/ProductEditorPage";
 export { CategoriesPage } from "./categories/CategoriesPage";
+export { AffiliatesListPage as AffiliatesPage } from "./affiliates/AffiliatesListPage";
+export { AffiliateDetailPage } from "./affiliates/AffiliateDetailPage";
 
-/** Affiliates/settings land in Admin Prompts A3–A4 (kickoff §5) — this A2
- * pass implements §3 Products + §4 Categories on top of A1's Orders. */
-export function AffiliatesPage() {
-  const { t } = useTranslation("ecommerce");
-  return <EcommercePlaceholderPage icon={Users2} title={t("nav_titles.affiliates")} note={t("placeholder.note")} />;
-}
-
+/** Settings land in Admin Prompt A4 (kickoff §5) — this A3 pass implements
+ * §6 Affiliates on top of A1's Orders + A2's Products/Categories. */
 export function SettingsPaymentsPage() {
   const { t } = useTranslation("ecommerce");
   return <EcommercePlaceholderPage icon={CreditCard} title={t("nav_titles.settings_payments")} note={t("placeholder.note")} />;

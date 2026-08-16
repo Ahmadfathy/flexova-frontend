@@ -231,5 +231,71 @@
     "delete_body": "سيتم حذف \"{{name}}\" نهائيًا",
     "delete_blocked_children": "لا يمكن حذف تصنيف يحتوي على تصنيفات فرعية",
     "delete_blocked_products": "لا يمكن حذف تصنيف مرتبط بمنتجات — انقل المنتجات أولًا"
+  },
+
+  "affiliates": {
+    "title": "المسوّقون",
+    "count": "{{n}} مسوّق",
+    "new": "مسوّق جديد",
+    "new_title": "إضافة مسوّق",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+
+    "no_affiliates": "لا يوجد مسوّقون بعد",
+    "empty_sub": "أضف أول مسوّق",
+
+    "col_affiliate": "المسوّق",
+    "col_code": "الكود",
+    "col_commission": "العمولة",
+    "col_clicks": "الزيارات",
+    "col_orders": "الأوردرات",
+    "col_balance": "الرصيد المستحق",
+    "col_status": "الحالة",
+
+    "status_active": "نشط",
+    "status_inactive": "غير نشط",
+
+    "field_name": "الاسم",
+    "field_phone": "رقم الموبايل",
+    "field_commission": "نسبة العمولة %",
+    "form_name_required": "الاسم مطلوب",
+    "form_commission_invalid": "نسبة العمولة لازم تكون بين 1 و100",
+    "auto_generate_note": "سيتم توليد كود ورابط تتبّع فريد تلقائيًا",
+    "created_toast": "تم إضافة المسوّق",
+
+    "not_found_title": "المسوّق غير موجود",
+    "not_found_body": "لم يتم العثور على هذا المسوّق",
+    "back_to_list": "العودة للمسوّقين",
+
+    "unique_link": "رابط التتبّع الفريد",
+    "copy_link": "نسخ الرابط",
+    "link_copied_toast": "تم نسخ الرابط",
+
+    "stat_clicks": "زيارات",
+    "stat_orders": "أوردرات",
+    "stat_earned": "عمولة مستحقة",
+
+    "balance_due": "الرصيد المستحق",
+    "request_payout": "طلب صرف",
+    "payouts_title": "طلبات الصرف",
+    "payout_status_pending_approval": "بانتظار الموافقة",
+    "payout_status_approved": "تمت الموافقة",
+    "payout_status_paid": "تم الصرف",
+    "approve_payout": "اعتماد الصرف",
+
+    "log_title": "سجل الأوردرات المُحالة",
+    "log_empty": "لا يوجد أوردرات مُحالة بعد",
+    "col_order_code": "كود الأوردر",
+    "col_order_status": "الحالة",
+    "col_order_total": "الإجمالي",
+    "col_order_date": "التاريخ",
+
+    "request_payout_title": "طلب صرف رصيد؟",
+    "request_payout_body": "أدخل المبلغ المطلوب صرفه (لا يتجاوز الرصيد المستحق)",
+    "payout_requested_toast": "تم إرسال طلب الصرف",
+
+    "approve_payout_title": "اعتماد طلب الصرف؟",
+    "approve_payout_body": "سيتم اعتماد الصرف وتسجيل الدفعة في الحسابات (محاكاة)",
+    "payout_approved_toast": "تم اعتماد الصرف ونشره في الحسابات"
   }
 }

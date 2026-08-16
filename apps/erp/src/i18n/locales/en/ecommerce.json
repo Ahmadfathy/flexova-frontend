@@ -231,5 +231,71 @@
     "delete_body": "\"{{name}}\" will be permanently deleted",
     "delete_blocked_children": "Can't delete a category that has subcategories",
     "delete_blocked_products": "Can't delete a category linked to products — move them first"
+  },
+
+  "affiliates": {
+    "title": "Affiliates",
+    "count": "{{n}} affiliates",
+    "new": "New affiliate",
+    "new_title": "Add affiliate",
+    "cancel": "Cancel",
+    "save": "Save",
+
+    "no_affiliates": "No affiliates yet",
+    "empty_sub": "Add your first affiliate",
+
+    "col_affiliate": "Affiliate",
+    "col_code": "Code",
+    "col_commission": "Commission",
+    "col_clicks": "Clicks",
+    "col_orders": "Orders",
+    "col_balance": "Balance due",
+    "col_status": "Status",
+
+    "status_active": "Active",
+    "status_inactive": "Inactive",
+
+    "field_name": "Name",
+    "field_phone": "Phone",
+    "field_commission": "Commission %",
+    "form_name_required": "Name is required",
+    "form_commission_invalid": "Commission must be between 1 and 100",
+    "auto_generate_note": "A unique tracking code and link will be generated automatically",
+    "created_toast": "Affiliate added",
+
+    "not_found_title": "Affiliate not found",
+    "not_found_body": "This affiliate couldn't be found",
+    "back_to_list": "Back to affiliates",
+
+    "unique_link": "Unique tracking link",
+    "copy_link": "Copy link",
+    "link_copied_toast": "Link copied",
+
+    "stat_clicks": "Clicks",
+    "stat_orders": "Orders",
+    "stat_earned": "Commission earned",
+
+    "balance_due": "Balance due",
+    "request_payout": "Request payout",
+    "payouts_title": "Payout requests",
+    "payout_status_pending_approval": "Pending approval",
+    "payout_status_approved": "Approved",
+    "payout_status_paid": "Paid",
+    "approve_payout": "Approve payout",
+
+    "log_title": "Attributed orders log",
+    "log_empty": "No attributed orders yet",
+    "col_order_code": "Order code",
+    "col_order_status": "Status",
+    "col_order_total": "Total",
+    "col_order_date": "Date",
+
+    "request_payout_title": "Request a payout?",
+    "request_payout_body": "Enter the amount to request (up to the balance due)",
+    "payout_requested_toast": "Payout request submitted",
+
+    "approve_payout_title": "Approve this payout?",
+    "approve_payout_body": "The payout will be approved and the payment posted in Accounting (mocked)",
+    "payout_approved_toast": "Payout approved and posted to Accounting"
   }
 }

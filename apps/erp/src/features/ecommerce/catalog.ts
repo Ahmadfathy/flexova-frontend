@@ -1,5 +1,5 @@
 import type { PillVariant } from "@/components/patterns/StatusPill";
-import type { EcOrderStatus, EcPaymentStatus, EcEtaStatus, EcOnlineProduct, EcStoreCategory } from "./types";
+import type { EcOrderStatus, EcPaymentStatus, EcEtaStatus, EcOnlineProduct, EcStoreCategory, EcOrder, EcAffiliate, EcPayout } from "./types";
 import { getOnlineProduct, getStoreCategories } from "@/lib/mock/ecommerce";
 
 export function isOfflineMock(): boolean {
@@ -144,4 +144,53 @@ export function productCountByCategory(products: EcOnlineProduct[]): Record<stri
   const counts: Record<string, number> = {};
   for (const p of products) counts[p.store_category] = (counts[p.store_category] ?? 0) + 1;
   return counts;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   §6 Affiliates
+   ───────────────────────────────────────────────────────────── */
+
+export const AFFILIATE_STATUS_PILL: Record<EcAffiliate["status"], PillVariant> = {
+  active: "approved",
+  inactive: "inactive",
+};
+
+export const PAYOUT_STATUS_PILL: Record<EcPayout["status"], PillVariant> = {
+  pending_approval: "pending",
+  approved: "in-progress",
+  paid: "paid",
+};
+
+/**
+ * "Confirmed" for commission purposes (spec §6.4/§10 golden rule —
+ * "confirmed + attributed order → affiliate commission (confirmed
+ * only)"): payment has actually gone through. `pending_payment` hasn't
+ * confirmed anything yet; `returned`/`cancelled` reverse the sale, so
+ * commission doesn't survive either — only the four statuses between
+ * those two extremes count.
+ */
+export function isCommissionEligible(status: EcOrderStatus): boolean {
+  return status === "paid" || status === "processing" || status === "shipped" || status === "delivered";
+}
+
+export function affiliateOrders(affiliateId: string, orders: EcOrder[]): EcOrder[] {
+  return orders.filter((o) => o.affiliate_id === affiliateId);
+}
+
+/** Computed from the attribution log itself — a transparency figure next
+ * to `balance_due` (the fixture/store's own authoritative "owed now"
+ * field), not a replacement for it; the two can legitimately diverge
+ * once payouts have been made against past commission. */
+export function commissionEarned(affiliateId: string, orders: EcOrder[], commissionPct: number): number {
+  const eligible = affiliateOrders(affiliateId, orders).filter((o) => isCommissionEligible(o.status));
+  const total = eligible.reduce((sum, o) => sum + o.total, 0);
+  return Math.round((total * commissionPct) / 100);
+}
+
+export function generateAffiliateCode(): string {
+  return `AFF${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+export function affiliateLink(code: string): string {
+  return `https://nilestore.eg/?ref=${code}`;
 }

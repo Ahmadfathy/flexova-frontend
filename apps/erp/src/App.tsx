@@ -169,15 +169,16 @@ import {
   EncounterPage, LabQueuePage, InsurancePage, CatalogPage,
 } from "@/features/healthcare/HealthcarePages";
 
-// E-commerce Admin — FE_21 — back-office (standard shell). Orders (list+detail)
-// this step (Admin Prompt A1); Products + Categories added in A2.
-// Affiliates/settings are still routed placeholders, built in A3–A4.
+// E-commerce Admin — FE_21 — back-office (standard shell). Orders (A1),
+// Products + Categories (A2), Affiliates (A3). Settings is still a routed
+// placeholder, built in A4.
 import { EcommerceLayout } from "@/features/ecommerce/EcommerceLayout";
 import {
   OrdersListPage as EcOrdersListPage, OrderDetailPage as EcOrderDetailPage,
   ProductsPage as EcProductsPage, ProductEditorPage as EcProductEditorPage,
   CategoriesPage as EcCategoriesPage,
-  AffiliatesPage as EcAffiliatesPage, SettingsPaymentsPage as EcSettingsPaymentsPage,
+  AffiliatesPage as EcAffiliatesPage, AffiliateDetailPage as EcAffiliateDetailPage,
+  SettingsPaymentsPage as EcSettingsPaymentsPage,
   SettingsStorePage as EcSettingsStorePage,
 } from "@/features/ecommerce/EcommercePages";
 
@@ -490,6 +491,7 @@ export default function App() {
             <Route path="products/:id"          element={<EcProductEditorPage />} />
             <Route path="categories"            element={<EcCategoriesPage />} />
             <Route path="affiliates"            element={<EcAffiliatesPage />} />
+            <Route path="affiliates/:id"        element={<EcAffiliateDetailPage />} />
             <Route path="settings/payments"     element={<EcSettingsPaymentsPage />} />
             <Route path="settings/store"        element={<EcSettingsStorePage />} />
           </Route>
