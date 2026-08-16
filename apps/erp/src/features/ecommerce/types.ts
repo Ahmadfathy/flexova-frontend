@@ -141,6 +141,12 @@ export interface EcShippingZone {
   cost: number;
 }
 
+/** spec §8 "Store data: name · logo · contact · social links · default
+ * lang · RTL" + "Policies: shipping · returns · privacy (static content
+ * pages)" — `contact`/`policies` aren't in the fixture (it only ever
+ * seeded the theme-picker half of this screen), added here the same way
+ * A2 added `erp_status` when the spec needed a field the fixture didn't
+ * carry yet. */
 export interface EcStoreConfig {
   store_name: string;
   logo: string;
@@ -150,4 +156,18 @@ export interface EcStoreConfig {
   default_lang: "ar" | "en";
   rtl: boolean;
   social: Record<string, string>;
+  contact?: { phone?: string; email?: string };
+  policies?: { shipping?: string; returns?: string; privacy?: string };
+}
+
+export type GatewayId = "paymob" | "fawry" | "cod";
+
+/** §7 "abstraction layer: adding a gateway = adapter, not code change" —
+ * modeled as data (a list of these configs the UI iterates), never a
+ * bespoke component per gateway. `connected` is the mocked equivalent of
+ * a live API connection check. */
+export interface PaymentGatewayConfig {
+  id: GatewayId;
+  enabled: boolean;
+  connected: boolean;
 }

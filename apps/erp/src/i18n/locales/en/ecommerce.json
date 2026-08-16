@@ -297,5 +297,78 @@
     "approve_payout_title": "Approve this payout?",
     "approve_payout_body": "The payout will be approved and the payment posted in Accounting (mocked)",
     "payout_approved_toast": "Payout approved and posted to Accounting"
+  },
+
+  "settings": {
+    "save": "Save",
+
+    "payments_title": "Payments & Shipping",
+    "tab_payments": "Payments",
+    "tab_shipping": "Shipping",
+
+    "gateways_title": "Payment gateways",
+    "gateways_sub": "Enable and configure payment gateways for this store",
+    "gateway_paymob": "Paymob",
+    "gateway_fawry": "Fawry",
+    "gateway_cod": "Cash on delivery",
+    "gateway_connected": "Connected",
+    "gateway_disabled": "Disabled",
+    "gateway_abstraction_note": "Each gateway is its own adapter — adding a new one never changes existing code",
+    "gateway_toggled_toast": "Gateway status updated",
+
+    "transactions_title": "Transaction log",
+    "transactions_sub": "Read from Accounting",
+    "transactions_empty": "No paid transactions yet",
+    "col_order": "Order",
+    "col_method": "Payment method",
+    "col_amount": "Amount",
+    "col_date": "Date",
+
+    "zones_title": "Shipping zones",
+    "zones_sub": "Cost per zone",
+    "zones_empty": "No shipping zones yet",
+    "zone_name_placeholder": "Zone name",
+    "zone_cost_placeholder": "Cost",
+    "add_zone": "Add zone",
+    "remove_zone": "Remove zone",
+    "currency_unit": "EGP",
+    "zone_added_toast": "Zone added",
+
+    "carriers_title": "Carriers",
+    "carriers_sub": "Available shipping carriers (manual tracking)",
+    "carriers_empty": "No carriers yet",
+    "carrier_placeholder": "Carrier name",
+    "remove_carrier": "Remove carrier",
+    "manual_tracking_note": "Tracking is manual for now — the tracking number is entered when an order is marked shipped",
+
+    "store_title": "Store Settings",
+
+    "theme_section_title": "Store theme",
+    "theme_section_sub": "Pick the storefront's look — a visual preview per theme",
+    "theme_safe_note": "The switch is instant and safe — it never touches orders or products, presentation only",
+    "theme_active": "Currently active",
+    "theme_activate": "Activate",
+    "theme_activated_toast": "{{theme}} theme activated",
+
+    "store_data_title": "Store data",
+    "field_store_name": "Store name",
+    "field_logo": "Logo",
+    "field_logo_helper": "Logo filename (real upload lands later)",
+    "field_phone": "Phone",
+    "field_email": "Email",
+    "field_default_lang": "Default language",
+    "field_rtl": "Right-to-left (RTL)",
+    "field_social": "Social links",
+    "social_platform_placeholder": "Platform",
+    "social_handle_placeholder": "Handle",
+    "remove_social": "Remove link",
+
+    "policies_title": "Policies",
+    "policies_sub": "Static content pages shown on the storefront",
+    "policy_shipping": "Shipping policy",
+    "policy_returns": "Returns policy",
+    "policy_privacy": "Privacy policy",
+
+    "store_saved_toast": "Store settings saved"
   }
 }

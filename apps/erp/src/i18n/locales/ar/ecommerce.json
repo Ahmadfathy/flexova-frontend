@@ -297,5 +297,78 @@
     "approve_payout_title": "اعتماد طلب الصرف؟",
     "approve_payout_body": "سيتم اعتماد الصرف وتسجيل الدفعة في الحسابات (محاكاة)",
     "payout_approved_toast": "تم اعتماد الصرف ونشره في الحسابات"
+  },
+
+  "settings": {
+    "save": "حفظ",
+
+    "payments_title": "الدفع والشحن",
+    "tab_payments": "الدفع",
+    "tab_shipping": "الشحن",
+
+    "gateways_title": "بوابات الدفع",
+    "gateways_sub": "فعّل واضبط بوابات الدفع لهذا المتجر",
+    "gateway_paymob": "Paymob",
+    "gateway_fawry": "فوري",
+    "gateway_cod": "الدفع عند الاستلام",
+    "gateway_connected": "متصلة",
+    "gateway_disabled": "معطّلة",
+    "gateway_abstraction_note": "كل بوابة دفع محوّل (adapter) مستقل — إضافة بوابة جديدة لا تغيّر أي كود",
+    "gateway_toggled_toast": "تم تحديث حالة البوابة",
+
+    "transactions_title": "سجل المعاملات",
+    "transactions_sub": "قراءة من الحسابات",
+    "transactions_empty": "لا يوجد معاملات مدفوعة بعد",
+    "col_order": "الأوردر",
+    "col_method": "طريقة الدفع",
+    "col_amount": "المبلغ",
+    "col_date": "التاريخ",
+
+    "zones_title": "مناطق الشحن",
+    "zones_sub": "التكلفة لكل منطقة",
+    "zones_empty": "لا يوجد مناطق شحن بعد",
+    "zone_name_placeholder": "اسم المنطقة",
+    "zone_cost_placeholder": "التكلفة",
+    "add_zone": "إضافة منطقة",
+    "remove_zone": "إزالة المنطقة",
+    "currency_unit": "ج.م",
+    "zone_added_toast": "تمت إضافة المنطقة",
+
+    "carriers_title": "شركات الشحن",
+    "carriers_sub": "قائمة شركات الشحن المتاحة (تتبّع يدوي)",
+    "carriers_empty": "لا يوجد شركات شحن بعد",
+    "carrier_placeholder": "اسم شركة الشحن",
+    "remove_carrier": "إزالة شركة الشحن",
+    "manual_tracking_note": "تتبّع الشحنات يدوي حاليًا — يُدخل رقم التتبّع عند تسجيل الشحن في الأوردر",
+
+    "store_title": "إعدادات المتجر",
+
+    "theme_section_title": "ثيم المتجر",
+    "theme_section_sub": "اختر شكل المتجر أونلاين — معاينة بصرية لكل ثيم",
+    "theme_safe_note": "التبديل فوري وآمن ولا يؤثر على الأوردرات أو المنتجات — التغيير في العرض فقط",
+    "theme_active": "مفعّل حاليًا",
+    "theme_activate": "تفعيل",
+    "theme_activated_toast": "تم تفعيل ثيم {{theme}}",
+
+    "store_data_title": "بيانات المتجر",
+    "field_store_name": "اسم المتجر",
+    "field_logo": "الشعار",
+    "field_logo_helper": "اسم ملف الشعار (رفع فعلي لاحقًا)",
+    "field_phone": "رقم الهاتف",
+    "field_email": "البريد الإلكتروني",
+    "field_default_lang": "اللغة الافتراضية",
+    "field_rtl": "اتجاه الكتابة من اليمين (RTL)",
+    "field_social": "روابط التواصل الاجتماعي",
+    "social_platform_placeholder": "المنصة",
+    "social_handle_placeholder": "المعرّف",
+    "remove_social": "إزالة الرابط",
+
+    "policies_title": "السياسات",
+    "policies_sub": "صفحات محتوى ثابتة تظهر في المتجر",
+    "policy_shipping": "سياسة الشحن",
+    "policy_returns": "سياسة الاسترجاع",
+    "policy_privacy": "سياسة الخصوصية",
+
+    "store_saved_toast": "تم حفظ إعدادات المتجر"
   }
 }
