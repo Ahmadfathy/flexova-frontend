@@ -1,0 +1,357 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.body {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+  margin: 0 0 1.5rem;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 5rem 1rem;
+  color: hsl(var(--fx-muted));
+  text-align: center;
+}
+
+.browseLink {
+  display: inline-block;
+  border: 1px solid hsl(var(--brand));
+  color: hsl(var(--brand));
+  font-weight: 600;
+  padding: 0.6rem 1.75rem;
+  text-decoration: none;
+  margin-top: 0.5rem;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid hsl(var(--fx-line));
+}
+
+.step,
+.stepActive,
+.stepDone {
+  border-bottom: 1px solid hsl(var(--fx-line));
+}
+
+.step button,
+.stepActive button,
+.stepDone button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  padding: 0.65rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: hsl(var(--fx-muted));
+  cursor: default;
+  text-align: start;
+}
+
+.stepDone button {
+  color: hsl(var(--fx-ink));
+  cursor: pointer;
+}
+
+.stepActive button {
+  color: hsl(var(--brand));
+}
+
+.stepNum {
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--fx-muted));
+  font-size: 0.75rem;
+}
+
+.stepActive .stepNum {
+  color: hsl(var(--brand));
+}
+
+.reservationBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: hsl(var(--fx-ink));
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-inline-start: 2px solid hsl(var(--brand));
+  padding: 0.5rem 0 0.5rem 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.reservationWarning {
+  border-inline-start-color: hsl(var(--warning));
+  color: hsl(var(--warning-text));
+}
+
+.reservationExpired {
+  border-inline-start-color: hsl(var(--danger));
+  color: hsl(var(--danger-text));
+}
+
+.reserveAgainBtn {
+  margin-inline-start: auto;
+  background: none;
+  color: hsl(var(--danger-text));
+  border: 1px solid hsl(var(--danger));
+  padding: 0.3rem 0.85rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adjustedNotice {
+  color: hsl(var(--warning-text));
+  font-size: 0.78rem;
+  margin: 0 0 1rem;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+}
+
+.input,
+.textarea {
+  border: none;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  background: transparent;
+  color: hsl(var(--fx-ink));
+  font-family: inherit;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.errorText {
+  color: hsl(var(--danger-text));
+  font-size: 0.72rem;
+  margin: 0;
+}
+
+.hint {
+  color: hsl(var(--fx-muted));
+  font-size: 0.72rem;
+  margin: 0;
+}
+
+.stepActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.primaryBtn {
+  background: hsl(var(--brand));
+  color: hsl(0 0% 7%);
+  border: none;
+  padding: 0.7rem 1.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: hsl(var(--fx-ink));
+  border: 1px solid hsl(var(--fx-line));
+  padding: 0.7rem 1.75rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.zoneList,
+.paymentList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid hsl(var(--fx-line));
+}
+
+.zoneOption,
+.zoneOptionActive,
+.paymentOption,
+.paymentOptionActive {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  border-bottom: 1px solid hsl(var(--fx-line));
+  padding: 0.75rem 0;
+  background: transparent;
+  color: hsl(var(--fx-muted));
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: start;
+}
+
+.zoneOptionActive,
+.paymentOptionActive {
+  color: hsl(var(--brand));
+}
+
+.zoneCost {
+  font-weight: 700;
+}
+
+.paymentNote {
+  display: block;
+  color: hsl(var(--fx-muted));
+  font-size: 0.7rem;
+  font-weight: 400;
+  margin-top: 0.15rem;
+}
+
+.reviewSection {
+  border-bottom: 1px solid hsl(var(--fx-line));
+  padding-bottom: 0.85rem;
+}
+
+.reviewHeading {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+  margin: 0 0 0.5rem;
+}
+
+.reviewValue {
+  font-size: 0.85rem;
+  color: hsl(var(--fx-ink));
+  margin: 0.15rem 0;
+}
+
+.reviewItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.reviewItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: hsl(var(--fx-ink));
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: hsl(var(--fx-muted));
+}
+
+.reviewTotal {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: hsl(var(--fx-ink));
+  padding-top: 0.5rem;
+  border-top: 1px solid hsl(var(--fx-line));
+}
+
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: hsl(var(--danger-text));
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-inline-start: 2px solid hsl(var(--danger));
+  padding: 0.6rem 0 0.6rem 0.75rem;
+}
+
+.blockedList {
+  margin: 0.35rem 0;
+  padding-inline-start: 1.1rem;
+}
+
+.confirmedPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  padding: 4rem 1rem;
+}
+
+.confirmedEyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--fx-muted));
+  margin: 0 0 0.75rem;
+}
+
+.confirmedCode {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--brand));
+  letter-spacing: 0.03em;
+  margin: 0.25rem 0;
+}
+
+.confirmedStatus {
+  color: hsl(var(--fx-ink));
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.confirmedNote {
+  color: hsl(var(--fx-muted));
+  font-size: 0.78rem;
+  margin: 0.1rem 0;
+}

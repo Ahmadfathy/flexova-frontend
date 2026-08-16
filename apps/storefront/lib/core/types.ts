@@ -115,6 +115,32 @@ export interface Attribution {
   source: "cookie" | "code";
 }
 
+/** Shipping zone (§7 step 2 "shipping method/zone + cost (v1 basic)") — a
+ * flat per-zone cost, no carrier/weight rules yet (out of v1 scope). */
+export interface ShippingZone {
+  id: string;
+  label_ar: string;
+  cost: number;
+}
+
+export type CheckoutStep = "delivery" | "shipping" | "payment" | "review" | "confirmed";
+
+/** What `useCheckout` gets back once `confirmOrder` actually creates the
+ * bridge OnlineOrder row (§7 "confirm → ... → invoice+ETA generated"). Not
+ * the same shape as `OnlineOrder` (tracking, §8) — this is the receipt the
+ * checkout flow itself renders. */
+export interface OrderConfirmation {
+  code: string;
+  status: OnlineOrderStatus;
+  /** `null` when no invoice exists yet (§7 "no invoice before payment
+   * confirmed" — the `webhook_late` critical state). */
+  invoice_id: string | null;
+  /** Set only when the order is both attributed (ref cookie/code present)
+   * and actually confirmed — §10 "confirmed + attributed order → affiliate
+   * commission (confirmed only)", never on a merely-pending order. */
+  attributed_affiliate: string | null;
+}
+
 export type OnlineOrderStatus = "pending_payment" | "processing" | "confirmed" | "shipped" | "delivered";
 
 export interface OnlineOrder {

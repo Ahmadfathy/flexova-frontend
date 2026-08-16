@@ -1,8 +1,11 @@
+import Link from "next/link";
 import type { Product } from "@/lib/core/types";
 import styles from "./ProductCard.module.css";
 
 /** noir's editorial row — a stacked list item, not a grid card (spec §2 —
- * "fully different layout" from aurora's grid). */
+ * "fully different layout" from aurora's grid). Links to the PDP; fixes a
+ * real gap caught live while verifying S5 (checkout) — this row had no
+ * `Link` at all, same missing piece as aurora's card. */
 export function ProductCard({ product, index }: { product: Product; index: number }) {
   const { dynamic } = product;
   const priceLabel =
@@ -10,7 +13,7 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
   const outOfStock = dynamic.in_stock === false;
 
   return (
-    <article className={styles.row}>
+    <Link href={`/products/${product.slug_en ?? product.id}`} className={styles.row}>
       <span className={styles.index}>{String(index + 1).padStart(2, "0")}</span>
       <div className={styles.imageBox} />
       <div className={styles.body}>
@@ -22,6 +25,6 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
           {outOfStock && <span className={styles.oos}>غير متوفّر حالياً</span>}
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

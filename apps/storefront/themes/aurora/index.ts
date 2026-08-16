@@ -8,6 +8,7 @@ import { PlpLayout } from "./layouts/PlpLayout";
 import { PdpLayout } from "./layouts/PdpLayout";
 import { NotFoundLayout } from "./layouts/NotFoundLayout";
 import { CartLayout } from "./layouts/CartLayout";
+import { CheckoutLayout } from "./layouts/CheckoutLayout";
 
-const theme: ThemeModule = { config, HomeLayout, PlpLayout, PdpLayout, NotFoundLayout, CartLayout };
+const theme: ThemeModule = { config, HomeLayout, PlpLayout, PdpLayout, NotFoundLayout, CartLayout, CheckoutLayout };
 export default theme;

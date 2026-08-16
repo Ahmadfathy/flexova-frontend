@@ -11,7 +11,7 @@
  * has to special-case a theme that's missing a piece.
  */
 import type { ComponentType } from "react";
-import type { Product, ProductStatic, Category } from "./types";
+import type { Product, ProductStatic, Category, ShippingZone } from "./types";
 import type { PlpResult } from "./catalog";
 
 export interface ThemeConfig {
@@ -64,6 +64,18 @@ export interface CartLayoutProps {
   catalog: ProductStatic[];
 }
 
+/** spec §7 — the whole guest-first checkout flow (delivery → shipping →
+ * payment → review → confirm). `catalog` is for line-item titles the same
+ * way `CartLayoutProps.catalog` is; `zones` is the static shipping-zone
+ * list (§7 step 2). Everything *dynamic* about checkout — the reservation,
+ * its TTL countdown, delivery form state, payment submission, every
+ * critical state — comes from `useCheckout(zones)`, called inside the
+ * theme's own CheckoutLayout exactly like CartLayout calls `useCartRecheck`. */
+export interface CheckoutLayoutProps {
+  catalog: ProductStatic[];
+  zones: ShippingZone[];
+}
+
 export interface ThemeModule {
   config: ThemeConfig;
   HomeLayout: ComponentType<HomeLayoutProps>;
@@ -71,4 +83,5 @@ export interface ThemeModule {
   PdpLayout: ComponentType<PdpLayoutProps>;
   NotFoundLayout: ComponentType<NotFoundLayoutProps>;
   CartLayout: ComponentType<CartLayoutProps>;
+  CheckoutLayout: ComponentType<CheckoutLayoutProps>;
 }

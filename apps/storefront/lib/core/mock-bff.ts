@@ -15,7 +15,21 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import fixturesJson from "@/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json";
-import type { Product, ProductStatic, ProductDynamic, ProductVariant, Category, ThemeName, Cart, OnlineOrder } from "./types";
+import type {
+  Product,
+  ProductStatic,
+  ProductDynamic,
+  ProductVariant,
+  Category,
+  ThemeName,
+  Cart,
+  OnlineOrder,
+  Reservation,
+  DeliveryInfo,
+  PaymentMethod,
+  ShippingZone,
+  OrderConfirmation,
+} from "./types";
 
 /** Loosely-typed raw fixture shape (fields vary per demo row — offers/variants/
  * erp_error are each present on only some catalog entries) — normalized into
@@ -174,4 +188,171 @@ export async function getOrderTracking(code: string): Promise<OnlineOrder | unde
 
 export function getStoreMeta() {
   return fixtures._meta;
+}
+
+/* -------------------------------------------------------------------- */
+/* Checkout (spec §7) — reservation, customer match, payment, confirm.  */
+/* Module-level `Map`s stand in for the ERP's own reservation/order      */
+/* tables (mock only — a real backend persists these server-side, same   */
+/* trust boundary as everything else in this file: never touched by a   */
+/* theme or Client Component directly, only via checkout-actions.ts).   */
+/* -------------------------------------------------------------------- */
+
+const reservations = new Map<string, Reservation>();
+/** Idempotency store (spec §7 "double-submit = one order") — keyed by the
+ * client-generated idempotency key, kept for the process lifetime. */
+const idempotentOrders = new Map<string, OrderConfirmation>();
+let reservationSeq = 9100; // fixture's demo reservation is resv_9001
+let orderSeq = 5100; // fixture's demo tracking codes are EC-5001/5002
+
+const SHIPPING_ZONES: ShippingZone[] = [
+  { id: "z_cairo", label_ar: "القاهرة والجيزة", cost: 50 },
+  { id: "z_alex", label_ar: "الإسكندرية", cost: 60 },
+  { id: "z_other", label_ar: "باقي المحافظات", cost: 90 },
+];
+
+/** Basic v1 shipping (spec §7 step 2 "shipping method/zone + cost (v1
+ * basic)") — flat per-zone cost, no carrier/weight rules. */
+export async function getShippingZones(): Promise<ShippingZone[]> {
+  return SHIPPING_ZONES;
+}
+
+async function readAvailable(productId: string): Promise<number> {
+  const dyn = await getProductDynamic(productId);
+  return dyn.available ?? 0;
+}
+
+/**
+ * Start checkout → StockReservation (spec §7 "immediately, TTL, visible
+ * countdown"). Requested qty is clamped to whatever's actually available
+ * right now; the caller compares the returned qty against what it asked
+ * for to know whether to show the "instant adjust" alert. `ttlSecondsOverride`
+ * only exists so a live demo can prove the TTL-expiry flow without a
+ * 10-minute wait (never used by the real flow — see checkout-actions.ts).
+ */
+export async function createReservation(
+  items: { product_id: string; variant: string | null; qty: number }[],
+  ttlSecondsOverride?: number
+): Promise<Reservation> {
+  const resolved = await Promise.all(
+    items.map(async (it) => ({ ...it, qty: Math.max(0, Math.min(it.qty, await readAvailable(it.product_id))) }))
+  );
+  const id = `resv_${reservationSeq++}`;
+  const ttl_seconds = ttlSecondsOverride ?? 600;
+  const reservation: Reservation = {
+    id,
+    items: resolved.filter((it) => it.qty > 0),
+    ttl_seconds,
+    expires_at: new Date(Date.now() + ttl_seconds * 1000).toISOString(),
+    status: "active",
+  };
+  reservations.set(id, reservation);
+  return reservation;
+}
+
+/** Lazily flips active→expired the moment `expires_at` has passed — every
+ * read is the check, no background timer needed on this side (the client
+ * runs its own visible countdown; this is the source of truth it defers to). */
+export async function getReservation(id: string): Promise<Reservation | undefined> {
+  const r = reservations.get(id);
+  if (!r) return undefined;
+  if (r.status === "active" && new Date(r.expires_at).getTime() <= Date.now()) {
+    r.status = "expired";
+  }
+  return r;
+}
+
+export async function releaseReservation(id: string): Promise<void> {
+  const r = reservations.get(id);
+  if (r && r.status === "active") r.status = "released";
+}
+
+/** CRM customer match by phone (spec §7 step 1 "phone in CRM → linked;
+ * else implicit CRM customer"). One hardcoded demo phone plays the "already
+ * a customer" branch; every other phone becomes a fresh implicit customer —
+ * matches the fixture's own `checkout.delivery` demo (`crm_match: false`). */
+const KNOWN_CRM_PHONES = new Set(["01022223333"]);
+
+export async function matchCrmCustomer(phone: string): Promise<{ crm_match: boolean }> {
+  await new Promise((r) => setTimeout(r, 200));
+  return { crm_match: KNOWN_CRM_PHONES.has(phone) };
+}
+
+/** Simulated payment gateway round trip (spec §7 step 3). COD never talks
+ * to a gateway at all — it "pays" instantly by definition. `forceMock` lets
+ * a live demo reach the `payment_failed` / `webhook_late` critical states
+ * on demand (`?mock=payment_fail` / `?mock=webhook_late`, checkout-actions.ts). */
+export type PaymentOutcome = "paid" | "failed" | "pending";
+
+export async function processPayment(method: PaymentMethod, forceMock?: string | null): Promise<PaymentOutcome> {
+  if (method === "cod") return "paid";
+  await new Promise((r) => setTimeout(r, 700 + Math.random() * 400));
+  if (forceMock === "payment_fail") return "failed";
+  if (forceMock === "webhook_late") return "pending";
+  return "paid";
+}
+
+const KNOWN_AFFILIATES: Record<string, string> = { MONA10: "aff_mona" };
+
+async function resolveAffiliate(refCode: string | null): Promise<string | null> {
+  if (!refCode) return null;
+  return KNOWN_AFFILIATES[refCode] ?? null;
+}
+
+export interface ConfirmOrderInput {
+  idempotencyKey: string;
+  reservationId: string;
+  delivery: DeliveryInfo;
+  paymentMethod: PaymentMethod;
+  outcome: PaymentOutcome;
+  refCode: string | null;
+  /** `?mock=race_out` — forces the "item out at confirm" guard below to
+   * trip even though nothing in the fixture actually changed, so the race
+   * UI can be demoed live without a second browser tab racing a real change. */
+  forceRaceOut?: boolean;
+}
+
+export type ConfirmOrderResult =
+  | { ok: true; order: OrderConfirmation }
+  | { ok: false; reason: "race_out" | "reservation_expired"; blockedItems: { product_id: string; variant: string | null }[] };
+
+/**
+ * Confirm → invoice+ETA (spec §7 step 4 + §10). Three guards run in order:
+ * idempotency (a repeat call with the same key returns the *same* order,
+ * never a second one), reservation liveness, and the race-out-at-confirm
+ * stock re-check (the reservation is the anti-oversell guard — this is it
+ * actually being enforced, not just held). Only once all three pass does
+ * an OnlineOrder + invoice get created.
+ */
+export async function confirmOrder(input: ConfirmOrderInput): Promise<ConfirmOrderResult> {
+  const cached = idempotentOrders.get(input.idempotencyKey);
+  if (cached) return { ok: true, order: cached };
+
+  const reservation = await getReservation(input.reservationId);
+  if (!reservation || reservation.status === "expired") {
+    return { ok: false, reason: "reservation_expired", blockedItems: [] };
+  }
+
+  const blockedItems: { product_id: string; variant: string | null }[] = [];
+  for (const it of reservation.items) {
+    const stillAvailable = input.forceRaceOut ? 0 : await readAvailable(it.product_id);
+    if (stillAvailable < it.qty) blockedItems.push({ product_id: it.product_id, variant: it.variant });
+  }
+  if (blockedItems.length > 0) {
+    return { ok: false, reason: "race_out", blockedItems };
+  }
+
+  reservation.status = "committed";
+
+  const code = `EC-${orderSeq++}`;
+  const status: OrderConfirmation["status"] =
+    input.outcome === "pending" ? "pending_payment" : input.paymentMethod === "cod" ? "processing" : "confirmed";
+  const order: OrderConfirmation = {
+    code,
+    status,
+    invoice_id: input.outcome === "pending" ? null : `inv_${code}`,
+    attributed_affiliate: status === "pending_payment" ? null : await resolveAffiliate(input.refCode),
+  };
+  idempotentOrders.set(input.idempotencyKey, order);
+  return { ok: true, order };
 }

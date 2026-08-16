@@ -1,6 +1,11 @@
+import Link from "next/link";
 import type { Product } from "@/lib/core/types";
 import styles from "./ProductCard.module.css";
 
+/** PLP grid card — links to the PDP (spec §5.2 "Product-card grid"). Fixes
+ * a real gap caught live while verifying S5 (checkout): this card had no
+ * `Link` at all, so a shopper could see the grid but never click into a
+ * product — same slug convention `RelatedCard` already uses. */
 export function ProductCard({ product }: { product: Product }) {
   const { dynamic } = product;
   const priceLabel =
@@ -8,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
   const outOfStock = dynamic.in_stock === false;
 
   return (
-    <article className={styles.card}>
+    <Link href={`/products/${product.slug_en ?? product.id}`} className={styles.card}>
       <div className={styles.imageBox}>
         {dynamic.offer && <span className={styles.offerBadge}>عرض</span>}
         {outOfStock && <span className={styles.oosBadge}>غير متوفّر حالياً</span>}
@@ -20,6 +25,6 @@ export function ProductCard({ product }: { product: Product }) {
           <span className={styles.listPrice}>{dynamic.list_price} ج.م</span>
         )}
       </div>
-    </article>
+    </Link>
   );
 }

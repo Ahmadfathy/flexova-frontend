@@ -1,8 +1,10 @@
 .card {
+  display: block;
   background: hsl(var(--fx-surface));
   border: 1px solid hsl(var(--fx-line));
   border-radius: var(--radius-lg);
   padding: 0.75rem;
+  text-decoration: none;
 }
 
 .imageBox {
