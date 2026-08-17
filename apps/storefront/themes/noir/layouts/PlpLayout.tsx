@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import type { PlpLayoutProps } from "@/lib/core/theme-contract";
 import { ProductPriceIsland } from "@/lib/core/ProductPriceIsland";
 import { Header } from "../components/Header";
@@ -19,6 +20,15 @@ export function PlpLayout({ categories, activeCategory, activeSort, result }: Pl
       <Header storeName={STORE_NAME} />
 
       <div className={styles.body}>
+        {/* Static shell breadcrumb (spec §5.1) — noir omitted this entirely;
+            kept minimal/centered to match the editorial layout instead of
+            aurora's boxed nav. */}
+        <nav className={styles.breadcrumb} aria-label="breadcrumb">
+          <Link href="/">الرئيسية</Link>
+          <span> / </span>
+          <span>{activeCategoryLabel ?? "كل المجموعات"}</span>
+        </nav>
+
         <p className={styles.eyebrow}>{activeCategoryLabel ?? "كل المجموعات"}</p>
 
         <FilterBar categories={categories} activeCategory={activeCategory} activeSort={activeSort} />
