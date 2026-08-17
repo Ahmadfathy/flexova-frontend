@@ -8,6 +8,17 @@
   padding: 2.5rem 1.5rem 4rem;
 }
 
+.breadcrumb {
+  text-align: center;
+  font-size: 0.7rem;
+  color: hsl(var(--fx-muted));
+  margin: 0 0 0.75rem;
+}
+
+.breadcrumb a {
+  color: hsl(var(--fx-muted));
+}
+
 .eyebrow {
   text-align: center;
   font-size: 0.7rem;
