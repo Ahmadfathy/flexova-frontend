@@ -2,7 +2,7 @@
 
 > **Phase 5 — Sector pattern (Brief 12), Storefront half.** The public online store — a **Next.js app inside the monorepo** (`apps/storefront`), not inside the ERP shell. The admin back-office is `apps/erp` (doc: `Flexova_FE_21_Ecommerce_Admin.md`). Page by page: rendering strategy, theme architecture, fields, states, SEO, integration with the ERP.
 > Version: 1.0 — August 2026 · Build no. **FE_21 (Storefront)**
-> **Repo:** monorepo workspace `apps/storefront` (pnpm workspaces + Turborepo). Shares `packages/shared` (types + design tokens) with `apps/erp`. Talks to the ERP via a BFF (server-to-server API), never direct DB.
+> **Repo:** monorepo workspace `apps/storefront` (pnpm workspaces + Turborepo). Shares `packages/shared` (types + design tokens) with `apps/erp`. Talks to the ERP backend via a BFF (server-to-server API), never direct DB.
 > **Shared with ERP:** design tokens + types via `packages/shared` (same CSS-variable names) · ERP API contracts (stock/price/customer/order/invoice). **Not shared:** shell, components, layout — the storefront has its own presentation entirely.
 > **Golden rules:** (1) **ERP is the absolute source of truth** — the storefront reads stock/price and reserves/creates orders, it never owns product/stock data. (2) **The theme is pure presentation** — all business logic lives in Shared Core; a theme changes look/structure, never logic. (3) **The online order is a bridge** — its own lifecycle, becomes an ERP invoice+ETA on confirm. (4) **No overselling** — stock reservation with TTL is the hard guard.
 

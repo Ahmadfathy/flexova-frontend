@@ -11,7 +11,7 @@
 - **No backend in this phase.** Both halves read fixtures through their mock layers; mock signatures mirror the future ERP API 1:1. The storefront's BFF calls are mocked until the Backend block.
 - **The ERP is the source of truth.** The storefront owns no stock/product data — it reads/reserves/creates orders via the (mocked) ERP API.
 - **The theme is presentation only.** All business logic lives in Shared Core; a theme changes look/structure, never logic.
-- **Monorepo, workspace-added (not rebuilt).** The existing ERP repo is converted to a pnpm+Turborepo workspace; the ERP moves under `apps/erp` (or stays and is registered as a workspace), and `apps/storefront` is added alongside. The ERP code is not otherwise touched.
+- **Monorepo, workspace-added (not rebuilt).** The existing frontend repo (`flexova-frontend`) is converted to a pnpm+Turborepo workspace; the current app moves under `apps/erp` (or stays and is registered as a workspace), and `apps/storefront` is added alongside. The existing code is not otherwise touched.
 
 ---
 
@@ -22,7 +22,7 @@
 ├── apps/
 │   ├── erp/                                   ← existing ERP (Core + all sectors)
 │   │   ├── src/modules/ecommerce/             ← e-commerce ADMIN (in shell)
-│   │   ├── src/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Admin_fixtures.json
+│   │   ├── src/lib/mock/fixtures/ecommerce.fixtures.json
 │   │   └── docs/build/sectors/ecommerce/
 │   │       ├── Flexova_FE_21_Ecommerce_Admin.md
 │   │       └── Flexova_FE_21_Ecommerce_BuildKickoff.md   (this file)
@@ -31,7 +31,7 @@
 │       ├── themes/<theme-name>/               ← theme packages (Layer 2)
 │       │   ├── theme.config.ts · tokens.css · layouts/ · components/
 │       ├── lib/core/                          ← Shared Core (cart/checkout/reservation/affiliate)
-│       ├── lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json
+│       ├── lib/mock/fixtures/ecommerce-storefront.fixtures.json
 │       ├── lib/cache/redis-handler.ts         ← shared cache handler (mandatory)
 │       ├── docs/
 │       │   └── Flexova_FE_21_Ecommerce_Storefront.md
@@ -57,9 +57,9 @@ The `apps/erp` and `apps/storefront` folders don't exist yet — **Phase A creat
 <repo root>/_fe21_staging/
 ├── Flexova_FE_21_Ecommerce_BuildKickoff.md          (this file)
 ├── Flexova_FE_21_Ecommerce_Admin.md
-├── Flexova_FE_21_Ecommerce_Admin_fixtures.json
+├── ecommerce.fixtures.json
 ├── Flexova_FE_21_Ecommerce_Storefront.md
-├── Flexova_FE_21_Ecommerce_Storefront_fixtures.json
+├── ecommerce-storefront.fixtures.json
 └── Flexova_FE_21_Ecommerce_Backend.md
 ```
 
@@ -70,10 +70,10 @@ The `apps/erp` and `apps/storefront` folders don't exist yet — **Phase A creat
 | File | Final path |
 |---|---|
 | `Flexova_FE_21_Ecommerce_Admin.md` | `apps/erp/docs/build/sectors/ecommerce/Flexova_FE_21_Ecommerce_Admin.md` |
-| `Flexova_FE_21_Ecommerce_Admin_fixtures.json` | `apps/erp/src/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Admin_fixtures.json` |
+| `ecommerce.fixtures.json` | `apps/erp/src/lib/mock/fixtures/ecommerce.fixtures.json` |
 | `Flexova_FE_21_Ecommerce_BuildKickoff.md` | `apps/erp/docs/build/sectors/ecommerce/Flexova_FE_21_Ecommerce_BuildKickoff.md` |
 | `Flexova_FE_21_Ecommerce_Storefront.md` | `apps/storefront/docs/Flexova_FE_21_Ecommerce_Storefront.md` |
-| `Flexova_FE_21_Ecommerce_Storefront_fixtures.json` | `apps/storefront/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json` |
+| `ecommerce-storefront.fixtures.json` | `apps/storefront/lib/mock/fixtures/ecommerce-storefront.fixtures.json` |
 | `Flexova_FE_21_Ecommerce_Backend.md` | `apps/erp/docs/reference/Flexova_FE_21_Ecommerce_Backend.md` |
 
 **Step 4 — delete `_fe21_staging/`**, then proceed to Session Zero (§4).
@@ -86,7 +86,7 @@ The `apps/erp` and `apps/storefront` folders don't exist yet — **Phase A creat
 
 Open Claude Code in the repo root and paste this **before any feature work**:
 
-> Convert this repo into a **pnpm + Turborepo monorepo** without disturbing the existing ERP app. Steps: (1) add a root `package.json` with pnpm `workspaces: ["apps/*","packages/*"]` and a `turbo.json` pipeline (build/dev/lint). (2) Move the existing ERP app under `apps/erp` (or register it in place as the `erp` workspace) — do not change its source, only its location/workspace wiring; confirm it still builds and runs. (3) Create `packages/shared` for types + design tokens, and expose the existing FE_00 design tokens there so both apps consume the same CSS-variable contract. (4) Scaffold `apps/storefront` as a **Next.js App Router** app (TypeScript, RTL-ready) with `output:'standalone'` in `next.config.ts`. (5) Add a `docker-compose.yml` with: reverse proxy (Traefik or Nginx), the storefront service (scalable to N), **Redis**, and a placeholder for the ERP API. (6) In the storefront, wire a **custom Next.js cache handler backed by Redis** and disable in-memory caching (so ISR/data cache is shared across instances and tag invalidation propagates). **Do not build any store features yet** — just stand up the monorepo, confirm both apps boot, and report the resulting structure back to me.
+> Convert this repo (`flexova-frontend`, a frontend-only repo) into a **pnpm + Turborepo monorepo** without disturbing the existing app. Steps: (1) add a root `package.json` with pnpm `workspaces: ["apps/*","packages/*"]` and a `turbo.json` pipeline (build/dev/lint). (2) Move the existing app under `apps/erp` (or register it in place as the `admin` workspace) — do not change its source, only its location/workspace wiring; confirm it still builds and runs. (3) Create `packages/shared` for types + design tokens, and expose the existing FE_00 design tokens there so both apps consume the same CSS-variable contract. (4) Scaffold `apps/storefront` as a **Next.js App Router** app (TypeScript, RTL-ready) with `output:'standalone'` in `next.config.ts`. (5) Add a `docker-compose.yml` with: reverse proxy (Traefik or Nginx), the storefront service (scalable to N), **Redis**, and a placeholder for the ERP **backend** API (a separate service/repo — this monorepo is frontend-only). (6) In the storefront, wire a **custom Next.js cache handler backed by Redis** and disable in-memory caching (so ISR/data cache is shared across instances and tag invalidation propagates). **Do not build any store features yet** — just stand up the monorepo, confirm both apps boot, and report the resulting structure back to me.
 
 **Phase A gate (all true before Phase B):**
 - Root pnpm workspaces + Turborepo pipeline in place; `pnpm install` + `turbo build` succeed.
@@ -101,10 +101,10 @@ Open Claude Code in the repo root and paste this **before any feature work**:
 ## 4) Phase B — Session Zero (per app)
 
 ### Session Zero — Admin (run in `apps/erp` context)
-> In `apps/erp`, I'm adding the **e-commerce admin** sector module (FE_21, admin half). Read `docs/build/sectors/ecommerce/Flexova_FE_21_Ecommerce_BuildKickoff.md` then the spec `docs/build/sectors/ecommerce/Flexova_FE_21_Ecommerce_Admin.md` and fixtures `src/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Admin_fixtures.json`. Confirm the FE_00 shell/tokens, the existing mock layer `src/lib/mock/client.ts`, and the ERP entities the admin reads (inventory FE_01, sales+ETA FE_02, accounting FE_04, CRM FE_05). Confirm the Sector-group `moduleFlag:"ecommerce"` registration (no shell edits). **Do not write code yet** — verify and list the admin build prompts (§6) in order, then wait for Admin Prompt 1.
+> In `apps/erp`, I'm adding the **e-commerce admin** sector module (FE_21, admin half). Read `docs/build/sectors/ecommerce/Flexova_FE_21_Ecommerce_BuildKickoff.md` then the spec `docs/build/sectors/ecommerce/Flexova_FE_21_Ecommerce_Admin.md` and fixtures `src/lib/mock/fixtures/ecommerce.fixtures.json`. Confirm the FE_00 shell/tokens, the existing mock layer `src/lib/mock/client.ts`, and the ERP entities the admin reads (inventory FE_01, sales+ETA FE_02, accounting FE_04, CRM FE_05). Confirm the Sector-group `moduleFlag:"ecommerce"` registration (no shell edits). **Do not write code yet** — verify and list the admin build prompts (§6) in order, then wait for Admin Prompt 1.
 
 ### Session Zero — Storefront (run in `apps/storefront` context)
-> In `apps/storefront`, I'm building the **public store** (FE_21, storefront half). Read `docs/Flexova_FE_21_Ecommerce_Storefront.md` and `lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json`. Confirm: the design-token contract from `packages/shared`, the Redis cache handler + standalone config from Phase A, and the mock ERP client the BFF will use. Confirm the theme-architecture folders (`themes/<name>/` with theme.config/tokens/layouts/components) and the Shared Core location (`lib/core`). **Do not write pages yet** — verify and list the storefront build prompts (§6) in order, then wait for Storefront Prompt 1.
+> In `apps/storefront`, I'm building the **public store** (FE_21, storefront half). Read `docs/Flexova_FE_21_Ecommerce_Storefront.md` and `lib/mock/fixtures/ecommerce-storefront.fixtures.json`. Confirm: the design-token contract from `packages/shared`, the Redis cache handler + standalone config from Phase A, and the mock ERP client the BFF will use. Confirm the theme-architecture folders (`themes/<name>/` with theme.config/tokens/layouts/components) and the Shared Core location (`lib/core`). **Do not write pages yet** — verify and list the storefront build prompts (§6) in order, then wait for Storefront Prompt 1.
 
 ---
 
@@ -116,11 +116,13 @@ Open Claude Code in the repo root and paste this **before any feature work**:
 
 **A2 — Online products + categories:** Implement §3 + §4: products list, publish/edit form (link to inventory item — never duplicate stock; display layer + SEO fields), store categories tree. On save trigger a revalidation hook (mock until backend). Handle the suspended-ERP-item auto-hide. Confirm §3.6.
 
+**A2.5 — Catalog modes (bulk / auto-rule / mirror):** Implement §3.7: the four `catalog_mode` options driven by StoreConfig. Build (1) **bulk import** modal (list unpublished inventory items + search/filter/select-all → create OnlineProduct shells with inventory defaults, partial-failure report), (2) **auto-publish rules** sub-screen (rule builder + dry-run preview), (3) **mirror** exceptions sub-screen (show-all-sellable + per-item hide). All modes must preserve curated display fields on switch and live-read stock/price. Gate mode/rule changes behind `ecommerce.catalog.configure`. Confirm §3.7 acceptance.
+
 **A3 — Affiliates + payout:** Implement §6: affiliates list + detail, unique link generation, commission (confirmed orders only), balance + admin payout (posts to Accounting, mocked). Confirm §6.4.
 
-**A4 — Settings (payments/shipping + StoreConfig/theme):** Implement §7 + §8: payment gateway config (Paymob/Fawry/COD via abstraction), basic shipping zones, StoreConfig with **active-theme picker** (writes `activeTheme`; server-side resolution note). Confirm §7 + §8 acceptance.
+**A4 — Settings (payments/shipping + StoreConfig/theme):** Implement §7 + §8: payment gateway config (Paymob/Fawry/COD via abstraction), basic shipping zones, StoreConfig with **active-theme picker** (writes `activeTheme`; server-side resolution note) + **`catalog_mode` picker** (manual/bulk/auto_rule/mirror — reveals rule builder / exceptions manager per mode). Confirm §7 + §8 acceptance.
 
-**A5 — Permissions:** Register the §10 permission keys into FE_08; verify the role behavior (refund/payout SoD-sensitive). Confirm §12.
+**A5 — Permissions:** Register the §10 permission keys into FE_08 (including `ecommerce.catalog.configure`); verify the role behavior (refund/payout/catalog-configure SoD-sensitive). Confirm §12.
 
 ---
 

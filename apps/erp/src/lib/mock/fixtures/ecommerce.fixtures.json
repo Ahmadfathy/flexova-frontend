@@ -14,10 +14,25 @@
     "logo": "nile-store-logo.png",
     "active_theme": "aurora",
     "available_themes": ["aurora", "noir"],
+    "catalog_mode": "manual",
     "payment_gateway": ["paymob", "fawry", "cod"],
     "default_lang": "ar",
     "rtl": true,
     "social": { "facebook": "nilestore", "instagram": "nilestore.eg" }
+  },
+
+  "catalog_modes_demo": {
+    "_note": "owner picks one via catalog_mode. all four fully built.",
+    "bulk_candidates": [
+      { "inventory_item_id": "inv_pants_06", "name_ar": "بنطلون جينز", "erp_price": 550.00, "erp_stock": 40, "_flag": "not_yet_published" },
+      { "inventory_item_id": "inv_cap_07", "name_ar": "كاب رياضي", "erp_price": 120.00, "erp_stock": 60, "_flag": "not_yet_published" }
+    ],
+    "auto_rules": [
+      { "id": "rule_1", "inventory_category_id": "invcat_men", "auto_publish": true, "default_store_category": "cat_men", "_flag": "auto_publish_men" }
+    ],
+    "mirror_exceptions": [
+      { "inventory_item_id": "inv_rawmat_09", "hidden": true, "_flag": "raw_material_excluded_from_mirror" }
+    ]
   },
 
   "store_categories": [

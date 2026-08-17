@@ -1,7 +1,7 @@
 # Flexova — FE_21 E-commerce · Backend Block
 
 > **قسم يُلحَق بـ `Flexova_Backend_Plan.md`** — نمط قطاعي (Brief 12)، لكنه **ثنائي الواجهة**: يخدم الـ admin (داخل الـ ERP) والـ storefront (BFF عبر API). يتبع ثوابت الخطة: shared-schema + `tenant_id` · auto-posting · append-only audit · `can()` كسلطة نهائية · contract tests تطابق الـ fixtures.
-> **مصدر الحقيقة للعقود:** `Flexova_FE_21_Ecommerce_Admin_fixtures.json` + `Flexova_FE_21_Ecommerce_Storefront_fixtures.json`.
+> **مصدر الحقيقة للعقود:** `ecommerce.fixtures.json` + `ecommerce-storefront.fixtures.json`.
 > **المبدأ الحاكم:** الـ ERP مصدر الحقيقة المطلق للمخزون/الأسعار/العملاء/المحاسبة. الـ storefront يقرأ ويحجز ويبعت أوردر عبر API — لا وصول مباشر لقاعدة البيانات.
 > الإصدار: 1.0 — أغسطس 2026 · رقم البناء **FE_21**.
 
@@ -29,7 +29,9 @@
 - **affiliate** — `name` · `phone` · `commission_pct` · `balance_due` · `status`. + **affiliate_link** — `affiliate_id` · `code` · `clicks`.
 - **affiliate_payout** — `affiliate_id` · `amount` · `status` (pending_approval/approved/paid).
 - **payment** — `order_id` · `gateway` (paymob/fawry/cod) · `gateway_ref` · `status` · `amount`. → يُقيَّد في الحسابات.
-- **store_config** — `active_theme` · `available_themes[]` · `payment_gateway[]` · `shipping_zones[]` · `store_data` · `default_lang`/`rtl`. per-tenant.
+- **store_config** — `active_theme` · `catalog_mode` (manual/bulk/auto_rule/mirror) · `available_themes[]` · `payment_gateway[]` · `shipping_zones[]` · `store_data` · `default_lang`/`rtl`. per-tenant.
+- **catalog_rule** — `inventory_category_id`/tag · `auto_publish` · `default_store_category_id`. (auto_rule mode)
+- **mirror_exception** — `inventory_item_id` · `hidden`. (mirror mode)
 - **shipping_zone** — `name` · `cost`.
 
 **مستهلَك (يُقرأ، لا يُملَك):** `inventory_item` + متاح (FE_01) · `price` · `customer` (CRM) · `invoice`+`eta` (FE_02) · `ar`/receipts (FE_04).
@@ -62,6 +64,18 @@
 ### هـ) Revalidation (تكامل مع الـ storefront cache)
 - تغيير `online_product`/السعر/المتاح في الـ admin → **حدث invalidation بـ tag** (`product:{id}`, `category:{id}`) → يُنشر لكل الـ storefront instances عبر Redis (`revalidateTag`). webhook واحد يحدّث الكل (يحلّ تباعد الـ cache في self-hosting).
 
+### و) Catalog Mode Engine (كيف يُملأ المتجر من المخزون)
+إعداد `store_config.catalog_mode` بأربع قيم، صاحب المتجر يختار. كلها تحترم «OnlineProduct طبقة عرض، تقرأ المخزون/السعر لحظياً — لا تكرّره».
+- **`manual`:** إنشاء OnlineProduct فردي (الأصلي).
+- **`bulk`:** `POST products/bulk-publish` — يستقبل قائمة `inventory_item_ids` → ينشئ OnlineProduct لكل واحد بـ defaults من المخزون (عنوان/سعر)، بدون صور/SEO. transaction بحجم دفعة + تقرير فشل جزئي. idempotent (صنف منشور بالفعل يُتخطّى).
+- **`auto_rule`:** جدول `catalog_rule` (`inventory_category_id`/tag → `auto_publish` + `default_store_category`). عند إضافة صن: مخزون مطابق → إنشاء OnlineProduct تلقائي (job/hook). `dry-run` يرجّع عدد المتأثّر.
+- **`mirror`:** لا إنشاء صفوف مسبق — **resolution لحظي**: المتجر يعرض كل `inventory_item` قابل للبيع (باستثناء flags: مواد خام/عيّنات/`hidden_online`). جدول `mirror_exception` (`inventory_item_id` → مخفي). الأخف تخزيناً، الأثقل قراءةً (يُحلّ بالـ cache/tags).
+
+**ثوابt عبر الأوضاع:**
+- طبقة العرض المنسّقة (صور/وصف/SEO) دائماً per-item وتبقى عبر تبديل الأوضاع — الأوضاع تدير الوجود/الظهور فقط، لا تدهس التنسيق.
+- تبديل الوضع لا يحذف بيانات (published products تبقى).
+- المتاح المعروض = رصيد ERP − المحجوز، في كل الأوضاع.
+
 ---
 
 ## 4) Endpoints
@@ -69,6 +83,8 @@
 ### أ) Admin API (`/api/v1/ecommerce/`) — داخل الـ ERP
 CRUD قياسي لكل كيان + الخاص:
 - `products` (CRUD + ربط بـ inventory_item · dedupe slug) · `categories` (CRUD/tree)
+- `products/bulk-publish` (POST — قائمة inventory_item_ids → إنشاء دفعة بـ defaults · idempotent) · `products/bulk-candidates` (GET — أصناف مخزون غير منشورة)
+- `catalog/rules` (CRUD — auto-publish rules · `rules/dry-run` GET) · `catalog/mirror-exceptions` (CRUD — إخفاء أصناف في mirror mode)
 - `orders` (list/detail) · `orders/:id/status` (POST — تحديث الحالة) · `orders/:id/return` (POST — credit note)
 - `affiliates` (CRUD + `:id/link` توليد) · `affiliates/:id/payout` (POST — بموافقة)
 - `settings/payments` · `settings/shipping` · `settings/store` (CRUD — بما فيه `active_theme`)

@@ -9,11 +9,11 @@
 
 ## 0) Module scope (recap)
 
-**In v1 (Admin):** Online products (display layer over inventory) · store categories · orders management (full lifecycle) · affiliates (basic: link + attribution + commission + payout) · payments config (Paymob/Fawry/COD via abstraction) · basic shipping (zones + manual tracking) · StoreConfig (active theme + payment gateway + store data). Reads stock/price/AR/customer/invoice from the ERP.
+**In v1 (Admin):** Online products (display layer over inventory) · **catalog modes: manual / bulk-import / auto-publish rules / mirror (owner picks via `catalog_mode`)** · store categories · orders management (full lifecycle) · affiliates (basic: link + attribution + commission + payout) · payments config (Paymob/Fawry/COD via abstraction) · basic shipping (zones + manual tracking) · StoreConfig (active theme + payment gateway + `catalog_mode` + store data). Reads stock/price/AR/customer/invoice from the ERP.
 
 **Out (v2):** merchant-side theme customization (v1 = developers add themes) · automated shipping + COD auto-settlement (closer to Brief 10) · affiliate MLM + self-service portal · digital products/subscriptions · multi-currency · advanced coupons · product reviews/wishlist.
 
-Sector module under shell Sector group with `moduleFlag:"ecommerce"`; every consumer is feature-flag-aware. Data via `lib/mock/client.ts` reading `Flexova_FE_21_Ecommerce_Admin_fixtures.json`.
+Sector module under shell Sector group with `moduleFlag:"ecommerce"`; every consumer is feature-flag-aware. Data via `lib/mock/client.ts` reading `ecommerce.fixtures.json`.
 
 ---
 
@@ -49,7 +49,7 @@ Mounts under shell nav Sector group `nav.ecommerce`. Secondary Tabs below `PageH
 | **OnlineOrder** | Storefront (bridge) | full lifecycle; links customer + invoice_id + shipment + affiliate_id. |
 | **Affiliate** | Storefront | commission_pct, status, balance. |
 | **AffiliateLink** | Storefront | unique code/link, clicks, attribution. |
-| **StoreConfig** | Storefront | active_theme, payment_gateway, shipping policy, store data, default lang/RTL. |
+| **StoreConfig** | Storefront | active_theme, `catalog_mode`, payment_gateway, shipping policy, store data, default lang/RTL. |
 | **InventoryItem** | **READ (FE_01)** | stock/availability — source of truth. |
 | **Price** | **READ (pricing)** | base price (online may override). |
 | **Customer** | **READ (CRM)** | shopper = CRM customer; dedupe by phone. |
@@ -77,6 +77,31 @@ Standard shell responsive. `ecommerce.products.manage`.
 
 ### 3.6 Acceptance
 Product links to inventory (never duplicates stock); save triggers revalidation; suspended ERP item auto-hides; SEO fields persist.
+
+### 3.7 Catalog modes — filling the store from inventory (`catalog_mode`)
+
+How inventory items become online products is controlled by one setting, **`catalog_mode`** (in StoreConfig §8), chosen by the store owner. All four modes are fully built; the owner picks one. This is a spectrum from fully manual (opt-in) to fully mirrored (opt-out) — one switch prevents conflicting modes running at once.
+
+**Mode 1 — `manual` (default):** publish one item at a time via §3.2. Full control, best for curated catalogs.
+
+**Mode 2 — `bulk`:** a **"استيراد من المخزون" (Import from inventory)** action on the products list opens a modal listing inventory items **not yet published**, with search + filter by inventory category + **"اختر الكل"**. Selecting items → **"انشر المحدّد"** creates an OnlineProduct per item **with defaults from inventory** (title = item name, price = ERP price, no images/SEO initially — enrich later per item). Solves the "500 items, publish once" problem.
+- States: empty ("كل الأصناف منشورة بالفعل") · no-results (after filter) · progress indicator for large batches · partial-failure report (which items failed + why).
+
+**Mode 3 — `auto_rule`:** rules like **"any new inventory item in category X → auto-publish online"**. Rule builder: inventory category (or tag) → auto-publish on/off + default store_category mapping. New qualifying items appear online automatically (with inventory defaults). Good for merchants whose whole inventory is for online sale.
+- Rule management sub-screen: list rules · add/edit/disable · dry-run preview ("سينشر X صنف").
+
+**Mode 4 — `mirror`:** the store is a **live mirror of inventory** — every sellable inventory item is shown by default; the owner **hides exceptions** instead of publishing the rule. Inverts the model to opt-out. Best when the store is the primary sales channel.
+- Exceptions sub-screen: search inventory · toggle "مخفي أونلاين" per item · bulk hide. Raw materials/samples/non-sellable flags are excluded from mirror by default.
+
+**Cross-mode rules (integrity):**
+- Switching mode never deletes data — published products persist; changing to `mirror` just changes the default visibility resolution.
+- Display enrichment (images/SEO/description) is always per-item and survives across modes — bulk/auto/mirror only handle *existence/visibility*, never overwrite an item's curated display layer.
+- The "OnlineProduct = display layer, never duplicates stock" rule holds in **all** modes — mirror/auto still read stock/price live from the ERP; they only auto-create the display shell.
+- Availability shown = ERP stock − reservations, in every mode.
+
+**Permissions:** `ecommerce.products.manage` (bulk/exceptions) · `ecommerce.catalog.configure` (change `catalog_mode` + rules — governance-sensitive, audit-logged).
+
+**Acceptance (§3.7):** each mode works and is switchable via `catalog_mode`; bulk publish creates display shells with inventory defaults; auto-rule publishes qualifying new items; mirror shows all sellable items with per-item hide; switching modes is data-safe and never overwrites curated display fields; stock/price always live-read from ERP.
 
 ---
 
@@ -133,6 +158,7 @@ Commission computed on confirmed orders only; payout posts to Accounting; unique
 ## 8) Screen — StoreConfig (`/ecommerce/settings/store`) — theme architecture surface
 
 - **Active theme:** pick from available themes (visual gallery + preview per theme) → sets `activeTheme` → **resolved server-side (no FOUC)**. Theme switch touches **no data/products** — pure presentation. Clear message: switch is instant, safe, does not affect orders/products.
+- **Catalog mode (`catalog_mode`):** pick how the store fills from inventory — `manual` / `bulk` / `auto_rule` / `mirror` (see §3.7). Each mode with a one-line explainer; switching is data-safe (never overwrites curated display fields). `auto_rule` reveals the rule builder; `mirror` reveals the exceptions manager. Governance-sensitive (audit-logged) via `ecommerce.catalog.configure`.
 - **Store data:** name · logo · contact · social links · default lang (AR/EN) · RTL.
 - **Policies:** shipping · returns · privacy (static content pages).
 
@@ -159,6 +185,7 @@ States: standard. Permission: `ecommerce.settings.manage`. `activeTheme` → sto
 | `ecommerce.orders.refund` | return/cancel (SoD-sensitive) |
 | `ecommerce.affiliates.manage` | affiliates + payout |
 | `ecommerce.settings.manage` | payments/shipping/store/theme |
+| `ecommerce.catalog.configure` | change `catalog_mode` + auto-publish rules + mirror exceptions (governance-sensitive) |
 
 Consistent with carried SoD (refund/payout are governance-sensitive) + immutable audit.
 
@@ -179,10 +206,11 @@ Consistent with carried SoD (refund/payout are governance-sensitive) + immutable
 ## 12) Module acceptance criteria (Admin)
 
 1. OnlineProduct is a display layer over inventory — never duplicates stock; suspended ERP item auto-hides.
-2. Save/publish triggers storefront revalidation (Redis tag).
-3. Orders lifecycle full; confirm generates invoice+ETA (READ shown); return posts credit note.
-4. Affiliate commission on confirmed orders only; payout posts to Accounting.
-5. Payments via abstraction (adapter per gateway); COD supported.
-6. StoreConfig theme switch is server-side, instant, data-safe.
-7. All stock/price/AR/customer READ from ERP (single source of truth).
-8. Feature-flag-aware; standard five states everywhere; AR+EN.
+2. **Catalog modes:** manual/bulk/auto_rule/mirror all work and switch via `catalog_mode`; bulk creates shells with inventory defaults; auto-rule publishes qualifying new items; mirror shows all sellable with per-item hide; switching is data-safe (curated display fields preserved); stock/price live-read in every mode.
+3. Save/publish triggers storefront revalidation (Redis tag).
+4. Orders lifecycle full; confirm generates invoice+ETA (READ shown); return posts credit note.
+5. Affiliate commission on confirmed orders only; payout posts to Accounting.
+6. Payments via abstraction (adapter per gateway); COD supported.
+7. StoreConfig theme switch is server-side, instant, data-safe.
+8. All stock/price/AR/customer READ from ERP (single source of truth).
+9. Feature-flag-aware; standard five states everywhere; AR+EN.
