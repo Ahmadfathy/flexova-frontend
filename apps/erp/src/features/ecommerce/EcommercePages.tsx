@@ -6,6 +6,8 @@ export { OrdersListPage } from "./orders/OrdersListPage";
 export { OrderDetailPage } from "./orders/OrderDetailPage";
 export { ProductsListPage as ProductsPage } from "./products/ProductsListPage";
 export { ProductEditorPage } from "./products/ProductEditorPage";
+export { CatalogRulesPage } from "./products/CatalogRulesPage";
+export { MirrorExceptionsPage } from "./products/MirrorExceptionsPage";
 export { CategoriesPage } from "./categories/CategoriesPage";
 export { AffiliatesListPage as AffiliatesPage } from "./affiliates/AffiliatesListPage";
 export { AffiliateDetailPage } from "./affiliates/AffiliateDetailPage";

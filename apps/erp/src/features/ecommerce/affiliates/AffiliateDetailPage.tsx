@@ -207,6 +207,11 @@ export function AffiliateDetailPage() {
                   <div className="flex items-center gap-1.5">
                     <span className="tabular-nums">{formatMoney(p.amount, lang)}</span>
                     <StatusPill variant={PAYOUT_STATUS_PILL[p.status]} label={t(`affiliates.payout_status_${p.status}`)} />
+                    {p.posted_voucher_id && (
+                      <span className="font-mono text-[11px] text-muted-foreground" dir="ltr" title={t("affiliates.posted_voucher_label")}>
+                        {p.posted_voucher_id}
+                      </span>
+                    )}
                   </div>
                   {canManage && p.status === "pending_approval" && (
                     <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={() => setApproveTarget(p.id)}>

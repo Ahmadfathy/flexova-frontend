@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { CheckCircle2, Plus, X, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Plus, X, ShieldCheck, Lock } from "lucide-react";
 
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -9,6 +10,7 @@ import { ErrorState } from "@/components/patterns/ErrorState";
 import { OfflineBanner } from "@/components/patterns/OfflineBanner";
 import { Skeleton } from "@/components/patterns/Skeletons";
 import { FormField, FormGrid, FormActions } from "@/components/patterns/FormLayout";
+import { ConfirmDialog } from "@/components/patterns/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +20,9 @@ import { cn } from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
 import { useEcommerceSettings } from "@/stores/ecommerceSettings";
 import { useMockState } from "../useMockState";
-import type { EcStoreConfig } from "../types";
+import type { CatalogMode, EcStoreConfig } from "../types";
+
+const CATALOG_MODES: CatalogMode[] = ["manual", "bulk", "auto_rule", "mirror"];
 
 const THEME_META: Record<string, { label_ar: string; layout: string }> = {
   aurora: { label_ar: "أورورا", layout: "شبكة + بانر ترحيبي (grid-hero)" },
@@ -57,24 +61,45 @@ function ThemePreview({ theme }: { theme: string }) {
 
 /** spec §8 — StoreConfig, the theme architecture's admin surface: active
  * theme (server-side, no FOUC, data-safe switch), store data, policies. */
+const CATALOG_MODE_META: Record<CatalogMode, { icon: string }> = {
+  manual: { icon: "📝" },
+  bulk: { icon: "📦" },
+  auto_rule: { icon: "⚡" },
+  mirror: { icon: "🪞" },
+};
+
 export function SettingsStorePage() {
   const { t } = useTranslation("ecommerce");
+  const navigate = useNavigate();
   const can = useCan();
   const canManage = can("ecommerce.settings.manage");
+  // §3.7/§10 — governance-sensitive, deliberately its own permission,
+  // distinct from `ecommerce.settings.manage` (payments/shipping/theme).
+  const canConfigureCatalog = can("ecommerce.catalog.configure");
 
   const { loading, error, isOffline, reload } = useMockState();
   const config = useEcommerceSettings((s) => s.storeConfig);
   const setActiveTheme = useEcommerceSettings((s) => s.setActiveTheme);
+  const setCatalogMode = useEcommerceSettings((s) => s.setCatalogMode);
   const updateStoreConfig = useEcommerceSettings((s) => s.updateStoreConfig);
 
   const [form, setForm] = useState<EcStoreConfig>(config);
   const [socialDraftKey, setSocialDraftKey] = useState("");
   const [socialDraftValue, setSocialDraftValue] = useState("");
+  const [pendingCatalogMode, setPendingCatalogMode] = useState<CatalogMode | null>(null);
 
   function handleActivateTheme(theme: string) {
     setActiveTheme(theme);
     setForm((f) => ({ ...f, active_theme: theme }));
     toast.success(t("settings.theme_activated_toast", { theme: THEME_META[theme]?.label_ar ?? theme }));
+  }
+
+  function handleConfirmCatalogMode() {
+    if (!pendingCatalogMode) return;
+    setCatalogMode(pendingCatalogMode);
+    setForm((f) => ({ ...f, catalog_mode: pendingCatalogMode }));
+    toast.success(t("settings.catalog_mode_activated_toast", { mode: t(`settings.catalog_mode_${pendingCatalogMode}`) }));
+    setPendingCatalogMode(null);
   }
 
   function addSocial() {
@@ -161,6 +186,47 @@ export function SettingsStorePage() {
           </div>
         </PageSection>
 
+        <PageSection title={t("settings.catalog_mode_section_title")} subtitle={t("settings.catalog_mode_section_sub")}>
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-3">
+            <Lock className="h-3.5 w-3.5 shrink-0" /> {t("settings.catalog_mode_governance_note")}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {CATALOG_MODES.map((mode) => {
+              const active = form.catalog_mode === mode;
+              return (
+                <div key={mode} className={cn("rounded-lg border p-3 space-y-1.5", active ? "border-brand ring-1 ring-brand" : "border-border")}>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium flex items-center gap-1.5">
+                      <span aria-hidden>{CATALOG_MODE_META[mode].icon}</span> {t(`settings.catalog_mode_${mode}`)}
+                    </p>
+                    {active ? (
+                      <span className="flex items-center gap-1 text-xs text-success-text font-medium shrink-0">
+                        <CheckCircle2 className="h-3.5 w-3.5" /> {t("settings.theme_active")}
+                      </span>
+                    ) : canConfigureCatalog ? (
+                      <Button size="sm" variant="outline" className="shrink-0" onClick={() => setPendingCatalogMode(mode)}>{t("settings.theme_activate")}</Button>
+                    ) : null}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">{t(`settings.catalog_mode_${mode}_explainer`)}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {form.catalog_mode === "auto_rule" && (
+            <div className="mt-3 flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">{t("settings.catalog_mode_reveal_rules")}</span>
+              <Button size="sm" variant="ghost" onClick={() => navigate("/ecommerce/products/rules")}>{t("products.catalog_mode_banner.manage_rules")}</Button>
+            </div>
+          )}
+          {form.catalog_mode === "mirror" && (
+            <div className="mt-3 flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">{t("settings.catalog_mode_reveal_mirror")}</span>
+              <Button size="sm" variant="ghost" onClick={() => navigate("/ecommerce/products/mirror")}>{t("products.catalog_mode_banner.manage_exceptions")}</Button>
+            </div>
+          )}
+        </PageSection>
+
         <PageSection title={t("settings.store_data_title")}>
           <FormGrid cols={2}>
             <FormField label={t("settings.field_store_name")}>
@@ -233,6 +299,15 @@ export function SettingsStorePage() {
 
         {canManage && <FormActions onSave={handleSave} saveLabel={t("settings.save")} />}
       </div>
+
+      <ConfirmDialog
+        open={!!pendingCatalogMode}
+        onOpenChange={(o) => !o && setPendingCatalogMode(null)}
+        title={t("settings.catalog_mode_confirm_title")}
+        description={pendingCatalogMode ? t("settings.catalog_mode_confirm_body", { mode: t(`settings.catalog_mode_${pendingCatalogMode}`) }) : ""}
+        confirmTone="warning"
+        onConfirm={handleConfirmCatalogMode}
+      />
     </div>
   );
 }

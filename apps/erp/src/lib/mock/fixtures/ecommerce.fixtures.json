@@ -22,10 +22,11 @@
   },
 
   "catalog_modes_demo": {
-    "_note": "owner picks one via catalog_mode. all four fully built.",
+    "_note": "owner picks one via catalog_mode. all four fully built. inventory_category_id lives in its own invcat_* namespace (not store_categories' cat_* — same 'own small mock pool, not joined to a real inventory fixture' precedent as LinkableInventoryItem).",
     "bulk_candidates": [
-      { "inventory_item_id": "inv_pants_06", "name_ar": "بنطلون جينز", "erp_price": 550.00, "erp_stock": 40, "_flag": "not_yet_published" },
-      { "inventory_item_id": "inv_cap_07", "name_ar": "كاب رياضي", "erp_price": 120.00, "erp_stock": 60, "_flag": "not_yet_published" }
+      { "inventory_item_id": "inv_pants_06", "name_ar": "بنطلون جينز", "name_en": "Jeans", "erp_price": 550.00, "erp_stock": 40, "inventory_category_id": "invcat_men", "status": "active", "_flag": "not_yet_published" },
+      { "inventory_item_id": "inv_cap_07", "name_ar": "كاب رياضي", "name_en": "Sports Cap", "erp_price": 120.00, "erp_stock": 60, "inventory_category_id": "invcat_accessories", "status": "active", "_flag": "not_yet_published" },
+      { "inventory_item_id": "inv_jacket_08", "name_ar": "جاكيت شتوي", "name_en": "Winter Jacket", "erp_price": 900.00, "erp_stock": 5, "inventory_category_id": "invcat_men", "status": "suspended", "_flag": "suspended_blocks_bulk_publish" }
     ],
     "auto_rules": [
       { "id": "rule_1", "inventory_category_id": "invcat_men", "auto_publish": true, "default_store_category": "cat_men", "_flag": "auto_publish_men" }

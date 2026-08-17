@@ -21,7 +21,7 @@
     "reports": ["reports.view","view_financial!","view_all_branches","build","save","schedule","export","dashboard.customize","eta.view"],
     "admin": ["admin.user.manage!","role.manage!","security.config!!","audit.view","branch.manage"],
     "healthcare": ["healthcare.today.view","healthcare.patients.view","healthcare.patients.view_all","healthcare.clinical.view!","healthcare.clinical.edit!","healthcare.lab.manage!","healthcare.insurance.manage","healthcare.catalog.manage"],
-    "ecommerce": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.orders.refund!","ecommerce.affiliates.manage","ecommerce.settings.manage"]
+    "ecommerce": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.orders.refund!","ecommerce.affiliates.manage","ecommerce.settings.manage","ecommerce.catalog.configure!"]
   },
 
   "role_templates": [
@@ -45,8 +45,8 @@
       "permissions": ["healthcare.today.view","healthcare.patients.view","healthcare.clinical.view!","healthcare.clinical.edit!"], "exclude": ["healthcare.patients.view_all","healthcare.insurance.manage","healthcare.catalog.manage"], "scope": { "branches": ["assigned"], "row_rule": "own" },
       "_note": "§12 matrix: own patients/appointments by default (row_rule:own, no view_all); full clinical read/write; no insurance/catalog admin" },
     { "id": "role_ec_manager", "name_ar": "مدير المتجر الإلكتروني", "name_en": "E-commerce Manager", "template": true, "user_count": 0,
-      "permissions": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.affiliates.manage","ecommerce.settings.manage"], "scope": { "branches": "all", "row_rule": "all" },
-      "_note": "FE_21 §10 'refund/payout are governance-sensitive' — day-to-day store management (publish, fulfill, affiliates, settings) without refund authority; ecommerce.orders.refund! is deliberately omitted, granted only via Owner or an explicit additional role" }
+      "permissions": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.affiliates.manage","ecommerce.settings.manage"], "exclude": ["ecommerce.catalog.configure!"], "scope": { "branches": "all", "row_rule": "all" },
+      "_note": "FE_21 §10 'refund/payout are governance-sensitive' — day-to-day store management (publish, fulfill, affiliates, settings) without refund authority; ecommerce.orders.refund! is deliberately omitted, granted only via Owner or an explicit additional role. §3.7's catalog_mode switch is the same kind of decision (picks how the whole catalog populates, not a single record) so ecommerce.catalog.configure! is excluded here too — a manager can run bulk-import/mirror-hide day to day (those are ecommerce.products.manage) but can't change the mode itself. NOTE: payout approval has no permission key of its own — §10's table bundles it into ecommerce.affiliates.manage, which this role does hold, so despite the prose 'payout is governance-sensitive', this role can approve a payout same as Owner. Flagged, not fixed — splitting it out would mean adding a key beyond what §10's table defines." }
   ],
 
   "users": [
@@ -75,7 +75,8 @@
     { "id": "au_002", "user_id": "usr_mgr_nasr", "action": "sales.discount.override", "sensitive": true, "when": "2026-06-12T14:20:00", "branch_id": "br_nasr", "target": "NS-INV-1041", "summary_ar": "تجاوز خصم بصلاحية" },
     { "id": "au_003", "user_id": "usr_owner", "action": "crm.credit.override", "sensitive": true, "when": "2026-06-13T11:00:00", "branch_id": "br_main", "target": "cu_overdue", "summary_ar": "تجاوز حد ائتمان بقالة الحاج كمال" },
     { "id": "au_004", "user_id": "usr_owner", "action": "admin.user.manage", "sensitive": true, "when": "2026-05-01T10:05:00", "branch_id": null, "target": "usr_old", "summary_ar": "إيقاف مستخدم محمود السيد" },
-    { "id": "au_005", "user_id": "usr_owner", "action": "ecommerce.orders.refund", "sensitive": true, "when": "2026-06-14T09:30:00", "branch_id": null, "target": "EC-5004", "summary_ar": "إرجاع أوردر أونلاين وإصدار إشعار دائن" }
+    { "id": "au_005", "user_id": "usr_owner", "action": "ecommerce.orders.refund", "sensitive": true, "when": "2026-06-14T09:30:00", "branch_id": null, "target": "EC-5004", "summary_ar": "إرجاع أوردر أونلاين وإصدار إشعار دائن" },
+    { "id": "au_006", "user_id": "usr_owner", "action": "ecommerce.catalog.configure", "sensitive": true, "when": "2026-06-10T10:15:00", "branch_id": null, "target": "store_config", "summary_ar": "تغيير طريقة تعبئة المتجر إلى manual" }
   ],
 
   "blocked_examples": [

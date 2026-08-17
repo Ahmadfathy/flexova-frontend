@@ -193,7 +193,76 @@
     "picker_search_placeholder": "ابحث باسم الصنف",
     "picker_no_results": "لا نتائج",
     "picker_item_suspended": "الصنف موقوف",
-    "picker_stock": "متاح: {{n}}"
+    "picker_stock": "متاح: {{n}}",
+
+    "catalog_mode_banner": {
+      "auto_rule": "وضع النشر التلقائي مفعّل — الأصناف الجديدة في الفئات المحددة تُنشر تلقائيًا",
+      "manage_rules": "إدارة قواعد النشر التلقائي",
+      "mirror": "وضع المرآة مفعّل — كل أصناف المخزون القابلة للبيع تظهر أونلاين افتراضيًا",
+      "manage_exceptions": "إدارة الاستثناءات"
+    },
+
+    "bulk": {
+      "launch": "استيراد من المخزون",
+      "title": "استيراد من المخزون",
+      "description": "اختر أصناف مخزون غير منشورة لإنشاء منتجات أونلاين لها دفعة واحدة، بالبيانات الافتراضية من المخزون",
+      "cancel": "إلغاء",
+      "done": "تم",
+      "search_placeholder": "ابحث باسم الصنف",
+      "all_inv_categories": "كل فئات المخزون",
+      "select_all": "اختر الكل",
+      "target_category": "القسم المستهدف:",
+      "no_results": "لا نتائج مطابقة",
+      "all_published": "كل الأصناف منشورة بالفعل",
+      "publish_selected": "انشر المحدّد ({{n}})",
+      "publish_success_toast": "تم نشر {{n}} صنف بنجاح",
+      "publish_partial_toast": "تم نشر {{ok}} صنف — فشل {{failed}}",
+      "report_summary": "تم نشر {{ok}} صنف بنجاح، وفشل {{failed}}",
+      "failed_title": "الأصناف التي فشل نشرها",
+      "fail_reason_suspended": "الصنف موقوف بالمخزون"
+    },
+
+    "rules": {
+      "title": "قواعد النشر التلقائي",
+      "subtitle": "أي صنف مخزون جديد في فئة محددة يُنشر أونلاين تلقائيًا",
+      "back_to_products": "العودة للمنتجات",
+      "new": "قاعدة جديدة",
+      "new_title": "قاعدة نشر تلقائي جديدة",
+      "edit_title": "تعديل القاعدة",
+      "empty_title": "لا يوجد قواعد بعد",
+      "empty_sub": "أضف قاعدة لنشر أصناف المخزون تلقائيًا حسب الفئة",
+      "maps_to": "تُنشر في قسم: {{category}}",
+      "dry_run_result": "سينشر {{n}} صنف",
+      "simulate": "محاكاة وصول صنف جديد",
+      "simulate_published_toast": "نُشر تلقائيًا: {{name}}",
+      "simulate_skipped_toast": "لن يُنشر تلقائيًا (القاعدة معطّلة): {{name}}",
+      "auto_publish": "نشر تلقائي",
+      "edit": "تعديل",
+      "save": "حفظ",
+      "created_toast": "تم إنشاء القاعدة",
+      "saved_toast": "تم حفظ التعديلات",
+      "deleted_toast": "تم حذف القاعدة",
+      "delete_title": "حذف القاعدة؟",
+      "delete_body": "لن تُنشر أصناف هذه الفئة تلقائيًا بعد الآن",
+      "field_inv_category": "فئة المخزون",
+      "field_store_category": "قسم المتجر المستهدف",
+      "field_auto_publish": "تفعيل النشر التلقائي"
+    },
+
+    "mirror": {
+      "title": "استثناءات وضع المرآة",
+      "subtitle": "كل أصناف المخزون القابلة للبيع تظهر أونلاين افتراضيًا — أخفِ الاستثناءات هنا",
+      "back_to_products": "العودة للمنتجات",
+      "visible_count": "{{n}} صنف ظاهر",
+      "search_placeholder": "ابحث باسم الصنف",
+      "bulk_hide": "إخفاء المحدّد ({{n}})",
+      "bulk_hidden_toast": "تم إخفاء {{n}} صنف",
+      "no_results": "لا نتائج مطابقة",
+      "not_sellable_badge": "غير قابل للبيع",
+      "suspended_badge": "موقوف بالمخزون",
+      "hidden_label": "مخفي",
+      "visible_label": "ظاهر"
+    }
   },
 
   "categories": {
@@ -285,6 +354,7 @@
     "payout_status_approved": "تمت الموافقة",
     "payout_status_paid": "تم الصرف",
     "approve_payout": "اعتماد الصرف",
+    "posted_voucher_label": "رقم سند الصرف في الحسابات",
 
     "log_title": "سجل الأوردرات المُحالة",
     "log_empty": "لا يوجد أوردرات مُحالة بعد",
@@ -354,6 +424,23 @@
     "theme_active": "مفعّل حاليًا",
     "theme_activate": "تفعيل",
     "theme_activated_toast": "تم تفعيل ثيم {{theme}}",
+
+    "catalog_mode_section_title": "طريقة تعبئة المتجر من المخزون",
+    "catalog_mode_section_sub": "اختر كيف تتحوّل أصناف المخزون لمنتجات أونلاين",
+    "catalog_mode_governance_note": "تغيير الوضع حسّاس إداريًا ويُسجَّل — لا يؤثر على المنتجات المنشورة حاليًا أو بياناتها",
+    "catalog_mode_manual": "يدوي",
+    "catalog_mode_manual_explainer": "انشر كل منتج بنفسك — تحكّم كامل، الأفضل للكتالوج المُنسّق",
+    "catalog_mode_bulk": "استيراد دفعي",
+    "catalog_mode_bulk_explainer": "انشر عدة أصناف دفعة واحدة من شاشة المنتجات",
+    "catalog_mode_auto_rule": "نشر تلقائي بقواعد",
+    "catalog_mode_auto_rule_explainer": "أي صنف جديد في فئة محددة يُنشر أونلاين تلقائيًا",
+    "catalog_mode_mirror": "مرآة للمخزون",
+    "catalog_mode_mirror_explainer": "المتجر يعرض كل صنف قابل للبيع افتراضيًا — أخفِ الاستثناءات فقط",
+    "catalog_mode_reveal_rules": "وضع النشر التلقائي مفعّل",
+    "catalog_mode_reveal_mirror": "وضع المرآة مفعّل",
+    "catalog_mode_activated_toast": "تم تفعيل وضع: {{mode}}",
+    "catalog_mode_confirm_title": "تغيير طريقة تعبئة المتجر؟",
+    "catalog_mode_confirm_body": "سيتم التبديل لوضع \"{{mode}}\" — المنتجات المنشورة حاليًا وبياناتها المُنسّقة (صور/وصف/SEO) لن تتأثر",
 
     "store_data_title": "بيانات المتجر",
     "field_store_name": "اسم المتجر",

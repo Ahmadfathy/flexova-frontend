@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getStoreConfig, getShippingZones } from "@/lib/mock/ecommerce";
-import type { EcStoreConfig, EcShippingZone, PaymentGatewayConfig, GatewayId } from "@/features/ecommerce/types";
+import type { EcStoreConfig, EcShippingZone, PaymentGatewayConfig, GatewayId, CatalogMode } from "@/features/ecommerce/types";
 
 /**
  * Settings local state (spec §7 payments/shipping + §8 StoreConfig/theme).
@@ -33,6 +33,12 @@ interface EcommerceSettingsState {
    * touches no data/products". */
   setActiveTheme: (theme: string) => void;
 
+  /** spec §3.7/§8 — governance-sensitive, unlike `setActiveTheme`: never
+   * touches `products` state itself (switching mode never deletes or
+   * overwrites a curated display layer — only bulk/auto-rule/mirror's own
+   * *reads* change what the mode surfaces). */
+  setCatalogMode: (mode: CatalogMode) => void;
+
   toggleGateway: (id: GatewayId) => void;
 
   addShippingZone: (input: Omit<EcShippingZone, "id">) => void;
@@ -54,6 +60,8 @@ export const useEcommerceSettings = create<EcommerceSettingsState>()(
       updateStoreConfig: (patch) => set((s) => ({ storeConfig: { ...s.storeConfig, ...patch } })),
 
       setActiveTheme: (theme) => set((s) => ({ storeConfig: { ...s.storeConfig, active_theme: theme } })),
+
+      setCatalogMode: (mode) => set((s) => ({ storeConfig: { ...s.storeConfig, catalog_mode: mode } })),
 
       toggleGateway: (id) =>
         set((s) => ({

@@ -176,6 +176,7 @@ import { EcommerceLayout } from "@/features/ecommerce/EcommerceLayout";
 import {
   OrdersListPage as EcOrdersListPage, OrderDetailPage as EcOrderDetailPage,
   ProductsPage as EcProductsPage, ProductEditorPage as EcProductEditorPage,
+  CatalogRulesPage as EcCatalogRulesPage, MirrorExceptionsPage as EcMirrorExceptionsPage,
   CategoriesPage as EcCategoriesPage,
   AffiliatesPage as EcAffiliatesPage, AffiliateDetailPage as EcAffiliateDetailPage,
   SettingsPaymentsPage as EcSettingsPaymentsPage,
@@ -488,6 +489,8 @@ export default function App() {
             <Route path="orders"                element={<EcOrdersListPage />} />
             <Route path="orders/:id"            element={<EcOrderDetailPage />} />
             <Route path="products"              element={<EcProductsPage />} />
+            <Route path="products/rules"        element={<EcCatalogRulesPage />} />
+            <Route path="products/mirror"       element={<EcMirrorExceptionsPage />} />
             <Route path="products/:id"          element={<EcProductEditorPage />} />
             <Route path="categories"            element={<EcCategoriesPage />} />
             <Route path="affiliates"            element={<EcAffiliatesPage />} />

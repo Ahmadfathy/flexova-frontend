@@ -102,6 +102,56 @@ export interface LinkableInventoryItem {
   base_price: number;
   stock: number;
   status: "active" | "suspended";
+  /** §3.7 bulk/auto-rule/mirror filter dimension — its own `invcat_*`
+   * namespace, same "scoped mock pool" precedent as this whole type. */
+  inventory_category_id: string;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   §3.7 Catalog modes (bulk / auto-rule / mirror)
+   ───────────────────────────────────────────────────────────── */
+
+export type CatalogMode = "manual" | "bulk" | "auto_rule" | "mirror";
+
+/** A not-yet-published inventory item eligible for §3.7 Mode 2 (bulk
+ * import). Combines the unlinked slice of `LinkableInventoryItem`'s pool
+ * with the fixture's dedicated `catalog_modes_demo.bulk_candidates`. */
+export interface EcBulkCandidate {
+  inventory_item_id: string;
+  name_ar: string;
+  name_en?: string;
+  erp_price: number;
+  erp_stock: number;
+  /** A `"suspended"` candidate is the bulk-publish partial-failure case —
+   * it's listed (so search/filter behave normally) but publishing it
+   * fails, same golden rule as the manual picker's suspended-item block. */
+  status: "active" | "suspended";
+  inventory_category_id: string;
+}
+
+/** §3.7 Mode 3 (auto-rule): "any new inventory item in category X →
+ * auto-publish online". */
+export interface EcCatalogRule {
+  id: string;
+  inventory_category_id: string;
+  auto_publish: boolean;
+  default_store_category: string;
+}
+
+/** §3.7 Mode 4 (mirror) pool row — every sellable inventory item, shown
+ * by default unless a `mirror_exceptions` row hides it. `sellable: false`
+ * (raw materials/samples) is excluded from the mirror by default, same as
+ * spec §3.7 describes, but still listed here so the exceptions screen can
+ * show *why* it's hidden instead of silently omitting it. */
+export interface EcMirrorPoolItem {
+  inventory_item_id: string;
+  name_ar: string;
+  name_en?: string;
+  erp_price: number;
+  erp_stock: number;
+  inventory_category_id: string;
+  status: "active" | "suspended";
+  sellable: boolean;
 }
 
 export interface EcStoreCategory {
@@ -132,6 +182,13 @@ export interface EcPayout {
   amount: number;
   status: "pending_approval" | "approved" | "paid";
   requested_at: string;
+  /** Mocked "payment posted in Accounting" stamp (spec §6.2/§6.4) — set by
+   * `approvePayout()`, same convention as `EcOrder.credit_note_id`: a
+   * deterministic mock reference id, visibly rendered, not a real
+   * cross-module write (Finance/Accounting exposes no live mutate API to
+   * write into — its own Payment Voucher form is toast-only, same mock
+   * depth as everywhere else in this build). */
+  posted_voucher_id?: string | null;
   _flag?: string;
 }
 
@@ -152,6 +209,10 @@ export interface EcStoreConfig {
   logo: string;
   active_theme: string;
   available_themes: string[];
+  /** §3.7/§8 — how inventory items become online products. Governance-
+   * sensitive (`ecommerce.catalog.configure`), unlike `active_theme`
+   * which is presentation-only and ungated. */
+  catalog_mode: CatalogMode;
   payment_gateway: string[];
   default_lang: "ar" | "en";
   rtl: boolean;

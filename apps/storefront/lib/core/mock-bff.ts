@@ -14,7 +14,7 @@
  */
 import "server-only";
 import { unstable_cache } from "next/cache";
-import fixturesJson from "@/lib/mock/fixtures/Flexova_FE_21_Ecommerce_Storefront_fixtures.json";
+import fixturesJson from "@/lib/mock/fixtures/ecommerce-storefront.fixtures.json";
 import type {
   Product,
   ProductStatic,

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Package, Plus, AlertTriangle } from "lucide-react";
+import { Package, Plus, AlertTriangle, Upload, Sparkles, ScanEye } from "lucide-react";
 
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { PageSection } from "@/components/patterns/PageSection";
@@ -20,9 +20,11 @@ import { formatMoney } from "@/lib/format";
 import { useAppearance } from "@/stores/appearance";
 import { useCan } from "@/lib/permissions";
 import { useEcommerceProducts } from "@/stores/ecommerceProducts";
+import { useEcommerceSettings } from "@/stores/ecommerceSettings";
 import { getStoreCategories } from "@/lib/mock/ecommerce";
 import { PUBLISH_STATUS_PILL, effectivePrice, isAutoHidden, categoryLabel } from "../catalog";
 import { useMockState } from "../useMockState";
+import { BulkImportModal } from "./BulkImportModal";
 import type { EcOnlineProduct } from "../types";
 
 export function ProductsListPage() {
@@ -33,7 +35,10 @@ export function ProductsListPage() {
 
   const { loading, error, isOffline, forcedEmpty, reload } = useMockState();
   const productsMap = useEcommerceProducts((s) => s.products);
+  const catalogMode = useEcommerceSettings((s) => s.storeConfig.catalog_mode);
   const categories = getStoreCategories();
+
+  const [bulkOpen, setBulkOpen] = useState(false);
 
   const allProducts = useMemo(
     () => (forcedEmpty ? [] : Object.values(productsMap)),
@@ -95,13 +100,40 @@ export function ProductsListPage() {
         title={t("products.title")}
         count={allProducts.length > 0 ? t("products.count", { n: allProducts.length }) : undefined}
         actions={
-          can("ecommerce.products.manage") ? (
-            <Button onClick={() => navigate("/ecommerce/products/new")}>
-              <Plus className="h-4 w-4" /> {t("products.new")}
-            </Button>
-          ) : undefined
+          <div className="flex items-center gap-2">
+            {catalogMode === "bulk" && can("ecommerce.products.manage") && (
+              <Button variant="outline" onClick={() => setBulkOpen(true)}>
+                <Upload className="h-4 w-4" /> {t("products.bulk.launch")}
+              </Button>
+            )}
+            {can("ecommerce.products.manage") && (
+              <Button onClick={() => navigate("/ecommerce/products/new")}>
+                <Plus className="h-4 w-4" /> {t("products.new")}
+              </Button>
+            )}
+          </div>
         }
       />
+
+      {/* §3.7 mode-aware reveal — the products list' own entry point into
+          the auto-rule/mirror sub-screens, mirrored by StoreConfig's own
+          link (spec §8 "auto_rule reveals the rule builder; mirror
+          reveals the exceptions manager"). Bulk's own entry is the button
+          above, not a banner, since it opens a modal in-place. */}
+      {catalogMode === "auto_rule" && (
+        <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-4 py-2.5 text-sm">
+          <span className="flex items-center gap-1.5 text-muted-foreground"><Sparkles className="h-4 w-4" /> {t("products.catalog_mode_banner.auto_rule")}</span>
+          <Button size="sm" variant="ghost" onClick={() => navigate("/ecommerce/products/rules")}>{t("products.catalog_mode_banner.manage_rules")}</Button>
+        </div>
+      )}
+      {catalogMode === "mirror" && (
+        <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-muted/30 px-4 py-2.5 text-sm">
+          <span className="flex items-center gap-1.5 text-muted-foreground"><ScanEye className="h-4 w-4" /> {t("products.catalog_mode_banner.mirror")}</span>
+          <Button size="sm" variant="ghost" onClick={() => navigate("/ecommerce/products/mirror")}>{t("products.catalog_mode_banner.manage_exceptions")}</Button>
+        </div>
+      )}
+
+      <BulkImportModal open={bulkOpen} onOpenChange={setBulkOpen} />
 
       {isOffline && <OfflineBanner message={t("products.offline_note")} />}
 

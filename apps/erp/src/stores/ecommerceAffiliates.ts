@@ -30,8 +30,12 @@ interface EcommerceAffiliatesState {
   createAffiliate: (input: { name_ar: string; phone: string; commission_pct: number }) => string;
   /** Admin requests a payout against the affiliate's current balance. */
   requestPayout: (affiliateId: string, amount: number) => void;
-  /** "Admin approves → payment posted in Accounting" (spec §6.2) — one
-   * action does both: settles the payout and reduces the balance due. */
+  /** "Admin approves → payment posted in Accounting" (spec §6.2/§6.4) —
+   * one action does three things: settles the payout, reduces the balance
+   * due, and stamps `posted_voucher_id` (the visible proof the posting
+   * actually happened, same mock convention as `EcOrder.credit_note_id` —
+   * see `EcPayout.posted_voucher_id`'s doc comment for why it's a stamp
+   * and not a real Accounting-store write). */
   approvePayout: (payoutId: string) => void;
 }
 
@@ -80,7 +84,7 @@ export const useEcommerceAffiliates = create<EcommerceAffiliatesState>()(
           if (!payout || payout.status === "paid") return s;
           const affiliate = s.affiliates[payout.affiliate_id];
           return {
-            payouts: { ...s.payouts, [payoutId]: { ...payout, status: "paid" } },
+            payouts: { ...s.payouts, [payoutId]: { ...payout, status: "paid", posted_voucher_id: `pv_mock_${payout.id}` } },
             affiliates: affiliate
               ? { ...s.affiliates, [affiliate.id]: { ...affiliate, balance_due: Math.max(0, affiliate.balance_due - payout.amount) } }
               : s.affiliates,

@@ -193,7 +193,76 @@
     "picker_search_placeholder": "Search by item name",
     "picker_no_results": "No results",
     "picker_item_suspended": "Item suspended",
-    "picker_stock": "In stock: {{n}}"
+    "picker_stock": "In stock: {{n}}",
+
+    "catalog_mode_banner": {
+      "auto_rule": "Auto-publish rules are on — new items in the configured categories publish automatically",
+      "manage_rules": "Manage auto-publish rules",
+      "mirror": "Mirror mode is on — every sellable inventory item shows online by default",
+      "manage_exceptions": "Manage exceptions"
+    },
+
+    "bulk": {
+      "launch": "Import from inventory",
+      "title": "Import from inventory",
+      "description": "Pick unpublished inventory items to create online products for them in one batch, using inventory defaults",
+      "cancel": "Cancel",
+      "done": "Done",
+      "search_placeholder": "Search by item name",
+      "all_inv_categories": "All inventory categories",
+      "select_all": "Select all",
+      "target_category": "Target category:",
+      "no_results": "No results match",
+      "all_published": "All items are already published",
+      "publish_selected": "Publish selected ({{n}})",
+      "publish_success_toast": "{{n}} items published successfully",
+      "publish_partial_toast": "{{ok}} published — {{failed}} failed",
+      "report_summary": "{{ok}} items published successfully, {{failed}} failed",
+      "failed_title": "Items that failed to publish",
+      "fail_reason_suspended": "Item is suspended in inventory"
+    },
+
+    "rules": {
+      "title": "Auto-publish rules",
+      "subtitle": "Any new inventory item in a configured category publishes online automatically",
+      "back_to_products": "Back to products",
+      "new": "New rule",
+      "new_title": "New auto-publish rule",
+      "edit_title": "Edit rule",
+      "empty_title": "No rules yet",
+      "empty_sub": "Add a rule to auto-publish inventory items by category",
+      "maps_to": "Publishes to: {{category}}",
+      "dry_run_result": "Would publish {{n}} items",
+      "simulate": "Simulate new arrival",
+      "simulate_published_toast": "Auto-published: {{name}}",
+      "simulate_skipped_toast": "Not auto-published (rule disabled): {{name}}",
+      "auto_publish": "Auto-publish",
+      "edit": "Edit",
+      "save": "Save",
+      "created_toast": "Rule created",
+      "saved_toast": "Changes saved",
+      "deleted_toast": "Rule deleted",
+      "delete_title": "Delete this rule?",
+      "delete_body": "Items in this category will no longer auto-publish",
+      "field_inv_category": "Inventory category",
+      "field_store_category": "Target store category",
+      "field_auto_publish": "Enable auto-publish"
+    },
+
+    "mirror": {
+      "title": "Mirror mode exceptions",
+      "subtitle": "Every sellable inventory item shows online by default — hide exceptions here",
+      "back_to_products": "Back to products",
+      "visible_count": "{{n}} visible",
+      "search_placeholder": "Search by item name",
+      "bulk_hide": "Hide selected ({{n}})",
+      "bulk_hidden_toast": "{{n}} items hidden",
+      "no_results": "No results match",
+      "not_sellable_badge": "Not sellable",
+      "suspended_badge": "Suspended in inventory",
+      "hidden_label": "Hidden",
+      "visible_label": "Visible"
+    }
   },
 
   "categories": {
@@ -285,6 +354,7 @@
     "payout_status_approved": "Approved",
     "payout_status_paid": "Paid",
     "approve_payout": "Approve payout",
+    "posted_voucher_label": "Accounting payment voucher no.",
 
     "log_title": "Attributed orders log",
     "log_empty": "No attributed orders yet",
@@ -354,6 +424,23 @@
     "theme_active": "Currently active",
     "theme_activate": "Activate",
     "theme_activated_toast": "{{theme}} theme activated",
+
+    "catalog_mode_section_title": "How the store fills from inventory",
+    "catalog_mode_section_sub": "Choose how inventory items become online products",
+    "catalog_mode_governance_note": "Switching modes is governance-sensitive and logged — it never affects currently published products or their data",
+    "catalog_mode_manual": "Manual",
+    "catalog_mode_manual_explainer": "Publish each product yourself — full control, best for a curated catalog",
+    "catalog_mode_bulk": "Bulk import",
+    "catalog_mode_bulk_explainer": "Publish several items at once from the products screen",
+    "catalog_mode_auto_rule": "Auto-publish rules",
+    "catalog_mode_auto_rule_explainer": "Any new item in a configured category publishes online automatically",
+    "catalog_mode_mirror": "Mirror inventory",
+    "catalog_mode_mirror_explainer": "The store shows every sellable item by default — hide exceptions only",
+    "catalog_mode_reveal_rules": "Auto-publish mode is on",
+    "catalog_mode_reveal_mirror": "Mirror mode is on",
+    "catalog_mode_activated_toast": "{{mode}} mode activated",
+    "catalog_mode_confirm_title": "Switch how the store fills from inventory?",
+    "catalog_mode_confirm_body": "This switches to \"{{mode}}\" mode — currently published products and their curated data (images/description/SEO) are unaffected",
 
     "store_data_title": "Store data",
     "field_store_name": "Store name",
