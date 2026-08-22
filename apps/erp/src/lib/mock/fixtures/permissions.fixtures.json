@@ -21,7 +21,7 @@
     "reports": ["reports.view","view_financial!","view_all_branches","build","save","schedule","export","dashboard.customize","eta.view"],
     "admin": ["admin.user.manage!","role.manage!","security.config!!","audit.view","branch.manage"],
     "healthcare": ["healthcare.today.view","healthcare.patients.view","healthcare.patients.view_all","healthcare.clinical.view!","healthcare.clinical.edit!","healthcare.lab.manage!","healthcare.insurance.manage","healthcare.catalog.manage"],
-    "ecommerce": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.orders.refund!","ecommerce.affiliates.manage","ecommerce.settings.manage","ecommerce.catalog.configure!"]
+    "ecommerce": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.orders.refund!","ecommerce.affiliates.manage","ecommerce.affiliates.payout!","ecommerce.settings.manage","ecommerce.catalog.configure!"]
   },
 
   "role_templates": [
@@ -45,8 +45,8 @@
       "permissions": ["healthcare.today.view","healthcare.patients.view","healthcare.clinical.view!","healthcare.clinical.edit!"], "exclude": ["healthcare.patients.view_all","healthcare.insurance.manage","healthcare.catalog.manage"], "scope": { "branches": ["assigned"], "row_rule": "own" },
       "_note": "§12 matrix: own patients/appointments by default (row_rule:own, no view_all); full clinical read/write; no insurance/catalog admin" },
     { "id": "role_ec_manager", "name_ar": "مدير المتجر الإلكتروني", "name_en": "E-commerce Manager", "template": true, "user_count": 0,
-      "permissions": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.affiliates.manage","ecommerce.settings.manage"], "exclude": ["ecommerce.catalog.configure!"], "scope": { "branches": "all", "row_rule": "all" },
-      "_note": "FE_21 §10 'refund/payout are governance-sensitive' — day-to-day store management (publish, fulfill, affiliates, settings) without refund authority; ecommerce.orders.refund! is deliberately omitted, granted only via Owner or an explicit additional role. §3.7's catalog_mode switch is the same kind of decision (picks how the whole catalog populates, not a single record) so ecommerce.catalog.configure! is excluded here too — a manager can run bulk-import/mirror-hide day to day (those are ecommerce.products.manage) but can't change the mode itself. NOTE: payout approval has no permission key of its own — §10's table bundles it into ecommerce.affiliates.manage, which this role does hold, so despite the prose 'payout is governance-sensitive', this role can approve a payout same as Owner. Flagged, not fixed — splitting it out would mean adding a key beyond what §10's table defines." }
+      "permissions": ["ecommerce.products.manage","ecommerce.orders.view","ecommerce.orders.manage","ecommerce.affiliates.manage","ecommerce.settings.manage"], "exclude": ["ecommerce.catalog.configure!","ecommerce.affiliates.payout!"], "scope": { "branches": "all", "row_rule": "all" },
+      "_note": "FE_21 §10 'refund/payout are governance-sensitive' — day-to-day store management (publish, fulfill, affiliates, settings) without refund or payout authority; ecommerce.orders.refund! and ecommerce.affiliates.payout! are deliberately omitted, granted only via Owner or an explicit additional role. §3.7's catalog_mode switch is the same kind of decision (picks how the whole catalog populates, not a single record) so ecommerce.catalog.configure! is excluded here too — a manager can run bulk-import/mirror-hide day to day (those are ecommerce.products.manage) but can't change the mode itself. ecommerce.affiliates.manage still covers add/edit, links, and viewing balances — approving/disbursing a payout now requires the separate ecommerce.affiliates.payout! key, which this role does not hold." }
   ],
 
   "users": [

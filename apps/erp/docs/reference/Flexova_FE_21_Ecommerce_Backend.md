@@ -86,7 +86,7 @@ CRUD قياسي لكل كيان + الخاص:
 - `products/bulk-publish` (POST — قائمة inventory_item_ids → إنشاء دفعة بـ defaults · idempotent) · `products/bulk-candidates` (GET — أصناف مخزون غير منشورة)
 - `catalog/rules` (CRUD — auto-publish rules · `rules/dry-run` GET) · `catalog/mirror-exceptions` (CRUD — إخفاء أصناف في mirror mode)
 - `orders` (list/detail) · `orders/:id/status` (POST — تحديث الحالة) · `orders/:id/return` (POST — credit note)
-- `affiliates` (CRUD + `:id/link` توليد) · `affiliates/:id/payout` (POST — بموافقة)
+- `affiliates` (CRUD + `:id/link` توليd) · `affiliates/:id/payout` (POST — بموافقة، يتطلّب `affiliates.payout`)
 - `settings/payments` · `settings/shipping` · `settings/store` (CRUD — بما فيه `active_theme`)
 
 ### ب) Storefront API (`/api/v1/store/`) — يستهلكه الـ BFF
@@ -105,8 +105,8 @@ CRUD قياسي لكل كيان + الخاص:
 
 ## 5) Enforcement والصلاحيات (يوسّع FE_08)
 
-- مفاتيح: `ecommerce.products.manage` · `orders.view` · `orders.manage` · `orders.refund` · `affiliates.manage` · `settings.manage`.
-- **SoD:** `orders.refund` و `affiliates.payout` حسّاسان (حوكمة) — مفصولان عن التشغيل اليومي.
+- مفاتيح: `ecommerce.products.manage` · `orders.view` · `orders.manage` · `orders.refund` · `affiliates.manage` · **`affiliates.payout`** · `settings.manage` · `catalog.configure`.
+- **SoD:** `orders.refund` · `affiliates.payout` · `catalog.configure` حسّاسة (حوكمة) — مفصولة عن التشغيل اليومي. `affiliates.manage` يدير المسوّقين، لكن **صرف العمولة يتطلّب `affiliates.payout` المنفصل**.
 - **الـ Storefront API عام** (لا `can()` للمتسوّق) لكن: rate-limiting · idempotency · webhook signature verification · reservation ownership (session) — حمايات مستوى-التطبيق بدل الصلاحيات.
 - كل حركات الـ admin (refund/payout/تغيير الثيم/البوابة) → `audit_log` غير قابل للحذف.
 

@@ -142,7 +142,7 @@ Contextual action tracks status; confirm generates invoice+ETA (READ shown); ret
 Data + unique link (copy/share) · stats (clicks/conversions/commissions) · attributed-orders log · **balance + payout request**. Payout: admin approves → **payment posted in Accounting**. Add affiliate: data + commission_pct → auto-generate unique link/code.
 
 ### 6.3 States / Permissions
-empty ("أضف أول مسوّق") · standard. `ecommerce.affiliates.manage`. v1 = admin-side view + manual payout; self-service portal v2.
+empty ("أضف أول مسوّق") · standard. Managing affiliates = `ecommerce.affiliates.manage`; **approving/disbursing a payout = `ecommerce.affiliates.payout`** (separate SoD-sensitive key — the approve button is gated by it and disabled without it). v1 = admin-side view + manual payout; self-service portal v2.
 
 ### 6.4 Acceptance
 Commission computed on confirmed orders only; payout posts to Accounting; unique link generated; attribution log accurate.
@@ -183,11 +183,12 @@ States: standard. Permission: `ecommerce.settings.manage`. `activeTheme` → sto
 | `ecommerce.orders.view` | orders read |
 | `ecommerce.orders.manage` | status/fulfillment |
 | `ecommerce.orders.refund` | return/cancel (SoD-sensitive) |
-| `ecommerce.affiliates.manage` | affiliates + payout |
+| `ecommerce.affiliates.manage` | affiliates (add/edit, links, view balances) — **not** payout |
+| `ecommerce.affiliates.payout` | approve/disburse affiliate payouts (SoD-sensitive, audit-logged) |
 | `ecommerce.settings.manage` | payments/shipping/store/theme |
 | `ecommerce.catalog.configure` | change `catalog_mode` + auto-publish rules + mirror exceptions (governance-sensitive) |
 
-Consistent with carried SoD (refund/payout are governance-sensitive) + immutable audit.
+Consistent with carried SoD: **refund and payout are governance-sensitive and separated from day-to-day operation** — `affiliates.manage` lets staff manage marketers, but disbursing money requires the distinct `affiliates.payout`. All financial-control actions immutable-audit-logged.
 
 ---
 

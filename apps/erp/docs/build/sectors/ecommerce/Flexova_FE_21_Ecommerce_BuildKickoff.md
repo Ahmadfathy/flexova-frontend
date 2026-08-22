@@ -122,7 +122,7 @@ Open Claude Code in the repo root and paste this **before any feature work**:
 
 **A4 — Settings (payments/shipping + StoreConfig/theme):** Implement §7 + §8: payment gateway config (Paymob/Fawry/COD via abstraction), basic shipping zones, StoreConfig with **active-theme picker** (writes `activeTheme`; server-side resolution note) + **`catalog_mode` picker** (manual/bulk/auto_rule/mirror — reveals rule builder / exceptions manager per mode). Confirm §7 + §8 acceptance.
 
-**A5 — Permissions:** Register the §10 permission keys into FE_08 (including `ecommerce.catalog.configure`); verify the role behavior (refund/payout/catalog-configure SoD-sensitive). Confirm §12.
+**A5 — Permissions:** Register the §10 permission keys into FE_08 (including `ecommerce.catalog.configure` **and the separate `ecommerce.affiliates.payout`** key); verify the role behavior (refund/payout/catalog-configure SoD-sensitive — payout gated separately from `affiliates.manage`). Confirm §12.
 
 ---
 

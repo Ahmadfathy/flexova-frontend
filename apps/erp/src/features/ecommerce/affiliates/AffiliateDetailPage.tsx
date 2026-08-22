@@ -83,6 +83,7 @@ export function AffiliateDetailPage() {
   const [approveTarget, setApproveTarget] = useState<string | null>(null);
 
   const canManage = can("ecommerce.affiliates.manage");
+  const canPayout = can("ecommerce.affiliates.payout");
 
   const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
   const log = useMemo(() => (affiliate ? affiliateOrders(affiliate.id, orders) : []), [affiliate, orders]);
@@ -132,7 +133,7 @@ export function AffiliateDetailPage() {
   }
 
   function handleApprovePayout() {
-    if (!approveTarget) return;
+    if (!approveTarget || !canPayout) return;
     approvePayout(approveTarget);
     toast.success(t("affiliates.payout_approved_toast"));
     setApproveTarget(null);
@@ -214,7 +215,12 @@ export function AffiliateDetailPage() {
                     )}
                   </div>
                   {canManage && p.status === "pending_approval" && (
-                    <Button size="sm" variant="ghost" className="h-6 px-2 text-xs" onClick={() => setApproveTarget(p.id)}>
+                    <Button
+                      size="sm" variant="ghost" className="h-6 px-2 text-xs"
+                      disabled={!canPayout}
+                      title={!canPayout ? t("affiliates.approve_payout_no_permission") : undefined}
+                      onClick={() => setApproveTarget(p.id)}
+                    >
                       {t("affiliates.approve_payout")}
                     </Button>
                   )}

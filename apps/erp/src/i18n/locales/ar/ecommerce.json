@@ -354,6 +354,7 @@
     "payout_status_approved": "تمت الموافقة",
     "payout_status_paid": "تم الصرف",
     "approve_payout": "اعتماد الصرف",
+    "approve_payout_no_permission": "لا تملك صلاحية اعتماد/صرف العمولات",
     "posted_voucher_label": "رقم سند الصرف في الحسابات",
 
     "log_title": "سجل الأوردرات المُحالة",

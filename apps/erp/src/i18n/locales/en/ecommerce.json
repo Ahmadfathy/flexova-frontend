@@ -354,6 +354,7 @@
     "payout_status_approved": "Approved",
     "payout_status_paid": "Paid",
     "approve_payout": "Approve payout",
+    "approve_payout_no_permission": "You don't have permission to approve/disburse payouts",
     "posted_voucher_label": "Accounting payment voucher no.",
 
     "log_title": "Attributed orders log",
