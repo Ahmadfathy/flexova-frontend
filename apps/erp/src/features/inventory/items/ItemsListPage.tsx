@@ -48,7 +48,7 @@ import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTabl
 import {
   Plus, Upload, Download, MoreVertical, Package, X,
   SlidersHorizontal, Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight,
-  Printer, Copy, Ban, CheckCircle2, Trash2, Pencil,
+  Printer, Copy, Ban, CheckCircle2, Trash2, Pencil, Flag,
 } from "lucide-react";
 
 // Lib
@@ -64,7 +64,7 @@ import type {
   InventoryItem, InventoryCategory, InventoryWarehouse, InventoryUom, InventoryAttribute,
   InventoryAttributeValue, InventoryVariant, ItemStatus, ItemFilters,
 } from "./types";
-import { variantBalance as getVariantBalance, comboLabel } from "./variants";
+import { variantBalance as getVariantBalance, comboLabel, isEtaMissing, effectiveEtaCode } from "./variants";
 
 /* ─── Module-level helpers ──────────────────────────────────── */
 
@@ -172,12 +172,29 @@ function NoResults({ query, onClear }: { query: string; onClear: () => void }) {
   );
 }
 
+/* ─── ETA-missing flag (DD-1 addendum — warning-only, never blocks save;
+   applied to simple items too, matching the same badge POS/svc/repair
+   already use for "no_eta_code") ─────────────────────────────────────── */
+
+function EtaMissingFlag({ t }: { t: ReturnType<typeof useTranslation>["t"] }) {
+  return (
+    <span
+      title={t("items.eta_missing_hint")}
+      className="inline-flex items-center gap-0.5 rounded bg-warning-tint text-warning-text text-[10px] font-medium px-1 py-0.5 shrink-0"
+    >
+      <Flag className="h-2.5 w-2.5" />
+    </span>
+  );
+}
+
 /* ─── Variant sub-row (DD-1 §2 — expanded under a product-parent row) ──── */
 
 function VariantSubRow({
-  variant, attributeOrder, attributeValues, colSpan, lang, t, highlighted, onEdit,
+  variant, parentEtaCode, etaEnabled, attributeOrder, attributeValues, colSpan, lang, t, highlighted, onEdit,
 }: {
   variant: InventoryVariant;
+  parentEtaCode: string;
+  etaEnabled: boolean;
   attributeOrder: string[];
   attributeValues: InventoryAttributeValue[];
   colSpan: number;
@@ -194,6 +211,7 @@ function VariantSubRow({
         <div className="flex items-center gap-3 ps-8 flex-wrap">
           <span className="text-sm font-medium">{comboLabel(variant.attrs, attributeOrder, attributeValues, lang)}</span>
           <span className="text-xs font-mono tabular-nums text-muted-foreground">{variant.code}</span>
+          {etaEnabled && !effectiveEtaCode(variant.eta_code, parentEtaCode) && <EtaMissingFlag t={t} />}
           <span className="text-xs tabular-nums text-muted-foreground ms-auto">{formatNumber(bal)}</span>
           <span className="text-xs tabular-nums text-muted-foreground w-20 text-end">{formatMoney(price, lang)}</span>
           <StatusPill
@@ -266,7 +284,7 @@ function RowActions({
 function ItemCard({
   item, selected, onToggle, lang, categoryMap, uomMap, can, t,
   onEdit, onDuplicate, onToggleSuspend, onPrintBarcode, onDeleteRequest,
-  expanded, onToggleExpand, attributeValues,
+  expanded, onToggleExpand, attributeValues, etaEnabled,
 }: {
   item: InventoryItem;
   selected: boolean;
@@ -284,6 +302,7 @@ function ItemCard({
   expanded: boolean;
   onToggleExpand: () => void;
   attributeValues: InventoryAttributeValue[];
+  etaEnabled: boolean;
 }) {
   const status  = getEffectiveStatus(item);
   const balance = getDisplayBalance(item);
@@ -339,6 +358,7 @@ function ItemCard({
             {isProductAnyLowStock(item) && (
               <StatusPill variant="credit" label={t("status.low_stock")} className="text-xs" />
             )}
+            {etaEnabled && isEtaMissing(item) && <EtaMissingFlag t={t} />}
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
@@ -391,6 +411,7 @@ function ItemCard({
               <div key={v.id} className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
                 <span className="font-medium">{comboLabel(v.attrs, item.attributes_used ?? Object.keys(v.attrs), attributeValues, lang)}</span>
                 <span className="font-mono tabular-nums text-muted-foreground">{v.code}</span>
+                {etaEnabled && !effectiveEtaCode(v.eta_code, item.eta_code) && <EtaMissingFlag t={t} />}
                 <span className="tabular-nums">{formatNumber(bal)}</span>
                 <span className="tabular-nums">{formatMoney(vp, lang)}</span>
                 <StatusPill variant={v.status === "suspended" ? "default" : "paid"} label={t(`status.${v.status}`)} className="text-xs" />
@@ -1133,7 +1154,8 @@ export function ItemsListPage() {
     ),
 
     // Status — a product-parent additionally shows a low-stock pill when ANY
-    // variant is below its reorder level (§2)
+    // variant is below its reorder level (§2); an ETA-missing flag applies
+    // to both simple items and product parents (DD-1 addendum)
     colHelper.display({
       id: "status",
       header: t("columns.status"),
@@ -1148,6 +1170,7 @@ export function ItemsListPage() {
             {isProductAnyLowStock(row.original) && (
               <StatusPill variant="credit" label={t("status.low_stock")} />
             )}
+            {!!data?._meta.tenant.eta_enabled && isEtaMissing(row.original) && <EtaMissingFlag t={t} />}
           </span>
         );
       },
@@ -1182,7 +1205,7 @@ export function ItemsListPage() {
       ),
     }),
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [t, lang, categoryMap, uomMap, can, handleEdit, handleDuplicate, handleToggleSuspend, handlePrintBarcode, expandedIds, toggleExpanded]);
+  ], [t, lang, categoryMap, uomMap, can, handleEdit, handleDuplicate, handleToggleSuspend, handlePrintBarcode, expandedIds, toggleExpanded, data]);
 
   const table = useReactTable({
     data: filteredItems,
@@ -1456,6 +1479,8 @@ export function ItemsListPage() {
                           <VariantSubRow
                             key={v.id}
                             variant={v}
+                            parentEtaCode={item.eta_code}
+                            etaEnabled={!!data?._meta.tenant.eta_enabled}
                             attributeOrder={item.attributes_used ?? Object.keys(v.attrs)}
                             attributeValues={data?.attribute_values ?? []}
                             colSpan={row.getVisibleCells().length}
@@ -1504,6 +1529,7 @@ export function ItemsListPage() {
                   expanded={expandedIds.has(row.original.id)}
                   onToggleExpand={() => toggleExpanded(row.original.id)}
                   attributeValues={data?.attribute_values ?? []}
+                  etaEnabled={!!data?._meta.tenant.eta_enabled}
                 />
               ))}
               {/* Mobile pagination note */}
@@ -1570,6 +1596,7 @@ export function ItemsListPage() {
         variant={editVariantTarget?.variant ?? null}
         priceLists={data?.price_lists ?? []}
         attributeValues={data?.attribute_values ?? []}
+        etaEnabled={!!data?._meta.tenant.eta_enabled}
         lang={lang}
         canEdit={can("inventory.item.variants")}
         isOffline={isOffline}

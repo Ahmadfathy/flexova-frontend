@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, Flag } from "lucide-react";
 
 import { PageHeader }    from "@/components/patterns/PageHeader";
 import { ErrorState }    from "@/components/patterns/ErrorState";
@@ -185,6 +185,18 @@ export function ItemEditorPage() {
   const toggleLocked = simpleItemHasHistory || productVariantsHaveMovements;
 
   const canManageVariants = can("inventory.item.variants");
+
+  // DD-1 addendum — rows whose effective eta_code (own override, else the
+  // parent's draft base) is empty; warning-only, shown next to the combo.
+  const etaMissingRowKeys = useMemo(() => {
+    const set = new Set<string>();
+    if (!data?._meta.tenant.eta_enabled) return set;
+    for (const row of rows) {
+      const override = item?.variants?.find((v) => v.id === row.variantId)?.eta_code ?? null;
+      if (!(override || etaCode)) set.add(row.key);
+    }
+    return set;
+  }, [rows, item, etaCode, data]);
 
   function handleAddValueToAttribute(attrId: string, ar: string, en: string): InventoryAttributeValue | null {
     const attr = attributes.find((a) => a.id === attrId);
@@ -470,6 +482,12 @@ export function ItemEditorPage() {
           <div className="space-y-1.5 max-w-xs">
             <Label>{t("item_editor.eta_code_label")}</Label>
             <Input value={etaCode} onChange={(e) => setEtaCode(e.target.value)} placeholder="EG-..." className="tabular-nums" />
+            {!!data?._meta.tenant.eta_enabled && !hasVariants && !etaCode && (
+              <p className="flex items-center gap-1 text-xs text-warning-text">
+                <Flag className="h-3 w-3 shrink-0" />
+                {t("items.eta_missing_hint")}
+              </p>
+            )}
           </div>
 
           {hasVariants ? (
@@ -552,6 +570,7 @@ export function ItemEditorPage() {
               onAddValueToAttribute={handleAddValueToAttribute}
               blockedValueIds={blockedValueIds}
               onQuickEditRow={setQuickEditRow}
+              etaMissingRowKeys={etaMissingRowKeys}
             />
             {saveError && <p className="text-sm text-destructive mt-3">{saveError}</p>}
           </TabsContent>
@@ -640,6 +659,7 @@ export function ItemEditorPage() {
         variant={quickEditVariant}
         priceLists={data?.price_lists ?? []}
         attributeValues={attributeValues}
+        etaEnabled={!!data?._meta.tenant.eta_enabled}
         lang={lang}
         canEdit={canManageVariants}
         isOffline={isOffline}

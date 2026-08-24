@@ -10,7 +10,7 @@
  */
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, ChevronDown, ChevronUp, AlertTriangle, Pencil } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, AlertTriangle, Pencil, Flag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +59,8 @@ interface VariantsSectionProps {
   blockedValueIds: Set<string>; // values that can't be removed from the picker (movement-bearing variant)
   /** DD-1 §3.6 — matrix row "edit" opens the variant quick-edit drawer (existing rows only). */
   onQuickEditRow?: (row: MatrixRowVM) => void;
+  /** DD-1 addendum — row keys whose effective eta_code is empty (warning-only). */
+  etaMissingRowKeys?: Set<string>;
 }
 
 export function VariantsSection({
@@ -66,7 +68,7 @@ export function VariantsSection({
   attributeOrder, onAttributeOrderChange,
   valueSelections, onValueSelectionsChange,
   rows, onRowsChange,
-  onAddValueToAttribute, blockedValueIds, onQuickEditRow,
+  onAddValueToAttribute, blockedValueIds, onQuickEditRow, etaMissingRowKeys,
 }: VariantsSectionProps) {
   const { t } = useTranslation("inventory");
   const canEdit = can("inventory.item.variants");
@@ -326,7 +328,16 @@ export function VariantsSection({
                           aria-label={t("variants.include")}
                         />
                       </td>
-                      <td className="px-3 py-1.5 whitespace-nowrap">{comboLabel(row.combo, attributeOrder, attributeValues, lang)}</td>
+                      <td className="px-3 py-1.5 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1">
+                          {comboLabel(row.combo, attributeOrder, attributeValues, lang)}
+                          {etaMissingRowKeys?.has(row.key) && (
+                            <span title={t("items.eta_missing_hint")} className="inline-flex items-center rounded bg-warning-tint text-warning-text px-1 py-0.5">
+                              <Flag className="h-2.5 w-2.5" />
+                            </span>
+                          )}
+                        </span>
+                      </td>
                       <td className="px-3 py-1.5">
                         <Input
                           className="h-7 text-xs font-mono tabular-nums"

@@ -37,7 +37,8 @@
     "variants_badge":     "{{n}} متغيّر",
     "expand_variants":    "عرض المتغيّرات",
     "collapse_variants":  "إخفاء المتغيّرات",
-    "variant_hit_note":   "نتيجة مطابقة داخل متغيّرات هذا الصنف"
+    "variant_hit_note":   "نتيجة مطابقة داخل متغيّرات هذا الصنف",
+    "eta_missing_hint":   "لا يوجد كود ETA — الحفظ يعمل، هيتصلح بعدين"
   },
   "categories": {
     "title":               "التصنيفات",

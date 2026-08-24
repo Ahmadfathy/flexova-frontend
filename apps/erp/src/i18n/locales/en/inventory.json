@@ -37,7 +37,8 @@
     "variants_badge":     "{{n}} variants",
     "expand_variants":    "Show variants",
     "collapse_variants":  "Hide variants",
-    "variant_hit_note":   "Match found inside this item's variants"
+    "variant_hit_note":   "Match found inside this item's variants",
+    "eta_missing_hint":   "No ETA code — item still saves, flagged for later"
   },
   "categories": {
     "title":               "Categories",

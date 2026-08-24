@@ -115,6 +115,25 @@ export function isVariantLowStock(variant: InventoryVariant, scopeWarehouseIds?:
 }
 
 /**
+ * DD-1 addendum (backend-specs/_CHANGELOG.md, "ETA-missing warning badge") —
+ * a variant's effective eta_code is its own override, else the parent's base
+ * (D6). Applied to simple items too, to remove the variant/simple
+ * inconsistency — warning-only, never blocks save (the issue-time block
+ * stays in Sales/POS).
+ */
+export function effectiveEtaCode(variantEtaCode: string | null, parentEtaCode: string): string {
+  return variantEtaCode || parentEtaCode || "";
+}
+
+/** Whether this item — or, for a product parent, ANY of its variants — is missing an effective eta_code. */
+export function isEtaMissing(item: { eta_code: string; is_product_parent?: boolean; variants?: InventoryVariant[] }): boolean {
+  if (item.is_product_parent) {
+    return (item.variants ?? []).some((v) => !effectiveEtaCode(v.eta_code, item.eta_code));
+  }
+  return !item.eta_code;
+}
+
+/**
  * Recompute the parent rollup from its variants — acceptance criterion 4/5:
  * the parent NEVER carries a direct balance, only this computed sum.
  */

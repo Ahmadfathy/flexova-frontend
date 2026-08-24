@@ -8,7 +8,7 @@
  */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Loader2, WifiOff } from "lucide-react";
+import { Loader2, WifiOff, Flag } from "lucide-react";
 import { toast } from "sonner";
 
 import { DrawerShell } from "@/components/patterns/DrawerShell";
@@ -33,11 +33,13 @@ interface VariantQuickEditDrawerProps {
   lang: "ar" | "en";
   canEdit: boolean;
   isOffline: boolean;
+  /** DD-1 addendum — tenant.eta_enabled; shows the missing-ETA warning when true. */
+  etaEnabled?: boolean;
   onSave: (variantId: string, patch: Partial<InventoryVariant>) => void;
 }
 
 export function VariantQuickEditDrawer({
-  open, onOpenChange, item, variant, priceLists, attributeValues, lang, canEdit, isOffline, onSave,
+  open, onOpenChange, item, variant, priceLists, attributeValues, lang, canEdit, isOffline, etaEnabled, onSave,
 }: VariantQuickEditDrawerProps) {
   const { t } = useTranslation("inventory");
 
@@ -172,7 +174,15 @@ export function VariantQuickEditDrawer({
             onChange={(e) => setEtaCode(e.target.value)}
             className="tabular-nums"
           />
-          {!etaCode && <p className="text-xs text-muted-foreground">{t("variants.inherited")}: {item.eta_code || "—"}</p>}
+          {!etaCode && item.eta_code && (
+            <p className="text-xs text-muted-foreground">{t("variants.inherited")}: {item.eta_code}</p>
+          )}
+          {etaEnabled && !etaCode && !item.eta_code && (
+            <p className="flex items-center gap-1 text-xs text-warning-text">
+              <Flag className="h-3 w-3 shrink-0" />
+              {t("items.eta_missing_hint")}
+            </p>
+          )}
         </div>
 
         <div className="space-y-1.5">
