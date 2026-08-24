@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MENU, isModuleActive, type MenuItem } from "@/config/menu";
+import { isFlagEnabled } from "@/lib/flags";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,7 +66,7 @@ export function HorizontalSubBar() {
       className="flex items-center justify-center overflow-x-auto overflow-y-hidden px-4 h-10 border-t border-border nav-scroll w-full min-w-0"
       aria-label={t(`nav.${activeModule.key}`)}
     >
-      {activeModule.subItems.map(sub => (
+      {activeModule.subItems.filter(sub => isFlagEnabled(sub.flag)).map(sub => (
         <NavLink
           key={sub.key}
           to={sub.route}
@@ -146,7 +147,7 @@ function DropdownModuleItem({ item }: { item: MenuItem }) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent side="bottom" align="start" sideOffset={4} className="w-52">
-        {item.subItems.map(sub => (
+        {item.subItems.filter(sub => isFlagEnabled(sub.flag)).map(sub => (
           <DropdownMenuItem key={sub.key} asChild>
             <NavLink
               to={sub.route}

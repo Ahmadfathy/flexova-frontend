@@ -1,5 +1,6 @@
 export { ItemsListPage    as ItemsPage      } from "./items/ItemsListPage";
 export { CategoriesPage                     } from "./categories/CategoriesPage";
+export { AttributesPage                     } from "./attributes/AttributesPage";
 export { WarehousesPage                     } from "./warehouses/WarehousesPage";
 export { PriceListsPage                     } from "./price-lists/PriceListsPage";
 export { PriceListEditorPage                } from "./price-lists/PriceListEditorPage";

@@ -37,9 +37,10 @@ const PlaySessionLogPage = lazy(() => import("@/features/play/sessions/SessionLo
 // Inventory
 import { InventoryLayout } from "@/features/inventory/InventoryLayout";
 import {
-  ItemsPage, CategoriesPage, PriceListsPage, PriceListEditorPage, WarehousesPage,
+  ItemsPage, CategoriesPage, AttributesPage, PriceListsPage, PriceListEditorPage, WarehousesPage,
   StocktakesPage, StocktakeEditorPage, TransfersPage, AdjustmentsPage, LowStockPage,
 } from "@/features/inventory/InventoryPages";
+import { ItemEditorPage } from "@/features/inventory/items/ItemEditorPage";
 
 // Sales
 import { SalesLayout } from "@/features/sales/SalesLayout";
@@ -294,7 +295,9 @@ export default function App() {
           <Route path="/inventory" element={<InventoryLayout />}>
             <Route index element={<Navigate to="items" replace />} />
             <Route path="items"       element={<ItemsPage />} />
+            <Route path="items/:id"   element={<ItemEditorPage />} />
             <Route path="categories"  element={<CategoriesPage />} />
+            <Route path="attributes"  element={<AttributesPage />} />
             <Route path="price-lists"        element={<PriceListsPage />} />
             <Route path="price-lists/:id"   element={<PriceListEditorPage />} />
             <Route path="warehouses"         element={<WarehousesPage />} />

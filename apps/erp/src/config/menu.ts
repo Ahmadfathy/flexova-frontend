@@ -10,6 +10,8 @@ export interface SubItem {
   key: string;
   route: string;
   permission?: string;
+  /** DD-1 — gates this sub-item behind a registered flag (src/lib/flags.ts); hidden entirely when off. */
+  flag?: string;
 }
 
 export interface MenuItem {
@@ -49,6 +51,7 @@ export const MENU: MenuItem[] = [
     subItems: [
       { key: "items",        route: "/inventory/items" },
       { key: "categories",   route: "/inventory/categories" },
+      { key: "attributes",   route: "/inventory/attributes", flag: "inventory.variants" },
       { key: "price_lists",  route: "/inventory/price-lists" },
       { key: "warehouses",   route: "/inventory/warehouses" },
       { key: "stocktakes",   route: "/inventory/stocktakes" },

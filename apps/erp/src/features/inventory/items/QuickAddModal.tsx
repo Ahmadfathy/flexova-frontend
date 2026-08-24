@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input }  from "@/components/ui/input";
 import { Label }  from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { ModalShell } from "@/components/patterns/ModalShell";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -13,7 +15,9 @@ import { Loader2 } from "lucide-react";
 
 import { cn }       from "@/lib/utils";
 import { useCan }   from "@/lib/permissions";
+import { isFlagEnabled } from "@/lib/flags";
 import { useItems } from "./useItems";
+import type { InventoryItem } from "./types";
 
 /* ─── Helpers ────────────────────────────────────────────────── */
 
@@ -32,9 +36,11 @@ interface QuickAddModalProps {
 
 export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
   const { t, i18n } = useTranslation("inventory");
-  const { data }     = useItems();
+  const { data, mutate } = useItems();
   const lang         = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can          = useCan();
+  const navigate     = useNavigate();
+  const variantsFlagOn = isFlagEnabled("inventory.variants");
 
   const units      = data?.uoms ?? [];
   const categories = data?.categories ?? [];
@@ -48,6 +54,7 @@ export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
     sale_price:  "",
     code:        "",
     codeAuto:    true,
+    has_variants: false,
   });
   const [error,  setError]  = useState("");
   const [saving, setSaving] = useState(false);
@@ -64,6 +71,7 @@ export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
         sale_price:  "",
         code:        "",
         codeAuto:    true,
+        has_variants: false,
       }));
       setError("");
       setSaving(false);
@@ -85,6 +93,44 @@ export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
     setSaving(true);
     await new Promise((r) => setTimeout(r, 700));
     setSaving(false);
+
+    // DD-1 — has_variants routes into the Item Editor to build the matrix;
+    // the parent itself carries no balance/price (D1) and no barcode (D6/§3).
+    if (form.has_variants) {
+      const newId = `it_${Date.now()}`;
+      const newItem: InventoryItem = {
+        id: newId,
+        code: displayCode,
+        name_ar: form.name_ar.trim(),
+        name_en: "",
+        item_type: "stocked",
+        category_id: form.category_id,
+        base_uom_id: form.base_uom_id,
+        barcodes: [],
+        image: null,
+        tax_type_id: data?.tax_types[0]?.id ?? "",
+        eta_code: "",
+        reorder_level: null,
+        max_level: null,
+        status: "active",
+        incomplete: false,
+        prices: {},
+        last_purchase_price: null,
+        avg_cost: null,
+        units: [{ uom_id: form.base_uom_id, factor: 1, barcode: null, unit_price: 0 }],
+        balances: [],
+        is_product_parent: true,
+        has_variants_flag: true,
+        attributes_used: [],
+        variants: [],
+        rollup: { balance_total: 0, price_range: { min: 0, max: 0 }, any_low_stock: false },
+      };
+      mutate((prev) => prev && { ...prev, items: [newItem, ...prev.items] });
+      onOpenChange(false);
+      navigate(`/inventory/items/${newId}`);
+      return;
+    }
+
     onOpenChange(false);
   }
 
@@ -169,7 +215,23 @@ export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
             </Select>
           </div>
 
-          {/* Sale price */}
+          {/* DD-1 — has_variants toggle (flag-gated) */}
+          {variantsFlagOn && (
+            <div className="flex items-start gap-3 rounded-md border border-border p-3">
+              <Switch
+                id="qa-has-variants"
+                checked={form.has_variants}
+                onCheckedChange={(v) => set("has_variants", v)}
+              />
+              <div className="space-y-0.5">
+                <Label htmlFor="qa-has-variants" className="cursor-pointer">{t("quickadd.has_variants")}</Label>
+                <p className="text-xs text-muted-foreground">{t("quickadd.has_variants_hint")}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Sale price — hidden once has_variants is on (D1: parent carries no price) */}
+          {!form.has_variants && (
           <div className="space-y-1.5">
             <Label htmlFor="qa-price">{t("quickadd.price")}</Label>
             <div className="relative">
@@ -189,6 +251,7 @@ export function QuickAddModal({ open, onOpenChange }: QuickAddModalProps) {
               </span>
             </div>
           </div>
+          )}
 
           {/* Code (auto-generated) */}
           <div className="space-y-1.5">

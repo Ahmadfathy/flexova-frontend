@@ -5,7 +5,7 @@
  */
 export type FlagKey =
   | "sector.wholesale" | "mfg.enabled" | "projects.enabled" | "hr" | "construction.enabled"
-  | "healthcare.lab" | "healthcare.insurance";
+  | "healthcare.lab" | "healthcare.insurance" | "inventory.variants";
 
 const FLAGS: Record<FlagKey, boolean> = {
   "sector.wholesale": import.meta.env.DEV,
@@ -19,6 +19,8 @@ const FLAGS: Record<FlagKey, boolean> = {
   // once a real settings surface exists, same convention as "hr" above.
   "healthcare.lab": true,
   "healthcare.insurance": true,
+  // DD-1 — tenant module flag gating the Variants/Matrix capability (D9).
+  "inventory.variants": import.meta.env.DEV,
 };
 
 export function isFlagEnabled(flag?: string): boolean {

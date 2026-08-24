@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MENU, isModuleActive, type MenuItem } from "@/config/menu";
+import { isFlagEnabled } from "@/lib/flags";
 
 const SESSION_KEY = "flexova.subpanel";
 
@@ -162,7 +163,7 @@ export function SidebarSplit({ onClose }: SidebarSplitProps) {
                 )}
                 <div className="space-y-0.5">
                   {activeModule?.subItems?.length ? (
-                    activeModule.subItems.map(sub => (
+                    activeModule.subItems.filter(sub => isFlagEnabled(sub.flag)).map(sub => (
                       <PanelSubItem
                         key={sub.key}
                         route={sub.route}

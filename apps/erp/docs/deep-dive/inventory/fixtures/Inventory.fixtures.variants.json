@@ -1,0 +1,85 @@
+{
+  "_dd_meta": {
+    "feature": "DD-1 Variants / Matrix",
+    "merge_instructions": "Additive merge into inventory.fixtures.json: append `attributes` and `attribute_values` as new top-level arrays; append the two product-parent items to `items`; append the variant ledger rows to `ledger`; add `cat_apparel` and `cat_homeware` to `categories`. No existing record is modified.",
+    "invariant": "Each product-parent item holds NO direct balance; balance lives on variants[]. Parent rollup = sum of variant balances.",
+    "eta_note": "Variant eta_code = null means it inherits parent base eta_code. Both parents below carry a base eta_code, so all variants are issuable.",
+    "flag_note": "Edge cases marked with _flag: suspended variant, low-stock variant (drives parent low-stock rollup), per-variant price override (drives price-range display)."
+  },
+
+  "categories_add": [
+    { "id": "cat_apparel", "name_ar": "ملابس", "name_en": "Apparel", "parent_id": null, "item_count": 1 },
+    { "id": "cat_homeware", "name_ar": "أدوات منزلية", "name_en": "Homeware", "parent_id": null, "item_count": 1 }
+  ],
+
+  "attributes": [
+    { "id": "attr_color", "name_ar": "اللون", "name_en": "Color", "type": "color", "number_unit": null, "status": "active", "used_by_products": 2 },
+    { "id": "attr_size", "name_ar": "المقاس", "name_en": "Size", "type": "list", "number_unit": null, "status": "active", "used_by_products": 1 }
+  ],
+
+  "attribute_values": [
+    { "id": "av_red",   "attribute_id": "attr_color", "value_ar": "أحمر",  "value_en": "Red",   "swatch_hex": "#C0392B", "sort_order": 1 },
+    { "id": "av_blue",  "attribute_id": "attr_color", "value_ar": "أزرق",  "value_en": "Blue",  "swatch_hex": "#2E5AAC", "sort_order": 2 },
+    { "id": "av_black", "attribute_id": "attr_color", "value_ar": "أسود",  "value_en": "Black", "swatch_hex": "#1C1C1C", "sort_order": 3, "_flag": "available value, EXCLUDED from t-shirt matrix (demonstrates manual exclusion — no SKU generated)" },
+    { "id": "av_white", "attribute_id": "attr_color", "value_ar": "أبيض",  "value_en": "White", "swatch_hex": "#F5F5F5", "sort_order": 4 },
+    { "id": "av_s", "attribute_id": "attr_size", "value_ar": "S", "value_en": "S", "swatch_hex": null, "sort_order": 1 },
+    { "id": "av_m", "attribute_id": "attr_size", "value_ar": "M", "value_en": "M", "swatch_hex": null, "sort_order": 2 },
+    { "id": "av_l", "attribute_id": "attr_size", "value_ar": "L", "value_en": "L", "swatch_hex": null, "sort_order": 3 }
+  ],
+
+  "items_add": [
+    {
+      "id": "it_tshirt", "code": "TSH-500", "name_ar": "تيشيرت قطن رجالي", "name_en": "Men's Cotton T-Shirt",
+      "item_type": "stocked", "is_product_parent": true, "has_variants_flag": true,
+      "category_id": "cat_apparel", "base_uom_id": "uom_pc",
+      "barcodes": [], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-500900-TSHIRT",
+      "reorder_level": null, "max_level": null, "status": "active", "incomplete": false,
+      "attributes_used": ["attr_color", "attr_size"],
+      "rollup": { "balance_total": 208, "price_range": { "min": 180.00, "max": 190.00 }, "any_low_stock": true },
+      "variants": [
+        { "id": "v_ts_red_s", "code": "TSH-500-RED-S", "attrs": { "attr_color": "av_red", "attr_size": "av_s" }, "barcodes": ["6224900500017"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
+          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
+          "balances": [ { "warehouse_id": "wh_main", "qty": 40 }, { "warehouse_id": "wh_nasr", "qty": 8 } ] },
+        { "id": "v_ts_red_m", "code": "TSH-500-RED-M", "attrs": { "attr_color": "av_red", "attr_size": "av_m" }, "barcodes": ["6224900500024"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
+          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
+          "balances": [ { "warehouse_id": "wh_main", "qty": 52 }, { "warehouse_id": "wh_nasr", "qty": 6 } ] },
+        { "id": "v_ts_red_l", "code": "TSH-500-RED-L", "attrs": { "attr_color": "av_red", "attr_size": "av_l" }, "barcodes": ["6224900500031"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
+          "prices": { "pl_retail": 190.00, "pl_wholesale": 158.00, "pl_vip": 174.00 }, "last_purchase_price": 122.00, "avg_cost": 120.10, "_flag": "price override (L +10) → drives parent price-range 180–190",
+          "balances": [ { "warehouse_id": "wh_main", "qty": 33 }, { "warehouse_id": "wh_nasr", "qty": 0 } ] },
+        { "id": "v_ts_blue_s", "code": "TSH-500-BLUE-S", "attrs": { "attr_color": "av_blue", "attr_size": "av_s" }, "barcodes": ["6224900500048"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
+          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
+          "balances": [ { "warehouse_id": "wh_main", "qty": 7 }, { "warehouse_id": "wh_nasr", "qty": 1 } ], "_flag": "below reorder_level (8 ≤ 10) → parent any_low_stock = true" },
+        { "id": "v_ts_blue_m", "code": "TSH-500-BLUE-M", "attrs": { "attr_color": "av_blue", "attr_size": "av_m" }, "barcodes": ["6224900500055"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
+          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
+          "balances": [ { "warehouse_id": "wh_main", "qty": 44 }, { "warehouse_id": "wh_nasr", "qty": 5 } ] },
+        { "id": "v_ts_blue_l", "code": "TSH-500-BLUE-L", "attrs": { "attr_color": "av_blue", "attr_size": "av_l" }, "barcodes": ["6224900500062"], "image": null, "eta_code": "EG-500900-TSHIRT-BLUEL", "reorder_level": 10, "max_level": 120, "status": "suspended",
+          "prices": { "pl_retail": 190.00, "pl_wholesale": 158.00, "pl_vip": 174.00 }, "last_purchase_price": 122.00, "avg_cost": 120.10, "_flag": "suspended variant + own eta_code override (demonstrates variant-level override)",
+          "balances": [ { "warehouse_id": "wh_main", "qty": 12 }, { "warehouse_id": "wh_nasr", "qty": 0 } ] }
+      ]
+    },
+    {
+      "id": "it_mug", "code": "MUG-700", "name_ar": "كوب سيراميك", "name_en": "Ceramic Mug",
+      "item_type": "stocked", "is_product_parent": true, "has_variants_flag": true,
+      "category_id": "cat_homeware", "base_uom_id": "uom_pc",
+      "barcodes": [], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-700100-MUG",
+      "reorder_level": null, "max_level": null, "status": "active", "incomplete": false,
+      "attributes_used": ["attr_color"],
+      "rollup": { "balance_total": 96, "price_range": { "min": 45.00, "max": 45.00 }, "any_low_stock": false },
+      "variants": [
+        { "id": "v_mug_white", "code": "MUG-700-WHITE", "attrs": { "attr_color": "av_white" }, "barcodes": ["6224900700016"], "image": null, "eta_code": null, "reorder_level": 15, "max_level": 200, "status": "active",
+          "prices": { "pl_retail": 45.00, "pl_wholesale": 38.00 }, "last_purchase_price": 27.00, "avg_cost": 26.30,
+          "balances": [ { "warehouse_id": "wh_main", "qty": 60 } ] },
+        { "id": "v_mug_blue", "code": "MUG-700-BLUE", "attrs": { "attr_color": "av_blue" }, "barcodes": ["6224900700023"], "image": null, "eta_code": null, "reorder_level": 15, "max_level": 200, "status": "active",
+          "prices": { "pl_retail": 45.00, "pl_wholesale": 38.00 }, "last_purchase_price": 27.00, "avg_cost": 26.30,
+          "balances": [ { "warehouse_id": "wh_main", "qty": 36 } ] }
+      ]
+    }
+  ],
+
+  "ledger_add": [
+    { "id": "mv_v1", "variant_id": "v_ts_red_m", "item_id": "it_tshirt", "date": "2026-08-02", "type": "opening", "source_ref": "OPENING-2026", "warehouse_id": "wh_main", "qty": 60, "running_balance": 60, "cost": 116.40, "user": "أحمد مالك" },
+    { "id": "mv_v2", "variant_id": "v_ts_red_m", "item_id": "it_tshirt", "date": "2026-08-11", "type": "out", "source_ref": "INV-2026-0344", "warehouse_id": "wh_main", "qty": -8, "running_balance": 52, "cost": 116.40, "user": "منى البائعة" },
+    { "id": "mv_v3", "variant_id": "v_ts_blue_s", "item_id": "it_tshirt", "date": "2026-08-02", "type": "opening", "source_ref": "OPENING-2026", "warehouse_id": "wh_main", "qty": 20, "running_balance": 20, "cost": 116.40, "user": "أحمد مالك" },
+    { "id": "mv_v4", "variant_id": "v_ts_blue_s", "item_id": "it_tshirt", "date": "2026-08-14", "type": "out", "source_ref": "INV-2026-0361", "warehouse_id": "wh_main", "qty": -13, "running_balance": 7, "cost": 116.40, "user": "منى البائعة", "_flag": "drops variant to 7 (≤ reorder 10) → low-stock" }
+  ]
+}

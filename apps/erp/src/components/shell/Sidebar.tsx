@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { MENU, MENU_CORE, MENU_SECTOR, MENU_ADMIN, isModuleActive, type MenuItem } from "@/config/menu";
+import { isFlagEnabled } from "@/lib/flags";
 
 /* ── Group header label ─────────────────────────────────────── */
 function GroupHeader({ label }: { label: string }) {
@@ -102,7 +103,7 @@ function AccordionItem({
 
       {isOpen && (
         <div className="ms-4 mt-0.5 space-y-0.5 border-s border-border ps-2">
-          {item.subItems.map(sub => (
+          {item.subItems.filter(sub => isFlagEnabled(sub.flag)).map(sub => (
             <SubLink
               key={sub.key}
               route={sub.route}
@@ -191,7 +192,7 @@ function MiniItem({ item, onClose }: { item: MenuItem; onClose?: () => void }) {
           className="w-[188px] p-1"
         >
           <p className="px-2 pt-1 pb-1.5 text-xs font-semibold text-foreground">{label}</p>
-          {item.subItems.map(sub => (
+          {item.subItems.filter(sub => isFlagEnabled(sub.flag)).map(sub => (
             <NavLink
               key={sub.key}
               to={sub.route}

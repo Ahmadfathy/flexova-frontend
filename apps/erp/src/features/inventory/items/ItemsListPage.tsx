@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   useReactTable,
@@ -46,8 +47,8 @@ import { RowActionsContent, RowActionItem } from "@/components/patterns/DataTabl
 // Icons
 import {
   Plus, Upload, Download, MoreVertical, Package, X,
-  SlidersHorizontal, Search, ChevronUp, ChevronDown, ChevronsUpDown,
-  Printer, Copy, Ban, CheckCircle2, Trash2,
+  SlidersHorizontal, Search, ChevronUp, ChevronDown, ChevronsUpDown, ChevronRight,
+  Printer, Copy, Ban, CheckCircle2, Trash2, Pencil,
 } from "lucide-react";
 
 // Lib
@@ -57,8 +58,13 @@ import { cn }             from "@/lib/utils";
 import { useCan }         from "@/lib/permissions";
 import { useItems }       from "./useItems";
 import { ImportDrawer }   from "./ImportDrawer";
+import { VariantQuickEditDrawer } from "./VariantQuickEditDrawer";
 import { useCreateDispatcher } from "@/stores/createDispatcher";
-import type { InventoryItem, InventoryCategory, InventoryWarehouse, InventoryUom, ItemStatus, ItemFilters } from "./types";
+import type {
+  InventoryItem, InventoryCategory, InventoryWarehouse, InventoryUom, InventoryAttribute,
+  InventoryAttributeValue, InventoryVariant, ItemStatus, ItemFilters,
+} from "./types";
+import { variantBalance as getVariantBalance, comboLabel } from "./variants";
 
 /* ─── Module-level helpers ──────────────────────────────────── */
 
@@ -82,6 +88,23 @@ function getRetailPrice(item: InventoryItem): number {
   return item.prices["pl_retail"] ?? Object.values(item.prices)[0] ?? 0;
 }
 
+/* ── DD-1 — product-parent display helpers (D5: parent never has an editable
+   balance/price, only a computed rollup) ───────────────────────────────── */
+
+function getDisplayBalance(item: InventoryItem): number | null {
+  if (item.is_product_parent) return item.rollup?.balance_total ?? 0;
+  return getTotalBalance(item);
+}
+
+function isProductAnyLowStock(item: InventoryItem): boolean {
+  return !!item.is_product_parent && !!item.rollup?.any_low_stock;
+}
+
+function getPriceRangeParts(item: InventoryItem): { min: number; max: number } | null {
+  if (!item.is_product_parent || !item.rollup) return null;
+  return item.rollup.price_range;
+}
+
 const STATUS_VARIANT: Record<ItemStatus, "paid" | "credit" | "default"> = {
   active:      "paid",
   suspended:   "default",
@@ -92,6 +115,7 @@ const STATUS_VARIANT: Record<ItemStatus, "paid" | "credit" | "default"> = {
 const DEFAULT_FILTERS: ItemFilters = {
   category: "", warehouse: "", item_type: "",
   status: "", low_stock: false, price_min: "", price_max: "",
+  attribute_value: "", has_variants: "",
 };
 
 /* ─── Skeleton (8 rows, thumb + bars) ────────────────────────── */
@@ -148,12 +172,51 @@ function NoResults({ query, onClear }: { query: string; onClear: () => void }) {
   );
 }
 
+/* ─── Variant sub-row (DD-1 §2 — expanded under a product-parent row) ──── */
+
+function VariantSubRow({
+  variant, attributeOrder, attributeValues, colSpan, lang, t, highlighted, onEdit,
+}: {
+  variant: InventoryVariant;
+  attributeOrder: string[];
+  attributeValues: InventoryAttributeValue[];
+  colSpan: number;
+  lang: "ar" | "en";
+  t: ReturnType<typeof useTranslation>["t"];
+  highlighted: boolean;
+  onEdit: (variant: InventoryVariant) => void;
+}) {
+  const bal = getVariantBalance(variant);
+  const price = variant.prices["pl_retail"] ?? Object.values(variant.prices)[0] ?? 0;
+  return (
+    <TableRow className={cn("border-b border-border bg-muted/20", highlighted && "bg-warning-tint")}>
+      <TableCell colSpan={colSpan} className="px-3 py-2">
+        <div className="flex items-center gap-3 ps-8 flex-wrap">
+          <span className="text-sm font-medium">{comboLabel(variant.attrs, attributeOrder, attributeValues, lang)}</span>
+          <span className="text-xs font-mono tabular-nums text-muted-foreground">{variant.code}</span>
+          <span className="text-xs tabular-nums text-muted-foreground ms-auto">{formatNumber(bal)}</span>
+          <span className="text-xs tabular-nums text-muted-foreground w-20 text-end">{formatMoney(price, lang)}</span>
+          <StatusPill
+            variant={variant.status === "suspended" ? "default" : "paid"}
+            label={t(`status.${variant.status}`)}
+            className="text-xs"
+          />
+          <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => onEdit(variant)}>
+            <Pencil className="h-3 w-3" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
+
 /* ─── Row actions (shared between table + card) ─────────────── */
 
 function RowActions({
   item,
   can,
   t,
+  onEdit,
   onDuplicate,
   onToggleSuspend,
   onPrintBarcode,
@@ -162,6 +225,7 @@ function RowActions({
   item: InventoryItem;
   can: (p: string) => boolean;
   t: ReturnType<typeof useTranslation>["t"];
+  onEdit: (item: InventoryItem) => void;
   onDuplicate: (item: InventoryItem) => void;
   onToggleSuspend: (item: InventoryItem) => void;
   onPrintBarcode: (item: InventoryItem) => void;
@@ -172,6 +236,7 @@ function RowActions({
 
   return (
     <>
+      <RowActionItem icon={Pencil} onClick={() => onEdit(item)}>{t("actions.edit")}</RowActionItem>
       {can("inventory.item.create") && (
         <RowActionItem icon={Copy} onClick={() => onDuplicate(item)}>{t("actions.duplicate")}</RowActionItem>
       )}
@@ -200,7 +265,8 @@ function RowActions({
 
 function ItemCard({
   item, selected, onToggle, lang, categoryMap, uomMap, can, t,
-  onDuplicate, onToggleSuspend, onPrintBarcode, onDeleteRequest,
+  onEdit, onDuplicate, onToggleSuspend, onPrintBarcode, onDeleteRequest,
+  expanded, onToggleExpand, attributeValues,
 }: {
   item: InventoryItem;
   selected: boolean;
@@ -210,24 +276,30 @@ function ItemCard({
   uomMap: Record<string, InventoryUom>;
   can: (p: string) => boolean;
   t: ReturnType<typeof useTranslation>["t"];
+  onEdit: (item: InventoryItem) => void;
   onDuplicate: (item: InventoryItem) => void;
   onToggleSuspend: (item: InventoryItem) => void;
   onPrintBarcode: (item: InventoryItem) => void;
   onDeleteRequest: (item: InventoryItem) => void;
+  expanded: boolean;
+  onToggleExpand: () => void;
+  attributeValues: InventoryAttributeValue[];
 }) {
   const status  = getEffectiveStatus(item);
-  const balance = getTotalBalance(item);
+  const balance = getDisplayBalance(item);
   const price   = getRetailPrice(item);
+  const priceRange = getPriceRangeParts(item);
   const cat     = categoryMap[item.category_id];
   const uom     = uomMap[item.base_uom_id];
 
   return (
     <div
       className={cn(
-        "flex items-start gap-3 p-3 rounded-sm border border-border bg-card transition-colors",
+        "flex flex-col rounded-sm border border-border bg-card transition-colors",
         selected && "bg-muted/50 border-primary/40"
       )}
     >
+      <div className="flex items-start gap-3 p-3">
       <Checkbox
         checked={selected}
         onCheckedChange={onToggle}
@@ -245,13 +317,29 @@ function ItemCard({
             <p className="font-medium text-sm leading-tight truncate">
               {lang === "ar" ? item.name_ar : item.name_en}
             </p>
-            <p className="text-xs text-muted-foreground tabular-nums">{item.code}</p>
+            <p className="text-xs text-muted-foreground tabular-nums">
+              {item.code}
+              {item.is_product_parent && (
+                <button
+                  type="button"
+                  className="ms-1.5 text-brand underline-offset-2 hover:underline"
+                  onClick={(e) => { e.stopPropagation(); onToggleExpand(); }}
+                >
+                  {t("items.variants_badge", { n: item.variants?.length ?? 0 })}
+                </button>
+              )}
+            </p>
           </div>
-          <StatusPill
-            variant={STATUS_VARIANT[status]}
-            label={t(`status.${status.replace("-", "_")}`)}
-            className="shrink-0 text-xs"
-          />
+          <div className="flex flex-col items-end gap-1 shrink-0">
+            <StatusPill
+              variant={STATUS_VARIANT[status]}
+              label={t(`status.${status.replace("-", "_")}`)}
+              className="text-xs"
+            />
+            {isProductAnyLowStock(item) && (
+              <StatusPill variant="credit" label={t("status.low_stock")} className="text-xs" />
+            )}
+          </div>
         </div>
         <p className="text-xs text-muted-foreground">
           {(lang === "ar" ? cat?.name_ar : cat?.name_en) ?? ""}
@@ -262,7 +350,13 @@ function ItemCard({
           <span className="text-sm tabular-nums font-medium">
             {balance === null ? "—" : formatNumber(balance)}
           </span>
-          <span className="text-sm tabular-nums">{formatMoney(price, lang)}</span>
+          <span className="text-sm tabular-nums">
+            {priceRange
+              ? (priceRange.min === priceRange.max
+                  ? formatMoney(priceRange.min, lang)
+                  : t("variants.price_range", { min: formatNumber(priceRange.min), max: formatNumber(priceRange.max) }))
+              : formatMoney(price, lang)}
+          </span>
         </div>
       </div>
       <DropdownMenu>
@@ -277,6 +371,7 @@ function ItemCard({
         <RowActionsContent>
           <RowActions
             item={item} can={can} t={t}
+            onEdit={onEdit}
             onDuplicate={onDuplicate}
             onToggleSuspend={onToggleSuspend}
             onPrintBarcode={onPrintBarcode}
@@ -284,6 +379,26 @@ function ItemCard({
           />
         </RowActionsContent>
       </DropdownMenu>
+      </div>
+
+      {/* DD-1 §2/§7 — mobile: tap the variants badge to expand a stacked list */}
+      {item.is_product_parent && expanded && (
+        <div className="border-t border-border divide-y divide-border">
+          {(item.variants ?? []).map((v) => {
+            const bal = getVariantBalance(v);
+            const vp = v.prices["pl_retail"] ?? Object.values(v.prices)[0] ?? 0;
+            return (
+              <div key={v.id} className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
+                <span className="font-medium">{comboLabel(v.attrs, item.attributes_used ?? Object.keys(v.attrs), attributeValues, lang)}</span>
+                <span className="font-mono tabular-nums text-muted-foreground">{v.code}</span>
+                <span className="tabular-nums">{formatNumber(bal)}</span>
+                <span className="tabular-nums">{formatMoney(vp, lang)}</span>
+                <StatusPill variant={v.status === "suspended" ? "default" : "paid"} label={t(`status.${v.status}`)} className="text-xs" />
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -353,6 +468,8 @@ function FilterSelects({
   setFilters,
   categories,
   warehouses,
+  attributes,
+  attributeValues,
   t,
   lang,
 }: {
@@ -360,9 +477,12 @@ function FilterSelects({
   setFilters: React.Dispatch<React.SetStateAction<ItemFilters>>;
   categories: InventoryCategory[];
   warehouses: InventoryWarehouse[];
+  attributes: InventoryAttribute[];
+  attributeValues: InventoryAttributeValue[];
   t: ReturnType<typeof useTranslation>["t"];
   lang: "ar" | "en";
 }) {
+  const attrById = Object.fromEntries(attributes.map((a) => [a.id, a]));
   return (
     <>
       {/* Category */}
@@ -483,6 +603,43 @@ function FilterSelects({
           </div>
         </PopoverContent>
       </Popover>
+
+      {/* DD-1 — item-type filter (all / simple / product) */}
+      <Select
+        value={filters.has_variants || "_all"}
+        onValueChange={(v) => setFilters((f) => ({ ...f, has_variants: (v === "_all" ? "" : v) as ItemFilters["has_variants"] }))}
+      >
+        <SelectTrigger className="h-9 w-32 text-sm">
+          <SelectValue placeholder={t("filters.has_variants")} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="_all">{t("filters.has_variants_all")}</SelectItem>
+          <SelectItem value="simple">{t("filters.has_variants_simple")}</SelectItem>
+          <SelectItem value="product">{t("filters.has_variants_product")}</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* DD-1 — attribute value filter (e.g. Color = Red) */}
+      {attributeValues.length > 0 && (
+        <Select
+          value={filters.attribute_value || "_all"}
+          onValueChange={(v) => setFilters((f) => ({ ...f, attribute_value: v === "_all" ? "" : v }))}
+        >
+          <SelectTrigger className="h-9 w-40 text-sm">
+            <SelectValue placeholder={t("filters.attribute")} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="_all">{t("filters.all_attributes")}</SelectItem>
+            {attributeValues.map((v) => (
+              <SelectItem key={v.id} value={v.id}>
+                {(lang === "ar" ? attrById[v.attribute_id]?.name_ar : attrById[v.attribute_id]?.name_en) ?? ""}
+                {" = "}
+                {lang === "ar" ? v.value_ar : v.value_en}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
     </>
   );
 }
@@ -501,6 +658,7 @@ export function ItemsListPage() {
   const { t, i18n }   = useTranslation("inventory");
   const lang           = (i18n.language === "ar" ? "ar" : "en") as "ar" | "en";
   const can            = useCan();
+  const navigate       = useNavigate();
   const openCreate     = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, isOffline, reload, mutate } = useItems();
@@ -513,6 +671,8 @@ export function ItemsListPage() {
   const [filters, setFilters]             = useState<ItemFilters>(DEFAULT_FILTERS);
   const [sorting, setSorting]             = useState<SortingState>([]);
   const [rowSelection, setRowSelection]   = useState<RowSelectionState>({});
+  const [expandedIds, setExpandedIds]     = useState<Set<string>>(new Set());
+  const [editVariantTarget, setEditVariantTarget] = useState<{ item: InventoryItem; variant: InventoryVariant } | null>(null);
 
   // 300ms debounce on search
   useEffect(() => {
@@ -543,7 +703,12 @@ export function ItemsListPage() {
           it.code.toLowerCase().includes(q) ||
           it.name_ar.includes(q) ||
           it.name_en.toLowerCase().includes(q) ||
-          it.barcodes.some((b) => b.includes(q))
+          it.barcodes.some((b) => b.includes(q)) ||
+          // DD-1 §2/§8 — search also matches variant code/barcode; a hit on a
+          // variant surfaces (and later auto-expands) its parent row.
+          (it.variants ?? []).some(
+            (v) => v.code.toLowerCase().includes(q) || v.barcodes.some((b) => b.includes(q))
+          )
       );
     }
     if (filters.category)
@@ -553,7 +718,8 @@ export function ItemsListPage() {
       items = items.filter(
         (it) =>
           it.item_type === "service" ||
-          it.balances.some((b) => b.warehouse_id === filters.warehouse)
+          it.balances.some((b) => b.warehouse_id === filters.warehouse) ||
+          (it.variants ?? []).some((v) => v.balances.some((b) => b.warehouse_id === filters.warehouse))
       );
 
     if (filters.item_type)
@@ -564,21 +730,69 @@ export function ItemsListPage() {
 
     if (filters.low_stock)
       items = items.filter((it) => {
+        if (it.is_product_parent) return isProductAnyLowStock(it);
         const bal = getTotalBalance(it);
         return bal !== null && it.reorder_level !== null && bal <= it.reorder_level;
       });
 
     if (filters.price_min) {
       const min = parseFloat(filters.price_min);
-      if (!isNaN(min)) items = items.filter((it) => getRetailPrice(it) >= min);
+      if (!isNaN(min)) items = items.filter((it) => {
+        const range = getPriceRangeParts(it);
+        return range ? range.max >= min : getRetailPrice(it) >= min;
+      });
     }
     if (filters.price_max) {
       const max = parseFloat(filters.price_max);
-      if (!isNaN(max)) items = items.filter((it) => getRetailPrice(it) <= max);
+      if (!isNaN(max)) items = items.filter((it) => {
+        const range = getPriceRangeParts(it);
+        return range ? range.min <= max : getRetailPrice(it) <= max;
+      });
     }
+
+    // DD-1 §2 — has_variants filter: all / simple / product
+    if (filters.has_variants === "simple") items = items.filter((it) => !it.is_product_parent);
+    if (filters.has_variants === "product") items = items.filter((it) => !!it.is_product_parent);
+
+    // DD-1 §2 — Attribute filter: products with a variant carrying this value
+    if (filters.attribute_value)
+      items = items.filter((it) => (it.variants ?? []).some((v) => Object.values(v.attrs).includes(filters.attribute_value)));
 
     return items;
   }, [data, debouncedSearch, filters]);
+
+  // DD-1 §8 — which variant (if any) matched the current search inside each
+  // product parent, so we can auto-expand + highlight it.
+  const searchVariantHits = useMemo<Record<string, string>>(() => {
+    if (!debouncedSearch) return {};
+    const q = debouncedSearch.toLowerCase();
+    const hits: Record<string, string> = {};
+    for (const it of filteredItems) {
+      if (!it.is_product_parent) continue;
+      const ownHit =
+        it.code.toLowerCase().includes(q) || it.name_ar.includes(q) || it.name_en.toLowerCase().includes(q);
+      if (ownHit) continue;
+      const hitVariant = (it.variants ?? []).find(
+        (v) => v.code.toLowerCase().includes(q) || v.barcodes.some((b) => b.includes(q))
+      );
+      if (hitVariant) hits[it.id] = hitVariant.id;
+    }
+    return hits;
+  }, [filteredItems, debouncedSearch]);
+
+  useEffect(() => {
+    const hitIds = Object.keys(searchVariantHits);
+    if (hitIds.length === 0) return;
+    setExpandedIds((prev) => new Set([...prev, ...hitIds]));
+  }, [searchVariantHits]);
+
+  const toggleExpanded = useCallback((id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
 
   // Active filter chips
   const chips = useMemo(() => {
@@ -597,6 +811,15 @@ export function ItemsListPage() {
     if (filters.low_stock) arr.push({ key: "low_stock", label: t("filters.low_stock") });
     if (filters.price_min) arr.push({ key: "price_min", label: `≥ ${filters.price_min}` });
     if (filters.price_max) arr.push({ key: "price_max", label: `≤ ${filters.price_max}` });
+    if (filters.has_variants) arr.push({ key: "has_variants", label: t(`filters.has_variants_${filters.has_variants}`) });
+    if (filters.attribute_value && data) {
+      const av = data.attribute_values.find((v) => v.id === filters.attribute_value);
+      const attr = data.attributes.find((a) => a.id === av?.attribute_id);
+      arr.push({
+        key: "attribute_value",
+        label: av ? `${lang === "ar" ? attr?.name_ar : attr?.name_en} = ${lang === "ar" ? av.value_ar : av.value_en}` : "",
+      });
+    }
     return arr;
   }, [debouncedSearch, filters, categoryMap, data, lang, t]);
 
@@ -618,6 +841,27 @@ export function ItemsListPage() {
     [rowSelection]
   );
 
+  const handleEdit = useCallback((item: InventoryItem) => {
+    navigate(`/inventory/items/${item.id}`);
+  }, [navigate]);
+
+  // DD-1 §3.6 — variant quick-edit drawer save: patches only the overridden
+  // fields on that one variant, then recomputes the parent rollup so the
+  // list stays consistent (never touches the variant's balance/ledger).
+  const handleSaveVariantOverride = useCallback((variantId: string, patch: Partial<InventoryVariant>) => {
+    mutate((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        items: prev.items.map((it) => {
+          if (!it.variants?.some((v) => v.id === variantId)) return it;
+          const nextVariants = it.variants.map((v) => (v.id === variantId ? { ...v, ...patch } : v));
+          return { ...it, variants: nextVariants };
+        }),
+      };
+    });
+  }, [mutate]);
+
   const handleDuplicate = useCallback((item: InventoryItem) => {
     const copy: InventoryItem = {
       ...item,
@@ -634,7 +878,12 @@ export function ItemsListPage() {
     const nextStatus = item.status === "suspended" ? "active" : "suspended";
     mutate((prev) => prev && {
       ...prev,
-      items: prev.items.map((i) => i.id === item.id ? { ...i, status: nextStatus } : i),
+      items: prev.items.map((i) => i.id === item.id ? {
+        ...i,
+        status: nextStatus,
+        // DD-1 §2 — bulk/row actions on a product parent apply to all its variants.
+        variants: i.is_product_parent ? i.variants?.map((v) => ({ ...v, status: nextStatus })) : i.variants,
+      } : i),
     });
     toast.success(nextStatus === "suspended" ? t("items.suspended_toast") : t("items.activated_toast"));
   }, [mutate, t]);
@@ -642,6 +891,18 @@ export function ItemsListPage() {
   const handlePrintBarcode = useCallback((item: InventoryItem) => {
     toast.success(t("items.barcode_print_toast", { code: item.code }));
   }, [t]);
+
+  // DD-1 §2 — deletion is blocked if the item (or, for a product parent, ANY
+  // of its variants) has recorded ledger movements — same golden-rule spirit
+  // as the existing v1 `items.cant_delete` copy, now checked for real.
+  const itemHasMovements = useCallback((item: InventoryItem): boolean => {
+    if (!data) return false;
+    if (item.is_product_parent) {
+      const variantIds = new Set((item.variants ?? []).map((v) => v.id));
+      return data.ledger.some((m) => m.variant_id && variantIds.has(m.variant_id));
+    }
+    return data.ledger.some((m) => m.item_id === item.id && !m.variant_id);
+  }, [data]);
 
   const confirmDelete = useCallback(() => {
     if (!deleteTarget) return;
@@ -654,7 +915,10 @@ export function ItemsListPage() {
   const handleBulkActivate = useCallback(() => {
     mutate((prev) => prev && {
       ...prev,
-      items: prev.items.map((i) => selectedIds.includes(i.id) ? { ...i, status: "active" } : i),
+      items: prev.items.map((i) => selectedIds.includes(i.id) ? {
+        ...i, status: "active",
+        variants: i.is_product_parent ? i.variants?.map((v) => ({ ...v, status: "active" as const })) : i.variants,
+      } : i),
     });
     toast.success(t("items.bulk_activated_toast", { n: selectedIds.length }));
     clearSelection();
@@ -663,7 +927,10 @@ export function ItemsListPage() {
   const handleBulkSuspend = useCallback(() => {
     mutate((prev) => prev && {
       ...prev,
-      items: prev.items.map((i) => selectedIds.includes(i.id) ? { ...i, status: "suspended" } : i),
+      items: prev.items.map((i) => selectedIds.includes(i.id) ? {
+        ...i, status: "suspended",
+        variants: i.is_product_parent ? i.variants?.map((v) => ({ ...v, status: "suspended" as const })) : i.variants,
+      } : i),
     });
     toast.success(t("items.bulk_suspended_toast", { n: selectedIds.length }));
     clearSelection();
@@ -673,19 +940,48 @@ export function ItemsListPage() {
     toast.success(t("items.bulk_barcode_print_toast", { n: selectedIds.length }));
   }, [selectedIds, t]);
 
+  // DD-1 §2 — export flattens a product parent to one row per variant; this
+  // app has no real file-export anywhere yet (every export button here is a
+  // toast stub), so this stays a stub too, but the flattened count is real.
   const handleBulkExport = useCallback(() => {
-    toast.success(t("items.bulk_export_toast", { n: selectedIds.length }));
-  }, [selectedIds, t]);
+    if (!data) return;
+    const flatCount = selectedIds.reduce((n, id) => {
+      const it = data.items.find((i) => i.id === id);
+      return n + (it?.is_product_parent ? (it.variants?.length ?? 0) : 1);
+    }, 0);
+    toast.success(t("items.bulk_export_toast", { n: flatCount }));
+  }, [selectedIds, t, data]);
 
   const confirmBulkDelete = useCallback(() => {
-    mutate((prev) => prev && { ...prev, items: prev.items.filter((i) => !selectedIds.includes(i.id)) });
-    toast.success(t("items.bulk_deleted_toast", { n: selectedIds.length }));
+    const blocked = selectedIds.filter((id) => {
+      const it = data?.items.find((i) => i.id === id);
+      return it && itemHasMovements(it);
+    });
+    mutate((prev) => prev && { ...prev, items: prev.items.filter((i) => !selectedIds.includes(i.id) || blocked.includes(i.id)) });
+    const deletedCount = selectedIds.length - blocked.length;
+    if (deletedCount > 0) toast.success(t("items.bulk_deleted_toast", { n: deletedCount }));
+    if (blocked.length > 0) toast.error(t("items.cant_delete"));
     setBulkDeleteOpen(false);
     clearSelection();
-  }, [mutate, selectedIds, t, clearSelection]);
+  }, [mutate, selectedIds, t, clearSelection, data, itemHasMovements]);
 
   // TanStack Table columns
   const columns = useMemo(() => [
+    // DD-1 §2 — expander (chevron at logical start) for product-parent rows
+    colHelper.display({
+      id: "expander",
+      cell: ({ row }) =>
+        row.original.is_product_parent ? (
+          <button
+            type="button"
+            className="h-6 w-6 flex items-center justify-center text-muted-foreground hover:text-foreground"
+            onClick={(e) => { e.stopPropagation(); toggleExpanded(row.original.id); }}
+            aria-label={expandedIds.has(row.original.id) ? t("items.collapse_variants") : t("items.expand_variants")}
+          >
+            <ChevronRight className={cn("h-3.5 w-3.5 rtl:rotate-180 transition-transform", expandedIds.has(row.original.id) && "rotate-90 rtl:rotate-90")} />
+          </button>
+        ) : null,
+    }),
     // Select
     colHelper.display({
       id: "select",
@@ -729,13 +1025,20 @@ export function ItemsListPage() {
       ),
     }),
 
-    // Code
+    // Code — a product-parent shows a "N variants" badge alongside its code (DD-1 §2)
     colHelper.accessor("code", {
       header: t("columns.code"),
       enableSorting: true,
       sortingFn: "alphanumeric",
-      cell: ({ getValue }) => (
-        <span className="tabular-nums text-xs font-mono">{getValue()}</span>
+      cell: ({ row }) => (
+        <span className="inline-flex items-center gap-1.5">
+          <span className="tabular-nums text-xs font-mono">{row.original.code}</span>
+          {row.original.is_product_parent && (
+            <Badge variant="secondary" className="text-xs tabular-nums shrink-0">
+              {t("items.variants_badge", { n: row.original.variants?.length ?? 0 })}
+            </Badge>
+          )}
+        </span>
       ),
     }),
 
@@ -787,48 +1090,65 @@ export function ItemsListPage() {
       header: t("columns.unit"),
     }),
 
-    // Balance
+    // Balance — a product-parent shows the scope-respecting rollup, never an
+    // editable balance (D5/§8 #4); tooltip explains it's a computed sum.
     colHelper.accessor(
-      (row) => getTotalBalance(row) ?? -Infinity,
+      (row) => getDisplayBalance(row) ?? -Infinity,
       {
         id: "balance",
         header: t("columns.balance"),
         enableSorting: true,
         sortingFn: "basic",
         cell: ({ row }) => {
-          const bal = getTotalBalance(row.original);
+          const bal = getDisplayBalance(row.original);
           return bal === null
             ? <span className="text-muted-foreground">—</span>
-            : <span className="tabular-nums">{formatNumber(bal)}</span>;
+            : (
+              <span className="tabular-nums" title={row.original.is_product_parent ? t("variants.rollup_hint") : undefined}>
+                {formatNumber(bal)}
+              </span>
+            );
         },
       }
     ),
 
-    // Sale price
+    // Sale price — a range when variant prices differ, single value otherwise
     colHelper.accessor(
-      (row) => getRetailPrice(row),
+      (row) => getPriceRangeParts(row)?.min ?? getRetailPrice(row),
       {
         id: "sale_price",
         header: t("columns.price"),
         enableSorting: true,
         sortingFn: "basic",
-        cell: ({ row }) => (
-          <span className="tabular-nums">{formatMoney(getRetailPrice(row.original), lang)}</span>
-        ),
+        cell: ({ row }) => {
+          const range = getPriceRangeParts(row.original);
+          if (range) {
+            return range.min === range.max
+              ? <span className="tabular-nums">{formatMoney(range.min, lang)}</span>
+              : <span className="tabular-nums whitespace-nowrap">{t("variants.price_range", { min: formatNumber(range.min), max: formatNumber(range.max) })}</span>;
+          }
+          return <span className="tabular-nums">{formatMoney(getRetailPrice(row.original), lang)}</span>;
+        },
       }
     ),
 
-    // Status
+    // Status — a product-parent additionally shows a low-stock pill when ANY
+    // variant is below its reorder level (§2)
     colHelper.display({
       id: "status",
       header: t("columns.status"),
       cell: ({ row }) => {
         const st = getEffectiveStatus(row.original);
         return (
-          <StatusPill
-            variant={STATUS_VARIANT[st]}
-            label={t(`status.${st.replace("-", "_")}`)}
-          />
+          <span className="inline-flex items-center gap-1">
+            <StatusPill
+              variant={STATUS_VARIANT[st]}
+              label={t(`status.${st.replace("-", "_")}`)}
+            />
+            {isProductAnyLowStock(row.original) && (
+              <StatusPill variant="credit" label={t("status.low_stock")} />
+            )}
+          </span>
         );
       },
     }),
@@ -851,6 +1171,7 @@ export function ItemsListPage() {
           <RowActionsContent>
             <RowActions
               item={row.original} can={can} t={t}
+              onEdit={handleEdit}
               onDuplicate={handleDuplicate}
               onToggleSuspend={handleToggleSuspend}
               onPrintBarcode={handlePrintBarcode}
@@ -861,7 +1182,7 @@ export function ItemsListPage() {
       ),
     }),
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [t, lang, categoryMap, uomMap, can, handleDuplicate, handleToggleSuspend, handlePrintBarcode]);
+  ], [t, lang, categoryMap, uomMap, can, handleEdit, handleDuplicate, handleToggleSuspend, handlePrintBarcode, expandedIds, toggleExpanded]);
 
   const table = useReactTable({
     data: filteredItems,
@@ -961,6 +1282,8 @@ export function ItemsListPage() {
                 setFilters={setFilters}
                 categories={data.categories}
                 warehouses={data.warehouses}
+                attributes={data.attributes}
+                attributeValues={data.attribute_values}
                 t={t}
                 lang={lang}
               />
@@ -988,6 +1311,8 @@ export function ItemsListPage() {
                     setFilters={setFilters}
                     categories={data.categories}
                     warehouses={data.warehouses}
+                    attributes={data.attributes}
+                    attributeValues={data.attribute_values}
                     t={t}
                     lang={lang}
                   />
@@ -1072,6 +1397,7 @@ export function ItemsListPage() {
                               isNumeric && "text-start",
                               isSortable && "cursor-pointer hover:text-foreground",
                               isHiddenOnMd && "hidden lg:table-cell",
+                              header.column.id === "expander" && "w-8 px-0",
                               header.column.id === "select" && "w-14 px-0 ps-4 pe-2",
                               header.column.id === "thumb" && "w-12",
                               header.column.id === "actions" && "w-10",
@@ -1092,34 +1418,56 @@ export function ItemsListPage() {
                 </TableHeader>
 
                 <TableBody>
-                  {table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() ? "selected" : undefined}
-                      className="border-b border-border last:border-0"
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        const isNumeric  = ["balance", "sale_price"].includes(cell.column.id);
-                        const isHiddenMd = ["category", "unit"].includes(cell.column.id);
+                  {table.getRowModel().rows.map((row) => {
+                    const item = row.original;
+                    const isExpanded = item.is_product_parent && expandedIds.has(item.id);
+                    const highlightVariantId = searchVariantHits[item.id];
+                    return (
+                      <Fragment key={row.id}>
+                        <TableRow
+                          data-state={row.getIsSelected() ? "selected" : undefined}
+                          className="border-b border-border last:border-0"
+                        >
+                          {row.getVisibleCells().map((cell) => {
+                            const isNumeric  = ["balance", "sale_price"].includes(cell.column.id);
+                            const isHiddenMd = ["category", "unit"].includes(cell.column.id);
 
-                        return (
-                          <TableCell
-                            key={cell.id}
-                            className={cn(
-                              "px-3 py-2.5 align-middle",
-                              isNumeric && "text-start tabular-nums",
-                              isHiddenMd && "hidden lg:table-cell",
-                              cell.column.id === "select" && "w-14 px-0 ps-4 pe-2",
-                              cell.column.id === "thumb"  && "w-12",
-                              cell.column.id === "actions" && "w-10",
-                            )}
-                          >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  ))}
+                            return (
+                              <TableCell
+                                key={cell.id}
+                                className={cn(
+                                  "px-3 py-2.5 align-middle",
+                                  isNumeric && "text-start tabular-nums",
+                                  isHiddenMd && "hidden lg:table-cell",
+                                  cell.column.id === "expander" && "w-8 px-0",
+                                  cell.column.id === "select" && "w-14 px-0 ps-4 pe-2",
+                                  cell.column.id === "thumb"  && "w-12",
+                                  cell.column.id === "actions" && "w-10",
+                                )}
+                              >
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+
+                        {/* DD-1 §2 — expanded variant sub-rows (not top-level rows) */}
+                        {isExpanded && (item.variants ?? []).map((v) => (
+                          <VariantSubRow
+                            key={v.id}
+                            variant={v}
+                            attributeOrder={item.attributes_used ?? Object.keys(v.attrs)}
+                            attributeValues={data?.attribute_values ?? []}
+                            colSpan={row.getVisibleCells().length}
+                            lang={lang}
+                            t={t}
+                            highlighted={v.id === highlightVariantId}
+                            onEdit={(variant) => setEditVariantTarget({ item, variant })}
+                          />
+                        ))}
+                      </Fragment>
+                    );
+                  })}
                 </TableBody>
               </Table>
 
@@ -1148,10 +1496,14 @@ export function ItemsListPage() {
                   uomMap={uomMap}
                   can={can}
                   t={t}
+                  onEdit={handleEdit}
                   onDuplicate={handleDuplicate}
                   onToggleSuspend={handleToggleSuspend}
                   onPrintBarcode={handlePrintBarcode}
                   onDeleteRequest={setDeleteTarget}
+                  expanded={expandedIds.has(row.original.id)}
+                  onToggleExpand={() => toggleExpanded(row.original.id)}
+                  attributeValues={data?.attribute_values ?? []}
                 />
               ))}
               {/* Mobile pagination note */}
@@ -1191,11 +1543,12 @@ export function ItemsListPage() {
       <ConfirmDialog
         open={deleteTarget !== null}
         onOpenChange={(o) => !o && setDeleteTarget(null)}
-        title={t("items.delete_title")}
-        description={t("items.delete_desc")}
+        title={deleteTarget && itemHasMovements(deleteTarget) ? t("items.cant_delete") : t("items.delete_title")}
+        description={deleteTarget && itemHasMovements(deleteTarget) ? t("items.cant_delete") : t("items.delete_desc")}
+        cancelLabel={deleteTarget && itemHasMovements(deleteTarget) ? t("actions.close") : t("actions.cancel")}
         confirmTone="danger"
         confirmLabel={t("actions.confirm_delete")}
-        onConfirm={confirmDelete}
+        onConfirm={deleteTarget && itemHasMovements(deleteTarget) ? undefined : confirmDelete}
       />
 
       {/* ── Delete confirm (bulk) ─────────────────────────────── */}
@@ -1207,6 +1560,20 @@ export function ItemsListPage() {
         confirmTone="danger"
         confirmLabel={t("actions.confirm_delete")}
         onConfirm={confirmBulkDelete}
+      />
+
+      {/* ── Variant quick-edit drawer (DD-1 §3.6) ─────────────── */}
+      <VariantQuickEditDrawer
+        open={editVariantTarget !== null}
+        onOpenChange={(o) => !o && setEditVariantTarget(null)}
+        item={editVariantTarget?.item ?? null}
+        variant={editVariantTarget?.variant ?? null}
+        priceLists={data?.price_lists ?? []}
+        attributeValues={data?.attribute_values ?? []}
+        lang={lang}
+        canEdit={can("inventory.item.variants")}
+        isOffline={isOffline}
+        onSave={handleSaveVariantOverride}
       />
     </div>
   );

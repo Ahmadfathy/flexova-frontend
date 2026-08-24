@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { mockFetch, loadFixture } from "@/lib/mock/client";
 import type { InventoryFixture } from "./types";
 
@@ -9,10 +9,67 @@ const EMPTY: InventoryFixture = {
     mock_states: [],
   },
   tax_types: [], uoms: [], categories: [], warehouses: [], branches: [],
-  price_lists: [], items: [], ledger: [], stocktakes: [], transfers: [],
+  price_lists: [], items: [], attributes: [], attribute_values: [], ledger: [], stocktakes: [], transfers: [],
   adjustments: [], low_stock: [], import_template_columns: [],
   import_sample_result: { valid: 0, errors: [] }, barcode_templates: [],
 };
+
+/**
+ * DD-1 — module-level shared store, not per-component state.
+ *
+ * Reality: DD-1 is the first Inventory flow that creates data on one page
+ * (QuickAddModal's has_variants toggle) and then navigates to a *different*
+ * route (the new Item Editor) that expects to see it, and later navigates
+ * back to the Items list expecting to see the save. Every consumer used to
+ * call `loadFixture()` into its own local `useState`, so a mutation made in
+ * one mounted component was invisible to any other — harmless while every
+ * mutation (duplicate/suspend/delete) stayed within the one page that made
+ * it, but silently discarded across a route change. Sharing the fixture at
+ * module scope (subscribed via useSyncExternalStore-style listeners) fixes
+ * that without changing the public useItems() API any screen already uses.
+ */
+let sharedData: InventoryFixture | null = null;
+let sharedLoading = true;
+let sharedError: string | null = null;
+let sharedOffline = false;
+let hasLoadedOnce = false;
+const listeners = new Set<() => void>();
+
+function notify() {
+  listeners.forEach((l) => l());
+}
+
+function currentMockState(): string {
+  return new URLSearchParams(window.location.search).get("mock") ?? "default";
+}
+
+async function load() {
+  sharedLoading = true;
+  sharedError = null;
+  sharedOffline = false;
+  notify();
+
+  try {
+    const fixture = await mockFetch<InventoryFixture>(() => loadFixture<InventoryFixture>("inventory"), EMPTY);
+    sharedData = fixture;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "unknown";
+    if (msg === "mock_offline") {
+      sharedOffline = true;
+      try {
+        sharedData = await loadFixture<InventoryFixture>("inventory");
+      } catch {
+        sharedData = EMPTY;
+      }
+    } else {
+      sharedError = msg;
+    }
+  } finally {
+    sharedLoading = false;
+    hasLoadedOnce = true;
+    notify();
+  }
+}
 
 interface UseItemsResult {
   data: InventoryFixture | null;
@@ -21,46 +78,38 @@ interface UseItemsResult {
   isOffline: boolean;
   reload: () => void;
   /** Apply a local (mock-layer) mutation to the loaded data without refetching. */
-  mutate: Dispatch<SetStateAction<InventoryFixture | null>>;
+  mutate: (updater: InventoryFixture | ((prev: InventoryFixture | null) => InventoryFixture | null)) => void;
 }
 
 export function useItems(): UseItemsResult {
-  const [data, setData]       = useState<InventoryFixture | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
-  const [isOffline, setIsOffline] = useState(false);
+  const [, forceRender] = useReducer((n: number) => n + 1, 0);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    setIsOffline(false);
-
-    try {
-      const fixture = await mockFetch<InventoryFixture>(
-        () => loadFixture<InventoryFixture>("inventory"),
-        EMPTY
-      );
-      setData(fixture);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "unknown";
-      if (msg === "mock_offline") {
-        setIsOffline(true);
-        // Simulate reading from local cache (load fixture directly)
-        try {
-          const cached = await loadFixture<InventoryFixture>("inventory");
-          setData(cached);
-        } catch {
-          setData(EMPTY);
-        }
-      } else {
-        setError(msg);
-      }
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    listeners.add(forceRender);
+    // Re-fetch on mount only for a first-ever load or an explicit `?mock=`
+    // simulation (loading/empty/error/offline) — those must always run so
+    // per-page testing of the 5 mock states keeps working. A plain
+    // navigation back to an already-loaded screen reuses the shared data
+    // instead of overwriting it with the pristine fixture.
+    if (!hasLoadedOnce || currentMockState() !== "default") {
+      load();
     }
+    return () => {
+      listeners.delete(forceRender);
+    };
+  }, [forceRender]);
+
+  const mutate = useCallback((updater: InventoryFixture | ((prev: InventoryFixture | null) => InventoryFixture | null)) => {
+    sharedData = typeof updater === "function"
+      ? (updater as (prev: InventoryFixture | null) => InventoryFixture | null)(sharedData)
+      : updater;
+    notify();
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  const reload = useCallback(() => {
+    hasLoadedOnce = false;
+    load();
+  }, []);
 
-  return { data, loading, error, isOffline, reload: load, mutate: setData };
+  return { data: sharedData, loading: sharedLoading, error: sharedError, isOffline: sharedOffline, reload, mutate };
 }
