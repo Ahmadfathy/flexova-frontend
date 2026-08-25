@@ -7,17 +7,15 @@
  * status is ALWAYS derived read-time from that balance + today's date — never
  * stored. `stock_batch.status` in the fixture only ever holds `active|hold`.
  *
- * Reality correction (same shape as DD-1's kickoff-doc gap, inventory_dd1_variants
- * memory): the DD-2 fixture bundle models every batch-tracked item with its own
- * `demo_variants` row (`var_para500` etc.), separate from the item id, mirroring
- * the backend's `item_variant.variant_of` defaulting to `item_id` for simple
- * items (DD-1 backend §"New: item_variant"). This app's DD-1 frontend only ever
- * materializes an explicit `variants[]` array for `is_product_parent` items, so
- * there is no separate variant row to attach a batch to for a simple item.
- * Rather than inventing a parallel "default variant" entity, a batch's carrier
- * id is simply the DD-1 product-variant id when the item has one, else the
- * item's own id — see `batchCarrierId`. The merged fixture already remaps every
- * `var_*` reference to its owning `itm_*` id on this basis.
+ * Balance carrier (§3 of the refined types spec): `coalesce(variant_id, item_id)`.
+ * Every `StockBatch` always records its owning `item_id`; `variant_id` is set
+ * only when the batch belongs to a real DD-1 product-variant (this app's DD-1
+ * frontend only ever materializes an explicit `variants[]` array for
+ * `is_product_parent` items). A simple item's batches carry `variant_id: null`
+ * and ride on `item_id` directly — no phantom "default variant" entity is
+ * invented. `balanceCarrier()` is the single resolver; batch identity/merge key
+ * and the selection engine both key off its result, never off `variant_id`
+ * unconditionally.
  */
 import type { InventoryFixture, InventoryItem, InventoryLedgerRow, StockBatch } from "./types";
 
@@ -31,13 +29,21 @@ export function effectiveNearExpiryDays(
   return item.near_expiry_days ?? globalDays;
 }
 
-/** The id batches attach to for this item: its DD-1 variant when it has one, else the item itself. */
+/** The balance-carrier resolver: `coalesce(variant_id, item_id)`. Works on any
+ *  `{item_id, variant_id?}`-shaped value — an existing `StockBatch` row, or a
+ *  target `{item_id: item.id, variant_id: ...}` when creating/querying one. */
+export function balanceCarrier(target: { item_id: string; variant_id?: string | null }): string {
+  return target.variant_id ?? target.item_id;
+}
+
+/** Convenience wrapper over `balanceCarrier` for the (item, variantId?) shape used across the UI:
+ *  the carrier id batches attach to for this item — its DD-1 variant when one is given, else the item itself. */
 export function batchCarrierId(item: Pick<InventoryItem, "id">, variantId?: string | null): string {
-  return variantId ?? item.id;
+  return balanceCarrier({ item_id: item.id, variant_id: variantId ?? null });
 }
 
 export function getCarrierBatches(carrierId: string, batches: StockBatch[]): StockBatch[] {
-  return batches.filter((b) => b.variant_id === carrierId);
+  return batches.filter((b) => balanceCarrier(b) === carrierId);
 }
 
 export function batchMovements(batchId: string, ledger: InventoryLedgerRow[]): InventoryLedgerRow[] {
@@ -94,7 +100,7 @@ export function findMergeBatch(
 ): StockBatch | null {
   return (
     batches.find(
-      (b) => b.variant_id === carrierId && b.lot_number === lotNumber && (b.expiry_date ?? null) === (expiryDate ?? null)
+      (b) => balanceCarrier(b) === carrierId && b.lot_number === lotNumber && (b.expiry_date ?? null) === (expiryDate ?? null)
     ) ?? null
   );
 }
@@ -145,7 +151,9 @@ export function buildReceipt(
   const merged = findMergeBatch(input.carrierId, input.lotNumber, input.expiryDate, existingBatches);
   const batch: StockBatch = merged ?? {
     id: `bat_${input.carrierId}_${input.lotNumber}_${Date.now()}`.replace(/[^a-z0-9_]/gi, ""),
-    variant_id: input.carrierId,
+    item_id: itemId,
+    // only a real DD-1 product-variant id belongs here — never a duplicate of item_id (balanceCarrier resolves that case via item_id alone).
+    variant_id: input.carrierId !== itemId ? input.carrierId : null,
     lot_number: input.lotNumber,
     expiry_date: input.expiryDate,
     mfg_date: input.mfgDate,

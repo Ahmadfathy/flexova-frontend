@@ -9,7 +9,7 @@
 
 - Feature flag: **`inventory.batch_expiry`** — registered in `apps/erp/src/lib/flags.ts` (toggle-able; not silent-default).
 - All batch UI is **feature-flag-aware**: when the flag is off, or when an item has `tracks_batch=false`, every screen behaves exactly as DD-1 (no batch fields, no batch selection, receipts/opening work without batch).
-- **Golden rule preserved:** balance is always `Σ stock_movement.qty`, now per **(variant × warehouse × batch)**. No editable balance field anywhere in the UI.
+- **Golden rule preserved:** balance is always `Σ stock_movement.qty`, now per **(carrier × warehouse × batch)** where `carrier = coalesce(variant_id, item_id)` (simple items ride on item_id — no phantom default variant). No editable balance field anywhere in the UI.
 
 ---
 
@@ -17,7 +17,7 @@
 
 | Entity | User-facing meaning | Key fields shown |
 |---|---|---|
-| `stock_batch` | تشغيلة / Lot | lot_number, expiry_date (nullable), mfg_date, supplier_ref, effective status, per-warehouse qty |
+| `stock_batch` | تشغيلة / Lot (attached to the item's balance carrier = variant for variant items, item for simple items) | lot_number, expiry_date (nullable), mfg_date, supplier_ref, effective status, per-warehouse qty |
 | item toggles | tracking config on the item | `tracks_batch`, `requires_expiry`, `near_expiry_days` |
 | movement | now carries `batch_id` | existing ledger + batch column |
 
@@ -52,7 +52,7 @@ List columns: Lot · Expiry · Mfg · Supplier ref · Warehouse balances (chips 
 ### 2.3 Stock-in / Receipt modal (extends DD-1 receipt)
 When the item `tracks_batch=on`, add batch fields to each receipt line:
 - `lot_number` (required), `expiry_date` (required iff `requires_expiry=on`), `mfg_date`, `supplier_ref`, `cost`, `qty`, `warehouse`.
-- **Merge preview:** if `(variant + lot + expiry)` matches an existing batch, show inline note `inventory.batch.merge_notice` ("سيُضاف إلى تشغيلة موجودة") and the resulting new balance. No new batch is created; a receipt movement is appended.
+- **Merge preview:** if `(carrier + lot + expiry)` matches an existing batch (carrier = coalesce(variant_id, item_id)), show inline note `inventory.batch.merge_notice` ("سيُضاف إلى تشغيلة موجودة") and the resulting new balance. No new batch is created; a receipt movement is appended.
 - Flag off / item not tracked → line renders exactly as DD-1 (no batch fields).
 
 ### 2.4 Opening balances (per batch)
@@ -104,13 +104,13 @@ Dimensions follow the Core model (action × scope: all/branch/warehouse). Defaul
 1. Flag off → zero batch UI anywhere; DD-1 screens unchanged.
 2. Item with `tracks_batch=on, requires_expiry=on` → receipt line **blocks save** without expiry_date (client-side + server 422).
 3. Item with `requires_expiry=off` (lot-only) → receipt saves without expiry; issue uses **FIFO by receipt date**.
-4. Receiving `(variant+lot+expiry)` that already exists → **no new batch row**; balance accumulates; merge notice shown.
+4. Receiving `(carrier+lot+expiry)` that already exists → **no new batch row**; balance accumulates; merge notice shown.
 5. Issue on expiry-tracked item auto-selects **nearest-expiry active** batch; expired & hold batches never auto-picked.
 6. Manual pick hidden without `inventory.batch.manual_pick`; picking expired/hold requires `issue_override` + reason; both audit-logged.
 7. Status badges render correctly for all six states using **existing tokens only**; parent rollup lights up from any variant/batch; stacks with ETA-missing badge.
 8. `near_expiry` window respects item override then global (coalesce); milk item (override 7) and paracetamol (global 30) both classify per fixtures.
 9. Quarantine moves qty to `wh_damaged` (balance reconciles); write-off zeroes it; batch remains in trace.
-10. Every screen’s displayed balance equals `Σ stock_movement.qty` for its (variant×warehouse×batch) — no field edits.
+10. Every screen’s displayed balance equals `Σ stock_movement.qty` for its (carrier×warehouse×batch), carrier = coalesce(variant_id, item_id) — no field edits.
 
 ---
 

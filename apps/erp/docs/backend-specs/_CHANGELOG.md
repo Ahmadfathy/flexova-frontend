@@ -22,13 +22,14 @@
 ## 2026-08 — Inventory DD-2: Batch / Expiry
 **Changed:** `modules/inventory.backend.md` — added Feature DD-2.
 **What:**
-- New table: `stock_batch` (variant_id, lot_number, expiry_date nullable, mfg_date, supplier_ref, status `active|hold` only).
-- Extended: `item` (+`tracks_batch`, `requires_expiry`, `near_expiry_days`), `stock_movement` (+nullable `batch_id`, widened `type` enum with `receipt`/`issue`/`transfer_in`/`transfer_out`), balance view (+`batch_id` in grouping key).
-- New endpoints under `/inventory/`: `items/:id/batches` (list), `.../receive`, `.../:batch_id/hold` (+release), `.../:batch_id/quarantine`, `.../:batch_id/write-off`, `.../:batch_id/trace`, and an `issue` call that runs the new batch-selection engine or accepts a manual override allocation.
+- New table: `stock_batch` (`item_id` NOT NULL, `variant_id` nullable, identity/merge key = `(carrier_id, lot_number, expiry_date)` where `carrier_id = coalesce(variant_id, item_id)`, status `active|hold` only).
+- Extended: `item` (+`tracks_batch`, `requires_expiry`, `near_expiry_days`), `stock_movement` (+nullable `batch_id`, widened `type` enum with `receipt`/`issue`/`transfer_in`/`transfer_out`), balance now keyed `(carrier_id × warehouse_id × batch_id)`, `inventory_settings` (+`global_near_expiry_days`).
+- New endpoints under `/inventory/`: `carriers/:carrierId/batches` (list), `batches`, `stock-in`, `opening-balances`, `adjustments`, `issue` (auto via the selection engine, or manual), `batches/:id/hold`, `batches/:id/quarantine`, `write-off`, `batches/expiring`, `batches/:id/trace`.
 - New permissions: `inventory.batch.manual_pick`, `inventory.batch.issue_override`, `inventory.batch.hold`, `inventory.batch.quarantine`.
 **Why:**
-- Deepens DD-1's balance carrier one level further — `(variant × warehouse)` → `(variant × warehouse × batch)` — same golden rule, no schema surprise for GRN/Purchasing to plug into later (a receipt is just another `receipt`-typed movement).
+- Deepens DD-1's balance carrier one level further — `(carrier × warehouse)` → `(carrier × warehouse × batch)` — same golden rule, no schema surprise for GRN/Purchasing to plug into later (a receipt is just another `receipt`-typed movement).
+- **Corrected per the live build:** an earlier draft required `variant_id NOT NULL` with a "reserved default variant" for simple items. Rejected — it forces a synthetic row with no real-world counterpart for every simple item, against "data reflects reality." Settled on `carrier_id = coalesce(variant_id, item_id)`, resolved by one function every consumer (Sales, Purchasing, DD-3 costing, Reports, the batch engine) reads without ever branching on simple-vs-variant.
 - FEFO/FIFO auto-selection (excluding hold/expired) is the core loss-prevention value; manual override stays available behind a stricter permission + audit reason for recall/specific-lot cases.
 - `expired`/`near_expiry`/`depleted` are derived read-time, never stored, to avoid a background job and any drift between stored status and actual balance/date.
 - Frontend build note: batch tracking currently only exercised on simple (non-`is_product_parent`) items — no fixture combines a DD-1 product-parent with DD-2 batches yet, so the per-variant batch selector isn't built; the Issue/Adjustment flows are self-contained inside Inventory (no Sales/POS integration exists yet to call them). Both disclosed as non-blocking scope trims in `inventory.frontend.md` DD-2 §5.
-- Sets up DD-3 (FIFO/FEFO Costing), which consumes this feature's batch-selection output to build cost layers — no costing logic added here (Pin B: valuation stays in DD-3/Accounting; the expired-sale hard-block stays in Sales/POS).
+- Sets up DD-3 (FIFO/FEFO Costing), which consumes this feature's batch-selection output to build cost layers — no costing logic added here (Pin A: cost stays on the movement, not the batch; Pin B: the expired-sale hard-block stays in Sales/POS).

@@ -12,7 +12,7 @@ Implement DD-2 (Batch/Expiry) for Inventory, building on DD-1 (variants = balanc
 
 2. **Permissions** — add to `apps/erp/src/lib/permissions.ts`: `inventory.batch.manual_pick`, `inventory.batch.issue_override`, `inventory.batch.hold`, `inventory.batch.quarantine`.
 
-3. **Types** — in `apps/erp/src/features/inventory/types.ts`: `StockBatch` (id, variant_id, lot_number, expiry_date|null, mfg_date|null, supplier_ref|null, status:'active'|'hold', hold_reason|null); extend movement type with `batch_id?: string|null`; extend item type with `tracks_batch`, `requires_expiry`, `near_expiry_days?`.
+3. **Types** — in `apps/erp/src/features/inventory/types.ts`: `StockBatch` (id, item_id, variant_id?: string|null, lot_number, expiry_date|null, mfg_date|null, supplier_ref|null, status:'active'|'hold', hold_reason|null); extend movement type with `batch_id?: string|null`; extend item type with `tracks_batch`, `requires_expiry`, `near_expiry_days?`. **Balance carrier = `coalesce(variant_id, item_id)`** (simple items ride on item_id — no phantom default variant). Add/reuse a `balanceCarrier()` resolver; batch identity/merge key + selection engine key on the carrier, never on variant unconditionally.
 
 4. **Fixtures** — merge `apps/erp/docs/deep-dive/inventory/fixtures/Inventory.fixtures.batch.json` into `apps/erp/src/lib/mock/fixtures/Inventory.fixtures.json` (add `demo_items`, `demo_variants`, `stock_batch`, `stock_movement_batch`, `settings.global_near_expiry_days`). Keep `_flag` edge-case rows.
 

@@ -88,8 +88,12 @@ export interface InventoryItem {
  *  never stored here — always `Σ ledger rows with this batch_id` (golden rule). */
 export interface StockBatch {
   id: string;
-  /** DD-1 product-variant id when the item has one, else the item's own id — see batches.ts `batchCarrierId`. */
-  variant_id: string;
+  /** The owning item — always set, including for DD-1 product-parent items. */
+  item_id: string;
+  /** Set only when this batch belongs to a real DD-1 product-variant; null/absent for a simple item.
+   *  Balance carrier = `coalesce(variant_id, item_id)` — see batches.ts `balanceCarrier()`. No phantom
+   *  "default variant" is invented for simple items. */
+  variant_id?: string | null;
   lot_number: string;
   expiry_date: string | null;
   mfg_date: string | null;

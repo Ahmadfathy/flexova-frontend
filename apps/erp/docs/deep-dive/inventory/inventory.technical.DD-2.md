@@ -6,7 +6,16 @@
 
 ## القرار 1 — نموذج الـ batch + حامل الرصيد + الهوية
 
-**اتعمل:** كيان مستقل `stock_batch` فيه `variant_id`, `lot_number`, `expiry_date (nullable)`, `mfg_date`, `supplier_ref`. حامل الرصيد اتعمّق من DD-1 من `(variant × warehouse)` لـ **`(variant × warehouse × batch)`**. الرصيد = `Σ stock_movement.qty` per batch (القاعدة الذهبية ثابتة). الهوية / merge key = `(variant + lot + expiry)` — نفس اللوط/الصلاحية لو اتستلم تاني → **نفس الصف**، الرصيد يتراكم بحركة receipt جديدة.
+**اتعمل:** كيان مستقل `stock_batch` فيه `item_id (NOT NULL)`, `variant_id (nullable)`, `lot_number`, `expiry_date (nullable)`, `mfg_date`, `supplier_ref`. حامل الرصيد اتعمّق من DD-1 لـ **`(carrier × warehouse × batch)`** حيث **`carrier_id = coalesce(variant_id, item_id)`**. الرصيد = `Σ stock_movement.qty` per batch (القاعدة الذهبية ثابتة). الهوية / merge key = **`(carrier + lot + expiry)`** — نفس اللوط/الصلاحية لو اتستلم تاني → **نفس الصف**، الرصيد يتراكم بحركة receipt جديدة. (شغّال بنفس الطريقة للصنف البسيط والمتنوّع.)
+
+### تصحيح الـ carrier (من الـ build الحيّ — decision memory)
+**السياق:** الـ spec الأصلي كتب `variant_id NOT NULL`. الـ live build كشف إن ده غلط: DD-1 نفسه بيخلّي الصنف البسيط يركب على `item_id` على `stock_movement`، فإجبار variant للـ batch كان هيتطلّب **default variant وهمي** لكل صنف بسيط.
+
+**القرار المعتمد:** الـ carrier = `coalesce(variant_id, item_id)`. الصنف البسيط → `item_id` و`variant_id = NULL` (بلا كيان وهمي). المتنوّع → `variant_id`.
+
+**البديل المرفوض:** synthetic default variant لكل صنف (مدرسة Odoo) → schema موحّد بعمود واحد `NOT NULL`. **ليه اترفض:** بيضيف **phantom row** لكل صنف بسيط بلا مقابل واقعي — بيضرب مبدأي «البساطة المتطرفة» و«الداتا تعكس الواقq». علبة الباراسيتامول هي المنتج نفسه، مش «منتج له نسخة واحدة مخبّاة».
+
+**كيف اتجنّبنا تسرّب الـ polymorphism:** resolver واحد `balanceCarrier = variant_id ?? item_id`، وكل مستهلِك (Sales/Purchasing/DD-3/Reports/batch engine) بيقرا `carrier_id` **من غير** ما يفرّع «بسيط ولا متنوّع». ده بيدّي نفس التوحيد بتاع مدرسة الـ default-variant من غير الصفوف الوهمية. الـ ID namespaces متمايزة (`itm_` مقابل `var_`) فالـ coalesce resolver نضيف بلا تصادم.
 
 **البديل المرفوض:** حطّ الـ batch كأعمدة denormalized على الحركة (lot/expiry على كل صف movement). **ليه اترفض:** بيكرّر الـ expiry على كل حركة، بيصعّب الـ traceability والـ hold على مستوى الدفعة، وبيخلّي أي تعديل على بيانات الدفعة يمشي على آلاف الصفوف. الكيان المستقل بيدّينا مرجع واحد للدفعة.
 
@@ -65,11 +74,11 @@
 ---
 
 ## تثبيتان صريحان
-- **(أ)** الدفعة تـ merge على `(variant+lot+expiry)`، والتكلفة تفضل على الحركة (cost layers في DD-3).
+- **(أ)** الدفعة تـ merge على `(carrier+lot+expiry)` حيث `carrier = coalesce(variant_id, item_id)`، والتكلفة تفضل على الحركة (cost layers في DD-3).
 - **(ب)** الـ hard-block لبيع المنتهي في Sales/POS مش في Inventory.
 
 ## ملاحظة تنفيذية (NULL في UNIQUE)
-Postgres بيعتبر الـ NULLs متمايزة، فالـ `UNIQUE(variant,lot,expiry)` مبيمنعش تكرار الـ lot-only. الحل: partial unique indexes (واحد `WHERE expiry IS NULL` وواحد `WHERE expiry IS NOT NULL`).
+Postgres بيعتبر الـ NULLs متمايزة، فالـ `UNIQUE(carrier,lot,expiry)` مبيمنعش تكرار الـ lot-only. الحل: partial unique indexes على الـ carrier (واحد `WHERE expiry IS NULL` وواحد `WHERE expiry IS NOT NULL`). لو الـ `carrier_id` عمود generated → index مباشر؛ وإلا index على تعبير `coalesce(variant_id, item_id)`.
 
 ---
 

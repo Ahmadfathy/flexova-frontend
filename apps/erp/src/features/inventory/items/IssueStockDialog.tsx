@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import type { InventoryFixture, InventoryItem, InventoryWarehouse } from "./types";
 import {
-  batchCarrierId, selectBatchesForIssue, buildIssueMovements, effectiveNearExpiryDays,
+  batchCarrierId, getCarrierBatches, selectBatchesForIssue, buildIssueMovements, effectiveNearExpiryDays,
   type BatchAllocation,
 } from "./batches";
 import { BatchPickerModal } from "./BatchPickerModal";
@@ -40,7 +40,7 @@ export function IssueStockDialog({
 }: IssueStockDialogProps) {
   const { t } = useTranslation("inventory");
   const carrierId = batchCarrierId(item);
-  const batches = (data.stock_batch ?? []).filter((b) => b.variant_id === carrierId);
+  const batches = getCarrierBatches(carrierId, data.stock_batch ?? []);
   const nearDays = effectiveNearExpiryDays(item, data.settings?.global_near_expiry_days ?? 30);
 
   const [warehouseId, setWarehouseId] = useState("");

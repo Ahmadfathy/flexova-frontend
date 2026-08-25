@@ -23,7 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 
 import type { InventoryFixture, InventoryItem, InventoryWarehouse } from "./types";
-import { buildReceipt, findMergeBatch, batchWarehouseBalances, batchCarrierId } from "./batches";
+import { buildReceipt, findMergeBatch, batchWarehouseBalances, batchCarrierId, getCarrierBatches } from "./batches";
 
 interface ReceiptModalProps {
   open: boolean;
@@ -38,7 +38,7 @@ interface ReceiptModalProps {
 export function ReceiptModal({ open, onOpenChange, item, warehouses, data, lang, mutate }: ReceiptModalProps) {
   const { t } = useTranslation("inventory");
   const carrierId = batchCarrierId(item);
-  const existingBatches = (data.stock_batch ?? []).filter((b) => b.variant_id === carrierId);
+  const existingBatches = getCarrierBatches(carrierId, data.stock_batch ?? []);
 
   const [warehouseId, setWarehouseId] = useState("");
   const [lot, setLot] = useState("");

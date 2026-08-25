@@ -1852,7 +1852,8 @@
   "stock_batch": [
     {
       "id": "bat_para_A",
-      "variant_id": "itm_para500",
+      "item_id": "itm_para500",
+      "variant_id": null,
       "lot_number": "PARA-2405",
       "expiry_date": "2027-06-30",
       "mfg_date": "2025-06-01",
@@ -1863,7 +1864,8 @@
     },
     {
       "id": "bat_para_B",
-      "variant_id": "itm_para500",
+      "item_id": "itm_para500",
+      "variant_id": null,
       "lot_number": "PARA-2312",
       "expiry_date": "2026-09-10",
       "mfg_date": "2024-12-01",
@@ -1874,7 +1876,8 @@
     },
     {
       "id": "bat_para_C",
-      "variant_id": "itm_para500",
+      "item_id": "itm_para500",
+      "variant_id": null,
       "lot_number": "PARA-2308",
       "expiry_date": "2026-08-01",
       "mfg_date": "2024-08-01",
@@ -1885,7 +1888,8 @@
     },
     {
       "id": "bat_para_D",
-      "variant_id": "itm_para500",
+      "item_id": "itm_para500",
+      "variant_id": null,
       "lot_number": "PARA-2210",
       "expiry_date": "2026-10-31",
       "mfg_date": "2024-10-01",
@@ -1896,7 +1900,8 @@
     },
     {
       "id": "bat_amox_A",
-      "variant_id": "itm_amox",
+      "item_id": "itm_amox",
+      "variant_id": null,
       "lot_number": "AMOX-2401",
       "expiry_date": "2027-01-31",
       "mfg_date": "2025-01-15",
@@ -1906,7 +1911,8 @@
     },
     {
       "id": "bat_amox_recall",
-      "variant_id": "itm_amox",
+      "item_id": "itm_amox",
+      "variant_id": null,
       "lot_number": "AMOX-2350",
       "expiry_date": "2026-12-31",
       "mfg_date": "2024-11-01",
@@ -1917,7 +1923,8 @@
     },
     {
       "id": "bat_milk_A",
-      "variant_id": "itm_milk",
+      "item_id": "itm_milk",
+      "variant_id": null,
       "lot_number": "JUH-0815",
       "expiry_date": "2026-08-28",
       "mfg_date": "2026-08-08",
@@ -1928,7 +1935,8 @@
     },
     {
       "id": "bat_milk_B",
-      "variant_id": "itm_milk",
+      "item_id": "itm_milk",
+      "variant_id": null,
       "lot_number": "JUH-0810",
       "expiry_date": "2026-08-20",
       "mfg_date": "2026-08-01",
@@ -1939,7 +1947,8 @@
     },
     {
       "id": "bat_oldmilk",
-      "variant_id": "itm_milk",
+      "item_id": "itm_milk",
+      "variant_id": null,
       "lot_number": "JUH-0705",
       "expiry_date": "2026-07-15",
       "mfg_date": "2026-06-25",
@@ -1950,7 +1959,8 @@
     },
     {
       "id": "bat_omron_A",
-      "variant_id": "itm_omron",
+      "item_id": "itm_omron",
+      "variant_id": null,
       "lot_number": "OMR-BATCH-01",
       "expiry_date": null,
       "mfg_date": "2026-01-10",
@@ -1961,7 +1971,8 @@
     },
     {
       "id": "bat_omron_B",
-      "variant_id": "itm_omron",
+      "item_id": "itm_omron",
+      "variant_id": null,
       "lot_number": "OMR-BATCH-02",
       "expiry_date": null,
       "mfg_date": "2026-05-20",

@@ -1,7 +1,7 @@
 {
   "_dd": "DD-2 Batch/Expiry — additive fixtures",
   "_today": "2026-08-24",
-  "_note": "Append-only. Demo items are self-contained (pharma/food/device) to showcase batch/expiry without touching v1 items. Balance is ALWAYS Σ stock_movement.qty per (variant × warehouse × batch). status stored = active|hold; expired/near_expiry/depleted are DERIVED at read time.",
+  "_note": "Append-only. Demo items are self-contained (pharma/food/device). Balance is ALWAYS Σ stock_movement.qty per (carrier × warehouse × batch), carrier = coalesce(variant_id, item_id) — simple items ride on item_id, variant items on variant_id. status stored = active|hold; expired/near_expiry/depleted DERIVED read-time.",
   "settings": {
     "global_near_expiry_days": 30
   },
