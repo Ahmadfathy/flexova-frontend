@@ -9,7 +9,7 @@
 
 **يعتمد على (depends on):**
 - **Core shell** — hard (التنقّل/الـ layout/الـ appearance/i18n).
-- **Permissions** — hard (كل إجراء محكوم بدور + نطاق branch/warehouse؛ الصلاحيات الجديدة: `inventory.attribute.manage`, `inventory.item.variants`, `inventory.item.opening`).
+- **Permissions** — hard (كل إجراء محكوم بدور + نطاق branch/warehouse؛ الصلاحيات الجديدة: `inventory.attribute.manage`, `inventory.item.variants`, `inventory.item.opening`, وبعد DD-2: `inventory.batch.manual_pick`, `inventory.batch.issue_override`, `inventory.batch.hold`, `inventory.batch.quarantine`).
 - لا يعتمد على أي موديول تشغيلي آخر (هو الأساس).
 
 **يعتمد عليه (depended on by):**
@@ -19,7 +19,7 @@
 - **CRM** — soft (قوائم الأسعار المُسندة للعملاء).
 - **POS** — hard (يقرأ الأصناف/الأرصدة/الـ variants، offline-first).
 - **E-commerce** — hard (كتالوج المنتجات = product parents + variants + صور).
-- **Healthcare** — hard (مستلزمات طبية؛ Batch/Expiry لاحقاً).
+- **Healthcare** — hard (مستلزمات طبية؛ Batch/Expiry متاح من DD-2).
 - **Manufacturing** — hard لاحقاً (BOM فوق الأصناف/الـ variants).
 
 **أضيق مجموعة تشغّله (minimal viable bundle):**
@@ -27,7 +27,8 @@
 
 **اعتماديات داخلية بين ميزات التعميق (feature-level):**
 - Variants (DD-1) → أساس تبني عليه: Batch/Expiry · Serial · Reserved/In-transit (كلها تركب فوق balance-carrier = variant).
-- FIFO/FEFO (DD-3) ← يعتمد على Batch/Expiry (DD-2) لمنطق FEFO.
+- **Batch/Expiry (DD-2) — مبني.** حامل الرصيد اتعمّق لـ `(variant × warehouse × batch)`؛ بنى محرّك اختيار الدفعة (`selectBatchesForIssue`, FEFO/FIFO) اللي DD-3 هيستهلك ناتجه.
+- FIFO/FEFO Costing (DD-3) ← يعتمد على Batch/Expiry (DD-2، مبني) لمحرّك الاختيار؛ بيضيف طبقة التكلفة بس (مفيش costing جوّه DD-2).
 - Qty-break tiers (DD-6) ← يعتمد على price lists (v1) + variant pricing (DD-1).
 - Bundles/Kits (DD-12) ← يعتمد على item/variant model + balance.
 

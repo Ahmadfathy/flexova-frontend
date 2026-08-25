@@ -65,6 +65,9 @@ import type {
   InventoryAttributeValue, InventoryVariant, ItemStatus, ItemFilters,
 } from "./types";
 import { variantBalance as getVariantBalance, comboLabel, isEtaMissing, effectiveEtaCode } from "./variants";
+import { itemBatchAlert } from "./batches";
+import { BatchWarningFlag } from "./BatchStatusBadge";
+import { isFlagEnabled } from "@/lib/flags";
 
 /* ─── Module-level helpers ──────────────────────────────────── */
 
@@ -284,7 +287,7 @@ function RowActions({
 function ItemCard({
   item, selected, onToggle, lang, categoryMap, uomMap, can, t,
   onEdit, onDuplicate, onToggleSuspend, onPrintBarcode, onDeleteRequest,
-  expanded, onToggleExpand, attributeValues, etaEnabled,
+  expanded, onToggleExpand, attributeValues, etaEnabled, batchAlert,
 }: {
   item: InventoryItem;
   selected: boolean;
@@ -303,6 +306,8 @@ function ItemCard({
   onToggleExpand: () => void;
   attributeValues: InventoryAttributeValue[];
   etaEnabled: boolean;
+  /** DD-2 §2.8 — rollup batch alert ("parent learns from any batch"), stacks with EtaMissingFlag. */
+  batchAlert?: "expired" | "near_expiry" | null;
 }) {
   const status  = getEffectiveStatus(item);
   const balance = getDisplayBalance(item);
@@ -359,6 +364,7 @@ function ItemCard({
               <StatusPill variant="credit" label={t("status.low_stock")} className="text-xs" />
             )}
             {etaEnabled && isEtaMissing(item) && <EtaMissingFlag t={t} />}
+            {batchAlert && <BatchWarningFlag status={batchAlert} t={t} />}
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
@@ -683,6 +689,7 @@ export function ItemsListPage() {
   const openCreate     = useCreateDispatcher(s => s.openCreate);
 
   const { data, loading, error, isOffline, reload, mutate } = useItems();
+  const batchFlagOn = isFlagEnabled("inventory.batch_expiry");
 
   const [importOpen,   setImportOpen]     = useState(false);
   const [search, setSearch]               = useState("");
@@ -1171,6 +1178,9 @@ export function ItemsListPage() {
               <StatusPill variant="credit" label={t("status.low_stock")} />
             )}
             {!!data?._meta.tenant.eta_enabled && isEtaMissing(row.original) && <EtaMissingFlag t={t} />}
+            {batchFlagOn && data && itemBatchAlert(row.original, data) && (
+              <BatchWarningFlag status={itemBatchAlert(row.original, data)!} t={t} />
+            )}
           </span>
         );
       },
@@ -1530,6 +1540,7 @@ export function ItemsListPage() {
                   onToggleExpand={() => toggleExpanded(row.original.id)}
                   attributeValues={data?.attribute_values ?? []}
                   etaEnabled={!!data?._meta.tenant.eta_enabled}
+                  batchAlert={batchFlagOn && data ? itemBatchAlert(row.original, data) : null}
                 />
               ))}
               {/* Mobile pagination note */}

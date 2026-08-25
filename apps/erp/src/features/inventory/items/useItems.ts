@@ -12,6 +12,7 @@ const EMPTY: InventoryFixture = {
   price_lists: [], items: [], attributes: [], attribute_values: [], ledger: [], stocktakes: [], transfers: [],
   adjustments: [], low_stock: [], import_template_columns: [],
   import_sample_result: { valid: 0, errors: [] }, barcode_templates: [],
+  stock_batch: [], settings: { global_near_expiry_days: 30 },
 };
 
 /**

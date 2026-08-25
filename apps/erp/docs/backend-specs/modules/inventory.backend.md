@@ -101,3 +101,68 @@ Parent-level fields already present (name, category, base_uom, tax_type, image, 
 - WAC computed per variant; a two-variant product with different purchase costs keeps independent avg_cost.
 
 *End of DD-1 (Variants) — inventory.backend.md.*
+
+---
+
+## Feature DD-2 — Batch / Expiry
+
+Builds on DD-1's balance carrier: the carrier deepens from `(variant × warehouse)` to `(variant × warehouse × batch)`. Additive layer — items/variants with `tracks_batch=false` are entirely unaffected.
+
+### 1) Data model
+
+**New: `stock_batch`**
+| col | type | notes |
+|---|---|---|
+| id | uuid | pk |
+| tenant_id | uuid | RLS |
+| variant_id | uuid | fk → `item_variant` — the DD-1 balance carrier; for a simple item this is its reserved default variant (`variant_of = item_id`, D1 hook from DD-1) |
+| lot_number | text | required |
+| expiry_date | date | nullable — null only when the owning item has `requires_expiry=false` |
+| mfg_date | date | nullable |
+| supplier_ref | text | nullable |
+| status | enum | `active` \| `hold` only — `expired`/`near_expiry`/`depleted` are **derived read-time**, never stored (decision 6) |
+| hold_reason | text | nullable — set when status=hold |
+
+**Identity / merge key:** `(variant_id, lot_number, expiry_date)`. Re-receiving the same triplet appends a `receipt` movement to the existing row — no duplicate batch. NULL-in-UNIQUE note: Postgres treats NULLs as distinct, so a plain `UNIQUE(variant_id, lot_number, expiry_date)` would not catch lot-only duplicates — use **two partial unique indexes**, one `WHERE expiry_date IS NULL`, one `WHERE expiry_date IS NOT NULL`.
+
+**`item` (extend):** `tracks_batch boolean default false`, `requires_expiry boolean default true`, `near_expiry_days integer nullable` (coalesces with a tenant `settings.global_near_expiry_days`).
+
+**`stock_movement` (extend):** add nullable `batch_id uuid fk → stock_batch`. `tracks_batch=true` on the owning item/variant ⇒ every IN/OUT movement **must** carry `batch_id` (DB check + service guard, 422 otherwise). New movement subtypes for existing `type` semantics: `receipt` (an `in` that also creates/merges a batch), `issue` (an `out` against a specific batch), `transfer_in`/`transfer_out` (paired legs, used by quarantine). No schema change to `type` beyond widening the enum.
+
+**Derived balance:** the balance view's grouping key gains `batch_id`. A batch's balance = `Σ stock_movement.qty WHERE batch_id = :id` (golden rule, one level finer than DD-1).
+
+### 2) Endpoints (`/api/v1/inventory/`)
+
+- `items/:id/batches` — `GET` list (per variant when the item has DD-1 variants) · each row includes derived `status`, per-warehouse balance.
+- `items/:id/batches/receive` — `POST` — body: `{ variant_id, warehouse_id, lot_number, expiry_date?, mfg_date?, supplier_ref?, cost, qty }`. Merges into an existing batch on `(variant_id, lot_number, expiry_date)` match, else creates one; always appends a `receipt` (or `opening`, first-ever stock) movement. Atomic.
+- `items/:id/batches/:batch_id/hold` — `POST { reason }` / `DELETE` (release).
+- `items/:id/batches/:batch_id/quarantine` — `POST` — writes the paired `transfer_out`/`transfer_in` legs into `wh_damaged`; 409 if the batch isn't `expired`.
+- `items/:id/batches/:batch_id/write-off` — `POST` — adjustment-out against the `wh_damaged` balance; 409 if that balance is 0.
+- `items/:id/batches/:batch_id/trace` — `GET` — the batch's full movement timeline, read-only.
+- `issue` (new, or an extension of the future POS/Sales issue call) — `POST { item_id, warehouse_id, qty, allocations? }`. Omitted `allocations` ⇒ server runs `selectBatchesForIssue` and writes the resulting `issue` movements; explicit `allocations` ⇒ manual pick, validated against permission (§3) and, for any expired/hold batch, a required `override_reason` (audit-logged).
+- Ledger read endpoints (extend) — accept `batch_id` filter.
+
+**Contract note:** shapes mirror `Inventory.fixtures.batch.json` (merged into `Inventory.fixtures.json`) — `stock_batch[]` + batch-tagged `ledger` rows.
+
+### 3) Engines & enforcement
+
+- **`selectBatchesForIssue(carrier, warehouse, qty)`** — FEFO (`ORDER BY expiry_date ASC`) when the item `requires_expiry`, else FIFO (`ORDER BY earliest receipt date ASC`). Excludes `hold` and `expired` batches. Greedy allocation across eligible batches until qty is covered or stock runs out (partial ⇒ 409 with shortfall).
+- **Manual override:** any allocation touching an expired/hold batch requires the caller to hold `inventory.batch.issue_override` and supply a reason; written to the immutable audit log alongside the movement (same convention as other `!`/`!!` sensitive actions).
+- **Status derivation (service + read model):** `hold` → `depleted` (balance 0) → `expired` (`expiry_date < today`) → `near_expiry` (`expiry_date <= today + effective_near_expiry_days`) → `active`. `effective_near_expiry_days = coalesce(item.near_expiry_days, tenant_settings.global_near_expiry_days)`.
+- **Quarantine/write-off:** quarantine is a same-item transfer to `wh_damaged` (reason=`expired`), never deletes the batch; write-off is an adjustment-out scoped to the `wh_damaged` balance only, so a batch can't be zeroed out of a warehouse it was never quarantined into.
+- **Boundary respected (Pin B):** Inventory computes and exposes batch status and excludes expired/hold from auto-pick; the **hard sell-block** on an expired batch at invoice time belongs to Sales/POS (same separation already used for the ETA block), not here.
+- **Boundary with DD-3:** this feature builds the **batch-selection engine** only (which batch actually lands on the movement). DD-3 (FIFO/FEFO Costing) **consumes** its output to build cost layers — no costing logic here.
+
+### 4) Feature flag & tenancy
+
+Capability gated by tenant module flag `inventory.batch_expiry`. Off ⇒ `batches*` endpoints 404/hidden, `tracks_batch` cannot be set true, existing batch data (if later toggled off) stays readable, writes blocked — same graceful-degradation contract as DD-1's `inventory.variants`. All new tables carry `tenant_id` + RLS.
+
+### 5) Test hooks
+
+- Property: a batch's balance always equals `Σ movements WHERE batch_id = :id`; never negative.
+- Re-receiving the same `(variant, lot, expiry)` never creates a second `stock_batch` row.
+- `selectBatchesForIssue` never returns a `hold` or `expired` batch without an explicit override.
+- Quarantine + write-off round-trip: `wh_damaged` balance goes to exactly 0 after write-off; the batch stays queryable via trace.
+- `requires_expiry=true` rejects a receive/opening call missing `expiry_date` (422); `requires_expiry=false` accepts one.
+
+*End of DD-2 (Batch/Expiry) — inventory.backend.md.*

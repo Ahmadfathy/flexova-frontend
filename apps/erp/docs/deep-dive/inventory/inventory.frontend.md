@@ -159,3 +159,87 @@ Opened from a variant sub-row action or matrix row "edit". `Drawer` fields: vari
 **Fixtures:** merge `inventory.fixtures.variants.json` into `inventory.fixtures.json` (adds `attributes`, `attribute_values`, product-parent items with `variants[]`, per-variant balances/prices/barcodes, and variant-level ledger rows).
 
 *End of DD-1 (Variants) — appended to Inventory deep-dive frontend spec.*
+
+---
+
+## DD-2 — Batch / Expiry
+
+Builds on DD-1 (variants as balance carrier, Item Editor at `/inventory/items/:id`, warning-badge convention). **No new design tokens.**
+
+### 0. Scope & flag
+
+- Feature flag: **`inventory.batch_expiry`** — registered in `apps/erp/src/lib/flags.ts` (toggle-able; not silent-default).
+- All batch UI is **feature-flag-aware**: when the flag is off, or when an item has `tracks_batch=false`, every screen behaves exactly as DD-1 (no batch fields, no batch selection, receipts/opening work without batch).
+- **Golden rule preserved:** balance is always `Σ stock_movement.qty`, now per **(variant × warehouse × batch)**. No editable balance field anywhere in the UI.
+
+### 1. Entities surfaced to the user
+
+| Entity | User-facing meaning | Key fields shown |
+|---|---|---|
+| `stock_batch` | تشغيلة / Lot | lot_number, expiry_date (nullable), mfg_date, supplier_ref, effective status, per-warehouse qty |
+| item toggles | tracking config on the item | `tracks_batch`, `requires_expiry`, `near_expiry_days` |
+| movement | now carries `batch_id` | existing ledger + batch column |
+
+**Effective status (computed, never stored beyond active/hold):**
+`hold` → `depleted` (balance 0) → `expired` (expiry < today) → `near_expiry` (expiry ≤ today + effectiveNearExpiryDays) → `active`.
+`effectiveNearExpiryDays = coalesce(item.near_expiry_days, settings.global_near_expiry_days)` (same coalesce pattern as DD-1's `effectiveEtaCode`).
+
+### 2. Screens & fields
+
+#### 2.1 Item Editor → Batch/Expiry section
+Route: existing `/inventory/items/:id` (DD-1 Item Editor), inside the Stock tab. Shown only when `flags.inventory.batch_expiry` is on.
+
+Fields: `tracks_batch` toggle · `requires_expiry` toggle (shown only when tracked, default ON; off = lot-only for devices/consumables) · `near_expiry_days` optional per-item override (empty = inherit `settings.global_near_expiry_days`).
+
+#### 2.2 Item Editor → Batches tab
+List: lot · expiry · mfg · supplier ref · per-warehouse balance chips · status badge (reuses the DD-1 warning-badge convention — `Flag` icon + tint classes; expired uses the existing danger tint, never a new token) · row actions (Hold/Release, Quarantine, Trace), permission-gated. Depleted rows collapse behind a "show depleted" toggle. Empty state when no batches yet.
+
+#### 2.3 Stock-in / Receipt modal
+When `tracks_batch=on`, each receipt line adds `lot_number` (required), `expiry_date` (required iff `requires_expiry`), `mfg_date`, `supplier_ref`, `cost`, `qty`, `warehouse`. **Merge preview:** a `(variant + lot + expiry)` match shows an inline merge notice and resulting new balance — no new batch row, a receipt movement is appended. Flag off / item not tracked → line renders exactly as DD-1.
+
+Reality note (implemented): v1/DD-1 Inventory has no receipt concept at all (GRN lives in unbuilt Purchasing) and no separate opening-per-batch grid — one Receipt modal covers both: item with zero balance so far ⇒ `opening` movement; later stock-ins ⇒ `receipt`. Same golden-rule outcome as a two-screen design, less new surface.
+
+#### 2.4 Opening balances (per batch)
+Folded into the Receipt modal per the note above — each submission emits an `opening` or `receipt` movement with `batch_id`, never a direct balance edit. Non-tracked items keep the DD-1 single-row behavior.
+
+#### 2.5 Issue / Transfer / Adjustment
+Shows the batch-selection engine's auto-selected batch(es) (FEFO for expiry-tracked, FIFO for lot-only) read-only, qty split per batch. **Manual pick** button (permission `inventory.batch.manual_pick`) opens the Batch picker modal.
+
+#### 2.6 Batch picker modal (manual override)
+Sortable list of a carrier's batches with balance in the selected warehouse and status badge. Expired/hold batches are disabled unless the user also holds `inventory.batch.issue_override`, in which case picking one requires an explicit reason (audit-logged with the resulting movement). Per-batch allocation input; total must equal the qty needed.
+
+#### 2.7 Expiry alerts (Low-stock page)
+A flag-gated "Expiring soon / Expired" section on `/inventory/low-stock`, grouped by item, with lot/expiry/status/per-warehouse qty and a link back to the item's Batches tab.
+
+#### 2.8 Items list — rollup badges
+Parent/item row shows a batch-warning badge (compact `Flag` chip, same sizing as `EtaMissingFlag`) when **any** of its batches is `near_expiry` or `expired` (same "parent learns from any variant" rule as DD-1). Stacks with, never replaces, the ETA-missing badge.
+
+#### 2.9 Quarantine & write-off
+**Quarantine** on an expired batch → transfer movement (source warehouse → `wh_damaged`, reason `expired`); batch stays traceable. **Write-off** on a batch sitting in `wh_damaged` → adjustment-out (reason `expired`). Both permission-gated (`inventory.batch.quarantine`) and audit-logged (toast confirmation in this mock build).
+
+#### 2.10 Traceability view
+Batch → chronological movement timeline (receipt/opening → transfers → issues → quarantine → write-off), each with source_ref, warehouse, qty, user. Read-only drawer, reachable from the Batches tab, the picker, and the expiry-alerts section.
+
+### 3. i18n keys
+Namespace `batch.*` in `i18n/locales/{ar,en}/inventory.json`: `tracks_batch`, `requires_expiry`, `near_expiry_days`, `lot_number`, `expiry_date`, `mfg_date`, `supplier_ref`, `status.{active|near_expiry|expired|hold|depleted}`, `near_expiry_hint`, `expired_hint`, `hold_hint`, `merge_notice`, `empty`, `manual_pick`, `issue_override_confirm`, `quarantine`, `write_off`, `trace`, `expiring_section_title`, plus the receipt/issue/picker flow strings (`receipt_*`, `issue_*`, `picker_*`, `override_reason_*`, `hold_*`, `quarantined`, `written_off`, `show_depleted`). `item_editor.tab_batch` added alongside the existing tab labels. A `ledger.*` block (column headers + one label per movement type, including the new `receipt`/`issue`/`transfer_in`/`transfer_out`) was added at the same time — it covers the DD-1 ledger table too, which had shipped without i18n entries for those columns.
+
+### 4. Permissions
+`inventory.batch.manual_pick` (see & use the manual picker) · `inventory.batch.issue_override` (issue an expired/hold batch, with reason) · `inventory.batch.hold` (set/release hold) · `inventory.batch.quarantine` (quarantine + write-off). Used ad hoc via `useCan()` (still the always-true mock stub — DD-1's `inventory.item.variants` precedent, not registered in the FE_08 admin catalog).
+
+### 5. Acceptance criteria (DD-2)
+1. Flag off → zero batch UI anywhere; DD-1 screens unchanged.
+2. `tracks_batch=on, requires_expiry=on` → receipt line blocks save without `expiry_date`.
+3. `requires_expiry=off` (lot-only) → receipt saves without expiry; issue uses FIFO by receipt date.
+4. Receiving `(variant+lot+expiry)` that already exists → no new batch row; balance accumulates; merge notice shown.
+5. Issue on an expiry-tracked item auto-selects the nearest-expiry **active** batch; expired & hold batches are never auto-picked.
+6. Manual pick hidden without `inventory.batch.manual_pick`; picking expired/hold requires `issue_override` + reason, both audit-logged.
+7. Status badges render for all five derived states using existing tokens only; parent rollup lights up from any batch; stacks with the ETA-missing badge.
+8. `near_expiry` window respects item override then global (coalesce); the milk item (override 7 days) and paracetamol (global 30 days) both classify per the fixtures.
+9. Quarantine moves qty to `wh_damaged` (balance reconciles); write-off zeroes it; the batch remains in trace.
+10. Every screen's displayed balance equals `Σ stock_movement.qty` for its (variant×warehouse×batch) — no field edits.
+
+**Fixtures:** merged `Inventory.fixtures.batch.json` into `Inventory.fixtures.json` (adds 4 self-contained demo items — pharma/food/device — their `stock_batch` rows, batch-tagged `ledger` movements, and `settings.global_near_expiry_days`). Batches attach to a `variant_id` that is the DD-1 product-variant id when the item has one, else the item's own id (mirrors the backend's `item_variant.variant_of` defaulting to `item_id` for simple items — no separate "default variant" entity was invented on the frontend).
+
+**Disclosed, non-blocking simplifications:** batch tracking is only wired for simple (non-`is_product_parent`) items — no fixture combines a DD-1 product-parent with DD-2 batches, so the per-variant selector mentioned in §2.2 isn't built; the Issue/Adjustment flows are self-contained inside Inventory (no Sales/POS integration exists yet to drive them from); Quarantine/Write-off/Hold confirmations are local mock toasts, not a real audit-log table.
+
+*End of DD-2 (Batch/Expiry) — appended to Inventory deep-dive frontend spec.*

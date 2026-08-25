@@ -14,11 +14,16 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 
-import { PackageOpen, ExternalLink } from "lucide-react";
+import { PackageOpen, ExternalLink, Flag } from "lucide-react";
 
 import { formatNumber } from "@/lib/format";
 import { cn }           from "@/lib/utils";
+import { isFlagEnabled } from "@/lib/flags";
 import { useItems }     from "../items/useItems";
+import {
+  batchCarrierId, getCarrierBatches, effectiveBatchStatus, effectiveNearExpiryDays, batchWarehouseBalances,
+} from "../items/batches";
+import { BatchStatusPill } from "../items/BatchStatusBadge";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -71,6 +76,31 @@ export function LowStockPage() {
   }, [data]);
 
   const totalCount = rows.length;
+
+  // DD-2 §2.7 — Expiring soon / Expired section, flag-gated, grouped by item.
+  const batchFlagOn = isFlagEnabled("inventory.batch_expiry");
+  const expiryRows = useMemo(() => {
+    if (!data || !batchFlagOn) return [];
+    const globalDays = data.settings?.global_near_expiry_days ?? 30;
+    const out: Array<{
+      item: (typeof data.items)[number]; batchId: string; lotNumber: string; expiryDate: string | null;
+      status: "expired" | "near_expiry"; balances: Array<{ warehouse_id: string; qty: number }>;
+    }> = [];
+    for (const item of data.items) {
+      if (!item.tracks_batch) continue;
+      const carrierId = batchCarrierId(item);
+      const nearDays = effectiveNearExpiryDays(item, globalDays);
+      for (const batch of getCarrierBatches(carrierId, data.stock_batch ?? [])) {
+        const status = effectiveBatchStatus(batch, data.ledger, nearDays);
+        if (status !== "expired" && status !== "near_expiry") continue;
+        out.push({
+          item, batchId: batch.id, lotNumber: batch.lot_number, expiryDate: batch.expiry_date,
+          status, balances: batchWarehouseBalances(batch.id, data.ledger),
+        });
+      }
+    }
+    return out.sort((a, b) => (a.expiryDate ?? "") < (b.expiryDate ?? "") ? -1 : 1);
+  }, [data, batchFlagOn]);
 
   const showSkeleton = loading && !data;
   const showError    = !!error;
@@ -225,6 +255,49 @@ export function LowStockPage() {
           </>
         )}
       </PageSection>
+
+      {/* DD-2 §2.7 — Expiring soon / Expired */}
+      {batchFlagOn && expiryRows.length > 0 && (
+        <PageSection padded={false}>
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
+            <Flag className="h-4 w-4 text-warning-text shrink-0" />
+            <h2 className="text-sm font-semibold">{t("batch.expiring_section_title")}</h2>
+            <Badge variant="secondary" className="text-xs tabular-nums">{expiryRows.length}</Badge>
+          </div>
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow className="hover:bg-transparent border-b border-border">
+                <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground">{t("columns.name")}</TableHead>
+                <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground">{t("batch.lot_number")}</TableHead>
+                <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground">{t("batch.expiry_date")}</TableHead>
+                <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground">{t("columns.status")}</TableHead>
+                <TableHead className="h-10 py-2 px-3 text-xs font-semibold text-muted-foreground hidden md:table-cell">{t("columns.warehouse")}</TableHead>
+                <TableHead className="h-10 py-2 px-3 w-10" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {expiryRows.map((row) => (
+                <TableRow key={row.batchId} className="border-b border-border last:border-0 hover:bg-muted/30">
+                  <TableCell className="px-3 py-3">
+                    <span className="font-medium text-sm">{lang === "ar" ? row.item.name_ar : row.item.name_en}</span>
+                  </TableCell>
+                  <TableCell className="px-3 py-3 text-sm tabular-nums">{row.lotNumber}</TableCell>
+                  <TableCell className="px-3 py-3 text-sm tabular-nums">{row.expiryDate ?? "—"}</TableCell>
+                  <TableCell className="px-3 py-3"><BatchStatusPill status={row.status} t={t} /></TableCell>
+                  <TableCell className="px-3 py-3 text-sm text-muted-foreground hidden md:table-cell tabular-nums">
+                    {row.balances.map((b) => `${b.warehouse_id}: ${b.qty}`).join(" · ")}
+                  </TableCell>
+                  <TableCell className="px-3 py-3 w-10">
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/inventory/items/${row.item.id}`)}>
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </PageSection>
+      )}
     </div>
   );
 }

@@ -35,9 +35,10 @@ import {
   cartesianCombos, comboKey, generateVariantCode, generateVariants, computeRollup,
   projectedComboCount, MAX_COMBOS, type GenerateVariantsInput,
 } from "./variants";
+import { BatchSection } from "./BatchSection";
 import type { InventoryAttributeValue, InventoryVariant } from "./types";
 
-type TabKey = "basic" | "pricing" | "stock" | "variants" | "ledger";
+type TabKey = "basic" | "pricing" | "stock" | "variants" | "batch" | "ledger";
 
 function buildRows(
   attributeOrder: string[],
@@ -83,6 +84,7 @@ export function ItemEditorPage() {
   const navigate = useNavigate();
   const can = useCan();
   const flagOn = isFlagEnabled("inventory.variants");
+  const batchFlagOn = isFlagEnabled("inventory.batch_expiry");
 
   const { data, loading, error, isOffline, reload, mutate } = useItems();
   const item = useMemo(() => data?.items.find((i) => i.id === id), [data, id]);
@@ -104,6 +106,11 @@ export function ItemEditorPage() {
   const [barcode, setBarcode] = useState("");
   const [reorderLevel, setReorderLevel] = useState("");
   const [maxLevel, setMaxLevel] = useState("");
+
+  // DD-2 — Batch/Expiry section (§2.1)
+  const [tracksBatch, setTracksBatch] = useState(false);
+  const [requiresExpiry, setRequiresExpiry] = useState(true);
+  const [nearExpiryDaysStr, setNearExpiryDaysStr] = useState("");
 
   // Variants mode
   const [attributeOrder, setAttributeOrder] = useState<string[]>([]);
@@ -137,6 +144,9 @@ export function ItemEditorPage() {
     setBarcode(item.barcodes[0] ?? "");
     setReorderLevel(item.reorder_level !== null ? String(item.reorder_level) : "");
     setMaxLevel(item.max_level !== null ? String(item.max_level) : "");
+    setTracksBatch(!!item.tracks_batch);
+    setRequiresExpiry(item.requires_expiry !== false);
+    setNearExpiryDaysStr(item.near_expiry_days != null ? String(item.near_expiry_days) : "");
 
     const attrOrder = item.attributes_used ?? [];
     const valSel: Record<string, string[]> = {};
@@ -185,6 +195,11 @@ export function ItemEditorPage() {
   const toggleLocked = simpleItemHasHistory || productVariantsHaveMovements;
 
   const canManageVariants = can("inventory.item.variants");
+
+  // DD-2 — never silently drop a batch's history by flipping tracks_batch off
+  // (same golden-rule spirit as the DD-1 has_variants toggleLocked guard above).
+  const originalTracksBatch = !!item?.tracks_batch;
+  const batchToggleLocked = originalTracksBatch && ledger.some((m) => m.item_id === item?.id && !!m.batch_id);
 
   // DD-1 addendum — rows whose effective eta_code (own override, else the
   // parent's draft base) is empty; warning-only, shown next to the combo.
@@ -306,6 +321,9 @@ export function ItemEditorPage() {
           attributes_used: attributeOrder,
           variants: variantsWithStatus, rollup,
           prices: {}, barcodes: [],
+          tracks_batch: tracksBatch,
+          requires_expiry: tracksBatch ? requiresExpiry : undefined,
+          near_expiry_days: nearExpiryDaysStr ? parseFloat(nearExpiryDaysStr) : null,
         } : i),
         ledger: [...prev.ledger, ...result.openingMovements],
       });
@@ -329,6 +347,9 @@ export function ItemEditorPage() {
         barcodes: barcode ? [barcode] : [],
         reorder_level: reorderLevel ? parseFloat(reorderLevel) : null,
         max_level: maxLevel ? parseFloat(maxLevel) : null,
+        tracks_batch: tracksBatch,
+        requires_expiry: tracksBatch ? requiresExpiry : undefined,
+        near_expiry_days: nearExpiryDaysStr ? parseFloat(nearExpiryDaysStr) : null,
       } : i),
     });
     setSaving(false);
@@ -376,6 +397,7 @@ export function ItemEditorPage() {
   if (!item) return null;
 
   const showVariantsTab = hasVariants && flagOn;
+  const showBatchTab = batchFlagOn && tracksBatch;
 
   return (
     <div className="space-y-4 pb-6">
@@ -404,6 +426,11 @@ export function ItemEditorPage() {
           {showVariantsTab && (
             <TabsTrigger value="variants" className="h-7 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
               {t("item_editor.tab_variants")}
+            </TabsTrigger>
+          )}
+          {showBatchTab && (
+            <TabsTrigger value="batch" className="h-7 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+              {t("item_editor.tab_batch")}
             </TabsTrigger>
           )}
           <TabsTrigger value="ledger" className="h-7 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
@@ -548,6 +575,44 @@ export function ItemEditorPage() {
                   );
                 })}
               </div>
+
+              {/* DD-2 §2.1 — Batch/Expiry section */}
+              {batchFlagOn && (
+                <div className="rounded-md border border-border p-3 space-y-3 max-w-md">
+                  <div className="flex items-start gap-3">
+                    <Switch
+                      id="tracks-batch"
+                      checked={tracksBatch}
+                      disabled={batchToggleLocked}
+                      onCheckedChange={setTracksBatch}
+                    />
+                    <div className="space-y-0.5">
+                      <Label htmlFor="tracks-batch" className="cursor-pointer">{t("batch.tracks_batch")}</Label>
+                      {batchToggleLocked && (
+                        <p className="text-xs text-muted-foreground">{t("item_editor.migration_blocked")}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {tracksBatch && (
+                    <>
+                      <div className="flex items-start gap-3">
+                        <Switch id="requires-expiry" checked={requiresExpiry} onCheckedChange={setRequiresExpiry} />
+                        <Label htmlFor="requires-expiry" className="cursor-pointer">{t("batch.requires_expiry")}</Label>
+                      </div>
+                      <div className="space-y-1.5 max-w-[10rem]">
+                        <Label>{t("batch.near_expiry_days")}</Label>
+                        <Input
+                          type="number" min={0} className="tabular-nums"
+                          placeholder={String(data?.settings?.global_near_expiry_days ?? 30)}
+                          value={nearExpiryDaysStr}
+                          onChange={(e) => setNearExpiryDaysStr(e.target.value)}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </>
           )}
         </TabsContent>
@@ -573,6 +638,13 @@ export function ItemEditorPage() {
               etaMissingRowKeys={etaMissingRowKeys}
             />
             {saveError && <p className="text-sm text-destructive mt-3">{saveError}</p>}
+          </TabsContent>
+        )}
+
+        {/* ── Batches (DD-2 §2.2) ──────────────────────────────── */}
+        {showBatchTab && data && (
+          <TabsContent value="batch" className="rounded-lg border border-border bg-card p-4 mt-3">
+            <BatchSection item={item} warehouses={warehouses} data={data} lang={lang} can={can} mutate={mutate} />
           </TabsContent>
         )}
 
@@ -608,6 +680,9 @@ export function ItemEditorPage() {
                     )}
                     <th className="text-start px-3 py-2 text-xs font-medium text-muted-foreground">{t("columns.type")}</th>
                     <th className="text-start px-3 py-2 text-xs font-medium text-muted-foreground">{t("ledger.col_source")}</th>
+                    {tracksBatch && (
+                      <th className="text-start px-3 py-2 text-xs font-medium text-muted-foreground">{t("batch.lot_number")}</th>
+                    )}
                     <th className="text-start px-3 py-2 text-xs font-medium text-muted-foreground">{t("filters.warehouse")}</th>
                     <th className="text-start px-3 py-2 text-xs font-medium text-muted-foreground">{t("ledger.col_qty")}</th>
                     <th className="text-start px-3 py-2 text-xs font-medium text-muted-foreground">{t("ledger.col_balance")}</th>
@@ -617,7 +692,12 @@ export function ItemEditorPage() {
                 <tbody>
                   {itemLedgerRows.map((m) => {
                     const wh = warehouses.find((w) => w.id === m.warehouse_id);
-                    const typeKey = ({ opening: "type_opening", in: "type_in", out: "type_out", transfer: "type_transfer", adjustment: "type_adj", stocktake: "type_stocktake" } as const)[m.type];
+                    const typeKey = ({
+                      opening: "type_opening", in: "type_in", out: "type_out", transfer: "type_transfer",
+                      adjustment: "type_adj", stocktake: "type_stocktake",
+                      receipt: "type_receipt", issue: "type_issue", transfer_in: "type_transfer_in", transfer_out: "type_transfer_out",
+                    } as const)[m.type];
+                    const batch = (data?.stock_batch ?? []).find((b) => b.id === m.batch_id);
                     return (
                       <tr key={m.id} className="border-t border-border">
                         <td className="px-3 py-2 tabular-nums whitespace-nowrap">{m.date}</td>
@@ -626,6 +706,9 @@ export function ItemEditorPage() {
                         )}
                         <td className="px-3 py-2">{t(`ledger.${typeKey}`)}</td>
                         <td className="px-3 py-2 text-xs text-muted-foreground">{m.source_ref}</td>
+                        {tracksBatch && (
+                          <td className="px-3 py-2 text-xs tabular-nums">{batch?.lot_number ?? "—"}</td>
+                        )}
                         <td className="px-3 py-2 text-xs">{lang === "ar" ? wh?.name_ar : wh?.name_en}</td>
                         <td className={`px-3 py-2 tabular-nums ${m.qty < 0 ? "text-destructive" : ""}`}>{m.qty}</td>
                         <td className="px-3 py-2 tabular-nums">{m.running_balance}</td>

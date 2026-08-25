@@ -75,6 +75,28 @@ export interface InventoryItem {
   variants?: InventoryVariant[];
   /** DD-1 — computed rollup shown on the parent row/card; never an editable balance. */
   rollup?: { balance_total: number; price_range: { min: number; max: number }; any_low_stock: boolean };
+  /** DD-2 — item opts into batch/lot tracking (§0). Flag-gated; absent/false = DD-1 behavior, unchanged. */
+  tracks_batch?: boolean;
+  /** DD-2 — expiry_date is required on every batch of this item (§2.1). Default ON when tracks_batch; off = lot-only (devices). */
+  requires_expiry?: boolean;
+  /** DD-2 — per-item near-expiry override; null/undefined = inherit `settings.global_near_expiry_days` (§1 coalesce). */
+  near_expiry_days?: number | null;
+  _flag?: string;
+}
+
+/** DD-2 — a lot/expiry-tracked batch (inventory.frontend.md DD-2 §1). Balance is
+ *  never stored here — always `Σ ledger rows with this batch_id` (golden rule). */
+export interface StockBatch {
+  id: string;
+  /** DD-1 product-variant id when the item has one, else the item's own id — see batches.ts `batchCarrierId`. */
+  variant_id: string;
+  lot_number: string;
+  expiry_date: string | null;
+  mfg_date: string | null;
+  supplier_ref: string | null;
+  /** Only ever `active|hold` — `expired`/`near_expiry`/`depleted` are derived read-time (technical decision 6). */
+  status: "active" | "hold";
+  hold_reason: string | null;
   _flag?: string;
 }
 
@@ -107,13 +129,16 @@ export interface InventoryLedgerRow {
   /** set only for product-parent variants; null/absent for simple items. */
   variant_id?: string;
   date: string;
-  type: "opening" | "in" | "out" | "transfer" | "adjustment" | "stocktake";
+  /** DD-2 adds `receipt`/`issue`/`transfer_in`/`transfer_out` — new movement-producing flows batches introduced (§2.3/§2.5/§2.9); pre-existing `in`/`out`/`transfer` rows are untouched. */
+  type: "opening" | "in" | "out" | "transfer" | "adjustment" | "stocktake" | "receipt" | "issue" | "transfer_in" | "transfer_out";
   source_ref: string;
   warehouse_id: string;
   qty: number;
   running_balance: number;
   cost: number;
   user: string;
+  /** DD-2 — set when this movement belongs to a stock_batch (§0 "movement now carries batch_id"). */
+  batch_id?: string | null;
 }
 
 export interface InventoryFixture {
@@ -136,6 +161,10 @@ export interface InventoryFixture {
   /** DD-1 — values under each attribute. */
   attribute_values: InventoryAttributeValue[];
   ledger: InventoryLedgerRow[];
+  /** DD-2 — batch/lot entities (§1). */
+  stock_batch?: StockBatch[];
+  /** DD-2 — tenant-level settings surfaced by this deep-dive (§1 coalesce base). */
+  settings?: { global_near_expiry_days: number };
   stocktakes: unknown[];
   transfers: unknown[];
   adjustments: unknown[];

@@ -328,6 +328,7 @@
     "tab_pricing":           "السعر والضريبة",
     "tab_stock":             "المخزون",
     "tab_variants":          "المتغيّرات",
+    "tab_batch":             "التشغيلات",
     "tab_ledger":            "الحركات",
     "has_variants_toggle":   "هذا المنتج له متغيّرات (مقاسات/ألوان)",
     "price_managed_note":    "الأسعار تُدار على مستوى المتغيّرات",
@@ -379,7 +380,10 @@
     "back":            "رجوع",
     "post":            "ترحيل",
     "add_line":        "إضافة صنف",
-    "remove":          "حذف"
+    "remove":          "حذف",
+    "confirm":         "تأكيد",
+    "hold":            "حجز",
+    "release":         "فك الحجز"
   },
   "status": {
     "active":     "نشط",
@@ -464,7 +468,8 @@
     "reorder":     "الحد الأدنى",
     "shortfall":   "النقص",
     "suggested":   "كمية مقترحة",
-    "default":     "افتراضي"
+    "default":     "افتراضي",
+    "cost":        "التكلفة"
   },
   "item_types": {
     "stocked":   "مخزّن",
@@ -508,5 +513,77 @@
     "back_step":       "السابق",
     "no_file":         "لم يتم اختيار ملف",
     "file_type_error": "يُقبَل فقط ملفات .xlsx أو .csv"
+  },
+
+  "ledger": {
+    "col_source":       "المصدر",
+    "col_qty":          "الكمية",
+    "col_balance":      "الرصيد",
+    "col_cost":         "التكلفة",
+    "empty_title":      "لا توجد حركات بعد",
+    "empty_sub":        "حركات المخزون لهذا الصنف هتظهر هنا",
+    "type_opening":     "افتتاحي",
+    "type_in":          "وارد",
+    "type_out":         "صادر",
+    "type_transfer":    "تحويل",
+    "type_adj":         "تسوية",
+    "type_stocktake":   "جرد",
+    "type_receipt":     "استلام",
+    "type_issue":       "صرف",
+    "type_transfer_in": "تحويل وارد",
+    "type_transfer_out":"تحويل صادر"
+  },
+
+  "batch": {
+    "tracks_batch":            "يتتبّع تشغيلة/صلاحية",
+    "requires_expiry":         "يتطلّب صلاحية",
+    "near_expiry_days":        "تنبيه قرب الانتهاء (أيام قبل الصلاحية)",
+    "lot_number":              "رقم اللوط",
+    "expiry_date":             "تاريخ الصلاحية",
+    "mfg_date":                "تاريخ الإنتاج",
+    "supplier_ref":            "مرجع المورّد",
+    "status": {
+      "active":      "سليمة",
+      "near_expiry": "قرب الانتهاء",
+      "expired":     "منتهية",
+      "hold":        "محجوزة",
+      "depleted":    "منتهية من المخزون"
+    },
+    "near_expiry_hint":        "التشغيلة دي قربت تنتهي",
+    "expired_hint":            "التشغيلة دي منتهية — مش قابلة للبيع",
+    "hold_hint":               "سبب الحجز",
+    "merge_notice":            "سيُضاف إلى تشغيلة موجودة",
+    "empty":                   "لا توجد تشغيلات لهذا الصنف بعد",
+    "manual_pick":             "اختيار يدوي",
+    "issue_override_confirm":  "تجاوز تشغيلة منتهية/محجوزة — السبب مطلوب",
+    "quarantine":              "حجر (منتهية)",
+    "quarantine_confirm":      "نقل رصيد هذه التشغيلة لمخزن التالف؟ هتفضل قابلة للتتبّع.",
+    "write_off":               "شطب",
+    "write_off_confirm":       "شطب رصيد هذه التشغيلة من مخزن التالف؟ لا يمكن التراجع.",
+    "trace":                   "تتبّع",
+    "expiring_section_title":  "قرب الانتهاء / منتهية",
+    "show_depleted":           "عرض {{n}} تشغيلة منتهية من المخزون",
+    "hold_released":           "تم فك الحجز",
+    "hold_set":                "تم حجز التشغيلة",
+    "quarantined":             "تم نقل التشغيلة لمخزن التالف",
+    "written_off":             "تم شطب التشغيلة",
+    "receipt_title":           "استلام مخزون",
+    "receipt_save":            "حفظ الاستلام",
+    "receipt_saved":           "تم حفظ الاستلام",
+    "lot_required":            "رقم اللوط مطلوب",
+    "expiry_required":         "تاريخ الصلاحية مطلوب لهذا الصنف",
+    "qty_invalid":             "أدخل كمية أكبر من صفر",
+    "issue_title":             "صرف مخزون",
+    "issue_saved":             "تم ترحيل الصرف",
+    "auto_selected":           "التشغيلة (أو التشغيلات) المختارة تلقائياً",
+    "issue_none_selected":     "لم يتم اختيار تشغيلة بعد — أدخل المخزن والكمية",
+    "issue_insufficient":      "لا يوجد رصيد كافٍ من التشغيلات النشطة لتغطية هذه الكمية",
+    "issue_shortfall":         "ناقص {{n}}",
+    "picker_desc":             "المطلوب: {{needed}}",
+    "picker_available":        "متاح {{n}}",
+    "picker_total":            "إجمالي المُختار",
+    "picker_total_mismatch":   "إجمالي المُختار ({{total}}) لازم يساوي الكمية المطلوبة ({{needed}})",
+    "override_reason_required":"سبب التجاوز مطلوب للتشغيلات المنتهية/المحجوزة",
+    "override_reason_label":   "سبب التجاوز"
   }
 }

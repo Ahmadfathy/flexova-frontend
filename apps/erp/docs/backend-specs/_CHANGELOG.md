@@ -18,3 +18,17 @@
 **Changed:** `modules/inventory.backend.md` context unchanged (no schema change) — this is a frontend-only addendum.
 **What:** Inventory now surfaces a warning badge when a variant/simple item is missing `eta_code` (ETA on). Warning-only, no save-block.
 **Why (decision A):** ETA is a core capability; the user must see a missing code at item-prep time, not discover it at invoicing. The issue-time block itself stays in Sales/POS (separation of concerns). Applied to simple items too, to remove the variant/simple inconsistency.
+
+## 2026-08 — Inventory DD-2: Batch / Expiry
+**Changed:** `modules/inventory.backend.md` — added Feature DD-2.
+**What:**
+- New table: `stock_batch` (variant_id, lot_number, expiry_date nullable, mfg_date, supplier_ref, status `active|hold` only).
+- Extended: `item` (+`tracks_batch`, `requires_expiry`, `near_expiry_days`), `stock_movement` (+nullable `batch_id`, widened `type` enum with `receipt`/`issue`/`transfer_in`/`transfer_out`), balance view (+`batch_id` in grouping key).
+- New endpoints under `/inventory/`: `items/:id/batches` (list), `.../receive`, `.../:batch_id/hold` (+release), `.../:batch_id/quarantine`, `.../:batch_id/write-off`, `.../:batch_id/trace`, and an `issue` call that runs the new batch-selection engine or accepts a manual override allocation.
+- New permissions: `inventory.batch.manual_pick`, `inventory.batch.issue_override`, `inventory.batch.hold`, `inventory.batch.quarantine`.
+**Why:**
+- Deepens DD-1's balance carrier one level further — `(variant × warehouse)` → `(variant × warehouse × batch)` — same golden rule, no schema surprise for GRN/Purchasing to plug into later (a receipt is just another `receipt`-typed movement).
+- FEFO/FIFO auto-selection (excluding hold/expired) is the core loss-prevention value; manual override stays available behind a stricter permission + audit reason for recall/specific-lot cases.
+- `expired`/`near_expiry`/`depleted` are derived read-time, never stored, to avoid a background job and any drift between stored status and actual balance/date.
+- Frontend build note: batch tracking currently only exercised on simple (non-`is_product_parent`) items — no fixture combines a DD-1 product-parent with DD-2 batches yet, so the per-variant batch selector isn't built; the Issue/Adjustment flows are self-contained inside Inventory (no Sales/POS integration exists yet to call them). Both disclosed as non-blocking scope trims in `inventory.frontend.md` DD-2 §5.
+- Sets up DD-3 (FIFO/FEFO Costing), which consumes this feature's batch-selection output to build cost layers — no costing logic added here (Pin B: valuation stays in DD-3/Accounting; the expired-sale hard-block stays in Sales/POS).

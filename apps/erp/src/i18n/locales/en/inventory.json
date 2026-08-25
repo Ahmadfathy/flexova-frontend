@@ -309,6 +309,7 @@
     "tab_pricing":           "Pricing & tax",
     "tab_stock":             "Stock",
     "tab_variants":          "Variants",
+    "tab_batch":             "Batches",
     "tab_ledger":            "Ledger",
     "has_variants_toggle":   "This product has variants (sizes/colors)",
     "price_managed_note":    "Prices are managed at variant level",
@@ -360,7 +361,10 @@
     "back":            "Back",
     "post":            "Post",
     "add_line":        "Add item",
-    "remove":          "Remove"
+    "remove":          "Remove",
+    "confirm":         "Confirm",
+    "hold":            "Hold",
+    "release":         "Release"
   },
   "status": {
     "active":     "Active",
@@ -445,7 +449,8 @@
     "reorder":     "Reorder level",
     "shortfall":   "Shortfall",
     "suggested":   "Suggested qty",
-    "default":     "Default"
+    "default":     "Default",
+    "cost":        "Cost"
   },
   "item_types": {
     "stocked":   "Stocked",
@@ -489,5 +494,77 @@
     "back_step":       "Back",
     "no_file":         "No file selected",
     "file_type_error": "Only .xlsx or .csv files are accepted"
+  },
+
+  "ledger": {
+    "col_source":       "Source",
+    "col_qty":          "Qty",
+    "col_balance":      "Balance",
+    "col_cost":         "Cost",
+    "empty_title":      "No movements yet",
+    "empty_sub":        "Stock movements for this item will show up here",
+    "type_opening":     "Opening",
+    "type_in":          "In",
+    "type_out":         "Out",
+    "type_transfer":    "Transfer",
+    "type_adj":         "Adjustment",
+    "type_stocktake":   "Stocktake",
+    "type_receipt":     "Receipt",
+    "type_issue":       "Issue",
+    "type_transfer_in": "Transfer in",
+    "type_transfer_out":"Transfer out"
+  },
+
+  "batch": {
+    "tracks_batch":            "Tracks batch/expiry",
+    "requires_expiry":         "Requires expiry date",
+    "near_expiry_days":        "Near-expiry alert (days before expiry)",
+    "lot_number":              "Lot number",
+    "expiry_date":             "Expiry date",
+    "mfg_date":                "Mfg date",
+    "supplier_ref":            "Supplier ref.",
+    "status": {
+      "active":      "Active",
+      "near_expiry": "Near expiry",
+      "expired":     "Expired",
+      "hold":        "On hold",
+      "depleted":    "Depleted"
+    },
+    "near_expiry_hint":        "Approaching its expiry date",
+    "expired_hint":            "Past its expiry date — not sellable",
+    "hold_hint":               "Hold reason",
+    "merge_notice":            "Will be added to an existing batch",
+    "empty":                   "No batches for this item yet",
+    "manual_pick":             "Manual pick",
+    "issue_override_confirm":  "Overriding an expired/hold batch — reason required",
+    "quarantine":              "Quarantine (expired)",
+    "quarantine_confirm":      "Move this batch's balance to the damaged warehouse? It stays traceable.",
+    "write_off":               "Write off",
+    "write_off_confirm":       "Write off this batch's balance in the damaged warehouse? This cannot be undone.",
+    "trace":                   "Trace",
+    "expiring_section_title":  "Expiring soon / Expired",
+    "show_depleted":           "Show {{n}} depleted batch(es)",
+    "hold_released":           "Hold released",
+    "hold_set":                "Batch put on hold",
+    "quarantined":             "Batch quarantined to the damaged warehouse",
+    "written_off":             "Batch written off",
+    "receipt_title":           "Receive stock",
+    "receipt_save":            "Save receipt",
+    "receipt_saved":           "Receipt saved",
+    "lot_required":            "Lot number is required",
+    "expiry_required":         "Expiry date is required for this item",
+    "qty_invalid":             "Enter a quantity greater than zero",
+    "issue_title":             "Issue stock",
+    "issue_saved":             "Issue posted",
+    "auto_selected":           "Auto-selected batch(es)",
+    "issue_none_selected":     "No batch selected yet — enter a warehouse and quantity",
+    "issue_insufficient":      "Not enough active stock to cover this quantity",
+    "issue_shortfall":         "Short by {{n}}",
+    "picker_desc":             "Needed: {{needed}}",
+    "picker_available":        "{{n}} available",
+    "picker_total":            "Total picked",
+    "picker_total_mismatch":   "Total picked ({{total}}) must equal the quantity needed ({{needed}})",
+    "override_reason_required":"An override reason is required for expired/hold batches",
+    "override_reason_label":   "Override reason"
   }
 }

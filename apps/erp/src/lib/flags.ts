@@ -5,7 +5,7 @@
  */
 export type FlagKey =
   | "sector.wholesale" | "mfg.enabled" | "projects.enabled" | "hr" | "construction.enabled"
-  | "healthcare.lab" | "healthcare.insurance" | "inventory.variants";
+  | "healthcare.lab" | "healthcare.insurance" | "inventory.variants" | "inventory.batch_expiry";
 
 const FLAGS: Record<FlagKey, boolean> = {
   "sector.wholesale": import.meta.env.DEV,
@@ -21,6 +21,9 @@ const FLAGS: Record<FlagKey, boolean> = {
   "healthcare.insurance": true,
   // DD-1 — tenant module flag gating the Variants/Matrix capability (D9).
   "inventory.variants": import.meta.env.DEV,
+  // DD-2 — tenant module flag gating the Batch/Expiry capability (§0). Off ⇒
+  // zero batch UI anywhere; DD-1 screens render unchanged (acceptance #1).
+  "inventory.batch_expiry": import.meta.env.DEV,
 };
 
 export function isFlagEnabled(flag?: string): boolean {

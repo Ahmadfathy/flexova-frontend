@@ -3,277 +3,1975 @@
     "module": "inventory",
     "version": "1.0",
     "currency": "EGP",
-    "tenant": { "id": "t_001", "name_ar": "سوبر ماركت الأمانة", "name_en": "Al-Amana Supermarket", "eta_enabled": true, "price_includes_tax": false },
-    "mock_states": ["loading", "empty", "error", "no_results", "offline"],
+    "tenant": {
+      "id": "t_001",
+      "name_ar": "سوبر ماركت الأمانة",
+      "name_en": "Al-Amana Supermarket",
+      "eta_enabled": true,
+      "price_includes_tax": false
+    },
+    "mock_states": [
+      "loading",
+      "empty",
+      "error",
+      "no_results",
+      "offline"
+    ],
     "notes": "Egyptian SME grocery/retail context. Balances are computed from ledger; do not edit directly."
   },
-
   "tax_types": [
-    { "id": "tax_t1", "code": "T1", "name_ar": "ضريبة القيمة المضافة 14%", "name_en": "VAT 14%", "rate": 14 },
-    { "id": "tax_t2", "code": "T2", "name_ar": "معفاة", "name_en": "Exempt", "rate": 0 },
-    { "id": "tax_t3", "code": "T1-5", "name_ar": "قيمة مضافة 5%", "name_en": "VAT 5%", "rate": 5 }
+    {
+      "id": "tax_t1",
+      "code": "T1",
+      "name_ar": "ضريبة القيمة المضافة 14%",
+      "name_en": "VAT 14%",
+      "rate": 14
+    },
+    {
+      "id": "tax_t2",
+      "code": "T2",
+      "name_ar": "معفاة",
+      "name_en": "Exempt",
+      "rate": 0
+    },
+    {
+      "id": "tax_t3",
+      "code": "T1-5",
+      "name_ar": "قيمة مضافة 5%",
+      "name_en": "VAT 5%",
+      "rate": 5
+    }
   ],
-
   "uoms": [
-    { "id": "uom_pc", "name_ar": "قطعة", "name_en": "Piece" },
-    { "id": "uom_box", "name_ar": "علبة", "name_en": "Box" },
-    { "id": "uom_carton", "name_ar": "كرتونة", "name_en": "Carton" },
-    { "id": "uom_kg", "name_ar": "كيلو", "name_en": "Kg" },
-    { "id": "uom_pack", "name_ar": "باكو", "name_en": "Pack" },
-    { "id": "uom_bottle", "name_ar": "زجاجة", "name_en": "Bottle" }
+    {
+      "id": "uom_pc",
+      "name_ar": "قطعة",
+      "name_en": "Piece"
+    },
+    {
+      "id": "uom_box",
+      "name_ar": "علبة",
+      "name_en": "Box"
+    },
+    {
+      "id": "uom_carton",
+      "name_ar": "كرتونة",
+      "name_en": "Carton"
+    },
+    {
+      "id": "uom_kg",
+      "name_ar": "كيلو",
+      "name_en": "Kg"
+    },
+    {
+      "id": "uom_pack",
+      "name_ar": "باكو",
+      "name_en": "Pack"
+    },
+    {
+      "id": "uom_bottle",
+      "name_ar": "زجاجة",
+      "name_en": "Bottle"
+    }
   ],
-
   "categories": [
-    { "id": "cat_food", "name_ar": "بقالة وأغذية", "name_en": "Groceries & Food", "parent_id": null, "item_count": 5 },
-    { "id": "cat_grains", "name_ar": "حبوب ومكرونة", "name_en": "Grains & Pasta", "parent_id": "cat_food", "item_count": 2 },
-    { "id": "cat_oils", "name_ar": "زيوت وسمن", "name_en": "Oils & Ghee", "parent_id": "cat_food", "item_count": 1 },
-    { "id": "cat_bev", "name_ar": "مشروبات", "name_en": "Beverages", "parent_id": null, "item_count": 2 },
-    { "id": "cat_clean", "name_ar": "منظفات", "name_en": "Cleaning", "parent_id": null, "item_count": 2 },
-    { "id": "cat_services", "name_ar": "خدمات", "name_en": "Services", "parent_id": null, "item_count": 1 },
-    { "id": "cat_apparel", "name_ar": "ملابس", "name_en": "Apparel", "parent_id": null, "item_count": 1 },
-    { "id": "cat_homeware", "name_ar": "أدوات منزلية", "name_en": "Homeware", "parent_id": null, "item_count": 1 }
+    {
+      "id": "cat_food",
+      "name_ar": "بقالة وأغذية",
+      "name_en": "Groceries & Food",
+      "parent_id": null,
+      "item_count": 6
+    },
+    {
+      "id": "cat_grains",
+      "name_ar": "حبوب ومكرونة",
+      "name_en": "Grains & Pasta",
+      "parent_id": "cat_food",
+      "item_count": 2
+    },
+    {
+      "id": "cat_oils",
+      "name_ar": "زيوت وسمن",
+      "name_en": "Oils & Ghee",
+      "parent_id": "cat_food",
+      "item_count": 1
+    },
+    {
+      "id": "cat_bev",
+      "name_ar": "مشروبات",
+      "name_en": "Beverages",
+      "parent_id": null,
+      "item_count": 2
+    },
+    {
+      "id": "cat_clean",
+      "name_ar": "منظفات",
+      "name_en": "Cleaning",
+      "parent_id": null,
+      "item_count": 2
+    },
+    {
+      "id": "cat_services",
+      "name_ar": "خدمات",
+      "name_en": "Services",
+      "parent_id": null,
+      "item_count": 1
+    },
+    {
+      "id": "cat_apparel",
+      "name_ar": "ملابس",
+      "name_en": "Apparel",
+      "parent_id": null,
+      "item_count": 1
+    },
+    {
+      "id": "cat_homeware",
+      "name_ar": "أدوات منزلية",
+      "name_en": "Homeware",
+      "parent_id": null,
+      "item_count": 1
+    },
+    {
+      "id": "cat_pharma",
+      "name_ar": "أدوية",
+      "name_en": "Pharmacy",
+      "parent_id": null,
+      "item_count": 2
+    },
+    {
+      "id": "cat_medsupplies",
+      "name_ar": "مستلزمات طبية",
+      "name_en": "Medical Supplies",
+      "parent_id": null,
+      "item_count": 1
+    }
   ],
-
   "attributes": [
-    { "id": "attr_color", "name_ar": "اللون", "name_en": "Color", "type": "color", "number_unit": null, "status": "active", "used_by_products": 2 },
-    { "id": "attr_size", "name_ar": "المقاس", "name_en": "Size", "type": "list", "number_unit": null, "status": "active", "used_by_products": 1 }
+    {
+      "id": "attr_color",
+      "name_ar": "اللون",
+      "name_en": "Color",
+      "type": "color",
+      "number_unit": null,
+      "status": "active",
+      "used_by_products": 2
+    },
+    {
+      "id": "attr_size",
+      "name_ar": "المقاس",
+      "name_en": "Size",
+      "type": "list",
+      "number_unit": null,
+      "status": "active",
+      "used_by_products": 1
+    }
   ],
-
   "attribute_values": [
-    { "id": "av_red",   "attribute_id": "attr_color", "value_ar": "أحمر",  "value_en": "Red",   "swatch_hex": "#C0392B", "sort_order": 1 },
-    { "id": "av_blue",  "attribute_id": "attr_color", "value_ar": "أزرق",  "value_en": "Blue",  "swatch_hex": "#2E5AAC", "sort_order": 2 },
-    { "id": "av_black", "attribute_id": "attr_color", "value_ar": "أسود",  "value_en": "Black", "swatch_hex": "#1C1C1C", "sort_order": 3 },
-    { "id": "av_white", "attribute_id": "attr_color", "value_ar": "أبيض",  "value_en": "White", "swatch_hex": "#F5F5F5", "sort_order": 4 },
-    { "id": "av_s", "attribute_id": "attr_size", "value_ar": "S", "value_en": "S", "swatch_hex": null, "sort_order": 1 },
-    { "id": "av_m", "attribute_id": "attr_size", "value_ar": "M", "value_en": "M", "swatch_hex": null, "sort_order": 2 },
-    { "id": "av_l", "attribute_id": "attr_size", "value_ar": "L", "value_en": "L", "swatch_hex": null, "sort_order": 3 }
+    {
+      "id": "av_red",
+      "attribute_id": "attr_color",
+      "value_ar": "أحمر",
+      "value_en": "Red",
+      "swatch_hex": "#C0392B",
+      "sort_order": 1
+    },
+    {
+      "id": "av_blue",
+      "attribute_id": "attr_color",
+      "value_ar": "أزرق",
+      "value_en": "Blue",
+      "swatch_hex": "#2E5AAC",
+      "sort_order": 2
+    },
+    {
+      "id": "av_black",
+      "attribute_id": "attr_color",
+      "value_ar": "أسود",
+      "value_en": "Black",
+      "swatch_hex": "#1C1C1C",
+      "sort_order": 3
+    },
+    {
+      "id": "av_white",
+      "attribute_id": "attr_color",
+      "value_ar": "أبيض",
+      "value_en": "White",
+      "swatch_hex": "#F5F5F5",
+      "sort_order": 4
+    },
+    {
+      "id": "av_s",
+      "attribute_id": "attr_size",
+      "value_ar": "S",
+      "value_en": "S",
+      "swatch_hex": null,
+      "sort_order": 1
+    },
+    {
+      "id": "av_m",
+      "attribute_id": "attr_size",
+      "value_ar": "M",
+      "value_en": "M",
+      "swatch_hex": null,
+      "sort_order": 2
+    },
+    {
+      "id": "av_l",
+      "attribute_id": "attr_size",
+      "value_ar": "L",
+      "value_en": "L",
+      "swatch_hex": null,
+      "sort_order": 3
+    }
   ],
-
   "warehouses": [
-    { "id": "wh_main", "name_ar": "المخزن الرئيسي", "name_en": "Main Warehouse", "code": "WH-01", "branch_id": "br_main", "type": "storage", "status": "active", "is_default": true, "stock_value": 318450.00 },
-    { "id": "wh_nasr", "name_ar": "فرع مدينة نصر", "name_en": "Nasr City Branch", "code": "WH-02", "branch_id": "br_nasr", "type": "sale", "status": "active", "is_default": false, "stock_value": 96820.00 },
-    { "id": "wh_damaged", "name_ar": "مخزن التالف", "name_en": "Damaged Stock", "code": "WH-09", "branch_id": "br_main", "type": "damaged", "status": "active", "is_default": false, "stock_value": 1240.00 }
+    {
+      "id": "wh_main",
+      "name_ar": "المخزن الرئيسي",
+      "name_en": "Main Warehouse",
+      "code": "WH-01",
+      "branch_id": "br_main",
+      "type": "storage",
+      "status": "active",
+      "is_default": true,
+      "stock_value": 318450
+    },
+    {
+      "id": "wh_nasr",
+      "name_ar": "فرع مدينة نصر",
+      "name_en": "Nasr City Branch",
+      "code": "WH-02",
+      "branch_id": "br_nasr",
+      "type": "sale",
+      "status": "active",
+      "is_default": false,
+      "stock_value": 96820
+    },
+    {
+      "id": "wh_damaged",
+      "name_ar": "مخزن التالف",
+      "name_en": "Damaged Stock",
+      "code": "WH-09",
+      "branch_id": "br_main",
+      "type": "damaged",
+      "status": "active",
+      "is_default": false,
+      "stock_value": 1240
+    }
   ],
-
   "branches": [
-    { "id": "br_main", "name_ar": "الفرع الرئيسي", "name_en": "Main Branch" },
-    { "id": "br_nasr", "name_ar": "فرع مدينة نصر", "name_en": "Nasr City Branch" }
+    {
+      "id": "br_main",
+      "name_ar": "الفرع الرئيسي",
+      "name_en": "Main Branch"
+    },
+    {
+      "id": "br_nasr",
+      "name_ar": "فرع مدينة نصر",
+      "name_en": "Nasr City Branch"
+    }
   ],
-
   "price_lists": [
-    { "id": "pl_retail", "name_ar": "التجزئة", "name_en": "Retail", "currency": "EGP", "status": "active", "is_default": true, "priced_items": 8 },
-    { "id": "pl_wholesale", "name_ar": "الجملة", "name_en": "Wholesale", "currency": "EGP", "status": "active", "is_default": false, "priced_items": 6 },
-    { "id": "pl_vip", "name_ar": "عملاء مميزون", "name_en": "VIP", "currency": "EGP", "status": "active", "is_default": false, "priced_items": 4 }
+    {
+      "id": "pl_retail",
+      "name_ar": "التجزئة",
+      "name_en": "Retail",
+      "currency": "EGP",
+      "status": "active",
+      "is_default": true,
+      "priced_items": 8
+    },
+    {
+      "id": "pl_wholesale",
+      "name_ar": "الجملة",
+      "name_en": "Wholesale",
+      "currency": "EGP",
+      "status": "active",
+      "is_default": false,
+      "priced_items": 6
+    },
+    {
+      "id": "pl_vip",
+      "name_ar": "عملاء مميزون",
+      "name_en": "VIP",
+      "currency": "EGP",
+      "status": "active",
+      "is_default": false,
+      "priced_items": 4
+    }
   ],
-
   "items": [
     {
-      "id": "it_rice", "code": "GR-1001", "name_ar": "أرز مصري فاخر ٥ كجم", "name_en": "Egyptian Rice 5kg",
-      "item_type": "stocked", "category_id": "cat_grains", "base_uom_id": "uom_box",
-      "barcodes": ["6224000111014"], "image": "https://placehold.co/80x80/e8f5e9/388e3c?text=Rice", "tax_type_id": "tax_t1", "eta_code": "EG-100123-RICE5",
-      "reorder_level": 30, "max_level": 300, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 185.00, "pl_wholesale": 168.00, "pl_vip": 175.00 },
-      "last_purchase_price": 152.00, "avg_cost": 149.30,
-      "units": [ { "uom_id": "uom_box", "factor": 1, "barcode": "6224000111014", "unit_price": 185.00 }, { "uom_id": "uom_carton", "factor": 8, "barcode": "6224000111021", "unit_price": 1440.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 220 }, { "warehouse_id": "wh_nasr", "qty": 45 } ]
+      "id": "it_rice",
+      "code": "GR-1001",
+      "name_ar": "أرز مصري فاخر ٥ كجم",
+      "name_en": "Egyptian Rice 5kg",
+      "item_type": "stocked",
+      "category_id": "cat_grains",
+      "base_uom_id": "uom_box",
+      "barcodes": [
+        "6224000111014"
+      ],
+      "image": "https://placehold.co/80x80/e8f5e9/388e3c?text=Rice",
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-100123-RICE5",
+      "reorder_level": 30,
+      "max_level": 300,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 185,
+        "pl_wholesale": 168,
+        "pl_vip": 175
+      },
+      "last_purchase_price": 152,
+      "avg_cost": 149.3,
+      "units": [
+        {
+          "uom_id": "uom_box",
+          "factor": 1,
+          "barcode": "6224000111014",
+          "unit_price": 185
+        },
+        {
+          "uom_id": "uom_carton",
+          "factor": 8,
+          "barcode": "6224000111021",
+          "unit_price": 1440
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 220
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 45
+        }
+      ]
     },
     {
-      "id": "it_pasta", "code": "GR-1002", "name_ar": "مكرونة الملكة ٤٠٠ جم", "name_en": "Queen Pasta 400g",
-      "item_type": "stocked", "category_id": "cat_grains", "base_uom_id": "uom_pack",
-      "barcodes": ["6223000222020"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-100124-PASTA",
-      "reorder_level": 100, "max_level": 1000, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 12.50, "pl_wholesale": 10.75 },
-      "last_purchase_price": 9.20, "avg_cost": 9.05,
-      "units": [ { "uom_id": "uom_pack", "factor": 1, "barcode": "6223000222020", "unit_price": 12.50 }, { "uom_id": "uom_carton", "factor": 24, "barcode": "6223000222037", "unit_price": 288.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 85 }, { "warehouse_id": "wh_nasr", "qty": 12 } ]
+      "id": "it_pasta",
+      "code": "GR-1002",
+      "name_ar": "مكرونة الملكة ٤٠٠ جم",
+      "name_en": "Queen Pasta 400g",
+      "item_type": "stocked",
+      "category_id": "cat_grains",
+      "base_uom_id": "uom_pack",
+      "barcodes": [
+        "6223000222020"
+      ],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-100124-PASTA",
+      "reorder_level": 100,
+      "max_level": 1000,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 12.5,
+        "pl_wholesale": 10.75
+      },
+      "last_purchase_price": 9.2,
+      "avg_cost": 9.05,
+      "units": [
+        {
+          "uom_id": "uom_pack",
+          "factor": 1,
+          "barcode": "6223000222020",
+          "unit_price": 12.5
+        },
+        {
+          "uom_id": "uom_carton",
+          "factor": 24,
+          "barcode": "6223000222037",
+          "unit_price": 288
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 85
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 12
+        }
+      ]
     },
     {
-      "id": "it_oil", "code": "OL-2001", "name_ar": "زيت عافية ذرة ٢.٢٥ لتر", "name_en": "Afia Corn Oil 2.25L",
-      "item_type": "stocked", "category_id": "cat_oils", "base_uom_id": "uom_bottle",
-      "barcodes": ["6221031492013"], "image": "https://placehold.co/80x80/fff8e1/f57f17?text=Oil", "tax_type_id": "tax_t1", "eta_code": "EG-200201-OIL",
-      "reorder_level": 40, "max_level": 400, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 168.00, "pl_wholesale": 158.00, "pl_vip": 162.00 },
-      "last_purchase_price": 144.00, "avg_cost": 141.50,
-      "units": [ { "uom_id": "uom_bottle", "factor": 1, "barcode": "6221031492013", "unit_price": 168.00 }, { "uom_id": "uom_carton", "factor": 6, "barcode": "6221031492020", "unit_price": 990.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 132 }, { "warehouse_id": "wh_nasr", "qty": 28 } ]
+      "id": "it_oil",
+      "code": "OL-2001",
+      "name_ar": "زيت عافية ذرة ٢.٢٥ لتر",
+      "name_en": "Afia Corn Oil 2.25L",
+      "item_type": "stocked",
+      "category_id": "cat_oils",
+      "base_uom_id": "uom_bottle",
+      "barcodes": [
+        "6221031492013"
+      ],
+      "image": "https://placehold.co/80x80/fff8e1/f57f17?text=Oil",
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-200201-OIL",
+      "reorder_level": 40,
+      "max_level": 400,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 168,
+        "pl_wholesale": 158,
+        "pl_vip": 162
+      },
+      "last_purchase_price": 144,
+      "avg_cost": 141.5,
+      "units": [
+        {
+          "uom_id": "uom_bottle",
+          "factor": 1,
+          "barcode": "6221031492013",
+          "unit_price": 168
+        },
+        {
+          "uom_id": "uom_carton",
+          "factor": 6,
+          "barcode": "6221031492020",
+          "unit_price": 990
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 132
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 28
+        }
+      ]
     },
     {
-      "id": "it_tea", "code": "BV-3001", "name_ar": "شاي العروسة ٢٥٠ جم", "name_en": "El Arosa Tea 250g",
-      "item_type": "stocked", "category_id": "cat_bev", "base_uom_id": "uom_pack",
-      "barcodes": ["6224007733018"], "image": "https://placehold.co/80x80/fce4ec/c62828?text=Tea", "tax_type_id": "tax_t1", "eta_code": "EG-300301-TEA",
-      "reorder_level": 60, "max_level": 600, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 58.00, "pl_wholesale": 52.00 },
-      "last_purchase_price": 46.50, "avg_cost": 45.80,
-      "units": [ { "uom_id": "uom_pack", "factor": 1, "barcode": "6224007733018", "unit_price": 58.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 24 }, { "warehouse_id": "wh_nasr", "qty": 8 } ]
+      "id": "it_tea",
+      "code": "BV-3001",
+      "name_ar": "شاي العروسة ٢٥٠ جم",
+      "name_en": "El Arosa Tea 250g",
+      "item_type": "stocked",
+      "category_id": "cat_bev",
+      "base_uom_id": "uom_pack",
+      "barcodes": [
+        "6224007733018"
+      ],
+      "image": "https://placehold.co/80x80/fce4ec/c62828?text=Tea",
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-300301-TEA",
+      "reorder_level": 60,
+      "max_level": 600,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 58,
+        "pl_wholesale": 52
+      },
+      "last_purchase_price": 46.5,
+      "avg_cost": 45.8,
+      "units": [
+        {
+          "uom_id": "uom_pack",
+          "factor": 1,
+          "barcode": "6224007733018",
+          "unit_price": 58
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 24
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 8
+        }
+      ]
     },
     {
-      "id": "it_cola", "code": "BV-3002", "name_ar": "كوكاكولا ١ لتر", "name_en": "Coca-Cola 1L",
-      "item_type": "stocked", "category_id": "cat_bev", "base_uom_id": "uom_bottle",
-      "barcodes": ["5449000054227"], "image": "https://placehold.co/80x80/ffebee/b71c1c?text=Cola", "tax_type_id": "tax_t1", "eta_code": "",
-      "reorder_level": 120, "max_level": 1200, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 22.00 },
-      "last_purchase_price": 16.00, "avg_cost": 15.70,
-      "units": [ { "uom_id": "uom_bottle", "factor": 1, "barcode": "5449000054227", "unit_price": 22.00 }, { "uom_id": "uom_carton", "factor": 12, "barcode": "5449000054234", "unit_price": 252.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 340 }, { "warehouse_id": "wh_nasr", "qty": 96 } ],
+      "id": "it_cola",
+      "code": "BV-3002",
+      "name_ar": "كوكاكولا ١ لتر",
+      "name_en": "Coca-Cola 1L",
+      "item_type": "stocked",
+      "category_id": "cat_bev",
+      "base_uom_id": "uom_bottle",
+      "barcodes": [
+        "5449000054227"
+      ],
+      "image": "https://placehold.co/80x80/ffebee/b71c1c?text=Cola",
+      "tax_type_id": "tax_t1",
+      "eta_code": "",
+      "reorder_level": 120,
+      "max_level": 1200,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 22
+      },
+      "last_purchase_price": 16,
+      "avg_cost": 15.7,
+      "units": [
+        {
+          "uom_id": "uom_bottle",
+          "factor": 1,
+          "barcode": "5449000054227",
+          "unit_price": 22
+        },
+        {
+          "uom_id": "uom_carton",
+          "factor": 12,
+          "barcode": "5449000054234",
+          "unit_price": 252
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 340
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 96
+        }
+      ],
       "_flag": "eta_not_ready"
     },
     {
-      "id": "it_soap", "code": "CL-4001", "name_ar": "صابون رابسو سائل ٩٠٠ مل", "name_en": "Rabso Liquid Soap 900ml",
-      "item_type": "stocked", "category_id": "cat_clean", "base_uom_id": "uom_bottle",
-      "barcodes": ["6224008844025"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-400401-SOAP",
-      "reorder_level": 50, "max_level": 500, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 74.00, "pl_wholesale": 66.00 },
-      "last_purchase_price": 58.00, "avg_cost": 57.20,
-      "units": [ { "uom_id": "uom_bottle", "factor": 1, "barcode": "6224008844025", "unit_price": 74.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 18 }, { "warehouse_id": "wh_nasr", "qty": 4 } ]
+      "id": "it_soap",
+      "code": "CL-4001",
+      "name_ar": "صابون رابسو سائل ٩٠٠ مل",
+      "name_en": "Rabso Liquid Soap 900ml",
+      "item_type": "stocked",
+      "category_id": "cat_clean",
+      "base_uom_id": "uom_bottle",
+      "barcodes": [
+        "6224008844025"
+      ],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-400401-SOAP",
+      "reorder_level": 50,
+      "max_level": 500,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 74,
+        "pl_wholesale": 66
+      },
+      "last_purchase_price": 58,
+      "avg_cost": 57.2,
+      "units": [
+        {
+          "uom_id": "uom_bottle",
+          "factor": 1,
+          "barcode": "6224008844025",
+          "unit_price": 74
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 18
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 4
+        }
+      ]
     },
     {
-      "id": "it_detergent", "code": "CL-4002", "name_ar": "مسحوق غسيل برسيل ٣ كجم", "name_en": "Persil Powder 3kg",
-      "item_type": "stocked", "category_id": "cat_clean", "base_uom_id": "uom_pack",
-      "barcodes": ["6221155033047"], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-400402-DET",
-      "reorder_level": 25, "max_level": 250, "status": "suspended", "incomplete": false,
-      "prices": { "pl_retail": 210.00 },
-      "last_purchase_price": 178.00, "avg_cost": 176.00,
-      "units": [ { "uom_id": "uom_pack", "factor": 1, "barcode": "6221155033047", "unit_price": 210.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 60 } ]
+      "id": "it_detergent",
+      "code": "CL-4002",
+      "name_ar": "مسحوق غسيل برسيل ٣ كجم",
+      "name_en": "Persil Powder 3kg",
+      "item_type": "stocked",
+      "category_id": "cat_clean",
+      "base_uom_id": "uom_pack",
+      "barcodes": [
+        "6221155033047"
+      ],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-400402-DET",
+      "reorder_level": 25,
+      "max_level": 250,
+      "status": "suspended",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 210
+      },
+      "last_purchase_price": 178,
+      "avg_cost": 176,
+      "units": [
+        {
+          "uom_id": "uom_pack",
+          "factor": 1,
+          "barcode": "6221155033047",
+          "unit_price": 210
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 60
+        }
+      ]
     },
     {
-      "id": "it_sugar", "code": "GR-1003", "name_ar": "سكر أبيض", "name_en": "White Sugar",
-      "item_type": "stocked", "category_id": "cat_food", "base_uom_id": "uom_kg",
-      "barcodes": [], "image": null, "tax_type_id": "tax_t1", "eta_code": "",
-      "reorder_level": 200, "max_level": 2000, "status": "active", "incomplete": true,
-      "prices": { "pl_retail": 38.00 },
-      "last_purchase_price": null, "avg_cost": 0,
-      "units": [ { "uom_id": "uom_kg", "factor": 1, "barcode": null, "unit_price": 38.00 } ],
-      "balances": [ { "warehouse_id": "wh_main", "qty": 0 } ],
+      "id": "it_sugar",
+      "code": "GR-1003",
+      "name_ar": "سكر أبيض",
+      "name_en": "White Sugar",
+      "item_type": "stocked",
+      "category_id": "cat_food",
+      "base_uom_id": "uom_kg",
+      "barcodes": [],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "",
+      "reorder_level": 200,
+      "max_level": 2000,
+      "status": "active",
+      "incomplete": true,
+      "prices": {
+        "pl_retail": 38
+      },
+      "last_purchase_price": null,
+      "avg_cost": 0,
+      "units": [
+        {
+          "uom_id": "uom_kg",
+          "factor": 1,
+          "barcode": null,
+          "unit_price": 38
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 0
+        }
+      ],
       "_flag": "incomplete"
     },
     {
-      "id": "it_delivery", "code": "SV-9001", "name_ar": "خدمة توصيل", "name_en": "Delivery Service",
-      "item_type": "service", "category_id": "cat_services", "base_uom_id": "uom_pc",
-      "barcodes": [], "image": null, "tax_type_id": "tax_t2", "eta_code": "EG-900901-DLV",
-      "reorder_level": null, "max_level": null, "status": "active", "incomplete": false,
-      "prices": { "pl_retail": 30.00 },
-      "last_purchase_price": null, "avg_cost": null,
-      "units": [ { "uom_id": "uom_pc", "factor": 1, "barcode": null, "unit_price": 30.00 } ],
+      "id": "it_delivery",
+      "code": "SV-9001",
+      "name_ar": "خدمة توصيل",
+      "name_en": "Delivery Service",
+      "item_type": "service",
+      "category_id": "cat_services",
+      "base_uom_id": "uom_pc",
+      "barcodes": [],
+      "image": null,
+      "tax_type_id": "tax_t2",
+      "eta_code": "EG-900901-DLV",
+      "reorder_level": null,
+      "max_level": null,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 30
+      },
+      "last_purchase_price": null,
+      "avg_cost": null,
+      "units": [
+        {
+          "uom_id": "uom_pc",
+          "factor": 1,
+          "barcode": null,
+          "unit_price": 30
+        }
+      ],
       "balances": []
     },
     {
-      "id": "it_tshirt", "code": "TSH-500", "name_ar": "تيشيرت قطن رجالي", "name_en": "Men's Cotton T-Shirt",
-      "item_type": "stocked", "is_product_parent": true, "has_variants_flag": true,
-      "category_id": "cat_apparel", "base_uom_id": "uom_pc",
-      "barcodes": [], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-500900-TSHIRT",
-      "reorder_level": null, "max_level": null, "status": "active", "incomplete": false,
-      "prices": {}, "last_purchase_price": null, "avg_cost": null,
-      "units": [ { "uom_id": "uom_pc", "factor": 1, "barcode": null, "unit_price": 0 } ],
+      "id": "it_tshirt",
+      "code": "TSH-500",
+      "name_ar": "تيشيرت قطن رجالي",
+      "name_en": "Men's Cotton T-Shirt",
+      "item_type": "stocked",
+      "is_product_parent": true,
+      "has_variants_flag": true,
+      "category_id": "cat_apparel",
+      "base_uom_id": "uom_pc",
+      "barcodes": [],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-500900-TSHIRT",
+      "reorder_level": null,
+      "max_level": null,
+      "status": "active",
+      "incomplete": false,
+      "prices": {},
+      "last_purchase_price": null,
+      "avg_cost": null,
+      "units": [
+        {
+          "uom_id": "uom_pc",
+          "factor": 1,
+          "barcode": null,
+          "unit_price": 0
+        }
+      ],
       "balances": [],
-      "attributes_used": ["attr_color", "attr_size"],
-      "rollup": { "balance_total": 208, "price_range": { "min": 180.00, "max": 190.00 }, "any_low_stock": true },
+      "attributes_used": [
+        "attr_color",
+        "attr_size"
+      ],
+      "rollup": {
+        "balance_total": 208,
+        "price_range": {
+          "min": 180,
+          "max": 190
+        },
+        "any_low_stock": true
+      },
       "variants": [
-        { "id": "v_ts_red_s", "code": "TSH-500-RED-S", "attrs": { "attr_color": "av_red", "attr_size": "av_s" }, "barcodes": ["6224900500017"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
-          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 40 }, { "warehouse_id": "wh_nasr", "qty": 8 } ] },
-        { "id": "v_ts_red_m", "code": "TSH-500-RED-M", "attrs": { "attr_color": "av_red", "attr_size": "av_m" }, "barcodes": ["6224900500024"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
-          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 52 }, { "warehouse_id": "wh_nasr", "qty": 6 } ] },
-        { "id": "v_ts_red_l", "code": "TSH-500-RED-L", "attrs": { "attr_color": "av_red", "attr_size": "av_l" }, "barcodes": ["6224900500031"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
-          "prices": { "pl_retail": 190.00, "pl_wholesale": 158.00, "pl_vip": 174.00 }, "last_purchase_price": 122.00, "avg_cost": 120.10,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 33 }, { "warehouse_id": "wh_nasr", "qty": 0 } ] },
-        { "id": "v_ts_blue_s", "code": "TSH-500-BLUE-S", "attrs": { "attr_color": "av_blue", "attr_size": "av_s" }, "barcodes": ["6224900500048"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
-          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 7 }, { "warehouse_id": "wh_nasr", "qty": 1 } ] },
-        { "id": "v_ts_blue_m", "code": "TSH-500-BLUE-M", "attrs": { "attr_color": "av_blue", "attr_size": "av_m" }, "barcodes": ["6224900500055"], "image": null, "eta_code": null, "reorder_level": 10, "max_level": 120, "status": "active",
-          "prices": { "pl_retail": 180.00, "pl_wholesale": 150.00, "pl_vip": 165.00 }, "last_purchase_price": 118.00, "avg_cost": 116.40,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 44 }, { "warehouse_id": "wh_nasr", "qty": 5 } ] },
-        { "id": "v_ts_blue_l", "code": "TSH-500-BLUE-L", "attrs": { "attr_color": "av_blue", "attr_size": "av_l" }, "barcodes": ["6224900500062"], "image": null, "eta_code": "EG-500900-TSHIRT-BLUEL", "reorder_level": 10, "max_level": 120, "status": "suspended",
-          "prices": { "pl_retail": 190.00, "pl_wholesale": 158.00, "pl_vip": 174.00 }, "last_purchase_price": 122.00, "avg_cost": 120.10,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 12 }, { "warehouse_id": "wh_nasr", "qty": 0 } ] }
+        {
+          "id": "v_ts_red_s",
+          "code": "TSH-500-RED-S",
+          "attrs": {
+            "attr_color": "av_red",
+            "attr_size": "av_s"
+          },
+          "barcodes": [
+            "6224900500017"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 10,
+          "max_level": 120,
+          "status": "active",
+          "prices": {
+            "pl_retail": 180,
+            "pl_wholesale": 150,
+            "pl_vip": 165
+          },
+          "last_purchase_price": 118,
+          "avg_cost": 116.4,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 40
+            },
+            {
+              "warehouse_id": "wh_nasr",
+              "qty": 8
+            }
+          ]
+        },
+        {
+          "id": "v_ts_red_m",
+          "code": "TSH-500-RED-M",
+          "attrs": {
+            "attr_color": "av_red",
+            "attr_size": "av_m"
+          },
+          "barcodes": [
+            "6224900500024"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 10,
+          "max_level": 120,
+          "status": "active",
+          "prices": {
+            "pl_retail": 180,
+            "pl_wholesale": 150,
+            "pl_vip": 165
+          },
+          "last_purchase_price": 118,
+          "avg_cost": 116.4,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 52
+            },
+            {
+              "warehouse_id": "wh_nasr",
+              "qty": 6
+            }
+          ]
+        },
+        {
+          "id": "v_ts_red_l",
+          "code": "TSH-500-RED-L",
+          "attrs": {
+            "attr_color": "av_red",
+            "attr_size": "av_l"
+          },
+          "barcodes": [
+            "6224900500031"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 10,
+          "max_level": 120,
+          "status": "active",
+          "prices": {
+            "pl_retail": 190,
+            "pl_wholesale": 158,
+            "pl_vip": 174
+          },
+          "last_purchase_price": 122,
+          "avg_cost": 120.1,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 33
+            },
+            {
+              "warehouse_id": "wh_nasr",
+              "qty": 0
+            }
+          ]
+        },
+        {
+          "id": "v_ts_blue_s",
+          "code": "TSH-500-BLUE-S",
+          "attrs": {
+            "attr_color": "av_blue",
+            "attr_size": "av_s"
+          },
+          "barcodes": [
+            "6224900500048"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 10,
+          "max_level": 120,
+          "status": "active",
+          "prices": {
+            "pl_retail": 180,
+            "pl_wholesale": 150,
+            "pl_vip": 165
+          },
+          "last_purchase_price": 118,
+          "avg_cost": 116.4,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 7
+            },
+            {
+              "warehouse_id": "wh_nasr",
+              "qty": 1
+            }
+          ]
+        },
+        {
+          "id": "v_ts_blue_m",
+          "code": "TSH-500-BLUE-M",
+          "attrs": {
+            "attr_color": "av_blue",
+            "attr_size": "av_m"
+          },
+          "barcodes": [
+            "6224900500055"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 10,
+          "max_level": 120,
+          "status": "active",
+          "prices": {
+            "pl_retail": 180,
+            "pl_wholesale": 150,
+            "pl_vip": 165
+          },
+          "last_purchase_price": 118,
+          "avg_cost": 116.4,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 44
+            },
+            {
+              "warehouse_id": "wh_nasr",
+              "qty": 5
+            }
+          ]
+        },
+        {
+          "id": "v_ts_blue_l",
+          "code": "TSH-500-BLUE-L",
+          "attrs": {
+            "attr_color": "av_blue",
+            "attr_size": "av_l"
+          },
+          "barcodes": [
+            "6224900500062"
+          ],
+          "image": null,
+          "eta_code": "EG-500900-TSHIRT-BLUEL",
+          "reorder_level": 10,
+          "max_level": 120,
+          "status": "suspended",
+          "prices": {
+            "pl_retail": 190,
+            "pl_wholesale": 158,
+            "pl_vip": 174
+          },
+          "last_purchase_price": 122,
+          "avg_cost": 120.1,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 12
+            },
+            {
+              "warehouse_id": "wh_nasr",
+              "qty": 0
+            }
+          ]
+        }
       ]
     },
     {
-      "id": "it_mug", "code": "MUG-700", "name_ar": "كوب سيراميك", "name_en": "Ceramic Mug",
-      "item_type": "stocked", "is_product_parent": true, "has_variants_flag": true,
-      "category_id": "cat_homeware", "base_uom_id": "uom_pc",
-      "barcodes": [], "image": null, "tax_type_id": "tax_t1", "eta_code": "EG-700100-MUG",
-      "reorder_level": null, "max_level": null, "status": "active", "incomplete": false,
-      "prices": {}, "last_purchase_price": null, "avg_cost": null,
-      "units": [ { "uom_id": "uom_pc", "factor": 1, "barcode": null, "unit_price": 0 } ],
+      "id": "it_mug",
+      "code": "MUG-700",
+      "name_ar": "كوب سيراميك",
+      "name_en": "Ceramic Mug",
+      "item_type": "stocked",
+      "is_product_parent": true,
+      "has_variants_flag": true,
+      "category_id": "cat_homeware",
+      "base_uom_id": "uom_pc",
+      "barcodes": [],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-700100-MUG",
+      "reorder_level": null,
+      "max_level": null,
+      "status": "active",
+      "incomplete": false,
+      "prices": {},
+      "last_purchase_price": null,
+      "avg_cost": null,
+      "units": [
+        {
+          "uom_id": "uom_pc",
+          "factor": 1,
+          "barcode": null,
+          "unit_price": 0
+        }
+      ],
       "balances": [],
-      "attributes_used": ["attr_color"],
-      "rollup": { "balance_total": 96, "price_range": { "min": 45.00, "max": 45.00 }, "any_low_stock": false },
+      "attributes_used": [
+        "attr_color"
+      ],
+      "rollup": {
+        "balance_total": 96,
+        "price_range": {
+          "min": 45,
+          "max": 45
+        },
+        "any_low_stock": false
+      },
       "variants": [
-        { "id": "v_mug_white", "code": "MUG-700-WHITE", "attrs": { "attr_color": "av_white" }, "barcodes": ["6224900700016"], "image": null, "eta_code": null, "reorder_level": 15, "max_level": 200, "status": "active",
-          "prices": { "pl_retail": 45.00, "pl_wholesale": 38.00 }, "last_purchase_price": 27.00, "avg_cost": 26.30,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 60 } ] },
-        { "id": "v_mug_blue", "code": "MUG-700-BLUE", "attrs": { "attr_color": "av_blue" }, "barcodes": ["6224900700023"], "image": null, "eta_code": null, "reorder_level": 15, "max_level": 200, "status": "active",
-          "prices": { "pl_retail": 45.00, "pl_wholesale": 38.00 }, "last_purchase_price": 27.00, "avg_cost": 26.30,
-          "balances": [ { "warehouse_id": "wh_main", "qty": 36 } ] }
+        {
+          "id": "v_mug_white",
+          "code": "MUG-700-WHITE",
+          "attrs": {
+            "attr_color": "av_white"
+          },
+          "barcodes": [
+            "6224900700016"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 15,
+          "max_level": 200,
+          "status": "active",
+          "prices": {
+            "pl_retail": 45,
+            "pl_wholesale": 38
+          },
+          "last_purchase_price": 27,
+          "avg_cost": 26.3,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 60
+            }
+          ]
+        },
+        {
+          "id": "v_mug_blue",
+          "code": "MUG-700-BLUE",
+          "attrs": {
+            "attr_color": "av_blue"
+          },
+          "barcodes": [
+            "6224900700023"
+          ],
+          "image": null,
+          "eta_code": null,
+          "reorder_level": 15,
+          "max_level": 200,
+          "status": "active",
+          "prices": {
+            "pl_retail": 45,
+            "pl_wholesale": 38
+          },
+          "last_purchase_price": 27,
+          "avg_cost": 26.3,
+          "balances": [
+            {
+              "warehouse_id": "wh_main",
+              "qty": 36
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "itm_para500",
+      "code": "PHM-PARA-500",
+      "name_ar": "باراسيتامول 500 مجم — 20 قرص",
+      "name_en": "Paracetamol 500mg — 20 tabs",
+      "item_type": "stocked",
+      "category_id": "cat_pharma",
+      "base_uom_id": "uom_box",
+      "barcodes": [
+        "6224009901001"
+      ],
+      "image": "https://placehold.co/80x80/e3f2fd/1565c0?text=Para",
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-1080020000",
+      "reorder_level": 100,
+      "max_level": 3000,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 15,
+        "pl_wholesale": 13,
+        "pl_vip": 14
+      },
+      "last_purchase_price": 3.65,
+      "avg_cost": 3.5,
+      "units": [
+        {
+          "uom_id": "uom_box",
+          "factor": 1,
+          "barcode": "6224009901001",
+          "unit_price": 15
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 700
+        },
+        {
+          "warehouse_id": "wh_nasr",
+          "qty": 140
+        }
+      ],
+      "tracks_batch": true,
+      "requires_expiry": true,
+      "near_expiry_days": null
+    },
+    {
+      "id": "itm_amox",
+      "code": "PHM-AMOX-250",
+      "name_ar": "أموكسيسيلين 250 مجم شراب",
+      "name_en": "Amoxicillin 250mg syrup",
+      "item_type": "stocked",
+      "category_id": "cat_pharma",
+      "base_uom_id": "uom_bottle",
+      "barcodes": [
+        "6224009901002"
+      ],
+      "image": "https://placehold.co/80x80/fff3e0/ef6c00?text=Amox",
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-1080030000",
+      "reorder_level": 30,
+      "max_level": 600,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 28,
+        "pl_wholesale": 24,
+        "pl_vip": 26
+      },
+      "last_purchase_price": 11.5,
+      "avg_cost": 11.75,
+      "units": [
+        {
+          "uom_id": "uom_bottle",
+          "factor": 1,
+          "barcode": "6224009901002",
+          "unit_price": 28
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 250
+        }
+      ],
+      "tracks_batch": true,
+      "requires_expiry": true,
+      "near_expiry_days": null
+    },
+    {
+      "id": "itm_milk",
+      "code": "FD-MILK-1L",
+      "name_ar": "لبن جهينة كامل الدسم 1 لتر",
+      "name_en": "Juhayna full-fat milk 1L",
+      "item_type": "stocked",
+      "category_id": "cat_food",
+      "base_uom_id": "uom_pc",
+      "barcodes": [
+        "6224009901003"
+      ],
+      "image": "https://placehold.co/80x80/e8f5e9/2e7d32?text=Milk",
+      "tax_type_id": "tax_t2",
+      "eta_code": "EG-0401200000",
+      "reorder_level": 100,
+      "max_level": 1000,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 32,
+        "pl_wholesale": 28,
+        "pl_vip": 30
+      },
+      "last_purchase_price": 21.5,
+      "avg_cost": 21.75,
+      "units": [
+        {
+          "uom_id": "uom_pc",
+          "factor": 1,
+          "barcode": "6224009901003",
+          "unit_price": 32
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 180
+        },
+        {
+          "warehouse_id": "wh_damaged",
+          "qty": 0
+        }
+      ],
+      "tracks_batch": true,
+      "requires_expiry": true,
+      "near_expiry_days": 7
+    },
+    {
+      "id": "itm_omron",
+      "code": "MED-OMRON-M2",
+      "name_ar": "جهاز قياس ضغط أومرون M2",
+      "name_en": "Omron M2 BP monitor",
+      "item_type": "stocked",
+      "category_id": "cat_medsupplies",
+      "base_uom_id": "uom_pc",
+      "barcodes": [
+        "6224009901004"
+      ],
+      "image": "https://placehold.co/80x80/f3e5f5/6a1b9a?text=Omron",
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-9018900000",
+      "reorder_level": 5,
+      "max_level": 100,
+      "status": "active",
+      "incomplete": false,
+      "prices": {
+        "pl_retail": 1450,
+        "pl_wholesale": 1300,
+        "pl_vip": 1380
+      },
+      "last_purchase_price": 850,
+      "avg_cost": 855,
+      "units": [
+        {
+          "uom_id": "uom_pc",
+          "factor": 1,
+          "barcode": "6224009901004",
+          "unit_price": 1450
+        }
+      ],
+      "balances": [
+        {
+          "warehouse_id": "wh_main",
+          "qty": 25
+        }
+      ],
+      "tracks_batch": true,
+      "requires_expiry": false,
+      "near_expiry_days": null
+    }
+  ],
+  "ledger": [
+    {
+      "id": "mv_001",
+      "item_id": "it_rice",
+      "date": "2026-06-01",
+      "type": "opening",
+      "source_ref": "OPEN-2026",
+      "warehouse_id": "wh_main",
+      "qty": 150,
+      "running_balance": 150,
+      "cost": 148,
+      "user": "أحمد حسن"
+    },
+    {
+      "id": "mv_002",
+      "item_id": "it_rice",
+      "date": "2026-06-05",
+      "type": "in",
+      "source_ref": "PO-3120",
+      "warehouse_id": "wh_main",
+      "qty": 100,
+      "running_balance": 250,
+      "cost": 150.5,
+      "user": "منى علي"
+    },
+    {
+      "id": "mv_003",
+      "item_id": "it_rice",
+      "date": "2026-06-10",
+      "type": "out",
+      "source_ref": "INV-1041",
+      "warehouse_id": "wh_main",
+      "qty": -30,
+      "running_balance": 220,
+      "cost": 149.3,
+      "user": "كاشير ١"
+    },
+    {
+      "id": "mv_004",
+      "item_id": "it_rice",
+      "date": "2026-06-12",
+      "type": "transfer",
+      "source_ref": "TRF-0042",
+      "warehouse_id": "wh_nasr",
+      "qty": 45,
+      "running_balance": 45,
+      "cost": 149.3,
+      "user": "أحمد حسن"
+    },
+    {
+      "id": "mv_005",
+      "item_id": "it_soap",
+      "date": "2026-06-11",
+      "type": "adjustment",
+      "source_ref": "ADJ-0018",
+      "warehouse_id": "wh_main",
+      "qty": -2,
+      "running_balance": 18,
+      "cost": 57.2,
+      "user": "أحمد حسن"
+    },
+    {
+      "id": "mv_v1",
+      "variant_id": "v_ts_red_m",
+      "item_id": "it_tshirt",
+      "date": "2026-08-02",
+      "type": "opening",
+      "source_ref": "OPENING-2026",
+      "warehouse_id": "wh_main",
+      "qty": 60,
+      "running_balance": 60,
+      "cost": 116.4,
+      "user": "أحمد مالك"
+    },
+    {
+      "id": "mv_v2",
+      "variant_id": "v_ts_red_m",
+      "item_id": "it_tshirt",
+      "date": "2026-08-11",
+      "type": "out",
+      "source_ref": "INV-2026-0344",
+      "warehouse_id": "wh_main",
+      "qty": -8,
+      "running_balance": 52,
+      "cost": 116.4,
+      "user": "منى البائعة"
+    },
+    {
+      "id": "mv_v3",
+      "variant_id": "v_ts_blue_s",
+      "item_id": "it_tshirt",
+      "date": "2026-08-02",
+      "type": "opening",
+      "source_ref": "OPENING-2026",
+      "warehouse_id": "wh_main",
+      "qty": 20,
+      "running_balance": 20,
+      "cost": 116.4,
+      "user": "أحمد مالك"
+    },
+    {
+      "id": "mv_v4",
+      "variant_id": "v_ts_blue_s",
+      "item_id": "it_tshirt",
+      "date": "2026-08-14",
+      "type": "out",
+      "source_ref": "INV-2026-0361",
+      "warehouse_id": "wh_main",
+      "qty": -13,
+      "running_balance": 7,
+      "cost": 116.4,
+      "user": "منى البائعة"
+    },
+    {
+      "id": "mv_b001",
+      "item_id": "itm_para500",
+      "date": "2025-11-01",
+      "type": "opening",
+      "source_ref": "OPEN-2025",
+      "warehouse_id": "wh_nasr",
+      "batch_id": "bat_para_D",
+      "qty": 100,
+      "cost": 3.2,
+      "user": "u_stock_ahmed",
+      "running_balance": 100
+    },
+    {
+      "id": "mv_b002",
+      "item_id": "itm_para500",
+      "date": "2025-12-01",
+      "type": "receipt",
+      "source_ref": "GRN-PARA-C1",
+      "warehouse_id": "wh_nasr",
+      "batch_id": "bat_para_C",
+      "qty": 150,
+      "cost": 3.3,
+      "user": "u_stock_ahmed",
+      "running_balance": 150
+    },
+    {
+      "id": "mv_b003",
+      "item_id": "itm_amox",
+      "date": "2026-01-05",
+      "type": "receipt",
+      "source_ref": "GRN-AMOX-R1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_amox_recall",
+      "qty": 100,
+      "cost": 11.5,
+      "user": "u_stock_ahmed",
+      "running_balance": 100
+    },
+    {
+      "id": "mv_b004",
+      "item_id": "itm_para500",
+      "date": "2026-01-15",
+      "type": "receipt",
+      "source_ref": "GRN-PARA-B1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_para_B",
+      "qty": 300,
+      "cost": 3.4,
+      "user": "u_stock_ahmed",
+      "running_balance": 300
+    },
+    {
+      "id": "mv_b005",
+      "item_id": "itm_para500",
+      "date": "2026-02-01",
+      "type": "issue",
+      "source_ref": "INV-4610",
+      "warehouse_id": "wh_nasr",
+      "batch_id": "bat_para_D",
+      "qty": -100,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 0
+    },
+    {
+      "id": "mv_b006",
+      "item_id": "itm_amox",
+      "date": "2026-02-10",
+      "type": "receipt",
+      "source_ref": "GRN-AMOX-A1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_amox_A",
+      "qty": 200,
+      "cost": 12,
+      "user": "u_stock_ahmed",
+      "running_balance": 200
+    },
+    {
+      "id": "mv_b007",
+      "item_id": "itm_omron",
+      "date": "2026-02-20",
+      "type": "receipt",
+      "source_ref": "GRN-OMR-A1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_omron_A",
+      "qty": 20,
+      "cost": 850,
+      "user": "u_stock_ahmed",
+      "running_balance": 20
+    },
+    {
+      "id": "mv_b008",
+      "item_id": "itm_para500",
+      "date": "2026-03-01",
+      "type": "receipt",
+      "source_ref": "GRN-PARA-A1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_para_A",
+      "qty": 500,
+      "cost": 3.5,
+      "user": "u_stock_ahmed",
+      "running_balance": 500
+    },
+    {
+      "id": "mv_b009",
+      "item_id": "itm_para500",
+      "date": "2026-03-15",
+      "type": "issue",
+      "source_ref": "INV-4880",
+      "warehouse_id": "wh_nasr",
+      "batch_id": "bat_para_C",
+      "qty": -90,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 60
+    },
+    {
+      "id": "mv_b010",
+      "item_id": "itm_para500",
+      "date": "2026-04-01",
+      "type": "issue",
+      "source_ref": "INV-5140",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_para_B",
+      "qty": -100,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 200
+    },
+    {
+      "id": "mv_b011",
+      "item_id": "itm_omron",
+      "date": "2026-05-01",
+      "type": "issue",
+      "source_ref": "INV-5490",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_omron_A",
+      "qty": -5,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 15
+    },
+    {
+      "id": "mv_b012",
+      "item_id": "itm_para500",
+      "date": "2026-05-10",
+      "type": "issue",
+      "source_ref": "INV-5521",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_para_A",
+      "qty": -120,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 380
+    },
+    {
+      "id": "mv_b013",
+      "item_id": "itm_amox",
+      "date": "2026-06-01",
+      "type": "issue",
+      "source_ref": "INV-5599",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_amox_A",
+      "qty": -50,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 150
+    },
+    {
+      "id": "mv_b014",
+      "item_id": "itm_omron",
+      "date": "2026-06-15",
+      "type": "receipt",
+      "source_ref": "GRN-OMR-B1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_omron_B",
+      "qty": 10,
+      "cost": 860,
+      "user": "u_stock_ahmed",
+      "running_balance": 10
+    },
+    {
+      "id": "mv_b015",
+      "item_id": "itm_para500",
+      "date": "2026-07-01",
+      "type": "receipt",
+      "source_ref": "GRN-PARA-A2",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_para_A",
+      "qty": 200,
+      "cost": 3.65,
+      "user": "u_stock_ahmed",
+      "running_balance": 580
+    },
+    {
+      "id": "mv_b016",
+      "item_id": "itm_milk",
+      "date": "2026-07-01",
+      "type": "receipt",
+      "source_ref": "GRN-MILK-OLD1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_oldmilk",
+      "qty": 60,
+      "cost": 21,
+      "user": "u_stock_ahmed",
+      "running_balance": 60
+    },
+    {
+      "id": "mv_b017",
+      "item_id": "itm_para500",
+      "date": "2026-07-15",
+      "type": "transfer_out",
+      "source_ref": "TRF-330",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_para_A",
+      "qty": -80,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 500
+    },
+    {
+      "id": "mv_b018",
+      "item_id": "itm_para500",
+      "date": "2026-07-15",
+      "type": "transfer_in",
+      "source_ref": "TRF-330",
+      "warehouse_id": "wh_nasr",
+      "batch_id": "bat_para_A",
+      "qty": 80,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 80
+    },
+    {
+      "id": "mv_b019",
+      "item_id": "itm_milk",
+      "date": "2026-08-01",
+      "type": "transfer_out",
+      "source_ref": "QRT-EXP-12",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_oldmilk",
+      "qty": -60,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 0
+    },
+    {
+      "id": "mv_b020",
+      "item_id": "itm_milk",
+      "date": "2026-08-01",
+      "type": "transfer_in",
+      "source_ref": "QRT-EXP-12",
+      "warehouse_id": "wh_damaged",
+      "batch_id": "bat_oldmilk",
+      "qty": 60,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 60
+    },
+    {
+      "id": "mv_b021",
+      "item_id": "itm_milk",
+      "date": "2026-08-10",
+      "type": "adjustment",
+      "source_ref": "WOFF-EXP-12",
+      "warehouse_id": "wh_damaged",
+      "batch_id": "bat_oldmilk",
+      "qty": -60,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 0
+    },
+    {
+      "id": "mv_b022",
+      "item_id": "itm_milk",
+      "date": "2026-08-12",
+      "type": "receipt",
+      "source_ref": "GRN-MILK-B1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_milk_B",
+      "qty": 120,
+      "cost": 21.5,
+      "user": "u_stock_ahmed",
+      "running_balance": 120
+    },
+    {
+      "id": "mv_b023",
+      "item_id": "itm_milk",
+      "date": "2026-08-18",
+      "type": "receipt",
+      "source_ref": "GRN-MILK-A1",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_milk_A",
+      "qty": 240,
+      "cost": 22,
+      "user": "u_stock_ahmed",
+      "running_balance": 240
+    },
+    {
+      "id": "mv_b024",
+      "item_id": "itm_milk",
+      "date": "2026-08-19",
+      "type": "issue",
+      "source_ref": "INV-6180",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_milk_B",
+      "qty": -90,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 30
+    },
+    {
+      "id": "mv_b025",
+      "item_id": "itm_milk",
+      "date": "2026-08-20",
+      "type": "issue",
+      "source_ref": "INV-6201",
+      "warehouse_id": "wh_main",
+      "batch_id": "bat_milk_A",
+      "qty": -90,
+      "cost": null,
+      "user": "u_stock_ahmed",
+      "running_balance": 150
+    }
+  ],
+  "stocktakes": [
+    {
+      "id": "st_0007",
+      "number": "ST-0007",
+      "warehouse_id": "wh_nasr",
+      "date": "2026-06-13",
+      "mode": "live",
+      "status": "counting",
+      "items_count": 12,
+      "net_diff_qty": -3,
+      "net_diff_value": -210,
+      "lines": [
+        {
+          "item_id": "it_rice",
+          "book_qty": 45,
+          "actual_qty": 44,
+          "diff": -1
+        },
+        {
+          "item_id": "it_oil",
+          "book_qty": 28,
+          "actual_qty": 28,
+          "diff": 0
+        },
+        {
+          "item_id": "it_tea",
+          "book_qty": 8,
+          "actual_qty": 6,
+          "diff": -2
+        }
+      ]
+    },
+    {
+      "id": "st_0006",
+      "number": "ST-0006",
+      "warehouse_id": "wh_main",
+      "date": "2026-05-30",
+      "mode": "freeze",
+      "status": "approved",
+      "items_count": 40,
+      "net_diff_qty": 5,
+      "net_diff_value": 720,
+      "lines": []
+    }
+  ],
+  "transfers": [
+    {
+      "id": "trf_0042",
+      "number": "TRF-0042",
+      "from_wh": "wh_main",
+      "to_wh": "wh_nasr",
+      "date": "2026-06-12",
+      "status": "posted",
+      "note": "تموين الفرع الأسبوعي",
+      "lines": [
+        {
+          "item_id": "it_rice",
+          "qty": 45,
+          "uom_id": "uom_box"
+        },
+        {
+          "item_id": "it_oil",
+          "qty": 28,
+          "uom_id": "uom_bottle"
+        }
       ]
     }
   ],
-
-  "ledger": [
-    { "id": "mv_001", "item_id": "it_rice", "date": "2026-06-01", "type": "opening", "source_ref": "OPEN-2026", "warehouse_id": "wh_main", "qty": 150, "running_balance": 150, "cost": 148.00, "user": "أحمد حسن" },
-    { "id": "mv_002", "item_id": "it_rice", "date": "2026-06-05", "type": "in", "source_ref": "PO-3120", "warehouse_id": "wh_main", "qty": 100, "running_balance": 250, "cost": 150.50, "user": "منى علي" },
-    { "id": "mv_003", "item_id": "it_rice", "date": "2026-06-10", "type": "out", "source_ref": "INV-1041", "warehouse_id": "wh_main", "qty": -30, "running_balance": 220, "cost": 149.30, "user": "كاشير ١" },
-    { "id": "mv_004", "item_id": "it_rice", "date": "2026-06-12", "type": "transfer", "source_ref": "TRF-0042", "warehouse_id": "wh_nasr", "qty": 45, "running_balance": 45, "cost": 149.30, "user": "أحمد حسن" },
-    { "id": "mv_005", "item_id": "it_soap", "date": "2026-06-11", "type": "adjustment", "source_ref": "ADJ-0018", "warehouse_id": "wh_main", "qty": -2, "running_balance": 18, "cost": 57.20, "user": "أحمد حسن" },
-    { "id": "mv_v1", "variant_id": "v_ts_red_m", "item_id": "it_tshirt", "date": "2026-08-02", "type": "opening", "source_ref": "OPENING-2026", "warehouse_id": "wh_main", "qty": 60, "running_balance": 60, "cost": 116.40, "user": "أحمد مالك" },
-    { "id": "mv_v2", "variant_id": "v_ts_red_m", "item_id": "it_tshirt", "date": "2026-08-11", "type": "out", "source_ref": "INV-2026-0344", "warehouse_id": "wh_main", "qty": -8, "running_balance": 52, "cost": 116.40, "user": "منى البائعة" },
-    { "id": "mv_v3", "variant_id": "v_ts_blue_s", "item_id": "it_tshirt", "date": "2026-08-02", "type": "opening", "source_ref": "OPENING-2026", "warehouse_id": "wh_main", "qty": 20, "running_balance": 20, "cost": 116.40, "user": "أحمد مالك" },
-    { "id": "mv_v4", "variant_id": "v_ts_blue_s", "item_id": "it_tshirt", "date": "2026-08-14", "type": "out", "source_ref": "INV-2026-0361", "warehouse_id": "wh_main", "qty": -13, "running_balance": 7, "cost": 116.40, "user": "منى البائعة" }
-  ],
-
-  "stocktakes": [
-    { "id": "st_0007", "number": "ST-0007", "warehouse_id": "wh_nasr", "date": "2026-06-13", "mode": "live", "status": "counting", "items_count": 12, "net_diff_qty": -3, "net_diff_value": -210.00,
-      "lines": [
-        { "item_id": "it_rice", "book_qty": 45, "actual_qty": 44, "diff": -1 },
-        { "item_id": "it_oil", "book_qty": 28, "actual_qty": 28, "diff": 0 },
-        { "item_id": "it_tea", "book_qty": 8, "actual_qty": 6, "diff": -2 }
-      ] },
-    { "id": "st_0006", "number": "ST-0006", "warehouse_id": "wh_main", "date": "2026-05-30", "mode": "freeze", "status": "approved", "items_count": 40, "net_diff_qty": 5, "net_diff_value": 720.00, "lines": [] }
-  ],
-
-  "transfers": [
-    { "id": "trf_0042", "number": "TRF-0042", "from_wh": "wh_main", "to_wh": "wh_nasr", "date": "2026-06-12", "status": "posted", "note": "تموين الفرع الأسبوعي",
-      "lines": [ { "item_id": "it_rice", "qty": 45, "uom_id": "uom_box" }, { "item_id": "it_oil", "qty": 28, "uom_id": "uom_bottle" } ] }
-  ],
-
   "adjustments": [
-    { "id": "adj_0018", "number": "ADJ-0018", "warehouse_id": "wh_main", "date": "2026-06-11", "reason": "damage", "note": "زجاجات صابون مكسورة أثناء النقل", "net_diff_value": -114.40,
-      "lines": [ { "item_id": "it_soap", "qty": -2 } ] }
+    {
+      "id": "adj_0018",
+      "number": "ADJ-0018",
+      "warehouse_id": "wh_main",
+      "date": "2026-06-11",
+      "reason": "damage",
+      "note": "زجاجات صابون مكسورة أثناء النقل",
+      "net_diff_value": -114.4,
+      "lines": [
+        {
+          "item_id": "it_soap",
+          "qty": -2
+        }
+      ]
+    }
   ],
-
   "low_stock": [
-    { "item_id": "it_tea", "warehouse_id": "wh_main", "balance": 24, "reorder_level": 60, "shortfall": 36, "suggested_qty": 100 },
-    { "item_id": "it_soap", "warehouse_id": "wh_main", "balance": 18, "reorder_level": 50, "shortfall": 32, "suggested_qty": 60 }
+    {
+      "item_id": "it_tea",
+      "warehouse_id": "wh_main",
+      "balance": 24,
+      "reorder_level": 60,
+      "shortfall": 36,
+      "suggested_qty": 100
+    },
+    {
+      "item_id": "it_soap",
+      "warehouse_id": "wh_main",
+      "balance": 18,
+      "reorder_level": 50,
+      "shortfall": 32,
+      "suggested_qty": 60
+    }
   ],
-
   "import_template_columns": [
-    { "key": "name_ar", "label_ar": "الاسم (عربي)", "label_en": "Name (AR)", "required": true },
-    { "key": "name_en", "label_ar": "الاسم (إنجليزي)", "label_en": "Name (EN)", "required": false },
-    { "key": "code", "label_ar": "الكود", "label_en": "Code", "required": false },
-    { "key": "item_type", "label_ar": "النوع", "label_en": "Type", "required": true },
-    { "key": "category", "label_ar": "التصنيف", "label_en": "Category", "required": false },
-    { "key": "base_uom", "label_ar": "الوحدة", "label_en": "Unit", "required": true },
-    { "key": "sale_price", "label_ar": "سعر البيع", "label_en": "Sale price", "required": false },
-    { "key": "tax_type", "label_ar": "نوع الضريبة", "label_en": "Tax type", "required": false },
-    { "key": "eta_code", "label_ar": "كود ETA", "label_en": "ETA code", "required": false },
-    { "key": "barcode", "label_ar": "الباركود", "label_en": "Barcode", "required": false }
+    {
+      "key": "name_ar",
+      "label_ar": "الاسم (عربي)",
+      "label_en": "Name (AR)",
+      "required": true
+    },
+    {
+      "key": "name_en",
+      "label_ar": "الاسم (إنجليزي)",
+      "label_en": "Name (EN)",
+      "required": false
+    },
+    {
+      "key": "code",
+      "label_ar": "الكود",
+      "label_en": "Code",
+      "required": false
+    },
+    {
+      "key": "item_type",
+      "label_ar": "النوع",
+      "label_en": "Type",
+      "required": true
+    },
+    {
+      "key": "category",
+      "label_ar": "التصنيف",
+      "label_en": "Category",
+      "required": false
+    },
+    {
+      "key": "base_uom",
+      "label_ar": "الوحدة",
+      "label_en": "Unit",
+      "required": true
+    },
+    {
+      "key": "sale_price",
+      "label_ar": "سعر البيع",
+      "label_en": "Sale price",
+      "required": false
+    },
+    {
+      "key": "tax_type",
+      "label_ar": "نوع الضريبة",
+      "label_en": "Tax type",
+      "required": false
+    },
+    {
+      "key": "eta_code",
+      "label_ar": "كود ETA",
+      "label_en": "ETA code",
+      "required": false
+    },
+    {
+      "key": "barcode",
+      "label_ar": "الباركود",
+      "label_en": "Barcode",
+      "required": false
+    }
   ],
-
   "import_sample_result": {
     "valid": 142,
     "errors": [
-      { "row": 7, "reason_ar": "الوحدة غير معروفة: «درزن»", "reason_en": "Unknown unit: 'dozen'" },
-      { "row": 23, "reason_ar": "الكود مكرر: GR-1001", "reason_en": "Duplicate code: GR-1001" },
-      { "row": 51, "reason_ar": "الاسم (عربي) مطلوب", "reason_en": "Name (AR) is required" }
+      {
+        "row": 7,
+        "reason_ar": "الوحدة غير معروفة: «درزن»",
+        "reason_en": "Unknown unit: 'dozen'"
+      },
+      {
+        "row": 23,
+        "reason_ar": "الكود مكرر: GR-1001",
+        "reason_en": "Duplicate code: GR-1001"
+      },
+      {
+        "row": 51,
+        "reason_ar": "الاسم (عربي) مطلوب",
+        "reason_en": "Name (AR) is required"
+      }
     ]
   },
-
   "barcode_templates": [
-    { "id": "tpl_30", "name_ar": "ملصق ٣٠ × ٢٠ مم", "name_en": "Label 30×20mm" },
-    { "id": "tpl_shelf", "name_ar": "ملصق رف", "name_en": "Shelf label" }
-  ]
+    {
+      "id": "tpl_30",
+      "name_ar": "ملصق ٣٠ × ٢٠ مم",
+      "name_en": "Label 30×20mm"
+    },
+    {
+      "id": "tpl_shelf",
+      "name_ar": "ملصق رف",
+      "name_en": "Shelf label"
+    }
+  ],
+  "stock_batch": [
+    {
+      "id": "bat_para_A",
+      "variant_id": "itm_para500",
+      "lot_number": "PARA-2405",
+      "expiry_date": "2027-06-30",
+      "mfg_date": "2025-06-01",
+      "supplier_ref": "PHARCO-INV-8841",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "merged"
+    },
+    {
+      "id": "bat_para_B",
+      "variant_id": "itm_para500",
+      "lot_number": "PARA-2312",
+      "expiry_date": "2026-09-10",
+      "mfg_date": "2024-12-01",
+      "supplier_ref": "PHARCO-INV-8102",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "near_expiry"
+    },
+    {
+      "id": "bat_para_C",
+      "variant_id": "itm_para500",
+      "lot_number": "PARA-2308",
+      "expiry_date": "2026-08-01",
+      "mfg_date": "2024-08-01",
+      "supplier_ref": "PHARCO-INV-7740",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "expired"
+    },
+    {
+      "id": "bat_para_D",
+      "variant_id": "itm_para500",
+      "lot_number": "PARA-2210",
+      "expiry_date": "2026-10-31",
+      "mfg_date": "2024-10-01",
+      "supplier_ref": "PHARCO-INV-6650",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "depleted"
+    },
+    {
+      "id": "bat_amox_A",
+      "variant_id": "itm_amox",
+      "lot_number": "AMOX-2401",
+      "expiry_date": "2027-01-31",
+      "mfg_date": "2025-01-15",
+      "supplier_ref": "EIPICO-INV-3320",
+      "status": "active",
+      "hold_reason": null
+    },
+    {
+      "id": "bat_amox_recall",
+      "variant_id": "itm_amox",
+      "lot_number": "AMOX-2350",
+      "expiry_date": "2026-12-31",
+      "mfg_date": "2024-11-01",
+      "supplier_ref": "EIPICO-INV-3115",
+      "status": "hold",
+      "hold_reason": "استدعاء المورّد — دفعة مشتبه بها",
+      "_flag": "hold_recall"
+    },
+    {
+      "id": "bat_milk_A",
+      "variant_id": "itm_milk",
+      "lot_number": "JUH-0815",
+      "expiry_date": "2026-08-28",
+      "mfg_date": "2026-08-08",
+      "supplier_ref": "JUHAYNA-DO-99120",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "near_expiry"
+    },
+    {
+      "id": "bat_milk_B",
+      "variant_id": "itm_milk",
+      "lot_number": "JUH-0810",
+      "expiry_date": "2026-08-20",
+      "mfg_date": "2026-08-01",
+      "supplier_ref": "JUHAYNA-DO-99044",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "expired"
+    },
+    {
+      "id": "bat_oldmilk",
+      "variant_id": "itm_milk",
+      "lot_number": "JUH-0705",
+      "expiry_date": "2026-07-15",
+      "mfg_date": "2026-06-25",
+      "supplier_ref": "JUHAYNA-DO-98770",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "quarantined_written_off"
+    },
+    {
+      "id": "bat_omron_A",
+      "variant_id": "itm_omron",
+      "lot_number": "OMR-BATCH-01",
+      "expiry_date": null,
+      "mfg_date": "2026-01-10",
+      "supplier_ref": "OMRON-EG-551",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "lot_only"
+    },
+    {
+      "id": "bat_omron_B",
+      "variant_id": "itm_omron",
+      "lot_number": "OMR-BATCH-02",
+      "expiry_date": null,
+      "mfg_date": "2026-05-20",
+      "supplier_ref": "OMRON-EG-604",
+      "status": "active",
+      "hold_reason": null,
+      "_flag": "lot_only"
+    }
+  ],
+  "settings": {
+    "global_near_expiry_days": 30
+  }
 }
