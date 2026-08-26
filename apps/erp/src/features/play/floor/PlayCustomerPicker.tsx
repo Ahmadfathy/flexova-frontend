@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/command";
 import { useAppearance } from "@/stores/appearance";
 import { CustomerCreateModal } from "@/features/crm/customers/CustomerCreateModal";
-import crmFixtures from "@/lib/mock/fixtures/crm.fixtures.json";
+import crmFixtures from "@/lib/mock/fixtures/CRM.fixtures.json";
 import type { SessionCustomer } from "@/features/play/types";
 
 interface CrmCustomer {

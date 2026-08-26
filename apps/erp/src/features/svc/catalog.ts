@@ -1,5 +1,5 @@
 import svcFixtures from "@/lib/mock/fixtures/svc.fixtures.json";
-import crmFixtures from "@/lib/mock/fixtures/crm.fixtures.json";
+import crmFixtures from "@/lib/mock/fixtures/CRM.fixtures.json";
 import type { Lang } from "@/stores/appearance";
 
 export interface SvcProvider {

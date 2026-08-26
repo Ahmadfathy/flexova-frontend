@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
-import accountingFixtures from "@/lib/mock/fixtures/accounting.fixtures.json";
+import accountingFixtures from "@/lib/mock/fixtures/Accounting.fixtures.json";
 
 const CURRENT_TERMINAL = posFixtures.terminals[0];
 const SEED_SHIFT = posFixtures.shifts.find(
   s => s.terminal_id === CURRENT_TERMINAL.id && s.status === "open"
 );
-const TREASURY = accountingFixtures.treasuries.find(t => t.id === "tr_cash_main");
+const TREASURY = accountingFixtures.treasuries.find((t: { id: string; name_ar: string; name_en: string }) => t.id === "tr_cash_main");
 
 export interface PaidMovement {
   id: string;

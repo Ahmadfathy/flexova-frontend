@@ -22,7 +22,7 @@ import {
   BUNDLE_STEPS, fetchBundleStepData, saveBundle, estimateBundleSizeBytes, formatBytes,
   type VanBundle, type BundleStepKey,
 } from "@/lib/van/offline";
-import accountingFixtures from "@/lib/mock/fixtures/accounting.fixtures.json";
+import accountingFixtures from "@/lib/mock/fixtures/Accounting.fixtures.json";
 
 interface Treasury { id: string; name_ar: string; name_en: string; type: string; branch_id: string; }
 const TREASURIES = accountingFixtures.treasuries as Treasury[];

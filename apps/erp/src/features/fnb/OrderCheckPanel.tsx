@@ -17,7 +17,7 @@ import { useFnbOrder, type FnbCheckLine, type FnbLineStatus } from "@/stores/fnb
 import { useFnbFloor } from "@/stores/fnbFloor";
 import { useFnbKds } from "@/stores/fnbKds";
 import { FNB_COURSES, findCourse, findMenuItem, findStation, modifierLabels } from "./menu";
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 
 const TAX_TYPES = inventoryFixtures.tax_types as { id: string; rate: number }[];
 const TAX_RATES: Record<string, number> = Object.fromEntries(TAX_TYPES.map(tt => [tt.id, tt.rate]));

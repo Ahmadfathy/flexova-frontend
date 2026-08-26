@@ -6,7 +6,7 @@ import { useAppearance } from "@/stores/appearance";
 import { formatMoney, formatTime } from "@/lib/format";
 import { usePosRegister } from "@/stores/posRegister";
 import { computeCartTotals } from "./posTotals";
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 
 const TAX_TYPES = inventoryFixtures.tax_types as { id: string; rate: number }[];
 const TAX_RATES: Record<string, number> = Object.fromEntries(TAX_TYPES.map(tt => [tt.id, tt.rate]));

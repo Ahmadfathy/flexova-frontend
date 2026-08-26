@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/command";
 import { useAppearance } from "@/stores/appearance";
 import type { PosCustomer } from "@/stores/posRegister";
-import crmFixtures from "@/lib/mock/fixtures/crm.fixtures.json";
+import crmFixtures from "@/lib/mock/fixtures/CRM.fixtures.json";
 
 interface CrmCustomer {
   id: string;

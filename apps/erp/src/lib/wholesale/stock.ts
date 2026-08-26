@@ -1,10 +1,10 @@
 /**
  * FE_13 §6 — live warehouse stock check for the picking screen.
- * Cross-reads inventory.fixtures.json's ledger (shared item/warehouse ids with
+ * Cross-reads Inventory.fixtures.json's ledger (shared item/warehouse ids with
  * whl.fixtures.json, e.g. it_rice @ wh_main) — the source of truth for "real"
  * stock, distinct from wholesale's own soft/informational reservations.
  */
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 
 interface LedgerEntry {
   item_id: string;

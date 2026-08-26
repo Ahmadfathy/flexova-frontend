@@ -17,7 +17,7 @@ import { useCan } from "@/lib/permissions";
 import {
   usePosTerminalSettings, CURRENT_TERMINAL, type HardwareKey,
 } from "@/stores/posTerminalSettings";
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 
 const WAREHOUSES = inventoryFixtures.warehouses as { id: string; name_ar: string; name_en: string }[];
 const PRICE_LISTS = inventoryFixtures.price_lists as { id: string; name_ar: string; name_en: string }[];

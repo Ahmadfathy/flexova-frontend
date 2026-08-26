@@ -1,6 +1,6 @@
 import rprFixtures from "@/lib/mock/fixtures/rpr.fixtures.json";
-import crmFixtures from "@/lib/mock/fixtures/crm.fixtures.json";
-import accountingFixtures from "@/lib/mock/fixtures/accounting.fixtures.json";
+import crmFixtures from "@/lib/mock/fixtures/CRM.fixtures.json";
+import accountingFixtures from "@/lib/mock/fixtures/Accounting.fixtures.json";
 import type { Lang } from "@/stores/appearance";
 import type { PillVariant } from "@/components/patterns/StatusPill";
 

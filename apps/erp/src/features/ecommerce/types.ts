@@ -91,7 +91,7 @@ export interface EcOnlineProduct {
 }
 
 /** A picker-only shape (spec §3.2 "search + select existing inventory
- * item") — not a real join against `inventory.fixtures.json` (that
+ * item") — not a real join against `Inventory.fixtures.json` (that
  * fixture's id namespace is a different, unrelated catalog — same
  * precedent `EcOrder`'s ERP READ fields already established). Scoped
  * mock data lives in `lib/mock/ecommerce.ts`, not the inventory fixture. */

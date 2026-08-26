@@ -32,7 +32,7 @@ export function getOnlineProduct(id: string | null | undefined): EcOnlineProduct
  * already linked from `online_products[]` (so editing an existing product
  * shows real, consistent read-only stock/price) plus 2 unlinked ones, so
  * the create flow has something genuinely new to pick. Own small mock
- * catalog, not a join against `inventory.fixtures.json` — see
+ * catalog, not a join against `Inventory.fixtures.json` — see
  * `LinkableInventoryItem`'s doc comment for why.
  */
 const LINKABLE_INVENTORY_ITEMS: LinkableInventoryItem[] = [

@@ -19,7 +19,7 @@ import { TenderModal } from "@/features/pos/TenderModal";
 import { useFnbOrder, type FnbBillGroup, type FnbOrderType, type FnbSplitMode } from "@/stores/fnbOrder";
 import { useFnbFloor } from "@/stores/fnbFloor";
 import { useFnbKds } from "@/stores/fnbKds";
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 import salesFixtures from "@/lib/mock/fixtures/sales.fixtures.json";
 import { useBill } from "./useBill";
 import { billableLines, computeBillTotals, lineNet, splitByAssignment, splitEqually } from "./billTotals";

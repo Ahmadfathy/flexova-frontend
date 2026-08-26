@@ -24,7 +24,7 @@ import { CustomerPickerDialog } from "./CustomerPickerDialog";
 import { ParkedTicketsDialog } from "./ParkedTicketsDialog";
 import type { PosItem } from "./useCashierCatalog";
 import posFixtures from "@/lib/mock/fixtures/pos.fixtures.json";
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 
 const LOYALTY = posFixtures.loyalty;
 

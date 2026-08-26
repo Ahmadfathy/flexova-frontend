@@ -23,7 +23,7 @@ import { useSvcProductStock } from "@/stores/svcProductStock";
 import { TenderModal } from "@/features/pos/TenderModal";
 import { tenderName } from "@/features/pos/tenderTypes";
 import type { PosItem } from "@/features/pos/useCashierCatalog";
-import inventoryFixtures from "@/lib/mock/fixtures/inventory.fixtures.json";
+import inventoryFixtures from "@/lib/mock/fixtures/Inventory.fixtures.json";
 import { useServiceTicket } from "./useServiceTicket";
 import { computeTicketTotals, round2, lineNet } from "./ticketTotals";
 import { computeCommission } from "./commission";
