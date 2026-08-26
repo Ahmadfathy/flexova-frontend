@@ -208,7 +208,9 @@ Postgres بيعتبر الـ NULLs متمايزة، فالـ `UNIQUE(variant,lot
 
 - **الميزان قبل DD-3 كان فاضي لغير-batch items:** مفيش شاشة Receipt/Issue خالص للأصناف اللي `tracks_batch=false` — v1/DD-1/DD-2 عمرها ما بنت واحدة (الرصيد كان بيتحدّد وقت الإنشاء بس). `CostingSection.tsx` سطح جديد بالكامل بيسدّ الفجوة دي، بيعيد استخدام `batchCarrierId()`/`balanceCarrier()` من غير تفريع.
 - **بعض صفوف الـ ledger القديمة فيها `cost: null`** (transfer_in بتاعة الحجر الصحي DD-2) — النوع المعلن `cost: number` بس الداتا الحقيقية بتخالفه. `costing.ts` بيتعامل دفاعياً مع كل قراءة لـ `.cost` بـ `?? 0` عشان القيم دي منتشرّش NaN في تقرير التقييم.
-- **`_DEPENDENCIES.md`/`_CHANGELOG.md`** اتحدّثوا بنفس نمط DD-2.
+- **باج حقيقي سابق على DD-3 (اتصلّح، مش DD-3 سبّبه):** `lib/mock/client.ts`'s `loadFixture()` كان بيقارن case-sensitive، و`Inventory.fixtures.json` بحرف I كبير بينما كل الكولرز بيمرّروا `"inventory"` بحرف صغير — كان بيرمي `Fixture not found` بصمت، يبوّظ تحميل الداتا لـ Inventory **و**Purchasing**و**Sales التلاتة (التلاتة بيقروا نفس الفكتشر). اتصلّح لمقارنة case-insensitive. اتلقط بس من الـ live Playwright verification — `tsc -b`/`build` ماكانوش هيمسكوه أبداً (خطأ وقت التشغيل بس).
+- **قاعدة نافيجيشن/i18n اتلقطت لايف:** عناوين الـ nav/breadcrumb الجديدة بتتقرا من namespace `"shell"` (`shell.json`) مش من namespace الموديول نفسه (`inventory.json`'s `nav` block) — الأخير مقروش خالص من `Sidebar`/`SidebarSplit`/`HorizontalNav`/`useBreadcrumb`. أي `SubItem` جديد في `menu.ts` لازم تتضاف ترجمته في `shell.json`، مش في ملف الموديول.
+- **`_DEPENDENCIES.md`/`_CHANGELOG.md`** اتحدّثوا بنفس نمط DD-2 (بالإضافة لسطر منفصل لإصلاح الـ loader، نفس أسلوب DD-2's ledger-i18n fix).
 
 ## تثبيتات صريحة
 - **(Pin A محمول):** الطبقة = receipt movement، `qty_remaining` مشتق.

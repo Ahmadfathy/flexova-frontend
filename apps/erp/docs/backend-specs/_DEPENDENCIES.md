@@ -13,8 +13,8 @@
 - لا يعتمد على أي موديول تشغيلي آخر (هو الأساس).
 
 **يعتمد عليه (depended on by):**
-- **Sales / ETA** — hard (يستهلك الصنف: سعر/ضريبة/eta_code/الوحدات؛ بعد التعميق: على مستوى **variant**).
-- **Purchasing** — hard (حركات وارد + WAC per variant).
+- **Sales / ETA** — hard (يستهلك الصنف: سعر/ضريبة/eta_code/الوحدات؛ بعد التعميق: على مستوى **variant**؛ بيقرا نسخة slim من فكتشر الـ Inventory عبر `loadFixture("inventory")` بنفس آلية Purchasing تحت).
+- **Purchasing** — hard (حركات وارد + WAC per variant؛ بيقرا نسخة slim من فكتشر الـ Inventory عبر `loadFixture("inventory")` — **ملاحظة (2026-08-26):** الـ loader ده كان بيقارن الاسم case-sensitive وكان بيفشل بصمت (`Inventory.fixtures.json` بحرف I كبير مقابل `"inventory"` اللي بيتمرّر)، بيبوّظ تحميل Purchasing/Sales/Inventory التلاتة؛ اتصلّح في DD-3 (case-insensitive الآن) — أي موديول بيقرا فكتشر تاني عبر `loadFixture()` مايحتاجش يطابق حالة الحروف بقى).
 - **Accounting** — soft (تقييم المخزون valuation يغذّي القيود؛ الـ posting في Accounting. بعد DD-3: العقد `CostEvent` جاهز عند الـ seam — Inventory بيحسب ويصدّر، Accounting هو اللي يرحّل، صفر journal entries في Inventory).
 - **CRM** — soft (قوائم الأسعار المُسندة للعملاء).
 - **POS** — hard (يقرأ الأصناف/الأرصدة/الـ variants، offline-first).
