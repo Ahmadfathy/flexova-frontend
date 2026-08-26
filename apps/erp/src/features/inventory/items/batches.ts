@@ -236,12 +236,18 @@ export function buildIssueMovements(
   itemId: string,
   warehouseId: string,
   sourceRef: string,
-  ledger: InventoryLedgerRow[]
+  ledger: InventoryLedgerRow[],
+  /** DD-3 — optional per-allocation cost resolver (`(batchId, qty) => {cost, pending?}`), sourced
+   *  from `costing.ts`'s `consumeCostLayers` at the call site. Omitted = `cost:0` (pre-DD-3
+   *  behavior, kept so this stays the single producer of issue rows without importing costing.ts
+   *  here — inversion of control keeps batches.ts decoupled from the costing engine). */
+  costOf?: (batchId: string, qty: number) => { cost: number; pending_cost_reconciliation?: boolean }
 ): InventoryLedgerRow[] {
   const rows: InventoryLedgerRow[] = [];
   let running = nextRunningBalance(itemId, warehouseId, ledger);
   for (const alloc of allocations) {
     running -= alloc.qty;
+    const costing = costOf?.(alloc.batch_id, alloc.qty);
     rows.push({
       id: `mv_${alloc.batch_id}_iss_${Date.now()}_${rows.length}`,
       item_id: itemId,
@@ -252,7 +258,8 @@ export function buildIssueMovements(
       batch_id: alloc.batch_id,
       qty: -alloc.qty,
       running_balance: running,
-      cost: 0,
+      cost: costing?.cost ?? 0,
+      pending_cost_reconciliation: costing?.pending_cost_reconciliation || undefined,
       user: "—",
     });
   }

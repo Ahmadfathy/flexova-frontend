@@ -243,3 +243,91 @@ Namespace `batch.*` in `i18n/locales/{ar,en}/inventory.json`: `tracks_batch`, `r
 **Disclosed, non-blocking simplifications:** batch tracking is only wired for simple (non-`is_product_parent`) items — no fixture combines a DD-1 product-parent with DD-2 batches, so the per-variant selector mentioned in §2.2 isn't built; the Issue/Adjustment flows are self-contained inside Inventory (no Sales/POS integration exists yet to drive them from); Quarantine/Write-off/Hold confirmations are local mock toasts, not a real audit-log table.
 
 *End of DD-2 (Batch/Expiry) — appended to Inventory deep-dive frontend spec.*
+
+---
+
+# DD-3: FIFO / FEFO Costing (Frontend Spec)
+
+Builds on DD-1 (variants = balance carrier) and DD-2 (batch/expiry, `selectBatchesForIssue`, movement carries `batch_id`, cost on the movement). **No new design tokens.**
+
+## 0. Scope & flag
+
+- Costing is part of the **Hard Core** — it is **not** behind a module flag. Valuation/COGS must always exist. What *is* configurable is the **method per item** (see §1).
+- Batch costing rides on **`inventory.batch_expiry`** (DD-2): when batches are on, batch-tracked items cost by the specific batch that was issued; when off, items cost by FIFO or Weighted Average.
+- **Golden rule preserved:** cost is derived from `stock_movement.cost` + qty (Pin A). No stored/editable "current cost" field is the source of truth. `item.avg_cost` is a **cache/display** value maintained from movements, never hand-edited.
+- **Boundary:** DD-3 **computes** COGS + valuation deltas and surfaces them in Inventory UI. It **does not post** to the ledger — posting `Dr COGS / Cr Inventory` is Accounting's job (module #3). DD-3 emits an event/contract at that seam.
+
+## 1. Entities & config surfaced to the user
+
+| Entity / field | User-facing meaning | Where |
+|---|---|---|
+| `settings.default_costing_method` | tenant-wide default: **FIFO** or **Weighted Average** | Inventory Settings |
+| `item.costing_method` | per-item override; empty = inherit tenant default | Item Editor |
+| effective method (computed) | `coalesce(item.costing_method, settings.default_costing_method)`; **forced `specific` when the item is batch-tracked** | shown as a read-only chip |
+| `item.avg_cost` | current unit cost (maintained from movements) | Item cost card, lists |
+| cost layers (derived) | the receipts still holding stock, oldest→newest, each with remaining qty + unit cost | Item cost card |
+| COGS on a sale line | cost of goods sold for that issue | Sales/POS doc (margin) |
+
+**Effective method resolution (read-time, never stored beyond the two fields above):**
+```
+if item.tracks_batch  -> 'specific'      (batch actual cost — method field ignored & shown disabled)
+else                  -> coalesce(item.costing_method, settings.default_costing_method)  // 'fifo' | 'average'
+```
+Same coalesce/inheritance pattern as DD-2's `effectiveNearExpiryDays`. **LIFO is not offered** (disallowed under IAS 2 / Egyptian accounting).
+
+## 2. Screens & fields
+
+### 2.1 Inventory Settings → **Costing** (new field, new page — `/inventory/settings`)
+- Radio **`default_costing_method`**: `FIFO` (default) · `Weighted Average`.
+- Changing the tenant default affects only items with no per-item override and is **prospective** (does not retro-rewrite historical COGS). Confirm dialog.
+
+### 2.2 Item Editor → **Costing** (extends DD-1 Item Editor, `/inventory/items/:id`, Pricing tab)
+- Select **`costing_method`**: `— (inherit) · FIFO · Weighted Average`. Placeholder shows the inherited tenant default as a ghost value (same pattern as `near_expiry_days`).
+- When `tracks_batch=on`: the select is **disabled** and shows a read-only chip ("تكلفة فعلية للتشغيلة") — because batch items cost by the exact batch issued.
+
+### 2.3 Item Editor → **Cost card** (new panel, permission `inventory.cost.view`)
+Read-only valuation view for the item — current unit cost + effective method chip, cost-layer stack (FIFO/batch: Receipt ref/date/unit cost/qty remaining/layer value, oldest at top, depleted layers behind a toggle) or, for average items, a running-average timeline; total valuation per warehouse. Entirely hidden without `inventory.cost.view`.
+
+### 2.4 Issue / Sale — **COGS surfacing** (read-only, permission-gated)
+- On any issue, the system computes COGS by consuming layers in effective-method order and writes it to the issue movement's `cost`.
+- Where `inventory.cost.view` is granted, the issue flow shows a small **margin** readout: `unit price − unit COGS` (amount + %).
+- **Batch items:** the batch already chosen by DD-2's `selectBatchesForIssue` drives the cost.
+
+### 2.5 Returns
+- **Sales return:** re-enters stock as a **receipt** whose unit cost = the **COGS recorded on the original sale movement**.
+- **Purchase return:** an **issue** consuming that supplier's layer; COGS of the return = that layer's cost.
+
+### 2.6 Stock adjustments / stocktake — cost handling
+- **Shortage** → adjustment-out valued at effective-method cost → surfaces as an inventory loss at the Accounting seam.
+- **Overage** → adjustment-in; default = current `avg_cost` (or last purchase price); a permission-gated field (`inventory.costing.overage_cost`) lets a supervisor override.
+
+### 2.7 Negative stock / offline-first (POS) — provisional cost
+- An issue with **no covering layer** is **allowed** (offline-first) and valued at the item's current running cost (provisional), tagging the movement `pending_cost_reconciliation`. A chip + reconcile action appear on the cost card; the covering receipt reconciles the COGS delta and clears the flag.
+
+### 2.8 **Inventory Valuation report** (new route `/inventory/valuation`, permission `inventory.cost.view`)
+- Table: Item · Category · Warehouse · Qty on hand · Effective method · Unit cost · **Total value**. Grand total + filters: warehouse, category, method, "as-of date". Export gated by `inventory.cost.export`.
+
+## 3. i18n keys
+`costing.default_method`, `costing.default_method_hint`, `costing.change_default_confirm`, `costing.method_label`, `costing.method.fifo`, `costing.method.average`, `costing.method.inherit`, `costing.specific_locked`, `costing.cost_card_title`, `costing.unit_cost`, `costing.qty_remaining`, `costing.layer_value`, `costing.total_valuation`, `costing.new_avg`, `costing.show_depleted`, `costing.margin`, `costing.overage_cost`, `costing.pending_reconciliation`, `costing.valuation_report_title`, `costing.as_of_date`, `costing.method_chip`.
+
+## 4. Permissions
+`inventory.cost.view` · `inventory.cost.export` · `inventory.costing.overage_cost` · `inventory.costing.method_edit`. Used ad hoc via `useCan()` (still the always-true mock stub — same convention as DD-2's four batch permissions, not registered in the FE_08 admin catalog).
+
+## 5. Acceptance criteria — verified
+
+1. Non-batch item, FIFO, receipts 100@10 then 100@12: issue 150 → COGS **1600**; remaining layer 50@12; valuation **600**. ✅ (`it_cost_fifo`)
+2. Non-batch item, Weighted Average, receipts 100@10 then 100@14: `avg_cost`=**12** after 2nd receipt; issue 150 → COGS **1800**; remaining value **600**. ✅ (`it_cost_avg`)
+3. Batch-tracked item: method locked to `specific`; issue costs each allocation at its own batch receipt cost — physical pick and cost consumption are the same order by construction. ✅
+4. Sales return: return receipt cost equals the COGS on the original sale movement (10.6667), not current layer cost. ✅
+5. Stocktake overage: adjustment-in defaults to `avg_cost`; override gated by `inventory.costing.overage_cost`.
+6. Negative/offline issue with no layer: allowed, COGS at provisional running cost (15), flagged; covering receipt (16) reconciles delta (5) and clears the flag. ✅ (`it_cost_offline`)
+7. Cost/margin hidden without `inventory.cost.view` everywhere (cost card, valuation report, issue margin) — price still shows.
+8. Golden rule: every displayed unit cost/valuation is derivable from `Σ` over `stock_movement` for its carrier×warehouse(×batch); no hand-edited cost is a source of truth.
+9. Changing the tenant default method is prospective.
+10. Carrier: all costing keys on `carrier_id = coalesce(variant_id, item_id)`.
+11. Valuation report "as-of date" replays movements up to that date.
+12. No journal entries created in Inventory — COGS/valuation surface as a `CostEvent`; verified no ledger-posting call anywhere in `src/features/inventory`.
+
+**Disclosed, non-blocking simplifications (same spirit as DD-2's):** Receipt/Issue/Return for **non-batch** stocked items is a genuinely new surface (`CostingSection.tsx`) — before DD-3 there was no stock-in/issue UI at all for `tracks_batch=false` items; built for simple (non-`is_product_parent`) carriers only, same trim as DD-2's batch UI. The Sales/POS margin readout lives inside Inventory's own Issue dialogs (batch and non-batch) — no Sales/POS module integration exists yet to drive it from (identical boundary to DD-2's Issue/Adjustment self-containment). Sales-return / purchase-return UI is built for non-batch carriers; the underlying `costing.ts` builders (`buildSalesReturnReceipt`, `buildCostingIssue` with `kind:"purchase_return"`) are carrier-agnostic and reusable once a batch-item return UI is wanted. Stocktake overage cost field + permission gate were added to `StocktakeEditorPage`'s summary calc; real ledger posting on stocktake/adjustment approval remains pre-existing mock-only (a gap that predates DD-3, not introduced or fixed by it).
+
+*End of DD-3 (FIFO/FEFO Costing) — appended to Inventory deep-dive frontend spec.*

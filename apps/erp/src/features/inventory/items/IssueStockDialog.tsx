@@ -21,6 +21,7 @@ import {
   batchCarrierId, getCarrierBatches, selectBatchesForIssue, buildIssueMovements, effectiveNearExpiryDays,
   type BatchAllocation,
 } from "./batches";
+import { consumeCostLayers, buildCostEvent } from "./costing";
 import { BatchPickerModal } from "./BatchPickerModal";
 
 interface IssueStockDialogProps {
@@ -32,11 +33,13 @@ interface IssueStockDialogProps {
   lang: "ar" | "en";
   canManualPick: boolean;
   canOverride: boolean;
+  /** DD-3 — gates the unit-price − COGS margin readout (frontend §2.4). */
+  canViewCost: boolean;
   mutate: (updater: (prev: InventoryFixture | null) => InventoryFixture | null) => void;
 }
 
 export function IssueStockDialog({
-  open, onOpenChange, item, warehouses, data, lang, canManualPick, canOverride, mutate,
+  open, onOpenChange, item, warehouses, data, lang, canManualPick, canOverride, canViewCost, mutate,
 }: IssueStockDialogProps) {
   const { t } = useTranslation("inventory");
   const carrierId = batchCarrierId(item);
@@ -73,18 +76,48 @@ export function IssueStockDialog({
   const allocation = manualAllocation ?? auto?.allocations ?? [];
   const shortfall = manualAllocation ? Math.max(0, qtyNum - allocation.reduce((s, a) => s + a.qty, 0)) : (auto?.shortfall ?? 0);
 
+  // DD-3 §2.4 — batch items cost by construction: the batch DD-2 already picked physically is
+  // the same batch DD-3 costs (technical decision 0), one allocation at a time.
+  function costOfAllocation(batchId: string, allocQty: number) {
+    return consumeCostLayers(carrierId, allocQty, data.ledger, { method: "specific", warehouseId, batchId });
+  }
+
+  const costPreview = useMemo(() => {
+    if (!(qtyNum > 0) || !warehouseId || allocation.length === 0) return null;
+    let totalCogs = 0;
+    let pending = false;
+    for (const a of allocation) {
+      const r = costOfAllocation(a.batch_id, a.qty);
+      totalCogs += r.total_cogs;
+      pending = pending || r.pending_cost_reconciliation;
+    }
+    const unitCogs = totalCogs / qtyNum;
+    const price = item.prices["pl_retail"] ?? Object.values(item.prices)[0] ?? 0;
+    return { unitCogs, pending, margin: price - unitCogs, marginPct: price > 0 ? ((price - unitCogs) / price) * 100 : 0 };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allocation, qtyNum, warehouseId, carrierId, data.ledger]);
+
   function handleConfirm() {
     setError("");
     if (!(qtyNum > 0)) { setError(t("batch.qty_invalid")); return; }
     if (allocation.length === 0 || shortfall > 0) { setError(t("batch.issue_insufficient")); return; }
 
     setSaving(true);
-    const movements = buildIssueMovements(allocation, item.id, warehouseId, `ISSUE-${Date.now().toString().slice(-6)}`, data.ledger);
+    const sourceRef = `ISSUE-${Date.now().toString().slice(-6)}`;
+    const movements = buildIssueMovements(allocation, item.id, warehouseId, sourceRef, data.ledger, (batchId, allocQty) => {
+      const r = costOfAllocation(batchId, allocQty);
+      return { cost: r.unit_cogs, pending_cost_reconciliation: r.pending_cost_reconciliation };
+    });
+    const costEvents = movements.map((m, i) => {
+      const alloc = allocation[i];
+      return buildCostEvent(m.id, carrierId, warehouseId, alloc.qty, costOfAllocation(alloc.batch_id, alloc.qty), "specific", "issue");
+    });
     mutate((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
         ledger: [...prev.ledger, ...movements],
+        cost_events: [...(prev.cost_events ?? []), ...costEvents],
         items: prev.items.map((it) =>
           it.id === item.id
             ? {
@@ -168,6 +201,21 @@ export function IssueStockDialog({
             )}
             {shortfall > 0 && <p className="text-xs text-destructive">{t("batch.issue_shortfall", { n: shortfall })}</p>}
           </div>
+
+          {/* DD-3 §2.4 — margin readout, permission-gated (price still shows, COGS/margin don't). */}
+          {canViewCost && costPreview && (
+            <div data-testid="issue-margin" className="rounded-md border border-border bg-muted/20 px-3 py-2 space-y-1">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{t("costing.margin")}</span>
+                <span className="tabular-nums font-medium">
+                  {costPreview.margin.toFixed(2)} ({costPreview.marginPct.toFixed(1)}%)
+                </span>
+              </div>
+              {costPreview.pending && (
+                <p className="text-xs text-warning-text">{t("costing.pending_reconciliation")}</p>
+              )}
+            </div>
+          )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>

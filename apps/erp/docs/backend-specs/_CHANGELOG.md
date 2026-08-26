@@ -33,3 +33,22 @@
 - `expired`/`near_expiry`/`depleted` are derived read-time, never stored, to avoid a background job and any drift between stored status and actual balance/date.
 - Frontend build note: batch tracking currently only exercised on simple (non-`is_product_parent`) items — no fixture combines a DD-1 product-parent with DD-2 batches yet, so the per-variant batch selector isn't built; the Issue/Adjustment flows are self-contained inside Inventory (no Sales/POS integration exists yet to call them). Both disclosed as non-blocking scope trims in `inventory.frontend.md` DD-2 §5.
 - Sets up DD-3 (FIFO/FEFO Costing), which consumes this feature's batch-selection output to build cost layers — no costing logic added here (Pin A: cost stays on the movement, not the batch; Pin B: the expired-sale hard-block stays in Sales/POS).
+
+## [Inventory] DD-3 FIFO/FEFO Costing — 2026-08-26 — Ahmad
+**Changed:** `modules/inventory.backend.md` — added Feature DD-3.
+**What:**
+- Costing = valuation layer on DD-2. Cost layer = receipt-type `stock_movement` (Pin A); `qty_remaining` DERIVED, no new table/column.
+- `item` += `costing_method` (fifo|average, nullable; inherit tenant default; forced `specific` when `tracks_batch`). `inventory_settings` += `default_costing_method` (default fifo).
+- `avg_cost` becomes a maintained cache (moving-average formula reused from MFG `mfgItemStock`, reimplemented locally — MFG itself untouched, zero import).
+- `stock_movement.cost` reused for issue-type = unit COGS (previously unset for issues); one additive flag `pending_cost_reconciliation` — no other shape change (R3).
+- Engine `costing.ts`: `deriveCostLayers` / `consumeCostLayers` (FIFO + specific-batch via DD-2 allocation order) / `weightedAverageOnReceipt` / `itemCurrentCost` / `itemValuation`. Perpetual COGS at issue time.
+- Returns: sale-return receipt at original-sale COGS; purchase-return issue at supplier layer. Stocktake short=loss, over=avg/override.
+- Negative/offline issue allowed at provisional cost + `pending_cost_reconciliation`; reconcile action on the Cost card once a covering receipt exists.
+- Accounting seam: `CostEvent` emitted into the mock's `cost_events[]`. Zero journal-entry code in Inventory (verified).
+- New endpoints (frontend-only mock so far): cost-layers, cost, valuation, cost-reconcile, costing-method, settings/costing.
+- New UI: Item Editor Costing select + Cost card (layer stack / average timeline); `CostingSection.tsx` — Receipt/Issue/Return for **non-batch** items (a genuinely new surface, none existed pre-DD-3); Inventory Settings page (new, `/inventory/settings`); Inventory Valuation report (new, `/inventory/valuation`); margin readout in the Issue dialogs.
+**Why:**
+- LIFO rejected (IAS 2 / Egyptian accounting) — not a selectable value anywhere.
+- Cost visibility gated by `inventory.cost.view` (ad hoc; formalize in Permissions #8, same convention as DD-2's four batch permissions) — layers/valuation/margin all early-return without it, not just visually hidden.
+- MFG boundary: convergence (MFG consuming Inventory's costing) stays a separate, logged, not-yet-built item — DD-3 only reuses the *formula*.
+- Frontend build note: Receipt/Issue/Return UI built for non-batch **simple** carriers only (same batch-vs-variant scope trim as DD-2); Sales/POS margin + returns live inside Inventory's own dialogs since no Sales/POS integration seam exists yet (identical boundary to DD-2's self-contained Issue/Adjustment). Disclosed as non-blocking in `inventory.frontend.md` DD-3 §5.

@@ -9,3 +9,5 @@ export { StocktakeEditorPage                } from "./stocktakes/StocktakeEditor
 export { TransfersPage                      } from "./transfers/TransfersPage";
 export { AdjustmentsPage                    } from "./adjustments/AdjustmentsPage";
 export { LowStockPage                       } from "./low-stock/LowStockPage";
+export { InventorySettingsPage              } from "./settings/InventorySettingsPage";
+export { ValuationReportPage                } from "./valuation/ValuationReportPage";

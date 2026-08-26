@@ -39,6 +39,7 @@ import { InventoryLayout } from "@/features/inventory/InventoryLayout";
 import {
   ItemsPage, CategoriesPage, AttributesPage, PriceListsPage, PriceListEditorPage, WarehousesPage,
   StocktakesPage, StocktakeEditorPage, TransfersPage, AdjustmentsPage, LowStockPage,
+  InventorySettingsPage, ValuationReportPage,
 } from "@/features/inventory/InventoryPages";
 import { ItemEditorPage } from "@/features/inventory/items/ItemEditorPage";
 
@@ -306,6 +307,8 @@ export default function App() {
             <Route path="transfers"   element={<TransfersPage />} />
             <Route path="adjustments" element={<AdjustmentsPage />} />
             <Route path="low-stock"   element={<LowStockPage />} />
+            <Route path="settings"    element={<InventorySettingsPage />} />
+            <Route path="valuation"   element={<ValuationReportPage />} />
           </Route>
 
           {/* Sales — FE_02 */}

@@ -29,7 +29,13 @@ export async function mockFetch<T>(
 // Fixture loaders — each module imports the fixture it needs
 export async function loadFixture<T>(moduleName: string): Promise<T> {
   const modules = import.meta.glob<{ default: T }>("./fixtures/*.fixtures.json");
-  const key = Object.keys(modules).find((k) => k.includes(`/${moduleName}.fixtures.json`));
+  // Case-insensitive match — `Inventory.fixtures.json` is capitalized (single source-of-truth
+  // file, deliberately named that way per the DD-1 integration map) while every caller passes
+  // the lowercase moduleName "inventory"; a case-sensitive `.includes()` here silently threw
+  // "Fixture not found" for every consumer of it (Inventory itself, Purchasing, Sales all cross-
+  // read this fixture) — a pre-existing bug, not introduced by any deep-dive, caught while
+  // live-verifying DD-3.
+  const key = Object.keys(modules).find((k) => k.toLowerCase().includes(`/${moduleName.toLowerCase()}.fixtures.json`));
   if (!key) throw new Error(`Fixture not found: ${moduleName}`);
   const mod = await modules[key]();
   return mod.default;

@@ -425,6 +425,7 @@
       },
       "last_purchase_price": 144,
       "avg_cost": 141.5,
+      "costing_method": "average",
       "units": [
         {
           "uom_id": "uom_bottle",
@@ -1211,6 +1212,78 @@
       "tracks_batch": true,
       "requires_expiry": false,
       "near_expiry_days": null
+    },
+    {
+      "id": "it_cost_fifo",
+      "code": "COST-FIFO-01",
+      "name_ar": "صنف تجريبي — FIFO",
+      "name_en": "Demo Item — FIFO",
+      "item_type": "stocked",
+      "category_id": "cat_grains",
+      "base_uom_id": "uom_pc",
+      "barcodes": ["6220000009011"],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-999901",
+      "reorder_level": 20,
+      "max_level": 400,
+      "status": "active",
+      "incomplete": false,
+      "prices": { "pl_retail": 18.0 },
+      "last_purchase_price": 12.0,
+      "avg_cost": 12.0,
+      "costing_method": "fifo",
+      "units": [{ "uom_id": "uom_pc", "factor": 1, "barcode": "6220000009011", "unit_price": 18.0 }],
+      "balances": [{ "warehouse_id": "wh_main", "qty": 60 }],
+      "_flag": "fifo_two_layers"
+    },
+    {
+      "id": "it_cost_avg",
+      "code": "COST-AVG-01",
+      "name_ar": "صنف تجريبي — متوسط مرجّح",
+      "name_en": "Demo Item — Weighted Average",
+      "item_type": "stocked",
+      "category_id": "cat_grains",
+      "base_uom_id": "uom_pc",
+      "barcodes": ["6220000009028"],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-999902",
+      "reorder_level": 20,
+      "max_level": 400,
+      "status": "active",
+      "incomplete": false,
+      "prices": { "pl_retail": 20.0 },
+      "last_purchase_price": 14.0,
+      "avg_cost": 12.0,
+      "costing_method": "average",
+      "units": [{ "uom_id": "uom_pc", "factor": 1, "barcode": "6220000009028", "unit_price": 20.0 }],
+      "balances": [{ "warehouse_id": "wh_main", "qty": 50 }],
+      "_flag": "avg_moving"
+    },
+    {
+      "id": "it_cost_offline",
+      "code": "COST-OFF-01",
+      "name_ar": "صنف تجريبي — بيع أوفلاين قبل الاستلام",
+      "name_en": "Demo Item — Offline oversell",
+      "item_type": "stocked",
+      "category_id": "cat_grains",
+      "base_uom_id": "uom_pc",
+      "barcodes": ["6220000009035"],
+      "image": null,
+      "tax_type_id": "tax_t1",
+      "eta_code": "EG-999903",
+      "reorder_level": 10,
+      "max_level": 200,
+      "status": "active",
+      "incomplete": false,
+      "prices": { "pl_retail": 25.0 },
+      "last_purchase_price": 15.0,
+      "avg_cost": 15.0,
+      "costing_method": "fifo",
+      "units": [{ "uom_id": "uom_pc", "factor": 1, "barcode": "6220000009035", "unit_price": 25.0 }],
+      "balances": [{ "warehouse_id": "wh_main", "qty": 30 }],
+      "_flag": "pending_reconciliation"
     }
   ],
   "ledger": [
@@ -1650,7 +1723,20 @@
       "cost": null,
       "user": "u_stock_ahmed",
       "running_balance": 150
-    }
+    },
+    { "id": "mvc_fifo_r1", "item_id": "it_cost_fifo", "date": "2026-07-01", "type": "receipt", "source_ref": "GRN-C-101", "warehouse_id": "wh_main", "qty": 100, "running_balance": 100, "cost": 10.0, "user": "أحمد حسن", "_flag": "layer_L1" },
+    { "id": "mvc_fifo_r2", "item_id": "it_cost_fifo", "date": "2026-07-10", "type": "receipt", "source_ref": "GRN-C-102", "warehouse_id": "wh_main", "qty": 100, "running_balance": 200, "cost": 12.0, "user": "أحمد حسن", "_flag": "layer_L2" },
+    { "id": "mvc_fifo_i1", "item_id": "it_cost_fifo", "date": "2026-07-15", "type": "issue", "source_ref": "INV-C-501", "warehouse_id": "wh_main", "qty": -150, "running_balance": 50, "cost": 10.6667, "user": "منى سالم", "_flag": "cogs_1600_over_150" },
+
+    { "id": "mvc_avg_r1", "item_id": "it_cost_avg", "date": "2026-07-01", "type": "receipt", "source_ref": "GRN-C-201", "warehouse_id": "wh_main", "qty": 100, "running_balance": 100, "cost": 10.0, "user": "أحمد حسن", "_flag": "avg_10" },
+    { "id": "mvc_avg_r2", "item_id": "it_cost_avg", "date": "2026-07-10", "type": "receipt", "source_ref": "GRN-C-202", "warehouse_id": "wh_main", "qty": 100, "running_balance": 200, "cost": 14.0, "user": "أحمد حسن", "_flag": "avg_12" },
+    { "id": "mvc_avg_i1", "item_id": "it_cost_avg", "date": "2026-07-15", "type": "issue", "source_ref": "INV-C-502", "warehouse_id": "wh_main", "qty": -150, "running_balance": 50, "cost": 12.0, "user": "منى سالم", "_flag": "cogs_1800_over_150" },
+
+    { "id": "mvc_fifo_ret", "item_id": "it_cost_fifo", "date": "2026-07-18", "type": "receipt", "source_ref": "SRET-C-501", "warehouse_id": "wh_main", "qty": 10, "running_balance": 60, "cost": 10.6667, "user": "منى سالم", "_flag": "sales_return_at_original_cogs" },
+
+    { "id": "mvc_off_i1", "item_id": "it_cost_offline", "date": "2026-07-20", "type": "issue", "source_ref": "POS-OFF-777", "warehouse_id": "wh_main", "qty": -5, "running_balance": -5, "cost": 15.0, "user": "كاشير الفرع", "pending_cost_reconciliation": true, "_flag": "pending_cost_reconciliation" },
+    { "id": "mvc_off_r1", "item_id": "it_cost_offline", "date": "2026-07-21", "type": "receipt", "source_ref": "GRN-C-301", "warehouse_id": "wh_main", "qty": 35, "running_balance": 30, "cost": 16.0, "user": "أحمد حسن", "_flag": "covering_receipt" },
+    { "id": "mvc_off_rec", "item_id": "it_cost_offline", "date": "2026-07-21", "type": "adjustment", "source_ref": "COGS-RECON-777", "warehouse_id": "wh_main", "qty": 0, "running_balance": 30, "cost": 1.0, "user": "system", "_flag": "cogs_reconciliation_delta_5x(16-15)=5" }
   ],
   "stocktakes": [
     {
@@ -1983,6 +2069,14 @@
     }
   ],
   "settings": {
-    "global_near_expiry_days": 30
-  }
+    "global_near_expiry_days": 30,
+    "default_costing_method": "fifo"
+  },
+  "cost_events": [
+    { "movement_id": "mvc_fifo_i1", "carrier_id": "it_cost_fifo", "warehouse_id": "wh_main", "qty": 150, "unit_cogs": 10.6667, "total_cogs": 1600.0, "method": "fifo", "consumed": [{ "layer_id": "mvc_fifo_r1", "qty": 100, "unit_cost": 10.0 }, { "layer_id": "mvc_fifo_r2", "qty": 50, "unit_cost": 12.0 }], "pending_cost_reconciliation": false, "kind": "issue" },
+    { "movement_id": "mvc_avg_i1", "carrier_id": "it_cost_avg", "warehouse_id": "wh_main", "qty": 150, "unit_cogs": 12.0, "total_cogs": 1800.0, "method": "average", "consumed": [{ "layer_id": "running_avg", "qty": 150, "unit_cost": 12.0 }], "pending_cost_reconciliation": false, "kind": "issue" },
+    { "movement_id": "mvc_fifo_ret", "carrier_id": "it_cost_fifo", "warehouse_id": "wh_main", "qty": 10, "unit_cogs": 10.6667, "total_cogs": 106.667, "method": "fifo", "consumed": [], "pending_cost_reconciliation": false, "kind": "sales_return" },
+    { "movement_id": "mvc_off_i1", "carrier_id": "it_cost_offline", "warehouse_id": "wh_main", "qty": 5, "unit_cogs": 15.0, "total_cogs": 75.0, "method": "fifo", "consumed": [], "pending_cost_reconciliation": true, "kind": "issue" },
+    { "movement_id": "mvc_off_rec", "carrier_id": "it_cost_offline", "warehouse_id": "wh_main", "qty": 5, "unit_cogs": 1.0, "total_cogs": 5.0, "method": "fifo", "consumed": [{ "layer_id": "mvc_off_r1", "qty": 5, "unit_cost": 1.0 }], "pending_cost_reconciliation": false, "kind": "reconciliation", "note": "delta event: actual 16 − provisional 15 = 1/unit × 5 = 5" }
+  ]
 }

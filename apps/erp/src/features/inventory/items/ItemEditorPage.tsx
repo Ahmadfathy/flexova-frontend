@@ -22,6 +22,7 @@ import { Button }  from "@/components/ui/button";
 import { Input }   from "@/components/ui/input";
 import { Label }   from "@/components/ui/label";
 import { Switch }  from "@/components/ui/switch";
+import { Badge }   from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -36,6 +37,7 @@ import {
   projectedComboCount, MAX_COMBOS, type GenerateVariantsInput,
 } from "./variants";
 import { BatchSection } from "./BatchSection";
+import { CostingSection } from "./CostingSection";
 import type { InventoryAttributeValue, InventoryVariant } from "./types";
 
 type TabKey = "basic" | "pricing" | "stock" | "variants" | "batch" | "ledger";
@@ -112,6 +114,9 @@ export function ItemEditorPage() {
   const [requiresExpiry, setRequiresExpiry] = useState(true);
   const [nearExpiryDaysStr, setNearExpiryDaysStr] = useState("");
 
+  // DD-3 §2.2 — Costing method override; "" = inherit `settings.default_costing_method`.
+  const [costingMethodStr, setCostingMethodStr] = useState<"" | "fifo" | "average">("");
+
   // Variants mode
   const [attributeOrder, setAttributeOrder] = useState<string[]>([]);
   const [valueSelections, setValueSelections] = useState<Record<string, string[]>>({});
@@ -147,6 +152,7 @@ export function ItemEditorPage() {
     setTracksBatch(!!item.tracks_batch);
     setRequiresExpiry(item.requires_expiry !== false);
     setNearExpiryDaysStr(item.near_expiry_days != null ? String(item.near_expiry_days) : "");
+    setCostingMethodStr(item.costing_method ?? "");
 
     const attrOrder = item.attributes_used ?? [];
     const valSel: Record<string, string[]> = {};
@@ -324,6 +330,7 @@ export function ItemEditorPage() {
           tracks_batch: tracksBatch,
           requires_expiry: tracksBatch ? requiresExpiry : undefined,
           near_expiry_days: nearExpiryDaysStr ? parseFloat(nearExpiryDaysStr) : null,
+          costing_method: costingMethodStr || null,
         } : i),
         ledger: [...prev.ledger, ...result.openingMovements],
       });
@@ -350,6 +357,7 @@ export function ItemEditorPage() {
         tracks_batch: tracksBatch,
         requires_expiry: tracksBatch ? requiresExpiry : undefined,
         near_expiry_days: nearExpiryDaysStr ? parseFloat(nearExpiryDaysStr) : null,
+        costing_method: costingMethodStr || null,
       } : i),
     });
     setSaving(false);
@@ -530,6 +538,27 @@ export function ItemEditorPage() {
               <Input type="number" min={0} className="tabular-nums" value={salePrice} onChange={(e) => setSalePrice(e.target.value)} />
             </div>
           )}
+
+          {/* DD-3 §2.2 — Costing method: forced 'specific' + locked when batch-tracked. */}
+          <div className="space-y-1.5 max-w-xs">
+            <Label>{t("costing.method_label")}</Label>
+            {tracksBatch ? (
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">{t("costing.specific_locked")}</Badge>
+              </div>
+            ) : (
+              <Select value={costingMethodStr || "inherit"} onValueChange={(v) => setCostingMethodStr(v === "inherit" ? "" : (v as "fifo" | "average"))}>
+                <SelectTrigger data-testid="costing-method-select"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="inherit">
+                    {t("costing.method.inherit")} ({t(`costing.method.${data?.settings?.default_costing_method ?? "fifo"}`)})
+                  </SelectItem>
+                  <SelectItem value="fifo">{t("costing.method.fifo")}</SelectItem>
+                  <SelectItem value="average">{t("costing.method.average")}</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          </div>
         </TabsContent>
 
         {/* ── Stock ─────────────────────────────────────────── */}
@@ -575,6 +604,13 @@ export function ItemEditorPage() {
                   );
                 })}
               </div>
+
+              {/* DD-3 — Receipt/Issue/Return + Cost card for non-batch stocked items (the Batch
+                  tab below covers the tracks_batch=true case instead). No demo data combines a
+                  DD-1 product-parent with DD-3 costing yet — disclosed, same trim as DD-2's. */}
+              {!tracksBatch && item.item_type === "stocked" && data && (
+                <CostingSection item={item} warehouses={warehouses} data={data} lang={lang} can={can} mutate={mutate} />
+              )}
 
               {/* DD-2 §2.1 — Batch/Expiry section */}
               {batchFlagOn && (

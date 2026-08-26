@@ -167,3 +167,54 @@ Postgres بيعتبر الـ NULLs متمايزة، فالـ `UNIQUE(variant,lot
 **تحقّق:** الـ acceptance criteria العشرة (frontend §5) عدّت مع **live verification بـ Playwright** ضد الداتا الحقيقية (مش typecheck بس)، و`tsc -b` نضيف.
 
 *نهاية DD-2 — يُكمَّل بالميزة التالية.*
+
+---
+
+# DD-3: FIFO / FEFO Costing (Technical / ذاكرة القرارات)
+
+## القرار 0 — الفصل بين الاختيار الفيزيائي والتكلفة
+
+في DD-2 الـ FEFO/FIFO كان *picking strategy*: أنهي وحدة فيزيائياً تخرج. في DD-3 الـ costing حاجة تانية: أنهي تكلفة تتعلّق بالخروج ده. **اتعمل:** دمجناهم للـ batch items (تكلفة التشغيلة الفعلية، `method: 'specific'` في `costing.ts`) وفصلناهم للـ non-batch (FIFO أو Average). التشغيلة اللي DD-2 اختارها فيزيائياً (`selectBatchesForIssue`) هي نفسها اللي DD-3 بيكلّفها — `IssueStockDialog`'s `costOfAllocation()` بينادي `consumeCostLayers()` بـ `batchId: alloc.batch_id` لكل allocation.
+
+## القرار 1 — سياسة الـ costing: per-item مربوطة بالـ batch tracking
+
+**اتعمل:** `effectiveCostingMethod()` في `costing.ts` بتحسب: `item.tracks_batch → 'specific'`، وإلا `coalesce(item.costing_method, settings.default_costing_method)`. حقل `item.costing_method (fifo|average, nullable)` + `settings.default_costing_method (default fifo)` — نفس نمط الوراثة بتاع DD-2.
+
+## القرار 2 — نموذج الـ cost layers: derived-first، الطبقة = receipt movement
+
+**اتعمل:** مفيش `cost_layer` table جديد. `deriveCostLayers()` بتشتق الطبقات المفتوحة بإعادة تشغيل الـ movement stream (كل صف `qty>0` طبقة، كل صف `qty<0` بيستهلك منها بالترتيب) — بلا أي عمود `qty_remaining` مخزّن. `InventoryLedgerRow` اتضاف عليه حقل واحد بس إضافي: `pending_cost_reconciliation?: boolean` (زي `batch_id` بتاع DD-2 بالظبط — additive، مش تغيير شكل). الملف الخام فيه `_flag` نصّي على صفوف الديمو للتوثيق بس (زي باقي الموديول)؛ الحقل الوظيفي الحقيقي هو `pending_cost_reconciliation` المكتوب صراحةً.
+
+## القرار 3 — توقيت COGS: perpetual
+
+**اتعمل:** الـ COGS يتحسب لحظة الـ issue ويتكتب على `stock_movement.cost`. `stock_movement.cost` معناها موحّد: تكلفة الوحدة للقيمة المارّة بالحركة (استلام = تكلفة شراء، صرف = COGS محسوب). مفيش عمود جديد.
+
+## القرار 4 — المرتجعات والتسويات
+
+**اتعمل:** `buildSalesReturnReceipt()` بياخد `originalIssue.cost` مباشرة (مفيش لفّ على الطبقات القديمة). `buildCostingIssue(..., kind:'purchase_return')` بيستهلك طبقة المورّد. `stocktakeOverageCost()` = `avg_cost ?? last_purchase_price ?? 0`.
+
+## القرار 5 — الـ Average: صيغة MFG بإعادة الكتابة، مش استيراد
+
+**اتعمل:** `weightedAverageOnReceipt()` في `costing.ts` بتطبّق **نفس الصيغة بالظبط** الموجودة في `stores/mfgItemStock.ts` (`round2((qb·ab+qi·ci)/(qb+qi))`) — لكن **مُعاد كتابتها محلياً**، بلا أي `import` من `src/features/mfg` أو `src/stores/mfg*`، عشان `costing.ts` يفضل صفر اعتماديات على MFG (اتأكّد بـ `grep` قبل الـ commit).
+
+## القرار 6 — مكان الظهور مقابل الترحيل (seam المحاسبة)
+
+**اتعمل:** DD-3 بيملك الحساب والـ UI الجوّاني، و`buildCostEvent()`/`buildCostReconciliation()` بيرجّعوا `CostEvent` بس — بيتخزّنوا في `fixture.cost_events[]` عبر `mutate()` العادي، **صفر journal entries**. اتأكّد بـ `grep -r "journal_entry\|Dr COGS" src/features/inventory` = لا نتيجة.
+
+## القرار 7 — Negative stock / offline-first
+
+**اتعمل:** `consumeCostLayers()` لمّا الطبقات تخلص بتاخد الباقي بتكلفة الطبقة الأخيرة (أو `fallbackCost` اللي بيمرره الكولر لمّا مفيش طبقات خالص — `item.avg_cost ?? item.last_purchase_price`)، وبترجّع `pending_cost_reconciliation: true`. زر "تسوية الآن" في `CostCard.tsx` بينادي `buildCostReconciliation()` لمّا يلاقي استلام مغطّي (أقرب `receipt` بتاريخ ≥ تاريخ الصرف المعلّق لنفس الـ carrier/warehouse).
+
+## تحقّق من الكود الحيّ (decision memory)
+
+- **الميزان قبل DD-3 كان فاضي لغير-batch items:** مفيش شاشة Receipt/Issue خالص للأصناف اللي `tracks_batch=false` — v1/DD-1/DD-2 عمرها ما بنت واحدة (الرصيد كان بيتحدّد وقت الإنشاء بس). `CostingSection.tsx` سطح جديد بالكامل بيسدّ الفجوة دي، بيعيد استخدام `batchCarrierId()`/`balanceCarrier()` من غير تفريع.
+- **بعض صفوف الـ ledger القديمة فيها `cost: null`** (transfer_in بتاعة الحجر الصحي DD-2) — النوع المعلن `cost: number` بس الداتا الحقيقية بتخالفه. `costing.ts` بيتعامل دفاعياً مع كل قراءة لـ `.cost` بـ `?? 0` عشان القيم دي منتشرّش NaN في تقرير التقييم.
+- **`_DEPENDENCIES.md`/`_CHANGELOG.md`** اتحدّثوا بنفس نمط DD-2.
+
+## تثبيتات صريحة
+- **(Pin A محمول):** الطبقة = receipt movement، `qty_remaining` مشتق.
+- **(carrier):** كل costing key على `coalesce(variant_id, item_id)`.
+- **(seam):** DD-3 يحسب، Accounting يرحّل. صفر journal entries في Inventory (اتأكّد).
+- **(MFG):** مالمسناهوش — صفر `import` من `features/mfg`/`stores/mfg*` في `costing.ts` (الصيغة مُعاد كتابتها).
+- **(LIFO):** مرفوض.
+
+*نهاية DD-3 — يُكمَّل بالميزة التالية.*

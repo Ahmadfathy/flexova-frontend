@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -25,6 +25,8 @@ import { formatMoney, formatNumber } from "@/lib/format";
 import { cn }     from "@/lib/utils";
 import { useCan } from "@/lib/permissions";
 import { useItems } from "../items/useItems";
+import { batchCarrierId } from "../items/batches";
+import { effectiveCostingMethod, itemCurrentCost, stocktakeOverageCost } from "../items/costing";
 
 /* ─── Skeleton ───────────────────────────────────────────────── */
 
@@ -137,6 +139,10 @@ export function StocktakeEditorPage() {
   const [confirm, setConfirm] = useState(false);
   const [saving,  setSaving]  = useState(false);
   const [scanVal, setScanVal] = useState("");
+  // DD-3 §2.6 — overage (count > system) unit cost; default = avg_cost/last_purchase_price,
+  // override gated by inventory.costing.overage_cost. Shortage values at effective-method cost.
+  const [overageCosts, setOverageCosts] = useState<Record<string, string>>({});
+  const canOverrideOverageCost = can("inventory.costing.overage_cost");
 
   /* Initialise counts from stocktake lines */
   useEffect(() => {
@@ -148,6 +154,24 @@ export function StocktakeEditorPage() {
     }
   }, [stocktake]);
 
+  /* DD-3 §2.6 — per-line unit cost: overage (diff>0) defaults to avg_cost/last_purchase_price,
+     overridable behind inventory.costing.overage_cost; shortage (diff<0) values at the item's
+     effective-method cost (derived, never hand-edited). */
+  const lineCost = useCallback((itemId: string, diff: number): number => {
+    const item = itemMap[itemId];
+    if (!item || !data) return 0;
+    if (diff > 0) {
+      const override = canOverrideOverageCost ? overageCosts[itemId] : undefined;
+      return override !== undefined && override !== "" ? parseFloat(override) || 0 : stocktakeOverageCost(item);
+    }
+    if (diff < 0) {
+      const carrierId = batchCarrierId(item);
+      const method = effectiveCostingMethod(item, data.settings);
+      return itemCurrentCost(item, data.ledger, carrierId, method);
+    }
+    return 0;
+  }, [itemMap, data, overageCosts, canOverrideOverageCost]);
+
   /* Derived summary */
   const summary = useMemo(() => {
     if (!stocktake) return { counted: 0, total: 0, netDiffQty: 0, netDiffValue: 0 };
@@ -157,14 +181,12 @@ export function StocktakeEditorPage() {
     stocktake.lines.forEach(l => {
       const actual  = counts[l.item_id] ?? l.actual_qty;
       const diff    = actual - l.book_qty;
-      const item    = itemMap[l.item_id];
-      const cost    = item?.avg_cost ?? 0;
       netDiffQty   += diff;
-      netDiffValue += diff * cost;
+      netDiffValue += diff * lineCost(l.item_id, diff);
       if (counts[l.item_id] !== undefined) counted++;
     });
     return { counted, total: stocktake.lines.length, netDiffQty, netDiffValue };
-  }, [stocktake, counts, itemMap]);
+  }, [stocktake, counts, lineCost]);
 
   /* Barcode scan: match item by barcode and focus its row */
   function handleScan(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -336,6 +358,7 @@ export function StocktakeEditorPage() {
                 { key: "book",    label: t("stocktakes.book"),        cls: "font-semibold text-start" },
                 { key: "actual",  label: t("stocktakes.actual"),      cls: "font-semibold text-start" },
                 { key: "diff",    label: t("stocktakes.diff"),        cls: "font-semibold text-start" },
+                { key: "overage_cost", label: t("costing.overage_cost"), cls: "font-semibold text-start hidden md:table-cell" },
               ].map(col => (
                 <TableHead
                   key={col.key}
@@ -415,6 +438,26 @@ export function StocktakeEditorPage() {
                     )}>
                       {diff > 0 ? "+" : ""}{formatNumber(diff)}
                     </span>
+                  </TableCell>
+
+                  {/* DD-3 §2.6 — overage unit cost (diff>0 only); shortage uses effective-method
+                      cost silently (no input — never a hand-edited source of truth). */}
+                  <TableCell className="px-3 py-2 text-start tabular-nums text-sm hidden md:table-cell">
+                    {diff > 0 && !isApproved ? (
+                      <Input
+                        data-testid={`overage-cost-${line.item_id}`}
+                        type="number" min={0} step={0.01}
+                        placeholder={String(item ? stocktakeOverageCost(item) : 0)}
+                        value={overageCosts[line.item_id] ?? ""}
+                        disabled={!canOverrideOverageCost}
+                        onChange={e => setOverageCosts(c => ({ ...c, [line.item_id]: e.target.value }))}
+                        className="w-24 text-start tabular-nums h-8 text-sm"
+                      />
+                    ) : diff > 0 ? (
+                      <span className="text-muted-foreground">{formatNumber(lineCost(line.item_id, diff))}</span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                 </TableRow>
               );

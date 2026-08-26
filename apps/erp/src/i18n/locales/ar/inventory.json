@@ -585,5 +585,31 @@
     "picker_total_mismatch":   "إجمالي المُختار ({{total}}) لازم يساوي الكمية المطلوبة ({{needed}})",
     "override_reason_required":"سبب التجاوز مطلوب للتشغيلات المنتهية/المحجوزة",
     "override_reason_label":   "سبب التجاوز"
+  },
+
+  "costing": {
+    "default_method":          "طريقة التكلفة الافتراضية",
+    "default_method_hint":     "الطريقة الافتراضية للأصناف اللي ملهاش تتبّع تشغيلات",
+    "change_default_confirm":  "تغيير الطريقة الافتراضية للمحل بيأثّر بس على الأصناف اللي ملهاش طريقة خاصة، وبس على الصرف الجاي — التكلفة القديمة متتغيّرش أبداً. تكمل؟",
+    "method_label":            "طريقة التكلفة",
+    "method_chip":             "الطريقة",
+    "method": {
+      "fifo":                  "الأقدم دخولاً أولاً (FIFO)",
+      "average":               "متوسط مرجّح",
+      "inherit":               "— (وراثة)"
+    },
+    "specific_locked":         "تكلفة فعلية للتشغيلة",
+    "cost_card_title":         "التكلفة",
+    "unit_cost":                "تكلفة الوحدة",
+    "qty_remaining":           "الكمية المتبقية",
+    "layer_value":             "قيمة الطبقة",
+    "total_valuation":         "إجمالي التقييم",
+    "new_avg":                 "المتوسط الجديد",
+    "show_depleted":           "عرض الطبقات المنتهية",
+    "margin":                  "الربح",
+    "overage_cost":            "تكلفة وحدة الزيادة",
+    "pending_reconciliation":  "بيع بتكلفة مبدئية — بانتظار استلام مغطّي",
+    "valuation_report_title":  "تقييم المخزون",
+    "as_of_date":              "حتى تاريخ"
   }
 }

@@ -58,6 +58,8 @@ export const MENU: MenuItem[] = [
       { key: "transfers",    route: "/inventory/transfers" },
       { key: "adjustments",  route: "/inventory/adjustments" },
       { key: "low_stock",    route: "/inventory/low-stock" },
+      { key: "valuation",    route: "/inventory/valuation", permission: "inventory.cost.view" },
+      { key: "settings",     route: "/inventory/settings" },
     ],
   },
   {

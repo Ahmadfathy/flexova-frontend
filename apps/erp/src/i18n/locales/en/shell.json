@@ -57,6 +57,7 @@
     "adjustments":        "Adjustments",
     "low_stock":          "Low Stock",
     "attributes":         "Attributes",
+    "valuation":          "Inventory Valuation",
 
     "invoices":           "Invoices",
     "quotations":         "Quotations",

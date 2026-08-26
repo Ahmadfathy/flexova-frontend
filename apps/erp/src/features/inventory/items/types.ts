@@ -81,6 +81,9 @@ export interface InventoryItem {
   requires_expiry?: boolean;
   /** DD-2 — per-item near-expiry override; null/undefined = inherit `settings.global_near_expiry_days` (§1 coalesce). */
   near_expiry_days?: number | null;
+  /** DD-3 — per-item costing override; null/undefined = inherit `settings.default_costing_method`.
+   *  IGNORED (forced 'specific') when `tracks_batch=true` — see `effectiveCostingMethod()` in costing.ts. */
+  costing_method?: "fifo" | "average" | null;
   _flag?: string;
 }
 
@@ -143,6 +146,30 @@ export interface InventoryLedgerRow {
   user: string;
   /** DD-2 — set when this movement belongs to a stock_batch (§0 "movement now carries batch_id"). */
   batch_id?: string | null;
+  /** DD-3 — set true on an issue-type row costed at the provisional running cost because no
+   *  covering cost layer existed (offline-first oversell/negative stock). Cleared by the
+   *  reconciliation event once a covering receipt arrives. A movement-level flag, not a new
+   *  table (backend spec §1.3) — the fixture's free-text `_flag` stays purely documentation,
+   *  same as everywhere else in this module; this typed field is the functional one. */
+  pending_cost_reconciliation?: boolean;
+}
+
+/** DD-3 — the Accounting seam contract (backend spec §3). Inventory computes and emits this;
+ *  it never posts a journal entry itself — Accounting (#3) subscribes and posts
+ *  `Dr COGS / Cr Inventory`. Stored in the fixture's top-level `cost_events` for the mock
+ *  cost-card / Accounting-seam preview to read (read-only, no posting semantics here). */
+export interface CostEvent {
+  movement_id: string;
+  carrier_id: string;
+  warehouse_id: string;
+  qty: number;
+  unit_cogs: number;
+  total_cogs: number;
+  method: "fifo" | "average" | "specific";
+  consumed: Array<{ layer_id: string; qty: number; unit_cost: number; batch_id?: string }>;
+  pending_cost_reconciliation: boolean;
+  kind: "issue" | "sales_return" | "purchase_return" | "adjustment" | "reconciliation";
+  note?: string;
 }
 
 export interface InventoryFixture {
@@ -167,12 +194,14 @@ export interface InventoryFixture {
   ledger: InventoryLedgerRow[];
   /** DD-2 — batch/lot entities (§1). */
   stock_batch?: StockBatch[];
-  /** DD-2 — tenant-level settings surfaced by this deep-dive (§1 coalesce base). */
-  settings?: { global_near_expiry_days: number };
+  /** DD-2/DD-3 — tenant-level settings surfaced by these deep-dives (§1 coalesce base). */
+  settings?: { global_near_expiry_days: number; default_costing_method?: "fifo" | "average" };
   stocktakes: unknown[];
   transfers: unknown[];
   adjustments: unknown[];
   low_stock: Array<{ item_id: string; warehouse_id: string; balance: number; reorder_level: number; shortfall: number; suggested_qty: number }>;
+  /** DD-3 — Accounting-seam events (computed here, posted by Accounting #3). Read-only preview data. */
+  cost_events?: CostEvent[];
   import_template_columns: Array<{ key: string; label_ar: string; label_en: string; required?: boolean }>;
   import_sample_result: { valid: number; errors: unknown[] };
   barcode_templates: unknown[];

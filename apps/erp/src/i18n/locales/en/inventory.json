@@ -566,5 +566,31 @@
     "picker_total_mismatch":   "Total picked ({{total}}) must equal the quantity needed ({{needed}})",
     "override_reason_required":"An override reason is required for expired/hold batches",
     "override_reason_label":   "Override reason"
+  },
+
+  "costing": {
+    "default_method":          "Default costing method",
+    "default_method_hint":     "The default method for items with no batch tracking",
+    "change_default_confirm":  "Changing the tenant default only affects items with no per-item override, and only future issues — historical COGS is never rewritten. Continue?",
+    "method_label":            "Costing method",
+    "method_chip":             "Method",
+    "method": {
+      "fifo":                  "FIFO",
+      "average":               "Weighted average",
+      "inherit":               "— (inherit)"
+    },
+    "specific_locked":         "Specific (batch actual cost)",
+    "cost_card_title":         "Cost",
+    "unit_cost":                "Unit cost",
+    "qty_remaining":           "Qty remaining",
+    "layer_value":             "Layer value",
+    "total_valuation":         "Total valuation",
+    "new_avg":                 "New avg",
+    "show_depleted":           "Show depleted layers",
+    "margin":                  "Margin",
+    "overage_cost":            "Overage unit cost",
+    "pending_reconciliation":  "Provisional cost — awaiting a covering receipt",
+    "valuation_report_title":  "Inventory valuation",
+    "as_of_date":              "As of"
   }
 }

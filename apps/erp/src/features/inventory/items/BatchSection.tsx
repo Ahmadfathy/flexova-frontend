@@ -26,6 +26,7 @@ import { BatchStatusPill } from "./BatchStatusBadge";
 import { ReceiptModal } from "./ReceiptModal";
 import { IssueStockDialog } from "./IssueStockDialog";
 import { BatchTraceDrawer } from "./BatchTraceDrawer";
+import { CostCard } from "./CostCard";
 
 interface BatchSectionProps {
   item: InventoryItem;
@@ -55,6 +56,7 @@ export function BatchSection({ item, warehouses, data, lang, can, mutate }: Batc
   const canQuarantine = can("inventory.batch.quarantine");
   const canManualPick = can("inventory.batch.manual_pick");
   const canOverride = can("inventory.batch.issue_override");
+  const canViewCost = can("inventory.cost.view");
 
   function applyBalanceDelta(balances: InventoryItem["balances"], warehouseId: string, delta: number): InventoryItem["balances"] {
     const existing = balances.find((b) => b.warehouse_id === warehouseId);
@@ -123,6 +125,10 @@ export function BatchSection({ item, warehouses, data, lang, can, mutate }: Batc
 
   return (
     <div className="space-y-3">
+      {/* DD-3 §2.3 — batch items lock to 'specific' (technical decision 0/1): the batch DD-2
+          picks physically is the batch DD-3 costs, so the layer stack IS the batch list. */}
+      <CostCard carrierId={carrierId} item={item} method="specific" data={data} warehouses={warehouses} lang={lang} can={can} mutate={mutate} />
+
       <div className="flex items-center justify-end gap-2">
         <Button variant="outline" size="sm" onClick={() => setIssueOpen(true)}>
           <MinusCircle className="h-3.5 w-3.5 me-1.5" />
@@ -210,7 +216,7 @@ export function BatchSection({ item, warehouses, data, lang, can, mutate }: Batc
       <ReceiptModal open={receiptOpen} onOpenChange={setReceiptOpen} item={item} warehouses={warehouses} data={data} lang={lang} mutate={mutate} />
       <IssueStockDialog
         open={issueOpen} onOpenChange={setIssueOpen} item={item} warehouses={warehouses} data={data} lang={lang}
-        canManualPick={canManualPick} canOverride={canOverride} mutate={mutate}
+        canManualPick={canManualPick} canOverride={canOverride} canViewCost={canViewCost} mutate={mutate}
       />
       <BatchTraceDrawer open={traceBatch !== null} onOpenChange={(o) => !o && setTraceBatch(null)} batch={traceBatch} ledger={data.ledger} warehouses={warehouses} lang={lang} />
 

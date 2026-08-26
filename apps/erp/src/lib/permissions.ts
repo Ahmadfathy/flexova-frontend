@@ -10,6 +10,11 @@
  *   - `inventory.batch.issue_override` — issue an expired/hold batch (requires a reason)
  *   - `inventory.batch.hold`           — set/release a batch hold
  *   - `inventory.batch.quarantine`     — quarantine to wh_damaged + write-off
+ * DD-3 (Costing) adds:
+ *   - `inventory.cost.view`            — see unit cost, cost layers, valuation, margin (SoD-sensitive)
+ *   - `inventory.cost.export`          — export the valuation report
+ *   - `inventory.costing.overage_cost` — override the unit cost of a stocktake overage
+ *   - `inventory.costing.method_edit`  — change per-item or tenant default costing method
  */
 export function useCan() {
   return (_permission: string): boolean => true;

@@ -217,3 +217,120 @@ Capability gated by tenant module flag `inventory.batch_expiry`. Off ⇒ `batch_
 - `requires_expiry=true` rejects a receive/opening call missing `expiry_date` (422); `requires_expiry=false` accepts one.
 
 *End of DD-2 (Batch/Expiry) — inventory.backend.md.*
+
+---
+
+# DD-3: FIFO / FEFO Costing
+
+Builds on DD-1 (carrier) + DD-2 (batch engine, `batch_id` on movement, cost on movement). This is the valuation/costing layer promised by DD-2's Pin A. **Posting to the ledger is Accounting's job (module #3) — DD-3 stops at the seam.**
+
+## 1. Data model
+
+### 1.0 No new "cost layer" table (derive-first)
+The cost layer is **not** a new entity. A layer **is** a receipt-type `stock_movement` (`opening | in | receipt | transfer_in | adjustment(+)`) with its `cost` (unit) already stored (Pin A). `qty_remaining` per layer is **derived** by replaying the movement stream in effective-method order — not a stored column.
+```
+layer identity (logical) = carrier_id × warehouse_id × receipt_movement_id [× batch_id]
+   carrier_id = coalesce(variant_id, item_id)     -- SAME resolver as DD-1/DD-2, never branch
+```
+
+### 1.1 `item` — add columns
+```
++ costing_method   enum('fifo','average')  NULL   -- per-item override; NULL = inherit tenant default
+                                                    -- IGNORED when tracks_batch=true (forced 'specific')
+```
+`avg_cost` (already present) is a maintained **cache**: recalculated on each receipt via the moving-average formula for average-method items; for FIFO/specific items it reads as the current derived weighted unit cost for display consistency (never a hand-edited source of truth — the frontend always re-derives, falling back to the cache only when a carrier has zero open layers at all).
+
+### 1.2 Settings
+```
+inventory_settings.default_costing_method  enum('fifo','average')  NOT NULL DEFAULT 'fifo'
+```
+```
+effectiveCostingMethod(item, settings):
+  if item.tracks_batch                              -> 'specific'
+  else coalesce(item.costing_method, settings.default_costing_method)   -> 'fifo' | 'average'
+```
+
+### 1.3 `stock_movement` — additive only (R3 respected)
+`stock_movement.cost` is reused: **receipt-type** = acquisition unit cost (unchanged); **issue-type** = the unit COGS DD-3 computes (previously unset). One additive boolean: `pending_cost_reconciliation` — a movement-level flag for a provisional-cost issue, cleared once reconciled. No other shape change.
+
+## 2. Costing engine
+Lives at `apps/erp/src/features/inventory/items/costing.ts`, sibling of `batches.ts`. Consumes DD-2's `selectBatchesForIssue` allocation order for batch items (one `consumeCostLayers(..., {method:'specific', batchId})` call per allocation); consumes the raw movement stream for non-batch items.
+
+### 2.1 Derive layers — `deriveCostLayers(carrierId, ledger, method, opts?)`
+```
+receipts = movements(carrier[×warehouse]) with qty>0, ordered date ASC, id ASC   (oldest first)
+method='average' -> single running layer (Σ qty, running weighted avg via computeRunningAverage())
+replay all issues (qty<0) against receipts in that order, decrementing each layer's remaining
+```
+Deterministic — same order every replay, so no stored `qty_remaining`.
+
+### 2.2 Consume layers → COGS — `consumeCostLayers(carrierId, qty, ledger, {method, warehouseId, batchId?, fallbackCost?})`
+FIFO/specific: walk layers oldest→newest. On exhaustion (negative stock): value the remainder at the last known layer cost, or the caller's `fallbackCost` (`item.avg_cost ?? item.last_purchase_price ?? 0`) when there was never a layer at all; mark `pending_cost_reconciliation`. `unit_cogs` reported at 4dp (e.g. 1600/150 = `10.6667`); `total_cogs` is always the exact sum of consumed-layer values, never `qty × the rounded unit figure`.
+
+### 2.3 Weighted Average — `weightedAverageOnReceipt(qtyBefore, avgBefore, qtyIn, unitCostIn)`
+Reuses the **formula** already live in `stores/mfgItemStock.ts` (`round2((qb·ab+qi·ci)/(qb+qi))`) — **reimplemented locally**, zero `import` from `src/features/mfg` / `src/stores/mfg*` (verified: `grep` for those paths in `costing.ts` returns nothing). Issues never move the average.
+
+### 2.4 COGS timing = perpetual
+Computed at issue time, written to the issue movement's `cost`. No periodic job.
+
+### 2.5 Returns & adjustments
+```
+sales_return    -> buildSalesReturnReceipt(): receipt movement, unit_cost = originalIssue.cost (no re-lookup)
+purchase_return -> buildCostingIssue(..., kind:'purchase_return'): issue consuming the supplier's layer
+stocktake short -> issue at effective-method cost (loss at Accounting seam)
+stocktake over  -> receipt; unit_cost defaults to stocktakeOverageCost() = avg_cost ?? last_purchase_price ?? 0,
+                   override gated by inventory.costing.overage_cost
+```
+
+### 2.6 Valuation — `itemValuation(carrierId, ledger, method, opts?)`
+`Σ (layer.qty_remaining × layer.unit_cost)` — derived. `asOf` replays movements only up to that date.
+
+## 3. Accounting seam
+`buildCostEvent()` / `buildCostReconciliation()` shape the `CostEvent` contract (`movement_id, carrier_id, warehouse_id, qty, unit_cogs, total_cogs, method, consumed[], pending_cost_reconciliation, kind`) and append it to the mock's `cost_events[]` via the normal `mutate()` path — **no journal-entry write anywhere in `src/features/inventory`** (verified: no `journal_entry`/posting call in the feature directory).
+
+## 4. Endpoints (unchanged from the DD-3 handoff — not yet backed by a real server in this mock-frontend phase)
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/inventory/carriers/:carrierId/cost-layers?warehouse_id=&as_of=` | derived open layers |
+| GET | `/inventory/carriers/:carrierId/cost` | current unit cost + effective method |
+| GET | `/inventory/valuation?warehouse_id=&category_id=&method=&as_of=` | valuation report rows + totals |
+| POST | `/inventory/issue` | (DD-2) now also returns computed `unit_cogs` + `CostEvent` |
+| POST | `/inventory/returns/sale` \| `/inventory/returns/purchase` | receipt/issue at the costs above |
+| POST | `/inventory/cost-reconcile` | reconcile a `pending_cost_reconciliation` issue |
+| PATCH | `/inventory/items/:id/costing-method` \| `/inventory/settings/costing` | set method (item / tenant default) |
+
+## 5. Enforcement rules
+1. Effective method resolved server-side (mock: `effectiveCostingMethod()`); `tracks_batch=true` ⇒ forced `specific`.
+2. Every issue-type movement gets a computed `cost` before persist.
+3. FIFO/specific consumption order matches DD-2's batch allocation order for batch items.
+4. Negative-stock issue is allowed (offline-first) with provisional cost + flag; a later covering receipt triggers reconciliation.
+5. Tenant-default change is prospective.
+6. `avg_cost` is a cache — never accepted as a direct client write (frontend never writes it either; always re-derived).
+7. Cost visibility (`inventory.cost.view`) gates layers/valuation/margin — the frontend's `CostCard`, `ValuationReportPage`, and issue-dialog margin readout all early-return/redact without it.
+8. LIFO is rejected and not selectable.
+
+## 6. Boundaries & compatibility
+- **MFG untouched:** formula reused, not imported; `costing.ts` has zero dependency on `src/features/mfg` / `src/stores/mfg*`.
+- **Batch flag off:** every item costs by FIFO or Average; `specific` simply never taken.
+- **Purchasing GRN (#4):** each GRN receipt is automatically a cost layer — no schema change needed.
+- **Sales/POS (#2):** no live integration exists yet (same as DD-2's Issue/Adjustment) — the margin readout and the Sales-return flow are built inside Inventory's own Issue/Return dialogs (`IssueStockDialog.tsx`, `CostingSection.tsx`), ready to be called from Sales/POS once that seam exists.
+
+### CHANGELOG entry (copied to `_CHANGELOG.md`)
+```
+## [Inventory] DD-3 FIFO/FEFO Costing — 2026-08-26 — Ahmad
+- Costing engine (costing.ts): deriveCostLayers / consumeCostLayers / weightedAverageOnReceipt (FIFO,
+  Average, specific-batch via DD-2 allocation order) / itemCurrentCost / itemValuation. Perpetual COGS.
+- item += costing_method (fifo|average, nullable). inventory_settings += default_costing_method (fifo).
+  stock_movement += pending_cost_reconciliation (additive flag, R3 respected).
+- New UI: Item Editor Costing select + Cost card; CostingSection.tsx (Receipt/Issue/Return for
+  non-batch items — previously had none); Inventory Settings page (new); Inventory Valuation report
+  (new, /inventory/valuation). Margin readout in both Issue dialogs, gated by inventory.cost.view.
+- Returns: sale-return at original COGS; purchase-return issue. Stocktake overage cost field + gate.
+- Negative/offline issue allowed at provisional cost + pending_cost_reconciliation; reconcile action
+  on the Cost card once a covering receipt exists.
+- Accounting seam: CostEvent emitted into fixture.cost_events[]. Zero journal-entry code in Inventory.
+- LIFO rejected. Cost visibility gated by inventory.cost.view (ad hoc, same convention as DD-2).
+- Fixtures: merged Inventory.fixtures.costing.json (3 demo items + movements + cost_events).
+```
+
+*End of DD-3 (FIFO/FEFO Costing) — inventory.backend.md.*
